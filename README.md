@@ -60,7 +60,6 @@ The Laravel framework is open-sourced software licensed under the [MIT license](
 
 
 <!-- setingan database  -->
-
 Table cabang {
   id integer [primary key]
   nama_cabang varchar
@@ -68,8 +67,19 @@ Table cabang {
   created_at timestamp
 }
 
-Table siswa {
+Table users {
   id integer [primary key]
+  name varchar
+  email varchar [unique]
+  password varchar
+  role enum('admin cianjur selatan','admin cianjur','super admin','kandidat')
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table pendaftaran_kandidat {
+  id integer [primary key]
+  user_id integer
   foto varchar
   nama varchar
   email varchar
@@ -77,7 +87,13 @@ Table siswa {
   jenis_kelamin varchar
   no_wa varchar
   cabang_id integer
+  kk varchar
+  ktp varchar
+  bukti_pelunasan varchar
+  akte varchar
+  izasah varchar
   tanggal_daftar date
+  status_berkas enum('MENUNGGU_VERIFIKASI','DITOLAK','DITERIMA') [default: 'MENUNGGU_VERIFIKASI']
   created_at timestamp
 }
 
@@ -95,7 +111,7 @@ Table penempatan {
   id integer [primary key]
   siswa_id integer
   institusi_id integer
-  status enum('INTERVIEW', 'SUDAH_BERANGKAT', 'VERIFIKASI_DATA', 'PENDING', 'MENUNGGU_JOB_MATCHING', 'SELESAI', 'DITOLAK')
+  status enum('INTERVIEW','SUDAH_BERANGKAT','VERIFIKASI_DATA','PENDING','MENUNGGU_JOB_MATCHING','SELESAI','DITOLAK')
   tanggal_update_status timestamp
   tanggal_mulai date
   tanggal_selesai date
@@ -106,7 +122,7 @@ Table interview {
   id integer [primary key]
   siswa_id integer
   tanggal_interview date
-  hasil varchar
+  status_interview enum('PENDING','TERJADWAL','LULUS','TIDAK_LULUS','ULANG_INTERVIEW')
   catatan text
   created_at timestamp
 }
@@ -120,38 +136,49 @@ Table histori_status {
   created_at timestamp
 }
 
-//////////////////////////////////////////////////////////////
-/////// ✅ TABEL KANDIDAT — DITAMBAHKAN DI SINI SESUAI PERMINTAAN
-//////////////////////////////////////////////////////////////
-
 Table kandidat {
   id integer [primary key]
+  user_id integer
   siswa_id integer
   cabang_id integer
-  penempatan_id integer [null]  // terisi setelah job matching
-
+  penempatan_id integer [note: 'optional']
+  interview_id integer [note: 'optional']
   status_pendaftaran enum('BARU_DAFTAR','VERIFIKASI','VALID','DITOLAK')
-  status_interview enum('PENDING','TERJADWAL','LULUS','TIDAK_LULUS','ULANG_INTERVIEW')
-
-  tanggal_daftar timestamp          // sama dengan waktu buat akun
-  tanggal_interview date [null]     // akan terisi saat dijadwalkan
-  catatan_interview text [null]     // opsional
-
+  tanggal_daftar timestamp
+  tanggal_interview date [note: 'optional']
+  catatan_interview text [note: 'optional']
   created_at timestamp
   updated_at timestamp
 }
 
-//////////////////////////////////////////////////////////////
-/////// ✅ RELASI (REFERENCES)
-//////////////////////////////////////////////////////////////
+Table verifikasi_kandidat {
+  id integer [primary key]
+  kandidat_id integer
+  admin_id integer
+  status_verifikasi enum('PENDING','DISETUJUI','DITOLAK') [default: 'PENDING']
+  password_diberikan varchar [note: 'optional']
+  catatan text [note: 'optional']
+  tanggal_verifikasi timestamp
+  created_at timestamp
+}
 
-Ref: siswa.cabang_id > cabang.id
-Ref: penempatan.siswa_id > siswa.id
-Ref: penempatan.institusi_id > institusi.id
-Ref: interview.siswa_id > siswa.id
-Ref: histori_status.penempatan_id > penempatan.id
+// Relasi akun dan pendaftaran
+Ref: pendaftaran_kandidat.user_id > users.id
+Ref: pendaftaran_kandidat.cabang_id > cabang.id
 
-//// Relasi tambahan dari tabel kandidat:
-Ref: kandidat.siswa_id > siswa.id
+// Relasi kandidat
+Ref: kandidat.user_id > users.id
+Ref: kandidat.siswa_id > pendaftaran_kandidat.id
 Ref: kandidat.cabang_id > cabang.id
 Ref: kandidat.penempatan_id > penempatan.id
+Ref: kandidat.interview_id > interview.id
+
+// Relasi verifikasi
+Ref: verifikasi_kandidat.kandidat_id > kandidat.id
+Ref: verifikasi_kandidat.admin_id > users.id
+
+// Relasi penempatan & interview
+Ref: penempatan.siswa_id > pendaftaran_kandidat.id
+Ref: penempatan.institusi_id > institusi.id
+Ref: interview.siswa_id > pendaftaran_kandidat.id
+Ref: histori_status.penempatan_id > penempatan.id
