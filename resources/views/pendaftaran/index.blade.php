@@ -1,7 +1,17 @@
 @extends('layouts.app')
 @section('content')
     <div class="">
-
+        @if (session('success'))
+            <script>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Sukses',
+                    text: '{{ session('success') }}',
+                    timer: 20000,
+                    showConfirmButton: false
+                });
+            </script>
+        @endif
         <!-- Breadcrumb -->
         <nav aria-label="breadcrumb" class="mb-4">
             <ol class="breadcrumb bg-white border rounded-3 px-3 py-2 shadow-sm mb-0">
@@ -28,10 +38,9 @@
         <div class="card shadow-sm border-0 rounded-4">
             <div class="card-body p-4">
 
-                <form action="/pendaftaran/store" method="POST" enctype="multipart/form-data" class="p-3">
-                    <!-- Jika pakai Laravel -->
-                    <!-- @csrf -->
-
+                <form action="{{ route('pendaftaran.store') }}" method="POST" enctype="multipart/form-data" class="p-3">
+                    @csrf
+                    @method('POST')
                     <!-- ==================== SECTION: DATA PRIBADI ==================== -->
                     <div class="mb-4">
                         <h5 class="fw-bold border-bottom pb-2 mb-3">
@@ -70,11 +79,12 @@
                                 <label for="cabang_id" class="form-label">Cabang</label>
                                 <select class="form-select" id="cabang_id" name="cabang_id" required>
                                     <option value="">-- Pilih Cabang --</option>
-                                    <!-- Contoh, ganti dengan data dinamis -->
-                                    <option value="1">Cabang Bandung</option>
-                                    <option value="2">Cabang Jakarta</option>
+                                    @foreach ($cabangs as $cabang)
+                                        <option value="{{ $cabang->id }}">{{ $cabang->nama_cabang }}</option>
+                                    @endforeach
                                 </select>
                             </div>
+
 
                             <div class="col-md-6">
                                 <label for="tanggal_daftar" class="form-label">Tanggal Daftar</label>
@@ -110,8 +120,8 @@
 
                             <div class="col-md-4">
                                 <label class="form-label">Kartu Tanda Penduduk (KTP)</label>
-                                <input type="file" class="form-control" name="ktp"
-                                    accept="image/*,application/pdf" required>
+                                <input type="file" class="form-control" name="ktp" accept="image/*,application/pdf"
+                                    required>
                             </div>
 
                             <div class="col-md-4">

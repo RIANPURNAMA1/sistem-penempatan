@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -22,18 +23,23 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
-            'role' => 'required|in:admin cianjur selatan,admin cianjur,super admin,kandidat',
+            // hapus validasi role karena akan default ke kandidat
         ]);
 
+        // Ambil role kandidat
+        $role = Role::where('name', 'kandidat')->first();
+
+        // Buat user baru
         User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => $request->role,
+            'password' =>Hash::make($request->password),
+            'role_id' => $role->id, // otomatis jadi kandidat
         ]);
 
         return redirect()->back()->with('success', 'Registrasi berhasil. Silakan login.');
     }
+
 
     // Form login
     public function showLogin()
@@ -52,7 +58,7 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
-            return redirect()->back()->with('success',"Login Berhasil");
+            return redirect()->back()->with('success', "Login Berhasil");
         }
 
         return back()->withErrors([

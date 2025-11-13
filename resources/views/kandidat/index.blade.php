@@ -63,28 +63,27 @@
         </div>
 
         <!-- 🧾 Data Table -->
+        <!-- 🧾 Data Table -->
         <div class="card shadow-sm">
             <div class="card-body table-responsive">
                 <table class="table table-striped table-bordered nowrap" id="tableKandidat" style="width:100%">
-                    <thead style="background-color: #00c0ff !important;">
-                        <tr>
+                    <thead>
+                        <tr style="background-color: #00c0ff; color:white; text-align:center; vertical-align:middle;">
                             <th>No</th>
                             <th>Nama Siswa</th>
                             <th>Cabang</th>
-                            <th>Status Penempatan</th>
-                            <th>Tanggal Daftar</th>
+                            <th>Status Kandidat</th>
                             <th>Status Interview</th>
+                            <th>Penempatan</th>
+                            <th>Tanggal Daftar</th>
+                            <th>Jumlah Interview</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Data dummy -->
                         @for ($i = 1; $i <= 25; $i++)
                             @php
-                                $statusList = ['MENUNGGU JOB MATCHING', 'INTERVIEW', 'SELESAI', 'DITOLAK', 'PENDING'];
-                                $status = $statusList[array_rand($statusList)];
-                                $interviewList = ['PENDING', 'SELESAI', 'DITOLAK'];
-                                $interview = $interviewList[array_rand($interviewList)];
+                                // Cabang random
                                 $cabangList = [
                                     'Cabang Bandung',
                                     'Cabang Cirebon',
@@ -93,15 +92,60 @@
                                     'Cabang Karawang',
                                 ];
                                 $cabang = $cabangList[array_rand($cabangList)];
+
+                                // Status kandidat random
+                                $statusKandidatList = [
+                                    'Verifikasi Dokumen',
+                                    'Menunggu Job Matching',
+                                    'Diterima',
+                                    'Ditolak',
+                                ];
+                                $statusKandidat = $statusKandidatList[array_rand($statusKandidatList)];
+
+                                // Status interview random
+                                $statusInterviewList = ['PENDING', 'SELESAI', 'DITOLAK'];
+                                $statusInterview = $statusInterviewList[array_rand($statusInterviewList)];
+
+                                // Penempatan random: 50% chance belum ditempatkan
+                                $penempatanList = ['-', 'Institusi A', 'Institusi B', 'Institusi C'];
+                                $penempatan = $penempatanList[array_rand($penempatanList)];
+
+                                // Jumlah interview dummy
+                                $jumlahInterview = rand(1, 5);
                             @endphp
                             <tr>
                                 <td>{{ $i }}</td>
                                 <td>Nama Kandidat {{ $i }}</td>
                                 <td>{{ $cabang }}</td>
-                                <td><span class="badge bg-warning text-dark">{{ $status }}</span></td>
-                                <td>2025-01-{{ sprintf('%02d', $i) }}</td>
-                                <td><span class="badge bg-secondary">{{ $interview }}</span></td>
                                 <td>
+                                    <span
+                                        class="badge 
+                {{ $statusKandidat === 'Verifikasi Dokumen' ? 'bg-warning text-dark' : '' }}
+                {{ $statusKandidat === 'Menunggu Job Matching' ? 'bg-secondary text-white' : '' }}
+                {{ $statusKandidat === 'Diterima' ? 'bg-success' : '' }}
+                {{ $statusKandidat === 'Ditolak' ? 'bg-danger' : '' }}">
+                                        {{ $statusKandidat }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span
+                                        class="badge 
+                {{ $statusInterview === 'PENDING' ? 'bg-info text-dark' : '' }}
+                {{ $statusInterview === 'SELESAI' ? 'bg-success' : '' }}
+                {{ $statusInterview === 'DITOLAK' ? 'bg-danger' : '' }}">
+                                        {{ $statusInterview }}
+                                    </span>
+                                </td>
+                                <td>
+                                    @if ($penempatan === '-')
+                                        -
+                                    @else
+                                        <span class="badge bg-primary">{{ $penempatan }}</span>
+                                    @endif
+                                </td>
+                                <td>2025-01-{{ sprintf('%02d', $i) }}</td>
+                                <td><span class="badge bg-secondary">{{ $jumlahInterview }}</span></td>
+                                <td class="text-center">
                                     <button class="btn btn-sm btn-info text-white"><i class="bi bi-eye"></i></button>
                                     <button class="btn btn-sm btn-warning text-white"><i
                                             class="bi bi-pencil"></i></button>
@@ -109,10 +153,13 @@
                                 </td>
                             </tr>
                         @endfor
+
+
                     </tbody>
                 </table>
             </div>
         </div>
+
     </div>
 
     <!-- ✅ Dependencies -->

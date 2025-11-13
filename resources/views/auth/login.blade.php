@@ -10,6 +10,10 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
 
+    <!-- SweetAlert2 & jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <style>
         body {
             background: linear-gradient(135deg, #00bfff, #60efff);
@@ -39,16 +43,6 @@
             margin-bottom: 25px;
             border-radius: 15px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
-        }
-
-        h3 {
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-
-        p.text-muted {
-            font-size: 0.9rem;
-            color: #6c757d;
         }
 
         .form-control {
@@ -84,19 +78,7 @@
             background: linear-gradient(90deg, #ffffff, #00c0ff);
             color: #0061ff;
             transform: translateY(-2px);
-            /* sedikit naik saat hover */
             box-shadow: 0 5px 15px rgba(0, 192, 255, 0.4);
-            /* glow lembut */
-        }
-
-        .text-muted a {
-            color: #0061ff;
-            text-decoration: none;
-            transition: 0.3s;
-        }
-
-        .text-muted a:hover {
-            text-decoration: underline;
         }
     </style>
 </head>
@@ -106,17 +88,35 @@
         <div class="auth-logo text-center">
             <img src="{{ asset('assets/compiled/png/LOGO/logo.png') }}" alt="Logo Sistem Kandidat">
         </div>
+  @if ($errors->any())
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                icon: 'error',
+                title: 'Validasi Gagal!',
+                html: `
+                    <ul style="text-align: left;">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                `,
+                confirmButtonColor: '#ff6b6b',
+                confirmButtonText: 'Tutup'
+            });
+        });
+    </script>
+@endif
+
 
         <h3 class="text-center">Selamat Datang 👋</h3>
         <p class="text-center text-muted mb-4">Silakan masuk menggunakan akun Anda</p>
 
-        <form action="{{ route('login.post') }}" method="POST">
+        <form id="loginForm" method="POST">
             @csrf
-
             <div class="form-group position-relative mb-3">
                 <i class="bi bi-person"></i>
-                <input type="email" name="email" class="form-control form-control-lg" placeholder="email"
-                    required>
+                <input type="email" name="email" class="form-control form-control-lg" placeholder="Email" required>
             </div>
 
             <div class="form-group position-relative mb-3">
@@ -125,7 +125,7 @@
                     required>
             </div>
 
-            <button type="submit" class="btn btn-warning btn-lg w-100 mt-3">
+            <button type="submit" class="btn btn-warning btn-lg w-100 mt-3 ">
                 <i class="bi bi-box-arrow-in-right me-1"></i> Masuk
             </button>
         </form>
@@ -135,43 +135,80 @@
             <a href="#" class="fw-bold">Lupa Password?</a>
         </div>
     </div>
-    <!-- SweetAlert CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            @if (session('success'))
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil!',
-                    text: '{{ session('success') }}',
-                    confirmButtonColor: '#3085d6',
-                    confirmButtonText: 'OK'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        // redirect setelah klik OK
-                        window.location.href = "/dashboard";
+        < script >
+            $(document).ready(function() {
+                $('#loginForm').on('submit', function(e) {
+                    e.preventDefault();
+
+                    const email = $('input[name="email"]').val().trim();
+                    const password = $('input[name="password"]').val().trim();
+
+                    // Validasi client-side
+                    if (!email || !password) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Validasi Gagal',
+                            text: 'Email dan Password wajib diisi!',
+                            confirmButtonColor: '#ffc107'
+                        });
+                        return;
                     }
-                });
-            @endif
 
-            @if ($errors->any())
-                let errors = '';
-                @foreach ($errors->all() as $error)
-                    errors += `- {{ $error }}\n`;
-                @endforeach
+                    // Validasi format email
+                    const emailPattern = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+                    if (!emailPattern.test(email)) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Format Email Salah',
+                            text: 'Pastikan email yang Anda masukkan valid.',
+                            confirmButtonColor: '#ff6b6b'
+                        });
+                        return;
+                    }
 
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops!',
-                    html: errors.replace(/\n/g, '<br>'),
-                    confirmButtonColor: '#d33',
-                    confirmButtonText: 'Tutup'
+                    // Kirim ke server
+                    $.ajax({
+                        url: "{{ route('login.post') }}",
+                        method: "POST",
+                        data: $(this).serialize(),
+                        success: function(response) {
+                            if (response.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Login Berhasil!',
+                                    text: 'Anda akan diarahkan ke dashboard...',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                });
+
+                                setTimeout(() => {
+                                    window.location.href = response.redirect;
+                                }, 1500);
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Login Gagal',
+                                    text: response.message || 'Email atau password salah!',
+                                    confirmButtonColor: '#ff6b6b'
+                                });
+                            }
+                        },
+                        error: function() {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Terjadi Kesalahan!',
+                                text: 'Periksa koneksi Anda atau hubungi admin.',
+                                confirmButtonColor: '#ff6b6b'
+                            });
+                        }
+                    });
                 });
-            @endif
-        });
+            });
     </script>
 
+    </script>
 
 </body>
 

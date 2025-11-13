@@ -6,11 +6,6 @@ use Illuminate\Http\Request;
 
 class PageController extends Controller
 {
-    // Menampilkan halaman pendaftaran kandidat
-    public function pendaftaranKandidat()
-    {
-        return view('pendaftaran.index');
-    }
 
     // Menampilkan halaman data kandidat
     public function kandidat()
@@ -46,5 +41,8 @@ class PageController extends Controller
     public function adminUser()
     {
         return view('admin.user');
+    }
+    public function cabang(){
+        return view('cabang.index');
     }
 }

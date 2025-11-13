@@ -58,16 +58,22 @@
                 <div class="row g-3 align-items-end">
                     <!-- Filter Cabang -->
                     <div class="col-12 col-md-6 col-lg-6">
-                        <label for="filterCabang" class="form-label fw-semibold text-secondary">Cabang</label>
-                        <select id="filterCabang" class="form-select shadow-sm rounded-3 border-1">
-                            <option value="">Semua Cabang</option>
-                            <option value="Cabang Bandung">Cabang Bandung</option>
-                            <option value="Cabang Cirebon">Cabang Cirebon</option>
-                            <option value="Cabang Jakarta">Cabang Jakarta</option>
-                            <option value="Cabang Bogor">Cabang Bogor</option>
-                            <option value="Cabang Karawang">Cabang Karawang</option>
-                        </select>
+                        <form action="{{ route('pendaftar') }}" method="GET" id="filterForm">
+                            <label for="filterCabang" class="form-label fw-semibold text-secondary">Cabang</label>
+                            <select name="cabang_id" id="filterCabang" class="form-select shadow-sm rounded-3 border-1"
+                                onchange="document.getElementById('filterForm').submit()">
+                                <option value="">Semua Cabang</option>
+                                @foreach ($cabang as $item)
+                                    <option value="{{ $item->id }}"
+                                        {{ request('cabang_id') == $item->id ? 'selected' : '' }}>
+                                        {{ $item->nama_cabang }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </form>
                     </div>
+
+
 
                     <!-- Tombol Reset -->
                     <div class="col-12 col-md-6 col-lg-6 d-flex justify-content-end align-items-end">
@@ -99,59 +105,100 @@
                             <th class="text-white">Akte</th>
                             <th class="text-white">Ijazah</th>
                             <th class="text-white">Tanggal Daftar</th>
+                            <th class="text-white">Verifikasi</th>
+                            <th class="text-white">Catatan Admin</th>
                             <th class="text-white">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @for ($i = 1; $i <= 100; $i++)
-                            @php
-                                $gender = $i % 2 == 0 ? 'Laki-laki' : 'Perempuan';
-                                $cabangList = [
-                                    'Cabang Bandung',
-                                    'Cabang Cirebon',
-                                    'Cabang Jakarta',
-                                    'Cabang Bogor',
-                                    'Cabang Karawang',
-                                ];
-                                $cabang = $cabangList[array_rand($cabangList)];
-                            @endphp
+                        @forelse ($kandidats as $index => $kandidat)
                             <tr>
-                                <td>{{ $i }}</td>
-                                <td><img src="https://via.placeholder.com/50" class="rounded-circle border" alt="Foto">
+                                <td>{{ $index + 1 }}</td>
+                                <td>
+                                    <img src="{{ asset('storage/' . $kandidat->foto) }}" alt="Foto Kandidat"
+                                        class="rounded-circle border" width="50" height="50">
                                 </td>
-                                <td>Nama Kandidat {{ $i }}</td>
-                                <td>kandidat{{ $i }}@email.com</td>
-                                <td>Jl. Contoh No.{{ $i }}, Kota Contoh</td>
-                                <td>{{ $gender }}</td>
-                                <td>0812345678{{ $i }}</td>
-                                <td>{{ $cabang }}</td>
-                                <td><a href="#" class="text-decoration-none text-primary"><i
-                                            class="bi bi-file-earmark-text"></i> Lihat</a></td>
-                                <td><a href="#" class="text-decoration-none text-primary"><i
-                                            class="bi bi-file-earmark-person"></i> Lihat</a></td>
-                                <td><a href="#" class="text-decoration-none text-primary"><i
-                                            class="bi bi-file-earmark-check"></i> Lihat</a></td>
-                                <td><a href="#" class="text-decoration-none text-primary"><i
-                                            class="bi bi-file-earmark-richtext"></i> Lihat</a></td>
-                                <td><a href="#" class="text-decoration-none text-primary"><i
-                                            class="bi bi-file-earmark-zip"></i> Lihat</a></td>
-                                <td>2025-01-{{ sprintf('%02d', $i) }}</td>
+                                <td>{{ $kandidat->nama }}</td>
+                                <td>{{ $kandidat->email }}</td>
+                                <td>{{ $kandidat->alamat }}</td>
+                                <td>{{ $kandidat->jenis_kelamin }}</td>
+                                <td>{{ $kandidat->no_wa }}</td>
+                                <td>{{ $kandidat->cabang->nama_cabang ?? '-' }}</td>
+
+                                <!-- Dokumen -->
+                                <td>
+                                    <a href="{{ asset('storage/' . $kandidat->kk) }}" target="_blank"
+                                        class="btn btn-outline-primary btn-sm">
+                                        <i class="bi bi-file-earmark-text"></i>
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="{{ asset('storage/' . $kandidat->ktp) }}" target="_blank"
+                                        class="btn btn-outline-primary btn-sm">
+                                        <i class="bi bi-file-earmark-text"></i>
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="{{ asset('storage/' . $kandidat->bukti_pelunasan) }}" target="_blank"
+                                        class="btn btn-outline-primary btn-sm">
+                                        <i class="bi bi-file-earmark-text"></i>
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="{{ asset('storage/' . $kandidat->akte) }}" target="_blank"
+                                        class="btn btn-outline-primary btn-sm">
+                                        <i class="bi bi-file-earmark-text"></i>
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="{{ asset('storage/' . $kandidat->izasah) }}" target="_blank"
+                                        class="btn btn-outline-primary btn-sm">
+                                        <i class="bi bi-file-earmark-text"></i>
+                                    </a>
+                                </td>
+
+                                <!-- Tanggal Daftar -->
+                                <td>{{ \Carbon\Carbon::parse($kandidat->tanggal_daftar)->translatedFormat('d F Y') }}</td>
+
+                                <!-- Status Verifikasi -->
+                                <td>
+                                    @if ($kandidat->verifikasi == 'menunggu')
+                                        <span class="badge bg-warning text-dark">Menunggu</span>
+                                    @elseif ($kandidat->verifikasi == 'data belum lengkap')
+                                        <span class="badge bg-info text-dark">Data Belum Lengkap</span>
+                                    @elseif ($kandidat->verifikasi == 'diterima')
+                                        <span class="badge bg-success">Diterima</span>
+                                    @else
+                                        <span class="badge bg-danger">Ditolak</span>
+                                    @endif
+                                </td>
+
+                                <!-- Catatan Admin -->
+                                <td>{{ $kandidat->catatan_admin ?? '-' }}</td>
+
+                                <!-- Aksi -->
                                 <td class="text-center">
-                                    <div class="btn-group">
-                                        <a href="#" class="btn btn-sm btn-info text-white" title="Lihat Detail">
-                                            <i class="bi bi-eye"></i>
-                                        </a>
-                                        <a href="#" class="btn btn-sm btn-warning text-white" title="Edit">
+                                    <div class="btn-group gap-2">
+
+                                        <a href="{{ route('siswa.edit', $kandidat->id) }}"
+                                            class="btn btn-sm btn-warning text-white" title="Edit">
                                             <i class="bi bi-pencil-square"></i>
                                         </a>
-                                        <button class="btn btn-sm btn-danger text-white" title="Hapus">
+
+                                        <button class="btn btn-sm btn-danger text-white btn-delete"
+                                            data-id="{{ $kandidat->id }}" title="Hapus">
                                             <i class="bi bi-trash3"></i>
                                         </button>
                                     </div>
                                 </td>
                             </tr>
-                        @endfor
+                        @empty
+                            <tr>
+                                <td colspan="17" class="text-center text-muted">Belum ada data kandidat.</td>
+                            </tr>
+                        @endforelse
                     </tbody>
+
                 </table>
             </div>
         </div>
