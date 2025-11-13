@@ -77,7 +77,7 @@
             color: black;
             border-radius: 12px;
             border: none;
-             transition: all 0.4s ease; 
+            transition: all 0.4s ease;
         }
 
         .btn-login:hover {
@@ -110,12 +110,12 @@
         <h3 class="text-center">Selamat Datang 👋</h3>
         <p class="text-center text-muted mb-4">Silakan masuk menggunakan akun Anda</p>
 
-        <form action="#" method="POST">
+        <form action="{{ route('login.post') }}" method="POST">
             @csrf
 
             <div class="form-group position-relative mb-3">
                 <i class="bi bi-person"></i>
-                <input type="text" name="username" class="form-control form-control-lg" placeholder="Username"
+                <input type="email" name="email" class="form-control form-control-lg" placeholder="email"
                     required>
             </div>
 
@@ -131,12 +131,48 @@
         </form>
 
         <div class="text-center mt-4 text-muted">
-            <p class="mb-1">Belum punya akun? <a href="/pendaftaran" class="fw-bold">Daftar</a></p>
+            <p class="mb-1">Belum punya akun? <a href="/registrasi" class="fw-bold">Daftar</a></p>
             <a href="#" class="fw-bold">Lupa Password?</a>
         </div>
     </div>
-
+    <!-- SweetAlert CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            @if (session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: '{{ session('success') }}',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'OK'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // redirect setelah klik OK
+                        window.location.href = "/dashboard";
+                    }
+                });
+            @endif
+
+            @if ($errors->any())
+                let errors = '';
+                @foreach ($errors->all() as $error)
+                    errors += `- {{ $error }}\n`;
+                @endforeach
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops!',
+                    html: errors.replace(/\n/g, '<br>'),
+                    confirmButtonColor: '#d33',
+                    confirmButtonText: 'Tutup'
+                });
+            @endif
+        });
+    </script>
+
+
 </body>
 
 </html>

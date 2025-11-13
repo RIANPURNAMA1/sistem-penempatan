@@ -4,102 +4,112 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pendaftaran Siswa</title>
+    <title>Registrasi Sistem Kandidat</title>
 
     <link rel="shortcut icon" href="{{ asset('assets/compiled/svg/logo.svg') }}" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
 
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <style>
         body {
-            background: linear-gradient(135deg, #00bfff, #60efff);
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         #register-card {
-            background: #fff;
-            border-radius: 16px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-            padding: 40px 30px;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 25px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            padding: 50px 35px;
             width: 100%;
-            max-width: 900px;
+            max-width: 480px;
+            transition: transform 0.3s, box-shadow 0.3s;
         }
 
-        .form-control,
-        .form-select {
-            border-radius: 12px;
+        #register-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
         }
 
-        .btn-primary,
-        .btn-warning {
-            border-radius: 12px;
-            transition: 0.3s;
-        }
-
-        .btn-primary:hover {
-            background: #0056d6;
-        }
-
-        .btn-warning:hover {
-            background: #ffb300;
+        .auth-logo img {
+            width: 140px;
+            margin-bottom: 30px;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
         }
 
         h3 {
             font-weight: 700;
+            margin-bottom: 8px;
+            font-size: 1.8rem;
+            color: #333;
         }
 
-        small {
-            display: block;
+        p.text-muted {
+            font-size: 0.95rem;
             color: #6c757d;
         }
 
-        /* Drag & Drop Styles */
-        .drop-zone {
+        .form-group {
             position: relative;
-            border: 2px dashed #007bff;
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            cursor: pointer;
-            transition: background 0.3s, border-color 0.3s;
         }
 
-        .drop-zone.dragover {
-            background: #e6f7ff;
-            border-color: #00c0ff;
-        }
-
-        .drop-zone input {
+        .form-group .bi {
             position: absolute;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            cursor: pointer;
-            top: 0;
-            left: 0;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #adb5bd;
+            font-size: 1.2rem;
         }
 
-        .file-preview {
-            margin-top: 10px;
-            text-align: left;
+        .form-control {
+            border-radius: 15px;
+            padding: 12px 15px 12px 45px;
+            border: 1px solid #ced4da;
+            transition: all 0.3s;
         }
 
-        .file-preview div {
+        .form-control:focus {
+            border-color: #4facfe;
+            box-shadow: 0 0 8px rgba(79, 172, 254, 0.4);
+            outline: none;
+        }
+
+        .btn-register {
+            background: linear-gradient(90deg, #ffc700, #ffea00);
+            color: black;
+            border-radius: 15px;
+            font-weight: 600;
+            border: none;
+            transition: all 0.4s ease;
+        }
+
+        .btn-register:hover {
+            background: linear-gradient(90deg, #ffea00, #ffc700);
+            box-shadow: 0 8px 25px rgba(255, 193, 7, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .text-muted a {
+            color: #4facfe;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .text-muted a:hover {
+            text-decoration: underline;
+        }
+
+        .helper-links {
             font-size: 0.9rem;
-            margin-bottom: 5px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .file-preview img {
-            max-width: 50px;
-            max-height: 50px;
-            border-radius: 8px;
         }
     </style>
 </head>
@@ -107,188 +117,92 @@
 <body>
     <div id="register-card">
         <div class="auth-logo text-center">
-            <img src="{{ asset('assets/compiled/png/LOGO/logo.png') }}" alt="Logo Sistem Kandidat" style="width:200px; height:auto;">
+            <img src="{{ asset('assets/compiled/png/LOGO/logo.png') }}" alt="Logo Sistem Kandidat">
         </div>
-        <h3 class="text-center mb-4">Form Pendaftaran Kandidat</h3>
 
-        <form action="#" method="POST" enctype="multipart/form-data">
+        <h3 class="text-center">Buat Akun Baru ✨</h3>
+        <p class="text-center text-muted mb-4">Isi data Anda untuk mendaftar</p>
+
+        <form action="{{ route('registrasi.post') }}" method="POST">
             @csrf
-            <div class="row g-3">
-                <!-- Kolom Kiri -->
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <label for="foto" class="form-label">Foto</label>
-                        <div class="drop-zone" id="drop-foto">
-                            Klik atau seret file ke sini
-                            <input type="file" class="form-control" id="foto" name="foto" accept="image/*" required>
-                        </div>
-                        <div class="file-preview" id="preview-foto"></div>
-                        <small>Unggah foto terbaru, format JPG/PNG.</small>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="nama" class="form-label">Nama Lengkap</label>
-                        <input type="text" class="form-control" id="nama" name="nama" required>
-                        <small>Isi nama lengkap sesuai KTP/KK.</small>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email</label>
-                        <input type="email" class="form-control" id="email" name="email" required>
-                        <small>Gunakan email aktif untuk konfirmasi pendaftaran.</small>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="alamat" class="form-label">Alamat</label>
-                        <textarea class="form-control" id="alamat" name="alamat" rows="2" required></textarea>
-                        <small>Isi alamat lengkap termasuk RT/RW dan kode pos.</small>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="jenis_kelamin" class="form-label">Jenis Kelamin</label>
-                        <select class="form-select" id="jenis_kelamin" name="jenis_kelamin" required>
-                            <option value="">Pilih Jenis Kelamin</option>
-                            <option value="Laki-laki">Laki-laki</option>
-                            <option value="Perempuan">Perempuan</option>
-                        </select>
-                        <small>Pilih jenis kelamin sesuai data resmi.</small>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="no_wa" class="form-label">No. WhatsApp</label>
-                        <input type="text" class="form-control" id="no_wa" name="no_wa" required>
-                        <small>Isi nomor aktif, contoh: 081234567890.</small>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="cabang_id" class="form-label">Cabang</label>
-                        <select class="form-select" id="cabang_id" name="cabang_id" required>
-                            <option value="">Pilih Cabang</option>
-                            <option value="1">Cabang Bandung</option>
-                            <option value="2">Cabang Jakarta</option>
-                            <option value="3">Cabang Bogor</option>
-                            <option value="4">Cabang Karawang</option>
-                            <option value="5">Cabang Cirebon</option>
-                        </select>
-                        <small>Pilih cabang yang akan diikuti.</small>
-                    </div>
-                </div>
-
-                <!-- Kolom Kanan -->
-                <div class="col-md-6">
-                    <!-- Dokumen dengan drag & drop -->
-                    <div class="mb-3">
-                        <label for="kk" class="form-label">KK</label>
-                        <div class="drop-zone" id="drop-kk">
-                            Klik atau seret file ke sini
-                            <input type="file" class="form-control" id="kk" name="kk" accept="image/*,application/pdf" required>
-                        </div>
-                        <div class="file-preview" id="preview-kk"></div>
-                        <small>Unggah Kartu Keluarga dalam format JPG/PNG/PDF.</small>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="ktp" class="form-label">KTP</label>
-                        <div class="drop-zone" id="drop-ktp">
-                            Klik atau seret file ke sini
-                            <input type="file" class="form-control" id="ktp" name="ktp" accept="image/*,application/pdf" required>
-                        </div>
-                        <div class="file-preview" id="preview-ktp"></div>
-                        <small>Unggah KTP atau dokumen identitas resmi.</small>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="bukti_pelunasan" class="form-label">Bukti Pelunasan</label>
-                        <div class="drop-zone" id="drop-bukti">
-                            Klik atau seret file ke sini
-                            <input type="file" class="form-control" id="bukti_pelunasan" name="bukti_pelunasan" accept="image/*,application/pdf" required>
-                        </div>
-                        <div class="file-preview" id="preview-bukti"></div>
-                        <small>Unggah bukti pembayaran yang sah.</small>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="akte" class="form-label">Akte</label>
-                        <div class="drop-zone" id="drop-akte">
-                            Klik atau seret file ke sini
-                            <input type="file" class="form-control" id="akte" name="akte" accept="image/*,application/pdf" required>
-                        </div>
-                        <div class="file-preview" id="preview-akte"></div>
-                        <small>Unggah Akte Kelahiran.</small>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="ijasah" class="form-label">Ijazah</label>
-                        <div class="drop-zone" id="drop-ijasah">
-                            Klik atau seret file ke sini
-                            <input type="file" class="form-control" id="ijasah" name="ijasah" accept="image/*,application/pdf" required>
-                        </div>
-                        <div class="file-preview" id="preview-ijasah"></div>
-                        <small>Unggah Ijazah terakhir dalam format JPG/PNG/PDF.</small>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="tanggal_daftar" class="form-label">Tanggal Daftar</label>
-                        <input type="date" class="form-control" id="tanggal_daftar" name="tanggal_daftar" required>
-                        <small>Pilih tanggal pendaftaran saat ini.</small>
-                    </div>
-                </div>
+            <div class="form-group mb-3">
+                <i class="bi bi-person"></i>
+                <input type="text" name="name" class="form-control form-control-lg" placeholder="Nama Lengkap"
+                    value="{{ old('name') }}" required>
             </div>
 
-            <button type="submit" class="btn btn-warning mt-3 w-max-content">Daftar</button>
+            <div class="form-group mb-3">
+                <i class="bi bi-envelope"></i>
+                <input type="email" name="email" class="form-control form-control-lg" placeholder="Email"
+                    value="{{ old('email') }}" required>
+            </div>
+
+            <div class="form-group mb-3">
+                <i class="bi bi-shield-lock"></i>
+                <input type="password" name="password" class="form-control form-control-lg" placeholder="Password"
+                    required>
+            </div>
+
+            <div class="form-group mb-3">
+                <i class="bi bi-shield-lock-fill"></i>
+                <input type="password" name="password_confirmation" class="form-control form-control-lg"
+                    placeholder="Konfirmasi Password" required>
+            </div>
+
+            <!-- Role otomatis "kandidat" -->
+            <input type="hidden" name="role" value="kandidat">
+
+            <button type="submit" class="btn btn-register btn-lg w-100 mt-3">
+                <i class="bi bi-person-plus me-2"></i> Daftar
+            </button>
         </form>
 
-        <div class="text-center mt-3">
-            <p class="text-muted">Sudah melakukan pendaftaran? <a href="login" class="fw-bold text-primary">Masuk</a></p>
+        <div class="text-center mt-4 text-muted helper-links">
+            <p class="mb-1">Sudah punya akun? <a href="{{ route('login') }}" class="fw-bold">Masuk</a></p>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.querySelectorAll('.drop-zone').forEach(zone => {
-            const input = zone.querySelector('input');
-            const preview = zone.nextElementSibling;
 
-            zone.addEventListener('dragover', e => {
-                e.preventDefault();
-                zone.classList.add('dragover');
-            });
+    {{-- SweetAlert untuk sukses --}}
+<!-- SweetAlert CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-            zone.addEventListener('dragleave', e => {
-                e.preventDefault();
-                zone.classList.remove('dragover');
-            });
 
-            zone.addEventListener('drop', e => {
-                e.preventDefault();
-                zone.classList.remove('dragover');
-                input.files = e.dataTransfer.files;
-                showPreview(input, preview);
-            });
-
-            input.addEventListener('change', () => showPreview(input, preview));
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    @if (session('success'))
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: '{{ session("success") }}',
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'OK'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // redirect setelah klik OK
+                window.location.href = "{{ route('login') }}";
+            }
         });
+    @endif
 
-        function showPreview(input, preview) {
-            preview.innerHTML = '';
-            Array.from(input.files).forEach(file => {
-                const div = document.createElement('div');
+    @if ($errors->any())
+        let errors = '';
+        @foreach ($errors->all() as $error)
+            errors += `- {{ $error }}\n`;
+        @endforeach
 
-                // Jika file gambar, tampilkan preview gambar
-                if (file.type.startsWith('image/')) {
-                    const img = document.createElement('img');
-                    img.src = URL.createObjectURL(file);
-                    img.onload = () => URL.revokeObjectURL(img.src);
-                    div.appendChild(img);
-                }
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops!',
+            html: errors.replace(/\n/g, '<br>'),
+            confirmButtonColor: '#d33',
+            confirmButtonText: 'Tutup'
+        });
+    @endif
+});
+</script>
 
-                const span = document.createElement('span');
-                span.textContent = file.name;
-                div.appendChild(span);
-                preview.appendChild(div);
-            });
-        }
-    </script>
 </body>
 
 </html>

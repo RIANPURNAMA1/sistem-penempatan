@@ -68,7 +68,7 @@
     <div class="card shadow-sm border-0 rounded-4">
         <div class="card-body table-responsive">
             <table class="table table-striped table-bordered align-middle nowrap" id="tableKandidat" style="width:100%">
-                <thead class="bg-primary">
+                <thead class="" style="background-color: #ffc107;">
                     <tr>
                         <th class="text-white">No</th>
                         <th class="text-white">Nama</th>
@@ -125,7 +125,7 @@
 
 <style>
     #tableKandidat thead th {
-        background-color: #198754 !important;
+        background-color: #00c0ff !important;
         color: white !important;
         text-align: center;
         vertical-align: middle;
