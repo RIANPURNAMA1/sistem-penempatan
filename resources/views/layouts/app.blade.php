@@ -69,12 +69,15 @@
                     <div class="d-flex justify-content-center align-items-center" style="padding-right: 8px;">
 
                         <!-- LOGO -->
-                        <div class="">
-                            <a href="index.html">
-                                <img src="/assets/compiled/png/LOGO/logo4.png" alt="Logo"
-                                    style="width: 70px; height:auto;">
+                        <div class="d-flex justify-content-center align-items-center gap-3">
+                            <a href="index.html" class="text-decoration-none">
+                                <img src="/assets/compiled/png/LOGO/logo4.png" alt="Logo Mendunia Jepang"
+                                    class="img-fluid" style="width: 90px; height: auto;">
                             </a>
+                            <p class="mb-0 fw-bold text-dark">Mendunia Jepang</h1>
                         </div>
+                        <hr>
+
                     </div>
                 </div>
 
@@ -135,9 +138,16 @@
                                         <span>Kelola Kandidat</span>
                                     </a>
                                     <ul class="submenu">
-                                        {{-- Data Kandidat --}}
+                                        {{-- Data Pendaftar --}}
                                         <li class="submenu-item">
                                             <a href="{{ url('/kandidat') }}" class="submenu-link"
+                                                style="text-decoration: none;">
+                                                <i class="bi bi-people me-1"></i> Pendaftar
+                                            </a>
+                                        </li>
+                                        {{-- Data Kandidat --}}
+                                        <li class="submenu-item">
+                                            <a href="{{ url('/kandidat/data') }}" class="submenu-link"
                                                 style="text-decoration: none;">
                                                 <i class="bi bi-list-ul me-1"></i> Data Kandidat
                                             </a>
@@ -147,7 +157,7 @@
                                         <li class="submenu-item">
                                             <a href="{{ url('/interview') }}" class="submenu-link"
                                                 style="text-decoration: none;">
-                                                <i class="bi bi-chat-left-text me-1"></i> Interview
+                                                <i class="bi bi-chat-left-text me-1"></i>History Interview
                                             </a>
                                         </li>
 

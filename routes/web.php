@@ -45,13 +45,31 @@ Route::post('/pendaftaran/store', [PendaftaranController::class, 'store'])->name
 Route::get('/siswa', [PendaftaranController::class, 'DataKandidat'])->name('siswa.index');
 Route::get('/siswa/{id}/edit', [PendaftaranController::class, 'edit'])->name('siswa.edit');
 Route::put('/siswa/{id}', [PendaftaranController::class, 'update'])->name('siswa.update');
-
-
+Route::get('/siswa', [PendaftaranController::class, 'DataKandidat'])->name('siswa.index');
+Route::put('/pendaftaran/update/{id}', [PendaftaranController::class, 'update'])->name('pendaftaran.update');
 // (Opsional untuk admin)
-Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/', [DashboardController::class, 'index'])->name('dashboard')->middleware('auth');
 Route::get('/kandidat', [DashboardController::class, 'DataKandidat'])->name('pendaftar');
 
 Route::get('/pendaftaran/{id}', [PendaftaranController::class, 'show'])->name('pendaftaran.show');
 use App\Http\Controllers\DokumenController;
 
 Route::get('/dokumen/{id}', [DokumenController::class, 'show'])->name('dokumen.show');
+
+
+use App\Http\Controllers\InstitusiController;
+use App\Http\Controllers\KandidatController;
+
+Route::get('/institusi', [InstitusiController::class, 'index'])->name('institusi.index');
+Route::get('/institusi/create', [InstitusiController::class, 'create'])->name('institusi.create');
+Route::post('/institusi/store', [InstitusiController::class, 'store'])->name('institusi.store');
+Route::get('/institusi/edit/{id}', [InstitusiController::class, 'edit'])->name('institusi.edit');
+Route::put('/institusi/update/{id}', [InstitusiController::class, 'update'])->name('institusi.update');
+Route::delete('/institusi/delete/{id}', [InstitusiController::class, 'destroy'])->name('institusi.destroy');
+
+
+Route::get('/kandidat/data', [KandidatController::class, 'index'])->name('kandidat.data');
+Route::prefix('kandidat')->group(function () {
+    Route::get('/{id}/edit', [KandidatController::class, 'edit'])->name('kandidat.edit');
+    Route::put('/{id}', [KandidatController::class, 'update'])->name('kandidat.update');
+});
