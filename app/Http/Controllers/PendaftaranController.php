@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Pendaftaran;
 use App\Models\Cabang;
+use App\Models\Kandidat;
 use Illuminate\Support\Facades\Auth;
 
 class PendaftaranController extends Controller
@@ -59,6 +60,10 @@ class PendaftaranController extends Controller
             'bukti_pelunasan' => $bukti_pelunasan,
             'akte' => $akte,
             'izasah' => $izasah,
+<<<<<<< HEAD
+=======
+            
+>>>>>>> 79b313e8d2a896fbdd5723cc1179aacd214883db
         ]);
 
         return redirect()->route('pendaftaran.create')
@@ -80,21 +85,40 @@ class PendaftaranController extends Controller
         return view('siswa.edit', compact('kandidat'));
     }
 
-    // 🔵 Update data (verifikasi & catatan admin saja)
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'verifikasi' => 'required|string|in:menunggu,data belum lengkap,diterima,ditolak',
-            'catatan_admin' => 'nullable|string|max:500',
-        ]);
+   public function update(Request $request, $id)
+{
+    $request->validate([
+        'verifikasi' => 'required|string|in:menunggu,data belum lengkap,diterima,ditolak',
+        'catatan_admin' => 'nullable|string|max:500',
+    ]);
 
+    $pendaftaran = Pendaftaran::findOrFail($id);
+    $pendaftaran->update([
+        'verifikasi' => $request->verifikasi,
+        'catatan_admin' => $request->catatan_admin,
+    ]);
 
-        $kandidat = Pendaftaran::findOrFail($id);
-        $kandidat->update([
-            'verifikasi' => $request->verifikasi,
-            'catatan_admin' => $request->catatan_admin,
-        ]);
-
-        return redirect()->route('siswa.index')->with('success', 'Data verifikasi berhasil diperbarui!');
+    // Jika diterima, otomatis buat entry di kandidat
+    if ($request->verifikasi === 'diterima') {
+        if (!Kandidat::where('pendaftaran_id', $pendaftaran->id)->exists()) {
+            Kandidat::create([
+                'pendaftaran_id' => $pendaftaran->id,
+                'cabang_id' => $pendaftaran->cabang_id,
+                'status_kandidat' => 'Job Matching',
+                'status_interview' => 'Pending',
+                'institusi_id' => null,
+                'interview_id' => 0,
+            ]);
+        }
     }
+
+    return redirect()->route('kandidat.data')->with('success', 'Data verifikasi berhasil diperbarui!');
+}
+
+// Tampilkan halaman kandidat
+public function Kandidat()
+{
+    $kandidats = Kandidat::with(['pendaftaran', 'cabang', 'institusi'])->get();
+    return view('kandidat.data', compact('kandidats'));
+}
 }

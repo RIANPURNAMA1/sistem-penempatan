@@ -60,6 +60,7 @@
                         <th class="text-white">Nama Siswa</th>
                         <th class="text-white">Tanggal Interview</th>
                         <th class="text-white">Status Interview</th>
+                        <th class="text-white">Jumlah Interview</th>
                         <th class="text-white">Catatan</th>
                         <th class="text-white">Aksi</th>
                     </tr>

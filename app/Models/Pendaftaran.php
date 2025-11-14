@@ -39,4 +39,8 @@ class Pendaftaran extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function kandidat(){
+        return $this->hasMany(kandidat::class, 'kandidat_id');
+    }
 }
