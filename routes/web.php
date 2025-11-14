@@ -48,10 +48,11 @@ Route::put('/siswa/{id}', [PendaftaranController::class, 'update'])->name('siswa
 
 
 // (Opsional untuk admin)
-Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/', [DashboardController::class, 'index'])->name('dashboard')->middleware('auth');
 Route::get('/kandidat', [DashboardController::class, 'DataKandidat'])->name('pendaftar');
 
 Route::get('/pendaftaran/{id}', [PendaftaranController::class, 'show'])->name('pendaftaran.show');
+
 use App\Http\Controllers\DokumenController;
 
 Route::get('/dokumen/{id}', [DokumenController::class, 'show'])->name('dokumen.show');

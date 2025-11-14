@@ -59,7 +59,6 @@ class PendaftaranController extends Controller
             'bukti_pelunasan' => $bukti_pelunasan,
             'akte' => $akte,
             'izasah' => $izasah,
-            'verifikasi' => 'belum lengkap', // default status
         ]);
 
         return redirect()->route('pendaftaran.create')
@@ -73,7 +72,7 @@ class PendaftaranController extends Controller
         $cabang = Cabang::all();
         return view('siswa.index', compact('kandidats', 'cabang'));
     }
-
+    
     // 🟠 Form Edit (hanya verifikasi & catatan admin)
     public function edit($id)
     {
