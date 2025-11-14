@@ -67,15 +67,41 @@
 
                     <!-- BARIS UNTUK TOGGLE & SIDEBAR TOGGLER -->
                     <div class="d-flex justify-content-center align-items-center" style="padding-right: 8px;">
-
                         <!-- LOGO -->
-                        <div class="d-flex justify-content-center align-items-center gap-3">
-                            <a href="index.html" class="text-decoration-none">
+                        <div class="d-flex justify-content-center align-items-center gap-3 p-2">
+                            <a href="/" class="text-decoration-none d-flex align-items-center">
                                 <img src="/assets/compiled/png/LOGO/logo4.png" alt="Logo Mendunia Jepang"
-                                    class="img-fluid" style="width: 90px; height: auto;">
+                                    class="img-fluid rounded-circle shadow-sm"
+                                    style="width: 90px; height: 90px; object-fit: cover; transition: transform 0.3s;">
+                                <span class="ms-2 fw-bold text-dark fs-5">Mendunia Jepang</span>
                             </a>
-                            <p class="mb-0 fw-bold text-dark">Mendunia Jepang</h1>
                         </div>
+
+                        <!-- CSS Tambahan -->
+                        <style>
+                            /* Hover effect untuk logo */
+                            .d-flex a:hover img {
+                                transform: scale(1.1);
+                            }
+
+                            /* Hover effect untuk text */
+                            .d-flex a:hover span {
+                                color: #007bff;
+                            }
+
+                            /* Responsif */
+                            @media (max-width: 576px) {
+                                .d-flex a span {
+                                    font-size: 1rem;
+                                }
+
+                                .d-flex a img {
+                                    width: 70px;
+                                    height: 70px;
+                                }
+                            }
+                        </style>
+
                         <hr>
 
                     </div>
@@ -165,7 +191,7 @@
                                         <li class="submenu-item">
                                             <a href="{{ url('/institusi') }}" class="submenu-link"
                                                 style="text-decoration: none;">
-                                                <i class="bi bi-building me-1"></i> Institusi
+                                                <i class="bi bi-building me-1"></i> Perusahaan
                                             </a>
                                         </li>
 

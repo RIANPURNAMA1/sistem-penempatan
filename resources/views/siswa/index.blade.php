@@ -3,6 +3,14 @@
 @section('title', 'Daftar Kandidat')
 
 @section('content')
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- ✅ DataTables Bootstrap 5 CSS -->
+    <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
     <div class=" ">
 
         <!-- Breadcrumb -->
@@ -88,26 +96,27 @@
         <!-- Data Table -->
         <div class="card shadow-sm border-0 rounded-4">
             <div class="card-body table-responsive">
-                <table class="table table-striped table-bordered align-middle nowrap" id="tableKandidat" style="width:100%">
-                    <thead style="background-color: #00c0ff">
-                        <tr>
-                            <th class="text-white">No</th>
-                            <th class="text-white">Foto</th>
-                            <th class="text-white">Nama</th>
-                            <th class="text-white">Email</th>
-                            <th class="text-white">Alamat</th>
-                            <th class="text-white">Jenis Kelamin</th>
-                            <th class="text-white">No WA</th>
-                            <th class="text-white">Cabang</th>
-                            <th class="text-white">KK</th>
-                            <th class="text-white">KTP</th>
-                            <th class="text-white">Bukti Pelunasan</th>
-                            <th class="text-white">Akte</th>
-                            <th class="text-white">Ijazah</th>
-                            <th class="text-white">Tanggal Daftar</th>
-                            <th class="text-white">Verifikasi</th>
-                            <th class="text-white">Catatan Admin</th>
-                            <th class="text-white">Aksi</th>
+                <table class="table table-striped table-bordered align-middle nowrap" id="tableInterview"
+                    style="width:100%">
+                    <thead style="color: #000;">
+                        <tr class=" fw-bold">
+                            <th class="">No</th>
+                            <th class="">Foto</th>
+                            <th class="">Nama</th>
+                            <th class="">Email</th>
+                            <th class="">Alamat</th>
+                            <th class="">Jenis Kelamin</th>
+                            <th class="">No WA</th>
+                            <th class="">Cabang</th>
+                            <th class="">KK</th>
+                            <th class="">KTP</th>
+                            <th class="">Bukti Pelunasan</th>
+                            <th class="">Akte</th>
+                            <th class="">Ijazah</th>
+                            <th class="">Tanggal Daftar</th>
+                            <th class="">Verifikasi</th>
+                            <th class="">Catatan Admin</th>
+                            <th class="">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -204,67 +213,14 @@
         </div>
     </div>
 
-    <!-- Styles -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
-
-    <style>
-        .dataTables_wrapper .dataTables_paginate .paginate_button {
-            border-radius: 8px !important;
-            margin: 2px;
-            padding: 6px 12px;
-        }
-
-        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
-            background-color: #ffc107 !important;
-            color: #000 !important;
-            border: none !important;
-        }
-
-        .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
-            background-color: #ffe082 !important;
-            color: #000 !important;
-        }
-
-        @media (max-width: 768px) {
-            h2 {
-                font-size: 1.3rem;
-            }
-
-            .breadcrumb {
-                font-size: 0.9rem;
-            }
-
-            .btn-group .btn {
-                padding: 0.3rem 0.5rem;
-            }
-
-            table img {
-                width: 40px;
-                height: 40px;
-            }
-
-            .table-responsive {
-                overflow-x: auto;
-            }
-
-            th,
-            td {
-                white-space: nowrap;
-                font-size: 0.85rem;
-            }
-
-            .d-flex.gap-2 {
-                flex-direction: column;
-                width: 100%;
-            }
-        }
-    </style>
-
-    <!-- Scripts -->
+    <!-- ✅ Dependencies -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- ✅ DataTables JS -->
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
 
     <script>
         $(document).ready(function() {
@@ -282,16 +238,24 @@
                         next: "Berikutnya →"
                     },
                     zeroRecords: "Tidak ada data ditemukan"
-                }
+                },
+                columnDefs: [{
+                    targets: [1, 8, 9, 10, 11, 12, 16],
+                    orderable: false,
+                    searchable: false
+                }]
             });
 
+            // Filter Cabang (kolom ke-8 / index 7)
             $('#filterCabang').on('change', function() {
-                table.column(7).search(this.value).draw();
+                const val = $(this).val();
+                table.column(7).search(val || '').draw();
             });
 
+            // Reset filter
             $('#resetFilter').on('click', function() {
                 $('#filterCabang').val('');
-                table.columns().search('').draw();
+                table.column(7).search('').draw();
             });
         });
     </script>

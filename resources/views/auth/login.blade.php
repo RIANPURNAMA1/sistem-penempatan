@@ -86,27 +86,27 @@
 <body>
     <div id="auth-card">
         <div class="auth-logo text-center">
-            <img src="{{ asset('assets/compiled/png/LOGO/logo.png') }}" alt="Logo Sistem Kandidat">
+            <img src="{{ asset('assets/compiled/png/LOGO/logo4.png') }}" alt="Logo Sistem Kandidat">
         </div>
-  @if ($errors->any())
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            Swal.fire({
-                icon: 'error',
-                title: 'Validasi Gagal!',
-                html: `
+        @if ($errors->any())
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Validasi Gagal!',
+                        html: `
                     <ul style="text-align: left;">
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
                         @endforeach
                     </ul>
                 `,
-                confirmButtonColor: '#ff6b6b',
-                confirmButtonText: 'Tutup'
-            });
-        });
-    </script>
-@endif
+                        confirmButtonColor: '#ff6b6b',
+                        confirmButtonText: 'Tutup'
+                    });
+                });
+            </script>
+        @endif
 
 
         <h3 class="text-center">Selamat Datang 👋</h3>

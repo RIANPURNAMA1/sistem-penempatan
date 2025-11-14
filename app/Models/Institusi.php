@@ -9,17 +9,22 @@ class Institusi extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'nama_institusi',
-        'alamat',
-        'penanggung_jawab',
-        'no_wa',
+ protected $fillable = [
+        'nama_perusahaan',
         'kuota',
+        'bidang_pekerjaan',
+        'perusahaan_penempatan',
     ];
 
        // Relasi: Satu cabang bisa punya banyak pendaftaran
     public function pendaftarans()
     {
         return $this->hasMany(Pendaftaran::class, 'cabang_id');
+    }
+
+       // Relasi ke history
+    public function histories()
+    {
+        return $this->hasMany(KandidatHistory::class)->orderBy('created_at', 'desc');
     }
 }

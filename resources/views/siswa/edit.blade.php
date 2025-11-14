@@ -17,7 +17,7 @@
             </ol>
         </nav>
         <div class="card shadow-sm border-0 rounded-4">
-            <div class="card-header bg-warning text-white fw-bold">
+            <div class="card-header  text-dark fw-bold">
                 <i class="bi bi-pencil-square me-2"></i> Edit Verifikasi & Catatan
             </div>
             <div class="card-body">

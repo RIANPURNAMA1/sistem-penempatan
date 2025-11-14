@@ -9,62 +9,41 @@
     <!-- ✅ DataTables Bootstrap 5 CSS -->
     <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
     </head>
-    <style>
-        #tableKandidat thead th {
-            background-color: #00c0ff !important;
-            color: white !important;
-            text-align: center;
-            vertical-align: middle;
-        }
-
-        /* Supaya efek striping tetap rapi */
-        #tableKandidat tbody tr:nth-child(even) {
-            background-color: #f8f9fa;
-        }
     </style>
 
     <body class="bg-light">
         <div class="">
             <h4 class="mb-3 fw-bold">Data Kandidat</h4>
-            @if (session('success'))
-                <script>
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Sukses',
-                        text: '{{ session('success') }}',
-                        timer: 20000,
-                        showConfirmButton: false
-                    });
-                </script>
-            @endif
+
             <!-- 🔍 Filter Section -->
             <div class="card shadow-sm mb-3">
                 <div class="card-body">
                     <div class="row g-3">
+                        <!-- Filter Cabang -->
                         <div class="col-12 col-md-4">
                             <label for="filterCabang" class="form-label fw-semibold">Filter Cabang</label>
                             <select id="filterCabang" class="form-select">
                                 <option value="">Semua Cabang</option>
-                                <option value="Cabang Bandung">Cabang Bandung</option>
-                                <option value="Cabang Cirebon">Cabang Cirebon</option>
-                                <option value="Cabang Jakarta">Cabang Jakarta</option>
-                                <option value="Cabang Bogor">Cabang Bogor</option>
-                                <option value="Cabang Karawang">Cabang Karawang</option>
+                                @foreach ($cabangs as $cabang)
+                                    <option value="{{ $cabang->nama_cabang }}">{{ $cabang->nama_cabang }}</option>
+                                @endforeach
                             </select>
                         </div>
 
+                        <!-- Filter Status Kandidat -->
                         <div class="col-12 col-md-4">
-                            <label for="filterStatus" class="form-label fw-semibold">Filter Status Penempatan</label>
+                            <label for="filterStatus" class="form-label fw-semibold">Filter Status Kandidat</label>
                             <select id="filterStatus" class="form-select">
                                 <option value="">Semua Status</option>
-                                <option value="MENUNGGU JOB MATCHING">MENUNGGU JOB MATCHING</option>
-                                <option value="INTERVIEW">INTERVIEW</option>
-                                <option value="SELESAI">SELESAI</option>
-                                <option value="DITOLAK">DITOLAK</option>
-                                <option value="PENDING">PENDING</option>
+                                <option value="Job Matching">Job Matching</option>
+                                <option value="Berangkat">Berangkat</option>
+                                <option value="Diterima">Diterima</option>
+                                <option value="Ditolak">Ditolak</option>
+                                <option value="Pending">Pending</option>
                             </select>
                         </div>
 
+                        <!-- Reset Filter -->
                         <div class="col-12 col-md-4 text-md-end">
                             <button id="resetFilter" class="btn btn-outline-secondary mt-3 mt-md-0">
                                 <i class="bi bi-arrow-repeat"></i> Reset Filter
@@ -73,20 +52,18 @@
                     </div>
                 </div>
             </div>
-
-            <!-- 🧾 Data Table -->
             <!-- 🧾 Data Table -->
             <div class="card shadow-sm">
                 <div class="card-body table-responsive">
-                    <table class="table table-striped table-bordered nowrap p-2" id="tableKandidat" style="width:70%">
+                    <table class="table table-striped table-bordered p-2 w-100">
                         <thead>
                             <tr class="text-white text-center" style="background-color:#00c0ff;">
                                 <th>No</th>
                                 <th>Nama Siswa</th>
                                 <th>Cabang</th>
                                 <th>Status Kandidat</th>
-                                <th>Status Interview</th>
                                 <th>Penempatan</th>
+                                <th>Bidang Pekerjaan</th>
                                 <th>Tanggal Daftar</th>
                                 <th>Jumlah Interview</th>
                                 <th>Catatan Interview</th>
@@ -94,42 +71,51 @@
                                 <th>Aksi</th>
                             </tr>
                         </thead>
+
                         <tbody>
-                            @foreach ($kandidats as $index => $k)
+                            @forelse ($kandidats as $index => $k)
                                 <tr class="text-center align-middle">
-                                    <td>{{ $index + 1 }}</td>
+                                    <td>{{ $loop->iteration }}</td>
+
+                                    <!-- Nama -->
                                     <td>{{ $k->pendaftaran->nama ?? '-' }}</td>
+
+                                    <!-- Cabang -->
                                     <td>{{ $k->cabang->nama_cabang ?? '-' }}</td>
 
-                                    <!-- Status Kandidat -->
+                                    <!-- Badge Status -->
                                     <td>
-                                        <span
-                                            class="badge
-                        {{ $k->status_kandidat === 'Verifikasi Dokumen' ? 'bg-warning text-dark' : '' }}
-                        {{ $k->status_kandidat === 'Job Matching' ? 'bg-secondary text-white' : '' }}
-                        {{ $k->status_kandidat === 'Diterima' ? 'bg-success' : '' }}
-                        {{ $k->status_kandidat === 'Ditolak' ? 'bg-danger' : '' }}">
+                                        @php
+                                            $statusColors = [
+                                                'Job Matching' => 'secondary',
+                                                'Pending' => 'warning',
+                                                'Interview' => 'info',
+                                                'Gagal Interview' => 'danger',
+                                                'Jadwalkan Interview Ulang' => 'dark',
+                                                'Lulus interview' => 'primary',
+                                                'Pemberkasan' => 'info',
+                                                'Berangkat' => 'primary',
+                                                'Diterima' => 'success',
+                                                'Ditolak' => 'danger',
+                                            ];
+                                        @endphp
+
+                                        <span class="badge bg-{{ $statusColors[$k->status_kandidat] ?? 'secondary' }}">
                                             {{ $k->status_kandidat }}
                                         </span>
                                     </td>
 
-                                    <!-- Status Interview -->
-                                    <td>
-                                        <span
-                                            class="badge
-                        {{ $k->status_interview === 'Pending' ? 'bg-info text-dark' : '' }}
-                        {{ $k->status_interview === 'Selesai' ? 'bg-success' : '' }}
-                        {{ $k->status_interview === 'Gagal' ? 'bg-danger' : '' }}
-                        {{ $k->status_interview === 'Jadwalkan Interview Ulang' ? 'bg-warning text-dark' : '' }}">
-                                            {{ $k->status_interview }}
-                                        </span>
-                                    </td>
-
                                     <!-- Penempatan -->
-                                    <td>{{ $k->institusi->nama_institusi ?? '-' }}</td>
+                                    <td>{{ $k->institusi->nama_perusahaan ?? '-' }}</td>
+
+                                    <!-- Bidang -->
+                                    <td>{{ $k->institusi->bidang_pekerjaan ?? '-' }}</td>
 
                                     <!-- Tanggal Daftar -->
-                                    <td>{{ $k->pendaftaran->tanggal_daftar ? \Carbon\Carbon::parse($k->pendaftaran->tanggal_daftar)->format('d F Y') : '-' }}
+                                    <td>
+                                        {{ $k->pendaftaran->tanggal_daftar
+                                            ? \Carbon\Carbon::parse($k->pendaftaran->tanggal_daftar)->format('d F Y')
+                                            : '-' }}
                                     </td>
 
                                     <!-- Jumlah Interview -->
@@ -139,25 +125,39 @@
                                     <td>{{ $k->catatan_interview ?? '-' }}</td>
 
                                     <!-- Jadwal Interview -->
-                                    <td>{{ $k->jadwal_interview ? \Carbon\Carbon::parse($k->jadwal_interview)->format('d F Y') : '-' }}
+                                    <td>
+                                        {{ $k->jadwal_interview ? \Carbon\Carbon::parse($k->jadwal_interview)->format('d F Y') : '-' }}
                                     </td>
 
-                                    <!-- Aksi -->
+                                    <!-- Tombol Aksi -->
                                     <td>
                                         <a href="{{ route('kandidat.edit', $k->id) }}"
-                                            class="btn btn-sm btn-warning text-white">
+                                            class="btn btn-sm btn-warning text-white mb-1">
                                             <i class="bi bi-pencil"></i>
+                                        </a>
+
+                                        <a href="{{ route('kandidat.history', $k->id) }}" class="btn btn-info btn-sm mb-1"
+                                            title="History">
+                                            <i class="bi bi-clock-history"></i>
                                         </a>
                                     </td>
                                 </tr>
-                            @endforeach
+                            @empty
+                                <tr>
+                                    <td colspan="11" class="text-center text-muted p-3">Tidak ada data kandidat.</td>
+                                </tr>
+                            @endforelse
                         </tbody>
                     </table>
+
+
+
 
                 </div>
             </div>
 
         </div>
+       
 
         <!-- ✅ Dependencies -->
         <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>

@@ -23,8 +23,21 @@ class AuthController extends Controller
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|min:6|confirmed',
-            // hapus validasi role karena akan default ke kandidat
+        ], [
+            'name.required' => 'Ups! Nama harus diisi.',
+            'name.string' => 'Ups! Nama harus berupa teks.',
+            'name.max' => 'Ups! Nama maksimal 255 karakter.',
+
+            'email.required' => 'Ups! Alamat email harus diisi.',
+            'email.email' => 'Ups! Alamat email tidak valid.',
+            'email.unique' => 'Ups! Alamat email sudah digunakan.',
+
+            'password.required' => 'Ups! Kata sandi harus diisi.',
+            'password.string' => 'Ups! Kata sandi harus berupa teks.',
+            'password.min' => 'Ups! Kata sandi minimal 6 karakter.',
+            'password.confirmed' => 'Ups! Konfirmasi kata sandi tidak cocok.',
         ]);
+
 
         // Ambil role kandidat
         $role = Role::where('name', 'kandidat')->first();
@@ -33,7 +46,7 @@ class AuthController extends Controller
         User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' =>Hash::make($request->password),
+            'password' => Hash::make($request->password),
             'role_id' => $role->id, // otomatis jadi kandidat
         ]);
 
@@ -46,7 +59,6 @@ class AuthController extends Controller
     {
         return view('auth.login');
     }
-
     // Login user
     public function login(Request $request)
     {
@@ -56,15 +68,18 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
+            // Regenerate session untuk mencegah session fixation
             $request->session()->regenerate();
 
-            return redirect()->back()->with('success', "Login Berhasil");
+            // Redirect ke halaman home atau dashboard setelah login berhasil
+            return redirect()->intended('/')->with('success', 'Login Berhasil');
         }
 
         return back()->withErrors([
             'email' => 'Email atau password salah.',
-        ]);
+        ])->onlyInput('email'); // agar input email tetap terisi
     }
+
 
     // Logout
     public function logout(Request $request)

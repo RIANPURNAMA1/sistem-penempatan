@@ -116,8 +116,8 @@
 
 <body>
     <div id="register-card">
-        <div class="auth-logo text-center">
-            <img src="{{ asset('assets/compiled/png/LOGO/logo.png') }}" alt="Logo Sistem Kandidat">
+     <div class="auth-logo text-center">
+            <img src="{{ asset('assets/compiled/png/LOGO/logo4.png') }}" alt="Logo Sistem Kandidat">
         </div>
 
         <h3 class="text-center">Buat Akun Baru ✨</h3>

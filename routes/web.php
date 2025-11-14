@@ -74,3 +74,6 @@ Route::prefix('kandidat')->group(function () {
     Route::get('/{id}/edit', [KandidatController::class, 'edit'])->name('kandidat.edit');
     Route::put('/{id}', [KandidatController::class, 'update'])->name('kandidat.update');
 });
+
+// Route untuk menampilkan history kandidat
+Route::get('/kandidat/{id}/history', [KandidatController::class, 'history'])->name('kandidat.history');

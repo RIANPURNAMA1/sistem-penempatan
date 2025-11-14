@@ -11,17 +11,7 @@ class Kandidat extends Model
 
     protected $table = 'kandidats';
 
-    protected $fillable = [
-        'pendaftaran_id',
-        'cabang_id',
-        'status_kandidat',
-        'status_interview',
-        'institusi_id',
-        'jumlah_interview',
-        'catatan_interview',
-        'jadwal_interview',
-    ];
-
+    protected $guarded = [];
     // RELASI KE PENDAFTARAN
     public function pendaftaran()
     {
@@ -39,4 +29,10 @@ class Kandidat extends Model
     {
         return $this->belongsTo(Institusi::class);
     }
+
+  public function histories()
+{
+    return $this->hasMany(KandidatHistory::class);
+}
+
 }

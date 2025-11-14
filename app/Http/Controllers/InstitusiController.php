@@ -13,10 +13,10 @@ class InstitusiController extends Controller
         $institusis = Institusi::latest()->get();
         return view('institusi.index', compact('institusis'));
     }
-    // Tampilkan semua data
+
+    // Tampilkan form create
     public function create()
     {
-      
         return view('institusi.create');
     }
 
@@ -24,16 +24,15 @@ class InstitusiController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama_institusi' => 'required|string|max:255',
-            'alamat' => 'required|string',
-            'penanggung_jawab' => 'required|string|max:255',
-            'no_wa' => 'required|string|max:20',
+            'nama_perusahaan' => 'required|string|max:255',
             'kuota' => 'required|integer|min:1',
+            'bidang_pekerjaan' => 'nullable|string|max:255',
+            'perusahaan_penempatan' => 'nullable|string|max:255',
         ]);
 
         Institusi::create($request->all());
 
-        return redirect('/institusi')->with('success', 'Institusi berhasil ditambahkan.');
+        return redirect()->route('institusi.index')->with('success', 'Institusi berhasil ditambahkan.');
     }
 
     // Tampilkan form edit
@@ -49,11 +48,10 @@ class InstitusiController extends Controller
         $institusi = Institusi::findOrFail($id);
 
         $request->validate([
-            'nama_institusi' => 'required|string|max:255',
-            'alamat' => 'required|string',
-            'penanggung_jawab' => 'required|string|max:255',
-            'no_wa' => 'required|string|max:20',
+            'nama_perusahaan' => 'required|string|max:255',
             'kuota' => 'required|integer|min:1',
+            'bidang_pekerjaan' => 'nullable|string|max:255',
+            'perusahaan_penempatan' => 'nullable|string|max:255',
         ]);
 
         $institusi->update($request->all());

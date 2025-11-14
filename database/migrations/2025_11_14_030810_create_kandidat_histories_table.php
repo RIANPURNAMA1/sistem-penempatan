@@ -7,32 +7,48 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('kandidats', function (Blueprint $table) {
+        Schema::create('kandidat_histories', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('pendaftaran_id'); // relasi ke pendaftar
-            $table->unsignedBigInteger('cabang_id');
+
+            // relasi ke kandidat
+            $table->unsignedBigInteger('kandidat_id');
+
+            // semua status wajib lengkap agar tidak terjadi error
             $table->enum('status_kandidat', [
                 'Job Matching',
                 'Pending',
                 'Interview',
-                'Gagal Interview',
                 'Jadwalkan Interview Ulang',
                 'Lulus interview',
+                'Gagal Interview',
                 'Pemberkasan',
                 'Berangkat',
+                'Diterima',
                 'Ditolak',
-            ])->default('Job Matching');
+            ]);
+
+            // mapping status interview
+            $table->enum('status_interview', [
+                'Pending',
+                'Proses',
+                'Selesai',
+                'Gagal',
+            ]);
+
             $table->unsignedBigInteger('institusi_id')->nullable();
-            // Kolom tambahan untuk tracking interview
-            $table->unsignedInteger('jumlah_interview')->default(0);
             $table->text('catatan_interview')->nullable();
             $table->date('jadwal_interview')->nullable();
             $table->timestamps();
+
+            $table->foreign('kandidat_id')
+                  ->references('id')
+                  ->on('kandidats')
+                  ->onDelete('cascade');
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('kandidats');
+        Schema::dropIfExists('kandidat_histories');
     }
 };
