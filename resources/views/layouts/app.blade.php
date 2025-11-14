@@ -187,29 +187,10 @@
                                             </a>
                                         </li>
 
-                                        {{-- Institusi --}}
-                                        <li class="submenu-item">
-                                            <a href="{{ url('/institusi') }}" class="submenu-link"
-                                                style="text-decoration: none;">
-                                                <i class="bi bi-building me-1"></i> Perusahaan
-                                            </a>
-                                        </li>
 
-                                        {{-- Penempatan --}}
-                                        <li class="submenu-item">
-                                            <a href="{{ url('/penempatan') }}" class="submenu-link"
-                                                style="text-decoration: none;">
-                                                <i class="bi bi-geo-alt me-1"></i> Penempatan
-                                            </a>
-                                        </li>
 
-                                        {{-- Import Excel --}}
-                                        <li class="submenu-item">
-                                            <a href="{{ url('/siswa/import') }}" class="submenu-link"
-                                                style="text-decoration: none;">
-                                                <i class="bi bi-file-earmark-excel me-1"></i> Import Excel
-                                            </a>
-                                        </li>
+
+
                                     </ul>
                                 </li>
                                 <li class="sidebar-item">
@@ -218,6 +199,13 @@
                                         <span>Cabang</span>
                                     </a>
                                 </li>
+                                <li class="sidebar-item">
+                                    <a href="{{ url('/institusi') }}" class="sidebar-link d-flex align-items-center">
+                                        <i class="bi bi-building me-2"></i>
+                                        <span>Institusi</span>
+                                    </a>
+                                </li>
+                            
                             @endif
 
                         @endif

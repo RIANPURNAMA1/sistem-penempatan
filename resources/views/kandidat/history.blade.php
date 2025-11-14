@@ -3,6 +3,15 @@
 @section('title', 'History Kandidat')
 
 @section('content')
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- ✅ DataTables Bootstrap 5 CSS -->
+    <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
     <div class="">
 
         <!-- Breadcrumb -->
@@ -41,25 +50,24 @@
             </div>
         </div>
 
-        <!-- Table History -->
-        <div class="card shadow-sm">
+                <!-- Data Table -->
+        <div class="card shadow-sm border-0 rounded-4">
             <div class="card-body table-responsive">
-                <table class="table table-striped table-bordered p-2 w-100">
-
-                    <!-- Header -->
-                    <thead style="">
+                <table class="table table-striped table-bordered align-middle nowrap" id="tableInterview"
+                    style="width:100%">
+                    <thead style="color: #000;">
                         <tr>
                             <th class="py-3 text-center">No</th>
                             <th class="py-3">Status Kandidat</th>
                             <th class="py-3">Nama Perusahaan</th>
                             <th class="py-3">Bidang Pekerjaan</th>
-                            <th class="py-3 text-center">Jumlah Interview</th>
+                           
                             <th class="py-3 text-center">Tanggal</th>
                         </tr>
                     </thead>
 
                     <!-- Body -->
-                    <tbody class="text-dark">
+                    <tbody class="">
                         @forelse ($histories as $index => $history)
                             <tr>
                                 <td class="text-center fw-semibold">{{ $index + 1 }}</td>
@@ -73,7 +81,7 @@
                                     'bg-primary' => $history->status_kandidat === 'Berangkat',
                                     'bg-success' => $history->status_kandidat === 'Diterima',
                                     'bg-danger' => $history->status_kandidat === 'Ditolak',
-                                    'bg-warning text-dark' => $history->status_kandidat === 'Gagal Interview',
+                                    'bg-warning ' => $history->status_kandidat === 'Gagal Interview',
                                 ])
                             ">
                                         {{ $history->status_kandidat }}
@@ -81,17 +89,13 @@
                                 </td>
 
                                 <!-- Nama Perusahaan -->
-                                <td class="fw-semibold">
+                                <td class="">
                                     {{ $history->institusi->nama_perusahaan ?? '-' }}
                                 </td>
 
                                 <!-- Bidang -->
                                 <td>{{ $history->institusi->bidang_pekerjaan ?? '-' }}</td>
 
-                                <!-- Jumlah Interview -->
-                                <td class="text-center fw-semibold">
-                                    {{ $history->kandidat->jumlah_interview }}
-                                </td>
                                 <!-- Timestamp -->
                                 <td>{{ $history->created_at->format('d M Y H:i') }}</td>
                             </tr>
@@ -118,5 +122,11 @@
 
     </div>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+ <!-- ✅ Dependencies -->
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+        <!-- ✅ DataTables JS -->
+        <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 @endsection
