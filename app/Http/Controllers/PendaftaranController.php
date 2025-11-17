@@ -11,22 +11,21 @@ use Illuminate\Support\Facades\Auth;
 class PendaftaranController extends Controller
 {
     // 🟢 Menampilkan form pendaftaran
-    public function datacabang()
-    {
-        $cabangs = Cabang::all();
-         // Cek apakah user sudah mendaftar
+   public function create()
+{
+    // cek apakah user sudah daftar
     $alreadyRegistered = Pendaftaran::where('user_id', Auth::id())->exists();
-        return view('pendaftaran.index', compact('cabangs', 'alreadyRegistered'));
-    }
+
+    // ambil data cabang untuk select
+    $cabangs = Cabang::all();
+
+    return view('pendaftaran.form', compact('cabangs', 'alreadyRegistered'));
+}
+
+
 
     public function store(Request $request)
     {
-        // Cek apakah user sudah mendaftar sebelumnya
-        $existing = Pendaftaran::where('user_id', Auth::id())->first();
-        if ($existing) {
-            return redirect()->route('dashboard')
-                ->with('error', 'Anda sudah melakukan pendaftaran sebelumnya.');
-        }
 
         // Validasi semua field wajib
         $request->validate([
@@ -81,7 +80,7 @@ class PendaftaranController extends Controller
             'ijasah' => $ijasah,
         ]);
 
-        return redirect()->route('dashboard')
+        return redirect()->back()
             ->with('success', 'Pendaftaran berhasil dikirim!');
     }
 

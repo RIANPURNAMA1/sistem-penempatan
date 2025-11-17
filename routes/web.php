@@ -34,11 +34,24 @@ Route::post('/lupa/password', [AuthController::class, 'resetPassword'])->name('r
 
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PendaftaranController;
 
 Route::middleware(['auth', 'role:super admin, admin cianjur selatan,admin cianjur, kandidat'])->group(function () {
 
-    Route::middleware('auth')->get('/', [DashboardController::class, 'index'])->name('dashboard');
 });
+Route::middleware('auth')->get('/', [DashboardController::class, 'index'])->name('dashboard');
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -107,9 +120,9 @@ Route::middleware(['auth', 'role:super admin'])
 
 
 
-use App\Http\Controllers\PendaftaranController;
 
-
+Route::get('/pendaftaran', [PendaftaranController::class, 'create'])->name('pendaftaran.form');
+Route::post('/pendaftaran', [PendaftaranController::class, 'store'])->name('pendaftaran.store');
 Route::middleware(['auth', 'role:super admin'])->group(function () {
     // Data siswa + paginate
     Route::get('/siswa', [PendaftaranController::class, 'DataKandidat'])
@@ -145,12 +158,11 @@ Route::middleware(['auth', 'role:kandidat'])->group(function () {
 
 
     // Form pendaftaran
-    Route::get('/pendaftaran/kandidat', [PendaftaranController::class, 'datacabang'])
-        ->name('pendaftaran.create');
+    // Route::get('/pendaftaran/kandidat', [PendaftaranController::class, 'datacabang'])
+    //     ->name('pendaftaran.create');
 
     // Simpan data
-    Route::post('/pendaftaran/store', [PendaftaranController::class, 'store'])
-        ->name('pendaftaran.store');
+
 
 
     // Detail pendaftaran

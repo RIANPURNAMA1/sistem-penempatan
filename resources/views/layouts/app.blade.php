@@ -160,7 +160,7 @@
                                     </a>
                                     <ul class="submenu">
                                         <li class="submenu-item">
-                                            <a href="{{ url('/pendaftaran/kandidat') }}" class="submenu-link"
+                                            <a href="{{ url('/pendaftaran') }}" class="submenu-link"
                                                 style="text-decoration: none;">
                                                 Pendaftaran
                                             </a>
