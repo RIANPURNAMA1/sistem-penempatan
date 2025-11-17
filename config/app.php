@@ -123,4 +123,17 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+      /*
+    |--------------------------------------------------------------------------
+    | Class Aliases
+    |--------------------------------------------------------------------------
+    */
+    
+
+    'aliases' => [
+        'Fonnte' => App\Services\FonnteService::class,
+    ],
+
+    
+
 ];

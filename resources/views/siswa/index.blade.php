@@ -3,25 +3,22 @@
 @section('title', 'Daftar Kandidat')
 
 @section('content')
-    <!-- Bootstrap 5 -->
+    <!-- Bootstrap 5 & DataTables CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-
-    <!-- ✅ DataTables Bootstrap 5 CSS -->
     <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+
     <div class=" ">
 
         <!-- Breadcrumb -->
         <nav aria-label="breadcrumb" class="mb-4">
-            <ol class="breadcrumb bg-white border rounded-3 px-3 py-2 shadow-sm mb-0">
+            <ol class="breadcrumb  border rounded-3 px-3 py-2 shadow-sm mb-0">
                 <li class="breadcrumb-item">
                     <a href="#" class="text-decoration-none text-secondary">
                         <i class="bi bi-house-door me-1"></i> Dashboard
                     </a>
                 </li>
-                <li class="breadcrumb-item active text-dark fw-semibold" aria-current="page">
+                <li class="breadcrumb-item active  fw-semibold" aria-current="page">
                     <i class="bi bi-people me-1"></i> Daftar Kandidat
                 </li>
             </ol>
@@ -30,7 +27,7 @@
         <!-- Header -->
         <div class="mb-4 text-center text-md-start">
             <h2 class="fw-bold  mb-2">
-                <i class="bi bi-person-lines-fill text-warning me-2"></i> Daftar Kandidat
+                <i class="bi bi-person-lines-fill text-warning me-2"></i> Daftar Pendaftar
             </h2>
             <p class="text-muted fst-italic">
                 Berikut adalah data pendaftaran kandidat yang telah masuk dalam sistem.
@@ -39,10 +36,10 @@
 
         <!-- Filter -->
         <div class="card shadow-sm border-0 rounded-3 mb-4">
-            <div class="card-header py-3 px-4 rounded-top-4 bg-white border-bottom-0">
+            <div class="card-header py-3 px-4 rounded-top-4 border-bottom-0">
                 <div class="d-flex flex-wrap justify-content-between align-items-center">
                     <div>
-                        <h6 class="fw-semibold mb-0 text-secondary">
+                        <h6 class="fw-semibold mb-0 text-secondary ">
                             <i class="bi bi-funnel me-1"></i> Filter Data
                         </h6>
                     </div>
@@ -85,7 +82,7 @@
 
                     <!-- Tombol Reset -->
                     <div class="col-12 col-md-6 col-lg-6 d-flex justify-content-end align-items-end">
-                        <button id="resetFilter" class="btn btn-outline-dark fw-semibold shadow-sm px-4 py-2 rounded-3">
+                        <button id="resetFilter" class="btn btn-outline-info fw-semibold shadow-sm px-4 py-2 rounded-3">
                             <i class="bi bi-arrow-clockwise me-1"></i> Reset Filter
                         </button>
                     </div>
@@ -96,12 +93,13 @@
         <!-- Data Table -->
         <div class="card shadow-sm border-0 rounded-4">
             <div class="card-body table-responsive">
-                <table class="table table-striped table-bordered align-middle nowrap" id="tableInterview"
+                <table id="tablependaftar" class="table table-striped table-bordered align-middle nowrap"
                     style="width:100%">
                     <thead style="color: #000;">
                         <tr class=" fw-bold">
                             <th class="">No</th>
                             <th class="">Foto</th>
+                            <th class="">Nik</th>
                             <th class="">Nama</th>
                             <th class="">Email</th>
                             <th class="">Alamat</th>
@@ -120,13 +118,14 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($kandidats as $index => $kandidat)
+                        @foreach ($kandidats as $index => $kandidat)
                             <tr>
                                 <td>{{ $index + 1 }}</td>
                                 <td>
                                     <img src="{{ asset('storage/' . $kandidat->foto) }}" alt="Foto Kandidat"
                                         class="rounded-circle border" width="50" height="50">
                                 </td>
+                                <td>{{ $kandidat->nik }}</td>
                                 <td>{{ $kandidat->nama }}</td>
                                 <td>{{ $kandidat->email }}</td>
                                 <td>{{ $kandidat->alamat }}</td>
@@ -160,7 +159,7 @@
                                     </a>
                                 </td>
                                 <td>
-                                    <a href="{{ asset('storage/' . $kandidat->izasah) }}" target="_blank"
+                                    <a href="{{ asset('storage/' . $kandidat->ijasah) }}" target="_blank"
                                         class="btn btn-outline-primary btn-sm">
                                         <i class="bi bi-file-earmark-text"></i>
                                     </a>
@@ -193,70 +192,47 @@
                                             class="btn btn-sm btn-warning text-white" title="Edit">
                                             <i class="bi bi-pencil-square"></i>
                                         </a>
-
-                                        <button class="btn btn-sm btn-danger text-white btn-delete"
-                                            data-id="{{ $kandidat->id }}" title="Hapus">
-                                            <i class="bi bi-trash3"></i>
-                                        </button>
                                     </div>
                                 </td>
                             </tr>
-                        @empty
-                            <tr>
-                                <td colspan="17" class="text-center text-muted">Belum ada data kandidat.</td>
-                            </tr>
-                        @endforelse
+                        @endforeach
                     </tbody>
 
                 </table>
+                <!-- Pagination links -->
+                <!-- Pagination -->
+                <div class="d-flex justify-content-end mt-3">
+
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- ✅ Dependencies -->
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- ✅ DataTables JS -->
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+        <!-- JS Dependencies -->
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-
-    <script>
-        $(document).ready(function() {
-            const table = $('#tableKandidat').DataTable({
+        <script>
+            // Inisialisasi DataTables
+            var table = $('#tablependaftar').DataTable({
                 responsive: true,
-                pageLength: 10,
+                pageLength: 5,
                 lengthMenu: [5, 10, 25, 50],
-                ordering: true,
                 language: {
                     search: "🔍 Cari:",
                     lengthMenu: "Tampilkan _MENU_ data",
+                    zeroRecords: "Tidak ada data ditemukan",
                     info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
                     paginate: {
-                        previous: "← Sebelumnya",
-                        next: "Berikutnya →"
-                    },
-                    zeroRecords: "Tidak ada data ditemukan"
-                },
-                columnDefs: [{
-                    targets: [1, 8, 9, 10, 11, 12, 16],
-                    orderable: false,
-                    searchable: false
-                }]
+                        previous: "←",
+                        next: "→"
+                    }
+                }
             });
+        </script>
 
-            // Filter Cabang (kolom ke-8 / index 7)
-            $('#filterCabang').on('change', function() {
-                const val = $(this).val();
-                table.column(7).search(val || '').draw();
-            });
-
-            // Reset filter
-            $('#resetFilter').on('click', function() {
-                $('#filterCabang').val('');
-                table.column(7).search('').draw();
-            });
-        });
-    </script>
 @endsection

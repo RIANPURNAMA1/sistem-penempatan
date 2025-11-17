@@ -20,6 +20,18 @@ class Cabang extends Model
     {
         return $this->hasMany(Pendaftaran::class, 'cabang_id');
     }
+
+      public function users()
+    {
+        return $this->hasMany(User::class);
+    }
+
+    // Satu cabang bisa memiliki banyak kandidat
+    public function kandidats()
+    {
+        return $this->hasMany(Kandidat::class);
+    }
+        
 }
 
 

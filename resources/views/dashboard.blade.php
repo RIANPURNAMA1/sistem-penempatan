@@ -1,17 +1,23 @@
 @extends('layouts.app')
 @section('content')
+
+    {{-- @if (session('success'))
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Sukses',
+            text: '{{ session('success') }}',
+            timer: 2000, // ganti sesuai kebutuhan
+            showConfirmButton: false,
+            timerProgressBar: true
+        }).then(() => {
+            // reload halaman setelah alert hilang
+            window.location.reload();
+        });
+    </script>
+@endif --}}
+
     <div class="page-heading d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between">
-        @if (session('success'))
-            <script>
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Sukses',
-                    text: '{{ session('success') }}',
-                    timer: 20000,
-                    showConfirmButton: false
-                });
-            </script>
-        @endif
 
         {{-- Judul halaman --}}
         <div class="mb-2 mb-md-0">
@@ -53,116 +59,57 @@
             <div class="col-12 col-lg-12">
                 @if (auth()->user()->role->name === 'super admin')
                     <div class="row">
-                        <!-- Total Siswa -->
-                        <div class="col-6 col-lg-3 col-md-6">
-                            <div class="card hover-card">
-                                <div class="card-body px-4 py-4-5">
-                                    <div class="row align-items-center">
-                                        <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 text-center">
-                                            <div class="stats-icon blue mb-2">
-                                                <i class="bi bi-person-bounding-box fs-3"></i>
+                        @foreach ($stats as $stat)
+                            <div class="col-6 col-lg-3 col-md-6">
+                                <div class="card hover-card">
+                                    <div class="card-body px-4 py-4-5">
+                                        <div class="row align-items-center">
+                                            <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 text-center">
+                                                <div class="stats-icon {{ $stat['color'] }} mb-2">
+                                                    <i class="bi {{ $stat['icon'] }} fs-3"></i>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7 text-center">
-                                            <h6 class="text-muted font-semibold">Total Siswa</h6>
-                                            <h6 class="font-extrabold mb-0">150</h6>
+                                            <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7 text-center">
+                                                <h6 class="text-muted font-semibold">{{ $stat['title'] }}</h6>
+                                                <h6 class="font-extrabold mb-0">{{ $stat['count'] }}</h6>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <!-- Total Kandidat -->
-                        <div class="col-6 col-lg-3 col-md-6">
-                            <div class="card hover-card">
-                                <div class="card-body px-4 py-4-5">
-                                    <div class="row align-items-center">
-                                        <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 text-center">
-                                            <div class="stats-icon green mb-2">
-                                                <i class="bi bi-people-fill fs-3"></i>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7 text-center">
-                                            <h6 class="text-muted font-semibold">Total Kandidat</h6>
-                                            <h6 class="font-extrabold mb-0">120</h6>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Total Cabang -->
-                        <div class="col-6 col-lg-3 col-md-6">
-                            <div class="card hover-card">
-                                <div class="card-body px-4 py-4-5">
-                                    <div class="row align-items-center">
-                                        <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 text-center">
-                                            <div class="stats-icon purple mb-2">
-                                                <i class="bi bi-building fs-3"></i>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7 text-center">
-                                            <h6 class="text-muted font-semibold">Total Cabang</h6>
-                                            <h6 class="font-extrabold mb-0">10</h6>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Total Institusi -->
-                        <div class="col-6 col-lg-3 col-md-6">
-                            <div class="card hover-card">
-                                <div class="card-body px-4 py-4-5">
-                                    <div class="row align-items-center">
-                                        <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 text-center">
-                                            <div class="stats-icon red mb-2">
-                                                <i class="bi bi-bank fs-3"></i>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7 text-center">
-                                            <h6 class="text-muted font-semibold">Total Institusi</h6>
-                                            <h6 class="font-extrabold mb-0">8</h6>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        @endforeach
                     </div>
+
+
                     <!-- Status Penempatan Kandidat -->
                     <div class="row mt-4">
                         @php
-                            $status_penempatan = [
-                                'INTERVIEW' => 15,
-                                'SUDAH_BERANGKAT' => 20,
-                                'VERIFIKASI_DATA' => 10,
-                                'PENDING' => 8,
-                                'MENUNGGU_JOB_MATCHING' => 12,
-                                'SELESAI' => 18,
-                                'DITOLAK' => 5,
-                            ];
-
                             $status_icon = [
-                                'INTERVIEW' => 'bi bi-chat-dots',
-                                'SUDAH_BERANGKAT' => 'bi bi-airplane-engines',
-                                'VERIFIKASI_DATA' => 'bi bi-file-earmark-check',
-                                'PENDING' => 'bi bi-hourglass-split',
-                                'MENUNGGU_JOB_MATCHING' => 'bi bi-people',
-                                'SELESAI' => 'bi bi-check-circle',
-                                'DITOLAK' => 'bi bi-x-circle',
+                                'Job Matching' => 'bi bi-people',
+                                'Pending' => 'bi bi-hourglass-split',
+                                'Interview' => 'bi bi-chat-dots',
+                                'Gagal Interview' => 'bi bi-x-circle',
+                                'Jadwalkan Interview Ulang' => 'bi bi-arrow-repeat',
+                                'Lulus interview' => 'bi bi-check-circle',
+                                'Pemberkasan' => 'bi bi-file-earmark-check',
+                                'Berangkat' => 'bi bi-airplane-engines',
+                                'Ditolak' => 'bi bi-x-circle',
                             ];
 
                             $status_gradient = [
-                                'INTERVIEW' => 'background: linear-gradient(135deg, #17a2b8, #007bff); color: white;',
-                                'SUDAH_BERANGKAT' =>
-                                    'background: linear-gradient(135deg, #28a745, #20c997); color: white;',
-                                'VERIFIKASI_DATA' =>
-                                    'background: linear-gradient(135deg, #007bff, #6610f2); color: white;',
-                                'PENDING' => 'background: linear-gradient(135deg, #ffc107, #ffcd39); color: #212529;',
-                                'MENUNGGU_JOB_MATCHING' =>
+                                'Job Matching' =>
                                     'background: linear-gradient(135deg, #6c757d, #adb5bd); color: white;',
-                                'SELESAI' => 'background: linear-gradient(135deg, #00c851, #007e33); color: white;',
-                                'DITOLAK' => 'background: linear-gradient(135deg, #dc3545, #ff6b6b); color: white;',
+                                'Pending' => 'background: linear-gradient(135deg, #ffc107, #ffcd39); color: #212529;',
+                                'Interview' => 'background: linear-gradient(135deg, #17a2b8, #007bff); color: white;',
+                                'Gagal Interview' =>
+                                    'background: linear-gradient(135deg, #dc3545, #ff6b6b); color: white;',
+                                'Jadwalkan Interview Ulang' =>
+                                    'background: linear-gradient(135deg, #fd7e14, #fd7e14); color: white;',
+                                'Lulus interview' =>
+                                    'background: linear-gradient(135deg, #00c851, #007e33); color: white;',
+                                'Pemberkasan' => 'background: linear-gradient(135deg, #007bff, #6610f2); color: white;',
+                                'Berangkat' => 'background: linear-gradient(135deg, #28a745, #20c997); color: white;',
+                                'Ditolak' => 'background: linear-gradient(135deg, #dc3545, #ff6b6b); color: white;',
                             ];
                         @endphp
 
@@ -180,7 +127,8 @@
                                             <div class="col-md-8 col-lg-12 col-xl-12 col-xxl-7 text-center">
                                                 <h6 class="text-muted font-semibold mb-1"
                                                     style="text-transform: capitalize;">
-                                                    {{ str_replace('_', ' ', strtolower($status)) }}</h6>
+                                                    {{ $status }}
+                                                </h6>
                                                 <h6 class="fw-bold mb-0 fs-5">{{ $jumlah }}</h6>
                                             </div>
                                         </div>
@@ -189,8 +137,6 @@
                             </div>
                         @endforeach
                     </div>
-
-
 
                     <style>
                         .hover-card {
@@ -220,14 +166,79 @@
                                     <h4>Kandidat Percabang</h4>
                                 </div>
                                 <div class="card-body">
-                                    <div id="chart-kandidat-cabang"></div>
+                                    <div id="chart-kandidat"></div>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function() {
+                            var options = {
+                                series: @json($chart_data),
+                                chart: {
+                                    type: 'bar',
+                                    height: 350,
+                                    toolbar: {
+                                        show: false
+                                    }
+                                },
+                                colors: [
+                                    '#6c757d', '#ffc107', '#17a2b8', '#dc3545',
+                                    '#fd7e14', '#00c851', '#007bff', '#28a745', '#ff6b6b'
+                                ],
+                                plotOptions: {
+                                    bar: {
+                                        horizontal: false,
+                                        columnWidth: '50%',
+                                        borderRadius: 6
+                                    },
+                                },
+                                dataLabels: {
+                                    enabled: false
+                                },
+                                stroke: {
+                                    show: true,
+                                    width: 2,
+                                    colors: ['transparent']
+                                },
+                                xaxis: {
+                                    categories: @json(array_values($cabangs)),
+                                    labels: {
+                                        style: {
+                                            colors: '#6c757d',
+                                            fontSize: '13px'
+                                        }
+                                    }
+                                },
+                                yaxis: {
+                                    title: {
+                                        text: 'Jumlah Kandidat'
+                                    }
+                                },
+                                fill: {
+                                    opacity: 1
+                                },
+                                tooltip: {
+                                    y: {
+                                        formatter: function(val) {
+                                            return val + " kandidat";
+                                        }
+                                    }
+                                },
+                                legend: {
+                                    position: 'bottom'
+                                }
+                            };
+
+                            var chart = new ApexCharts(document.querySelector("#chart-kandidat"), options);
+                            chart.render();
+                        });
+                    </script>
                 @endif
                 @if (auth()->user()->role->name === 'kandidat')
                     <div class="row ">
+                        {{-- Timeline --}}
                         {{-- Timeline --}}
                         <div class="col-12 col-md-8">
                             <div class="card">
@@ -236,68 +247,99 @@
                                 </div>
                                 <div class="card-body">
                                     @php
-                                        $timeline = [
+                                        $timelineSteps = [
                                             [
                                                 'icon' => 'check-circle-fill',
                                                 'color' => 'info',
-                                                'title' => 'Verifikasi Dokumen',
-                                                'date' => '2025-01-12',
-                                                'badge' => 'VERIFIKASI_DATA',
-                                            ],
-                                            [
-                                                'icon' => 'hourglass-split',
-                                                'color' => 'warning',
-                                                'title' => 'Menunggu Job Matching',
-                                                'date' => '2025-01-15',
-                                                'badge' => 'MENUNGGU_JOB_MATCHING',
+                                                'title' => 'Job Matching',
+                                                'status' => 'Job Matching',
                                             ],
                                             [
                                                 'icon' => 'person-video3',
                                                 'color' => 'primary',
                                                 'title' => 'Interview',
-                                                'date' => '2025-01-18',
-                                                'badge' => 'INTERVIEW',
+                                                'status' => 'Interview',
                                             ],
                                             [
                                                 'icon' => 'check2-circle',
                                                 'color' => 'success',
-                                                'title' => 'Sudah Berangkat',
-                                                'date' => '2025-01-25',
-                                                'badge' => 'SUDAH_BERANGKAT',
+                                                'title' => 'Lulus Interview',
+                                                'status' => 'Lulus interview',
                                             ],
                                             [
                                                 'icon' => 'award',
                                                 'color' => 'success',
-                                                'title' => 'Selesai',
-                                                'date' => '2025-02-20',
-                                                'badge' => 'SELESAI',
+                                                'title' => 'Pemberkasan',
+                                                'status' => 'Pemberkasan',
                                             ],
                                             [
-                                                'icon' => 'x-circle-fill',
-                                                'color' => 'danger',
+                                                'icon' => 'rocket-takeoff',
+                                                'color' => 'success',
+                                                'title' => 'Berangkat',
+                                                'status' => 'Berangkat',
+                                            ],
+                                            [
+                                                'icon' => 'x-circle', // ubah dari rocket-takeoff ke x-circle
+                                                'color' => 'danger', // tetap merah
                                                 'title' => 'Ditolak',
-                                                'date' => '2025-01-19',
-                                                'badge' => 'DITOLAK',
+                                                'status' => 'Ditolak',
                                             ],
                                         ];
                                     @endphp
 
-                                    @foreach ($timeline as $step)
-                                        <div class="row mb-4 flex-column flex-md-row align-items-start">
-                                            <div class="col-2 col-md-2 text-center mb-2 mb-md-0">
-                                                <svg class="bi text-{{ $step['color'] }}" width="24" height="24"
-                                                    fill="currentColor">
-                                                    <use
-                                                        xlink:href="assets/static/images/bootstrap-icons.svg#{{ $step['icon'] }}" />
-                                                </svg>
-                                                <div class="vr h-100 mx-auto d-none d-md-block"></div>
-                                            </div>
-                                            <div class="col-12 col-md-10">
-                                                <h6 class="mb-1">{{ $step['title'] }}</h6>
-                                                <p class="text-muted small mb-0">Tanggal: {{ $step['date'] }}</p>
-                                                <span class="badge bg-{{ $step['color'] }}">{{ $step['badge'] }}</span>
-                                            </div>
-                                        </div>
+                                    @foreach ($dataKandidat as $pendaftaran)
+                                        @php
+                                            $kandidat = $pendaftaran->kandidat;
+                                        @endphp
+
+                                        @if ($kandidat)
+                                            @foreach ($timelineSteps as $step)
+                                                @php
+                                                    // Tentukan warna step
+                                                    if ($step['status'] === $kandidat->status_kandidat) {
+                                                        $stepColor = 'danger'; // status saat ini
+                                                        $stepDate = $kandidat->updated_at;
+                                                    } elseif (
+                                                        array_search(
+                                                            $step['status'],
+                                                            array_column($timelineSteps, 'status'),
+                                                        ) <
+                                                        array_search(
+                                                            $kandidat->status_kandidat,
+                                                            array_column($timelineSteps, 'status'),
+                                                        )
+                                                    ) {
+                                                        $stepColor = 'success'; // step sudah selesai
+                                                        $stepDate = $kandidat->updated_at;
+                                                    } else {
+                                                        $stepColor = 'secondary'; // step selanjutnya
+                                                        $stepDate = null;
+                                                    }
+                                                @endphp
+
+                                                <div class="row mb-4 flex-column flex-md-row align-items-start">
+                                                    <div class="col-2 col-md-2 text-center mb-2 mb-md-0">
+                                                        <svg class="bi text-{{ $stepColor }}" width="24"
+                                                            height="24" fill="currentColor">
+                                                            <use
+                                                                xlink:href="assets/static/images/bootstrap-icons.svg#{{ $step['icon'] }}" />
+                                                        </svg>
+                                                        <div class="vr h-100 mx-auto d-none d-md-block"></div>
+                                                    </div>
+                                                    <div class="col-12 col-md-10">
+                                                        <h6 class="mb-1">{{ $step['title'] }}</h6>
+                                                        @if ($stepDate)
+                                                            <p class="text-muted small mb-0">Tanggal:
+                                                                {{ $stepDate->format('d M Y H:i') }}</p>
+                                                        @endif
+                                                        <span
+                                                            class="badge bg-{{ $stepColor }}">{{ $step['status'] }}</span>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                        @else
+                                            <p class="text-muted">Belum ada proses kandidat.</p>
+                                        @endif
                                     @endforeach
                                 </div>
                             </div>
@@ -307,7 +349,7 @@
                             <div class="col-12 col-md-4">
                                 <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
                                     <!-- Header -->
-                                    <div class="card-header text-white text-center p-3 bg-warning">
+                                    <div class="card-header text-white text-center p-3 ">
                                         <h5 class="mb-0 fw-bold">
                                             <i class="bi bi-person-badge me-2"></i> Profil Kandidat
                                         </h5>
@@ -317,8 +359,9 @@
                                     <div class="card-body text-center p-4">
                                         <div class="position-relative mb-3">
                                             <img src="{{ asset('storage/' . $kandidat->foto) }}" alt="Foto Kandidat"
-                                                class="rounded-circle border border-3 border-white shadow-sm"
-                                                width="120" height="130">
+                                                class="rounded-circle border border-3 border-white shadow-sm" width="120"
+                                                height="120" style="object-fit: cover; object-position: center;">
+
                                         </div>
 
                                         <!-- Nama & Email -->
@@ -345,8 +388,9 @@
 
                                         <!-- Tombol -->
                                         <a href="{{ route('dokumen.show', $kandidat->id) }}"
-                                            class="btn btn-warning w-100 fw-semibold shadow-sm">
-                                            <i class="bi bi-eye me-2"></i> Lihat Dokumen
+                                            class="btn btn-outline-info w-100 fw-semibold shadow-sm">
+                                            <i class="bi bi-folder2-open me-2"></i> Lihat Dokumen
+
                                         </a>
                                     </div>
 
@@ -417,91 +461,12 @@
 
                 @if (in_array(auth()->user()->role->name, ['admin cianjur', 'admin cianjur selatan', 'super admin']))
                     {{-- distribusi status kandidat --}}
-
-
                     <!-- Tambahkan script chart -->
-                    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-                    <script>
-                        document.addEventListener("DOMContentLoaded", function() {
-                            var options = {
-                                series: [{
-                                        name: 'Lulus',
-                                        data: [45, 60, 50, 70]
-                                    },
-                                    {
-                                        name: 'Tidak Lulus',
-                                        data: [20, 15, 25, 10]
-                                    },
-                                    {
-                                        name: 'Proses',
-                                        data: [25, 20, 15, 15]
-                                    },
-                                    {
-                                        name: 'Pending',
-                                        data: [10, 5, 10, 5]
-                                    }
-                                ],
-                                chart: {
-                                    type: 'bar',
-                                    height: 300,
-                                    toolbar: {
-                                        show: false
-                                    }
-                                },
-                                colors: ['#00E396', '#FF4560', '#FEB019', '#775DD0'],
-                                plotOptions: {
-                                    bar: {
-                                        horizontal: false,
-                                        columnWidth: '50%',
-                                        borderRadius: 6
-                                    },
-                                },
-                                dataLabels: {
-                                    enabled: false
-                                },
-                                stroke: {
-                                    show: true,
-                                    width: 2,
-                                    colors: ['transparent']
-                                },
-                                xaxis: {
-                                    categories: ['Cabang Bandung', 'Cabang Garut', 'Cabang Tasik', 'Cabang Cianjur'],
-                                    labels: {
-                                        style: {
-                                            colors: '#6c757d',
-                                            fontSize: '13px'
-                                        }
-                                    }
-                                },
-                                yaxis: {
-                                    title: {
-                                        text: 'Jumlah Kandidat'
-                                    }
-                                },
-                                fill: {
-                                    opacity: 1
-                                },
-                                tooltip: {
-                                    y: {
-                                        formatter: function(val) {
-                                            return val + " kandidat";
-                                        }
-                                    }
-                                },
-                                legend: {
-                                    position: 'bottom'
-                                }
-                            };
 
-                            var chart = new ApexCharts(document.querySelector("#chart-distribusi-status"), options);
-                            chart.render();
-                        });
-                    </script>
+
 
             </div>
-
-
-            @include('kandidat.index')
+            @include('kandidat.index');
             @endif
         </section>
     </div>

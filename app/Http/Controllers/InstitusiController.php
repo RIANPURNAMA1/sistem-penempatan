@@ -25,10 +25,11 @@ class InstitusiController extends Controller
     {
         $request->validate([
             'nama_perusahaan' => 'required|string|max:255',
-            'kuota' => 'required|integer|min:1',
+            'kuota' => 'nullable|integer|min:1',
             'bidang_pekerjaan' => 'nullable|string|max:255',
             'perusahaan_penempatan' => 'nullable|string|max:255',
         ]);
+
 
         Institusi::create($request->all());
 
@@ -39,7 +40,7 @@ class InstitusiController extends Controller
     public function edit($id)
     {
         $institusi = Institusi::findOrFail($id);
-        return response()->json($institusi);
+        return view('institusi.edit',compact('institusi'));
     }
 
     // Update data
@@ -49,14 +50,14 @@ class InstitusiController extends Controller
 
         $request->validate([
             'nama_perusahaan' => 'required|string|max:255',
-            'kuota' => 'required|integer|min:1',
+            'kuota' => 'nullable|integer|min:1',
             'bidang_pekerjaan' => 'nullable|string|max:255',
             'perusahaan_penempatan' => 'nullable|string|max:255',
         ]);
 
         $institusi->update($request->all());
 
-        return redirect()->back()->with('success', 'Institusi berhasil diperbarui.');
+        return redirect()->route('institusi.index')->with('success', 'Institusi berhasil diperbarui.');
     }
 
     // Hapus data

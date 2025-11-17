@@ -55,56 +55,87 @@
 
 </style>
 
-<body>
+<body class="dark">
     <div id="app">
         {{-- sidebar --}}
 
-        <div id="sidebar">
+        <div id="sidebar" class="card ">
 
-            <div class="sidebar-wrapper active">
+            <div class="sidebar-wrapper active shadow shadow-md" style="">
                 <div class="sidebar-header position-relative">
 
 
                     <!-- BARIS UNTUK TOGGLE & SIDEBAR TOGGLER -->
                     <div class="d-flex justify-content-center align-items-center" style="padding-right: 8px;">
+
                         <!-- LOGO -->
-                        <div class="d-flex justify-content-center align-items-center gap-3 p-2">
-                            <a href="/" class="text-decoration-none d-flex align-items-center">
+                        <div class="d-flex flex-column justify-content-center align-items-center gap-2 p-2">
+
+                            <a href="/"
+                                class="text-decoration-none d-flex justify-content-center align-items-center">
                                 <img src="/assets/compiled/png/LOGO/logo4.png" alt="Logo Mendunia Jepang"
                                     class="img-fluid rounded-circle shadow-sm"
                                     style="width: 90px; height: 90px; object-fit: cover; transition: transform 0.3s;">
-                                <span class="ms-2 fw-bold text-dark fs-5">Mendunia Jepang</span>
                             </a>
                         </div>
 
-                        <!-- CSS Tambahan -->
-                        <style>
-                            /* Hover effect untuk logo */
-                            .d-flex a:hover img {
-                                transform: scale(1.1);
-                            }
 
-                            /* Hover effect untuk text */
-                            .d-flex a:hover span {
-                                color: #007bff;
-                            }
+                        <!-- THEME TOGGLE -->
+                        <div class="theme-toggle d-flex gap-1 align-items-center">
 
-                            /* Responsif */
-                            @media (max-width: 576px) {
-                                .d-flex a span {
-                                    font-size: 1rem;
-                                }
+                            <!-- ICON SUN -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 21 21">
+                                <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="10.5" cy="10.5" r="4"></circle>
+                                    <path d="M4.14 4.14L5.55 5.55"></path>
+                                    <path d="M15.45 15.45l1.41 1.41"></path>
+                                    <path d="M1.5 10.5h2M17.5 10.5h2M10.5 1.5v2M10.5 17.5v2"></path>
+                                </g>
+                            </svg>
 
-                                .d-flex a img {
-                                    width: 70px;
-                                    height: 70px;
-                                }
-                            }
-                        </style>
+                            <div class="form-check form-switch fs-6 m-0">
+                                <input class="form-check-input me-0" type="checkbox" id="toggle-dark"
+                                    style="cursor: pointer;">
+                            </div>
 
-                        <hr>
+                            <!-- ICON MOON -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24">
+                                <path fill="currentColor"
+                                    d="m17.75 4.09-2.53 1.94 0.91 3.06-2.63-1.81-2.63 1.81 0.91-3.06-2.53-1.94L12.44 4l1.06-3 1.06 3 3.19.09zM21.25 11l-1.64 1.25 0.59 1.98-1.7-1.17-1.7 1.17 0.59-1.98L15.75 11 17.81 11 18.5 9l0.69 1.95 2.06.05zM19.5 16.96c0.83-.08 1.72 1.1 1.19 1.85-.32.45-.66.87-1.08 1.27C15.17 23 8.84 23 4.94 19.07c-3.91-3.9-3.91-10.24 0-14.14.4-.4.82-.76 1.27-1.08.75-.53 1.93.36 1.85 1.19-.27 2.86.69 5.83 2.89 8.02 3.52 3.51 8.02 2.89 8.02 2.89z">
+                                </path>
+                            </svg>
+
+                        </div>
 
                     </div>
+
+                    <!-- CSS TAMBAHAN -->
+                    <style>
+                        /* Hover logo effect */
+                        .d-flex a:hover img {
+                            transform: scale(1.1);
+                        }
+
+                        /* Hover text color */
+                        .d-flex a:hover span {
+                            color: #007bff;
+                        }
+
+                        /* Responsive */
+                        @media (max-width: 576px) {
+                            .d-flex a span {
+                                font-size: 1rem;
+                            }
+
+                            .d-flex a img {
+                                width: 70px;
+                                height: 70px;
+                            }
+                        }
+                    </style>
+
+                    <hr>
+
                 </div>
 
                 <div class="sidebar-menu">
@@ -138,7 +169,6 @@
                                 </li>
                             @endif
 
-                            {{-- Menu untuk admin cianjur & admin cianjur selatan --}}
                             @if (in_array(auth()->user()->role->name, ['admin cianjur', 'admin cianjur selatan']))
                                 <li class="sidebar-item has-sub">
                                     <a href="#" class='sidebar-link'>
@@ -147,7 +177,7 @@
                                     </a>
                                     <ul class="submenu">
                                         <li class="submenu-item">
-                                            <a href="{{ url('/kandidat?cabang=' . auth()->user()->cabang) }}"
+                                            <a href="{{ route('admin.kandidat.index', ['cabang' => auth()->user()->cabang_id]) }}"
                                                 class="submenu-link" style="text-decoration: none;">
                                                 Kandidat Cabang Saya
                                             </a>
@@ -155,6 +185,7 @@
                                     </ul>
                                 </li>
                             @endif
+
 
                             {{-- Menu untuk super admin --}}
                             @if (auth()->user()->role->name === 'super admin')
@@ -179,18 +210,13 @@
                                             </a>
                                         </li>
 
-                                        {{-- Interview Kandidat --}}
+                                        {{-- Interview Kandidat
                                         <li class="submenu-item">
                                             <a href="{{ url('/interview') }}" class="submenu-link"
                                                 style="text-decoration: none;">
                                                 <i class="bi bi-chat-left-text me-1"></i>History Interview
                                             </a>
-                                        </li>
-
-
-
-
-
+                                        </li> --}}
                                     </ul>
                                 </li>
                                 <li class="sidebar-item">
@@ -200,12 +226,19 @@
                                     </a>
                                 </li>
                                 <li class="sidebar-item">
-                                    <a href="{{ url('/institusi') }}" class="sidebar-link d-flex align-items-center">
-                                        <i class="bi bi-building me-2"></i>
-                                        <span>Institusi</span>
+                                    <a href="{{ url('/institusi') }}"
+                                        class="sidebar-link d-flex align-items-center gap-2 py-2">
+                                        <i class="bi bi-building"></i>
+                                        <span class="fw-semibold">Perusahaan</span>
                                     </a>
                                 </li>
-                            
+                                <li class="sidebar-item">
+                                    <a href="{{ url('/admin') }}"
+                                        class="sidebar-link d-flex align-items-center gap-2 py-2">
+                                        <i class="bi bi-people-fill"></i>
+                                        <span class="fw-semibold">Manajemen User</span>
+                                    </a>
+                                </li>
                             @endif
 
                         @endif
@@ -353,6 +386,54 @@
 
             var chart = new ApexCharts(document.querySelector("#chart-kandidat-cabang"), options);
             chart.render();
+        });
+    </script>
+
+    <!-- jQuery & SweetAlert2 -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#logout-link').click(function(e) {
+                e.preventDefault();
+
+                Swal.fire({
+                    title: 'Yakin ingin logout?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, Logout',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: $('#logout-form').attr('action'),
+                            type: 'POST',
+                            data: $('#logout-form').serialize(),
+                            success: function() {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Berhasil Logout',
+                                    timer: 1500,
+                                    showConfirmButton: false
+                                }).then(() => {
+                                    window.location.href =
+                                        "{{ route('login') }}";
+                                });
+                            },
+                            error: function() {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Gagal Logout',
+                                    text: 'Terjadi kesalahan. Silakan coba lagi.',
+                                });
+                            }
+                        });
+                    }
+                });
+            });
         });
     </script>
 </body>

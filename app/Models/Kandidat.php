@@ -15,8 +15,9 @@ class Kandidat extends Model
     // RELASI KE PENDAFTARAN
     public function pendaftaran()
     {
-        return $this->belongsTo(Pendaftaran::class);
+        return $this->belongsTo(Pendaftaran::class, 'pendaftaran_id', 'id');
     }
+
 
     // RELASI KE CABANG
     public function cabang()
@@ -30,9 +31,8 @@ class Kandidat extends Model
         return $this->belongsTo(Institusi::class);
     }
 
-  public function histories()
-{
-    return $this->hasMany(KandidatHistory::class);
-}
-
+    public function histories()
+    {
+        return $this->hasMany(KandidatHistory::class);
+    }
 }

@@ -9,21 +9,26 @@ class Pendaftaran extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
+   protected $fillable = [
         'user_id',
         'cabang_id',
+        'nik',
         'nama',
         'email',
         'no_wa',
         'jenis_kelamin',
         'tanggal_daftar',
         'alamat',
+        'provinsi',
+        'kab_kota',
+        'kecamatan',
+        'kelurahan',
         'foto',
         'kk',
         'ktp',
         'bukti_pelunasan',
         'akte',
-        'izasah',
+        'ijasah',
         'verifikasi',
         'catatan_admin'
     ];
@@ -40,7 +45,11 @@ class Pendaftaran extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function kandidat(){
-        return $this->hasMany(kandidat::class, 'kandidat_id');
-    }
+
+    public function kandidat()
+{
+    // relasi one-to-one: satu pendaftaran punya satu kandidat
+    return $this->hasOne(Kandidat::class, 'pendaftaran_id', 'id');
+}
+
 }

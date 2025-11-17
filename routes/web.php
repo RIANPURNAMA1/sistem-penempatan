@@ -2,78 +2,206 @@
 
 use Illuminate\Support\Facades\Route;
 
-
-
-
+/*
+|--------------------------------------------------------------------------
+| AUTH ROUTES
+|--------------------------------------------------------------------------
+*/
 use App\Http\Controllers\AuthController;
 
-// Halaman registrasi hanya untuk guest
+
 Route::middleware('guest')->group(function () {
     Route::get('/registrasi', [AuthController::class, 'showRegister'])->name('registrasi');
     Route::post('/registrasi', [AuthController::class, 'register'])->name('registrasi.post');
-
+    Route::get('/register/activate/{id}', [AuthController::class, 'activate'])->name('registrasi.activate');
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 });
 
-Route::middleware('auth')->group(function () {
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::middleware('auth')->post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+Route::get('/test-wa', function () {
+    return \App\Services\FonnteService::sendMessage('085624251657', 'Tes WA');
 });
 
 
 
 
-use App\Http\Controllers\PageController;
+/*
+|--------------------------------------------------------------------------
+| DASHBOARD (AUTH)
+|--------------------------------------------------------------------------
+*/
 
-Route::get('/institusi', [PageController::class, 'institusi'])->name('institusi');
-Route::get('/penempatan', [PageController::class, 'penempatan'])->name('penempatan');
-Route::get('/interview', [PageController::class, 'interview'])->name('interview');
-Route::get('/admin', [PageController::class, 'admin'])->name('admin');
-Route::get('/admin/user', [PageController::class, 'adminUser'])->name('admin.user');
-Route::get('/cabang', [PageController::class, 'cabang'])->name('cabang');
-
-use App\Http\Controllers\CabangController;
 use App\Http\Controllers\DashboardController;
 
-Route::resource('cabang', CabangController::class);
+Route::middleware(['auth', 'role:super admin, admin cianjur selatan,admin cianjur, kandidat'])->group(function () {
+
+    Route::middleware('auth')->get('/', [DashboardController::class, 'index'])->name('dashboard');
+});
+
+
+
+use App\Http\Controllers\ProfileController;
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+    Route::post('/profile/update-password', [ProfileController::class, 'updatePassword'])->name('profile.updatePassword');
+});
+
+/*
+|--------------------------------------------------------------------------
+| PAGE NAVIGATION (AUTH)
+|--------------------------------------------------------------------------
+*/
+
+use App\Http\Controllers\PageController;
+
+Route::middleware(['auth', 'role:super admin'])->group(function () {
+    Route::middleware('auth')->get('/kandidat', [DashboardController::class, 'DataKandidat'])->name('pendaftar');
+    Route::get('/institusi', [PageController::class, 'institusi'])->name('page.institusi');
+    Route::get('/penempatan', [PageController::class, 'penempatan'])->name('page.penempatan');
+    Route::get('/interview', [PageController::class, 'interview'])->name('page.interview');
+    Route::get('/cabang', [PageController::class, 'cabang'])->name('page.cabang');
+});
+
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AdminKandidatController;
+
+// Route::middleware(['auth', 'role:admin cianjur selatan,admin cianjur'])->group(function () {
+// Route::get('/dashboard/kandidat/{id}', [DashboardController::class, 'showKandidat'])->name('dashboard.kandidat.show');
+// });
+// Resource route untuk manajemen admin (CRUD) hanya bisa diakses SUPER ADMIN
+Route::prefix('admin')
+    ->name('admins.')
+    ->middleware('role:super admin, admin cianjur, admin cianjur selatan')
+    ->group(function () {
+        Route::get('/dashboard/kandidat/{id}', [DashboardController::class, 'showKandidat'])->name('dashboard.kandidat.show');
+        Route::get('/', [AdminController::class, 'index'])->name('index');       // List admin
+        Route::get('/create', [AdminController::class, 'create'])->name('create'); // Form tambah admin
+        Route::post('/', [AdminController::class, 'store'])->name('store');       // Simpan admin baru
+        Route::get('/{admin}/edit', [AdminController::class, 'edit'])->name('edit'); // Form edit admin
+        Route::put('/{admin}', [AdminController::class, 'update'])->name('update');  // Update admin
+        Route::delete('/{admin}', [AdminController::class, 'destroy'])->name('destroy'); // Hapus admin
+    });
+
+
+
+
+    Route::middleware(['auth'])->group(function () {
+    Route::get('/admin/kandidat', [AdminKandidatController::class, 'index'])
+        ->name('admin.kandidat.index');
+});
+
+
+/*
+|--------------------------------------------------------------------------
+| CABANG (AUTH)
+|--------------------------------------------------------------------------
+*/
+
+use App\Http\Controllers\CabangController;
+
+Route::middleware(['auth', 'role:super admin'])
+    ->resource('cabang', CabangController::class);
+
 
 
 use App\Http\Controllers\PendaftaranController;
 
-Route::get('/pendaftaran/kandidat', [PendaftaranController::class, 'datacabang'])->name('pendaftaran.create');
-Route::post('/pendaftaran/store', [PendaftaranController::class, 'store'])->name('pendaftaran.store');
-Route::get('/siswa', [PendaftaranController::class, 'DataKandidat'])->name('siswa.index');
-Route::get('/siswa/{id}/edit', [PendaftaranController::class, 'edit'])->name('siswa.edit');
-Route::put('/siswa/{id}', [PendaftaranController::class, 'update'])->name('siswa.update');
-Route::get('/siswa', [PendaftaranController::class, 'DataKandidat'])->name('siswa.index');
-Route::put('/pendaftaran/update/{id}', [PendaftaranController::class, 'update'])->name('pendaftaran.update');
-// (Opsional untuk admin)
-Route::get('/', [DashboardController::class, 'index'])->name('dashboard')->middleware('auth');
-Route::get('/kandidat', [DashboardController::class, 'DataKandidat'])->name('pendaftar');
 
-Route::get('/pendaftaran/{id}', [PendaftaranController::class, 'show'])->name('pendaftaran.show');
+Route::middleware(['auth', 'role:super admin'])->group(function () {
+    // Data siswa + paginate
+    Route::get('/siswa', [PendaftaranController::class, 'DataKandidat'])
+        ->name('siswa.index');
 
-use App\Http\Controllers\DokumenController;
+    // Edit & update data
+    Route::get('/siswa/{id}/edit', [PendaftaranController::class, 'edit'])
+        ->name('siswa.edit');
 
-Route::get('/dokumen/{id}', [DokumenController::class, 'show'])->name('dokumen.show');
-
-
-use App\Http\Controllers\InstitusiController;
-use App\Http\Controllers\KandidatController;
-
-Route::get('/institusi', [InstitusiController::class, 'index'])->name('institusi.index');
-Route::get('/institusi/create', [InstitusiController::class, 'create'])->name('institusi.create');
-Route::post('/institusi/store', [InstitusiController::class, 'store'])->name('institusi.store');
-Route::get('/institusi/edit/{id}', [InstitusiController::class, 'edit'])->name('institusi.edit');
-Route::put('/institusi/update/{id}', [InstitusiController::class, 'update'])->name('institusi.update');
-Route::delete('/institusi/delete/{id}', [InstitusiController::class, 'destroy'])->name('institusi.destroy');
-
-
-Route::get('/kandidat/data', [KandidatController::class, 'index'])->name('kandidat.data');
-Route::prefix('kandidat')->group(function () {
-    Route::get('/{id}/edit', [KandidatController::class, 'edit'])->name('kandidat.edit');
-    Route::put('/{id}', [KandidatController::class, 'update'])->name('kandidat.update');
+    Route::put('/siswa/{id}', [PendaftaranController::class, 'update'])
+        ->name('siswa.update');
 });
 
-// Route untuk menampilkan history kandidat
-Route::get('/kandidat/{id}/history', [KandidatController::class, 'history'])->name('kandidat.history');
+
+/*
+|--------------------------------------------------------------------------
+| PENDAFTARAN KANDIDAT
+|--------------------------------------------------------------------------
+*/
+
+
+use App\Http\Controllers\DokumenController;
+Route::middleware(['auth', 'role:kandidat'])->group(function () {
+
+
+    // Form pendaftaran
+    Route::get('/pendaftaran/kandidat', [PendaftaranController::class, 'datacabang'])
+        ->name('pendaftaran.create');
+
+    // Simpan data
+    Route::post('/pendaftaran/store', [PendaftaranController::class, 'store'])
+        ->name('pendaftaran.store');
+
+
+    // Detail pendaftaran
+    Route::get('/pendaftaran/{id}', [PendaftaranController::class, 'show'])
+    ->name('pendaftaran.show');
+    /*
+    |--------------------------------------------------------------------------
+    | DOKUMEN KANDIDAT
+    |--------------------------------------------------------------------------
+    */
+    
+    
+    Route::middleware('auth')->get('/dokumen/{id}', [DokumenController::class, 'show'])
+        ->name('dokumen.show');
+});
+
+
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+| INSTITUSI (PERUSAHAAN)
+|--------------------------------------------------------------------------
+*/
+
+use App\Http\Controllers\InstitusiController;
+
+Route::middleware(['auth', 'role: super admin'])->prefix('institusi')->name('institusi.')->group(function () {
+    Route::get('/', [InstitusiController::class, 'index'])->name('index');
+    Route::get('/create', [InstitusiController::class, 'create'])->name('create');
+    Route::post('/store', [InstitusiController::class, 'store'])->name('store');
+    Route::get('/edit/{id}', [InstitusiController::class, 'edit'])->name('edit');
+    Route::put('/update/{id}', [InstitusiController::class, 'update'])->name('update');
+    Route::delete('/delete/{id}', [InstitusiController::class, 'destroy'])->name('destroy');
+});
+
+
+
+/*
+|--------------------------------------------------------------------------
+| KANDIDAT
+|--------------------------------------------------------------------------
+*/
+
+use App\Http\Controllers\KandidatController;
+
+Route::middleware(['auth','role:super admin'])->group(function () {
+
+    // Data kandidat
+    Route::get('/kandidat/data', [KandidatController::class, 'index'])->name('kandidat.data');
+
+    // Edit/update kandidat
+    Route::prefix('kandidat')->group(function () {
+        Route::get('/{id}/edit', [KandidatController::class, 'edit'])->name('kandidat.edit');
+        Route::put('/{id}', [KandidatController::class, 'update'])->name('kandidat.update');
+    });
+
+    // History kandidat
+    Route::get('/kandidat/{id}/history', [KandidatController::class, 'history'])
+        ->name('kandidat.history');
+});

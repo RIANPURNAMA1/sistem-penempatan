@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\StatusKandidatUpdated;
 use App\Models\Cabang;
 use App\Models\Institusi;
 use Illuminate\Http\Request;
 use App\Models\Kandidat;
 use App\Models\KandidatHistory;
+use Illuminate\Support\Facades\Mail;
 
 class KandidatController extends Controller
 {
@@ -30,8 +32,13 @@ class KandidatController extends Controller
         return view('kandidat.edit', compact('kandidat', 'institusis'));
     }
 
-public function update(Request $request, $id)
+
+
+   public function update(Request $request, $id)
 {
+    /* ------------------------------------------------------------
+    | Validasi
+    ------------------------------------------------------------ */
     $request->validate([
         'status_kandidat' => 'required|in:Job Matching,Pending,Interview,Jadwalkan Interview Ulang,Lulus interview,Gagal Interview,Pemberkasan,Berangkat,Diterima,Ditolak',
         'institusi_id' => 'nullable|exists:institusis,id',
@@ -39,37 +46,55 @@ public function update(Request $request, $id)
         'jadwal_interview' => 'nullable|date',
     ]);
 
-    $kandidat = Kandidat::findOrFail($id);
+    /* ------------------------------------------------------------
+    | Ambil data kandidat + pendaftaran
+    ------------------------------------------------------------ */
+    $kandidat = Kandidat::with('pendaftaran')->findOrFail($id);
+    $status_lama = $kandidat->status_kandidat;
 
     /* ------------------------------------------------------------
-     | Cegah perubahan status setelah Lulus interview
-     ------------------------------------------------------------ */
-    if ($kandidat->status_kandidat === 'Lulus interview') {
+    | Validasi interview wajib tanggal
+    ------------------------------------------------------------ */
+    if (
+        in_array($request->status_kandidat, ['Interview', 'Jadwalkan Interview Ulang']) &&
+        empty($request->jadwal_interview)
+    ) {
+        return back()
+            ->withErrors(['jadwal_interview' => 'Tanggal interview wajib diisi.'])
+            ->withInput();
+    }
 
-        $tidak_boleh = [
-            'Interview',
-            'Jadwalkan Interview Ulang',
-            'Gagal Interview'
-        ];
+    /* ------------------------------------------------------------
+    | Larangan setelah lulus
+    ------------------------------------------------------------ */
+    if ($status_lama === 'Lulus interview') {
+        $dilarang = ['Interview', 'Jadwalkan Interview Ulang', 'Gagal Interview'];
 
-        if (in_array($request->status_kandidat, $tidak_boleh)) {
-            return back()->with('error', 'Status tersebut tidak boleh dipilih setelah kandidat lulus interview.');
+        if (in_array($request->status_kandidat, $dilarang)) {
+            return back()->with('error', 'Tidak boleh mengubah status setelah kandidat lulus.');
+        }
+    }
+   
+     /* ------------------------------------------------------------
+    | Larangan update setelah Pemberkasan atau Berangkat
+    ------------------------------------------------------------ */
+    if (in_array($status_lama, ['Pemberkasan', 'Berangkat'])) {
+        $dilarangSetelahAkhir = ['Interview', 'Jadwalkan Interview Ulang', 'Gagal Interview', 'Lulus interview', 'Job Matching', 'Pending', 'Ditolak', 'Ditolak'];
+        if (in_array($request->status_kandidat, $dilarangSetelahAkhir)) {
+            return back()->with('error', 'Tidak boleh mengubah status setelah kandidat masuk tahap Pemberkasan atau Berangkat.');
         }
     }
 
     /* ------------------------------------------------------------
-     | Tambah jumlah interview jika gagal interview
-     ------------------------------------------------------------ */
-    if (
-        $request->status_kandidat === 'Gagal Interview' &&
-        $kandidat->status_kandidat !== 'Gagal Interview'
-    ) {
+    | Hitung jumlah interview
+    ------------------------------------------------------------ */
+    if ($request->status_kandidat === 'Interview' && $status_lama !== 'Interview') {
         $kandidat->jumlah_interview += 1;
     }
 
     /* ------------------------------------------------------------
-     | Simpan perubahan data kandidat
-     ------------------------------------------------------------ */
+    | Update kandidat
+    ------------------------------------------------------------ */
     $kandidat->update([
         'status_kandidat' => $request->status_kandidat,
         'institusi_id' => $request->institusi_id,
@@ -79,38 +104,106 @@ public function update(Request $request, $id)
     ]);
 
     /* ------------------------------------------------------------
-     | SETIAP PERUBAHAN DATA → MASUK HISTORY
-     ------------------------------------------------------------ */
-
+    | Simpan History
+    ------------------------------------------------------------ */
     $statusInterview = match ($request->status_kandidat) {
-        'Lulus interview'             => 'Selesai',
-        'Gagal Interview'             => 'Gagal',
-        'Interview', 
-        'Jadwalkan Interview Ulang'   => 'Proses',
-        default                       => 'Pending',
+        'Lulus interview' => 'Selesai',
+        'Gagal Interview' => 'Gagal',
+        'Interview', 'Jadwalkan Interview Ulang' => 'Proses',
+        default => 'Pending',
     };
 
     KandidatHistory::create([
-        'kandidat_id'        => $kandidat->id,
-        'status_kandidat'    => $kandidat->status_kandidat,
-        'status_interview'   => $statusInterview,
-        'institusi_id'       => $kandidat->institusi_id,
-        'catatan_interview'  => $kandidat->catatan_interview,
-        'jadwal_interview'   => $kandidat->jadwal_interview,
+        'kandidat_id' => $kandidat->id,
+        'status_kandidat' => $kandidat->status_kandidat,
+        'status_interview' => $statusInterview,
+        'institusi_id' => $kandidat->institusi_id,
+        'catatan_interview' => $kandidat->catatan_interview,
+        'jadwal_interview' => $kandidat->jadwal_interview,
     ]);
 
-    return redirect()->route('kandidat.data')
-        ->with('success', 'Data kandidat berhasil diperbarui & history tersimpan.');
+    /* ------------------------------------------------------------
+    | 🔔 Kirim WhatsApp
+    ------------------------------------------------------------ */
+    $noWa = $kandidat->pendaftaran->no_wa ?? null;
+    $nama = $kandidat->pendaftaran->nama ?? $kandidat->nama;
+
+    if (!empty($noWa)) {
+        $noWa = preg_replace('/^08/', '628', $noWa);
+
+        $pesan = "
+Halo *{$nama}* 👋
+
+Status Anda diperbarui.
+
+📌 Status Baru: {$request->status_kandidat}
+🕓 Tanggal Update: " . now()->format('d M Y H:i') . "
+
+Silakan cek portal.
+Terima kasih 🙏
+        ";
+
+        \App\Services\FonnteService::sendMessage($noWa, $pesan);
+    }
+
+    /* ------------------------------------------------------------
+    | 📧 Kirim Email Notifikasi
+    ------------------------------------------------------------ */
+    $email = $kandidat->pendaftaran->email ?? null;
+
+    if (!empty($email)) {
+        Mail::to($email)->send(new StatusKandidatUpdated(
+            $nama,
+            $request->status_kandidat,
+            now()->format('d M Y H:i'),
+            $request->catatan_interview
+        ));
+    }
+
+ /* ------------------------------------------------------------
+| Redirect diubah menjadi JSON Response
+------------------------------------------------------------ */
+return response()->json([
+    'success' => true,
+    'message' => 'Status diperbarui, WA & email terkirim.',
+    'redirect' => route('kandidat.data') // opsional, kalau mau diarahkan setelah AJAX
+]);
+
 }
 
 
 
-    // Tampilkan history kandidat
-    public function history($id)
-    {
-        $kandidat = Kandidat::with('pendaftaran')->findOrFail($id);
-        $histories = $kandidat->histories()->with('institusi')->orderBy('created_at', 'desc')->get();
+   public function history($id)
+{
+    // Ambil kandidat beserta pendaftaran
+    $kandidat = Kandidat::with('pendaftaran')->findOrFail($id);
 
-        return view('kandidat.history', compact('kandidat', 'histories'));
-    }
+    // Semua history kandidat
+    $histories = $kandidat->histories()->with('institusi')->orderBy('created_at', 'desc')->get();
+
+    // Summary interview per perusahaan
+    $interviewPerPerusahaan = $histories
+        ->groupBy('institusi_id')
+        ->map(function ($items) {
+            // Ambil history terakhir untuk status dan tanggal terakhir
+            $last = $items->sortByDesc('created_at')->first();
+
+            return [
+                'institusi' => $last->institusi,
+
+                // Hanya hitung status "Interview" sebagai jumlah interview
+                'jumlah_interview' => $items->where('status_kandidat', 'Interview')->count(),
+
+                'status_terakhir' => $last->status_kandidat,
+                'tanggal_terakhir' => $last->created_at,
+            ];
+        });
+
+    return view('kandidat.history', compact('kandidat', 'histories', 'interviewPerPerusahaan'));
+}
+
+
+
+
+
 }

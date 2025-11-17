@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
@@ -16,7 +17,7 @@ class AuthController extends Controller
         return view('auth.register');
     }
 
-    // Register user
+    // Register user dengan konfirmasi email
     public function register(Request $request)
     {
         $request->validate([
@@ -38,20 +39,24 @@ class AuthController extends Controller
             'password.confirmed' => 'Ups! Konfirmasi kata sandi tidak cocok.',
         ]);
 
-
         // Ambil role kandidat
         $role = Role::where('name', 'kandidat')->first();
 
-        // Buat user baru
-        User::create([
+        // Buat user baru (status inactive)
+        $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role_id' => $role->id, // otomatis jadi kandidat
+            'role_id' => $role->id,
         ]);
 
-        return redirect()->back()->with('success', 'Registrasi berhasil. Silakan login.');
+        return response()->json([
+            'success' => true,
+            'redirect' => route('login'),
+            'message' => 'Registrasi berhasil! Silakan login.'
+        ]);
     }
+
 
 
     // Form login
@@ -62,23 +67,32 @@ class AuthController extends Controller
     // Login user
     public function login(Request $request)
     {
-        $credentials = $request->validate([
+        // Validasi input
+        $request->validate([
             'email' => 'required|email',
             'password' => 'required|string',
         ]);
 
-        if (Auth::attempt($credentials)) {
-            // Regenerate session untuk mencegah session fixation
+        // Cek kredensial
+        if (Auth::attempt($request->only('email', 'password'))) {
+
+            // Regenerasi session
             $request->session()->regenerate();
 
-            // Redirect ke halaman home atau dashboard setelah login berhasil
-            return redirect()->intended('/')->with('success', 'Login Berhasil');
+            return response()->json([
+                'success' => true,
+                'message' => 'Login berhasil',
+                'redirect' => route('dashboard') // ganti sesuai tujuan
+            ]);
         }
 
-        return back()->withErrors([
-            'email' => 'Email atau password salah.',
-        ])->onlyInput('email'); // agar input email tetap terisi
+        // Jika gagal
+        return response()->json([
+            'success' => false,
+            'message' => 'Email atau password salah.'
+        ], 401);
     }
+
 
 
     // Logout

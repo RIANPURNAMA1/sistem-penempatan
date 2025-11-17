@@ -11,7 +11,7 @@
                 </a>
             </li>
             <li class="breadcrumb-item active  fw-semibold" aria-current="page">
-                <i class="bi bi-person-lines-fill"></i> Create Perusahaan
+                <i class="bi bi-pencil-square"></i> Edit Perusahaan
             </li>
         </ol>
     </nav>
@@ -19,42 +19,43 @@
     <div class="card shadow-sm rounded-4">
         <div class="card-header text-white">
             <h5 class="mb-0 fw-bold">
-                <i class="bi bi-plus-circle me-2"></i> Tambah Perusahaan Baru
+                <i class="bi bi-pencil-square me-2"></i> Edit Perusahaan
             </h5>
         </div>
         <div class="card-body">
-            <form id="formTambahPerusahaan">
+            <form id="formEditPerusahaan">
                 @csrf
+                @method('PUT') <!-- Penting untuk update -->
                 <div class="row g-3">
                     <div class="col-md-6">
                         <label for="nama_perusahaan" class="form-label fw-semibold">Nama Perusahaan</label>
                         <input type="text" name="nama_perusahaan" id="nama_perusahaan" class="form-control"
-                            placeholder="Contoh: PT Sakura Jepang" required>
+                            value="{{ old('nama_perusahaan', $institusi->nama_perusahaan) }}" required>
                     </div>
 
                     <div class="col-md-6">
                         <label for="bidang_pekerjaan" class="form-label fw-semibold">Bidang Pekerjaan</label>
                         <input type="text" name="bidang_pekerjaan" id="bidang_pekerjaan" class="form-control"
-                            placeholder="Contoh: IT, Produksi, Administrasi">
+                            value="{{ old('bidang_pekerjaan', $institusi->bidang_pekerjaan) }}">
                     </div>
 
                     <div class="col-md-6">
                         <label for="perusahaan_penempatan" class="form-label fw-semibold">Perusahaan Penempatan</label>
                         <input type="text" name="perusahaan_penempatan" id="perusahaan_penempatan" class="form-control"
-                            placeholder="Nama perusahaan penempatan">
+                            value="{{ old('perusahaan_penempatan', $institusi->perusahaan_penempatan) }}">
                     </div>
 
                     <div class="col-md-3">
                         <label for="kuota" class="form-label fw-semibold">Kuota</label>
                         <input type="number" name="kuota" id="kuota" class="form-control"
-                            placeholder="Jumlah kuota" min="1">
+                            value="{{ old('kuota', $institusi->kuota) }}" min="1">
                     </div>
                 </div>
 
                 <div class="mt-4 d-flex justify-content-end">
                     <a href="{{ route('institusi.index') }}" class="btn btn-secondary me-2">Batal</a>
-                    <button type="submit" class="btn btn-primary" id="btnSubmit">
-                        <i class="bi bi-save2 me-1"></i> Simpan Data
+                    <button type="submit" class="btn btn-primary" id="btnUpdate">
+                        <i class="bi bi-save2 me-1"></i> Update Data
                     </button>
                 </div>
             </form>
@@ -68,25 +69,25 @@
 
 <script>
 $(document).ready(function() {
-    $('#formTambahPerusahaan').submit(function(e) {
+    $('#formEditPerusahaan').submit(function(e) {
         e.preventDefault();
 
         let form = $(this);
-        let btn = $('#btnSubmit');
+        let btn = $('#btnUpdate');
 
         // Tambah spinner loading
         btn.prop('disabled', true);
         btn.html('<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Menyimpan...');
 
         $.ajax({
-            url: "{{ route('institusi.store') }}",
+            url: "{{ route('institusi.update', $institusi->id) }}",
             method: "POST",
             data: form.serialize(),
             success: function(response) {
                 Swal.fire({
                     icon: 'success',
                     title: 'Berhasil!',
-                    text: 'Data perusahaan berhasil disimpan.',
+                    text: 'Data perusahaan berhasil diperbarui.',
                     confirmButtonColor: '#3085d6',
                     confirmButtonText: 'OK'
                 }).then(() => {
@@ -112,7 +113,7 @@ $(document).ready(function() {
             },
             complete: function() {
                 btn.prop('disabled', false);
-                btn.html('<i class="bi bi-save2 me-1"></i> Simpan Data');
+                btn.html('<i class="bi bi-save2 me-1"></i> Update Data');
             }
         });
     });

@@ -17,63 +17,96 @@ class PendaftaranController extends Controller
         return view('pendaftaran.index', compact('cabangs'));
     }
 
-    // 🟢 Simpan data pendaftaran
-    public function store(Request $request)
-    {
-        $request->validate([
-            'nama' => 'required|string|max:255',
-            'email' => 'required|email',
-            'no_wa' => 'required|string|max:20',
-            'jenis_kelamin' => 'required|string',
-            'cabang_id' => 'required|exists:cabangs,id',
-            'tanggal_daftar' => 'required|date',
-            'alamat' => 'required|string',
-            'foto' => 'required|file|mimes:jpg,jpeg,png',
-            'kk' => 'required|file|mimes:jpg,jpeg,png,pdf',
-            'ktp' => 'required|file|mimes:jpg,jpeg,png,pdf',
-            'bukti_pelunasan' => 'required|file|mimes:jpg,jpeg,png,pdf',
-            'akte' => 'required|file|mimes:jpg,jpeg,png,pdf',
-            'izasah' => 'required|file|mimes:jpg,jpeg,png,pdf',
-        ]);
+  // 🟢 Simpan data pendaftaran
+public function store(Request $request)
+{
+    // Validasi semua field wajib dan NIK unik
+    $request->validate([
+        // Identitas dasar
+        'nik' => 'required|string|max:20|unique:pendaftarans,nik', // NIK wajib dan unik
+        'nama' => 'required|string|max:255',
+        'email' => 'required|email|max:255',
+        'no_wa' => [
+            'required',
+            'string',
+            'max:20',
+            'regex:/^[0-9+\s()-]+$/'
+        ],
+        'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
+        'alamat' => 'required|string|max:500',
 
-        // Upload file
-        $foto = $request->file('foto')->store('uploads/foto', 'public');
-        $kk = $request->file('kk')->store('uploads/kk', 'public');
-        $ktp = $request->file('ktp')->store('uploads/ktp', 'public');
-        $bukti_pelunasan = $request->file('bukti_pelunasan')->store('uploads/bukti_pelunasan', 'public');
-        $akte = $request->file('akte')->store('uploads/akte', 'public');
-        $izasah = $request->file('izasah')->store('uploads/izasah', 'public');
+        // Lokasi lengkap
+        'provinsi' => 'required|string|max:100',
+        'kab_kota' => 'required|string|max:100',
+        'kecamatan' => 'required|string|max:100',
+        'kelurahan' => 'required|string|max:100',
 
-        // Simpan data
-        Pendaftaran::create([
-            'user_id' => Auth::id(),
-            'cabang_id' => $request->cabang_id,
-            'nama' => $request->nama,
-            'email' => $request->email,
-            'no_wa' => $request->no_wa,
-            'jenis_kelamin' => $request->jenis_kelamin,
-            'tanggal_daftar' => $request->tanggal_daftar,
-            'alamat' => $request->alamat,
-            'foto' => $foto,
-            'kk' => $kk,
-            'ktp' => $ktp,
-            'bukti_pelunasan' => $bukti_pelunasan,
-            'akte' => $akte,
-            'izasah' => $izasah,
+        // Relasi
+        'cabang_id' => 'required|exists:cabangs,id',
 
-        ]);
+        // Data waktu
+        'tanggal_daftar' => 'required|date',
 
-        return redirect()->route('pendaftaran.create')
-            ->with('success', 'Pendaftaran berhasil dikirim!');
-    }
+        // Semua file wajib
+        'foto' => 'required|file|mimes:jpg,jpeg,png|max:2048', // 2MB
+        'kk' => 'required|file|mimes:jpg,jpeg,png,pdf|max:4096', // 4MB
+        'ktp' => 'required|file|mimes:jpg,jpeg,png,pdf|max:4096',
+        'bukti_pelunasan' => 'required|file|mimes:jpg,jpeg,png,pdf|max:4096',
+        'akte' => 'required|file|mimes:jpg,jpeg,png,pdf|max:4096',
+        'ijasah' => 'required|file|mimes:jpg,jpeg,png,pdf|max:4096',
+    ]);
+
+    // Upload file
+    $foto = $request->file('foto')->store('uploads/foto', 'public');
+    $kk = $request->file('kk')->store('uploads/kk', 'public');
+    $ktp = $request->file('ktp')->store('uploads/ktp', 'public');
+    $bukti_pelunasan = $request->file('bukti_pelunasan')->store('uploads/bukti_pelunasan', 'public');
+    $akte = $request->file('akte')->store('uploads/akte', 'public');
+    $ijasah = $request->file('ijasah')->store('uploads/ijasah', 'public');
+
+    
+    // Simpan data
+    Pendaftaran::create([
+        'user_id' => Auth::id(),
+        'cabang_id' => $request->cabang_id,
+        'nik' => $request->nik,
+        'nama' => $request->nama,
+        'email' => $request->email,
+        'no_wa' => $request->no_wa,
+        'jenis_kelamin' => $request->jenis_kelamin,
+        'tanggal_daftar' => $request->tanggal_daftar,
+        'alamat' => $request->alamat,
+        'provinsi' => $request->provinsi,
+        'kab_kota' => $request->kab_kota,
+        'kecamatan' => $request->kecamatan,
+        'kelurahan' => $request->kelurahan,
+        'foto' => $foto,
+        'kk' => $kk,
+        'ktp' => $ktp,
+        'bukti_pelunasan' => $bukti_pelunasan,
+        'akte' => $akte,
+        'ijasah' => $ijasah,
+    ]);
+
+    return redirect()->route('dashboard')
+        ->with('success', 'Pendaftaran berhasil dikirim!');
+}
+
+
+    
 
     // 🟡 Tampilkan semua data kandidat
     public function DataKandidat()
     {
-        $kandidats = Pendaftaran::with('cabang')->get();
+        $kandidats = Pendaftaran::with('cabang')
+            ->orderBy('created_at', 'desc') // data terbaru di atas
+            ->paginate(10); // <- paginate, bukan get
+
         $cabang = Cabang::all();
+
         return view('siswa.index', compact('kandidats', 'cabang'));
     }
+
 
     // 🟠 Form Edit (hanya verifikasi & catatan admin)
     public function edit($id)
@@ -82,49 +115,65 @@ class PendaftaranController extends Controller
         return view('siswa.edit', compact('kandidat'));
     }
 
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'verifikasi' => 'required|string|in:menunggu,data belum lengkap,diterima,ditolak',
-            'catatan_admin' => 'nullable|string|max:500',
-        ]);
+public function update(Request $request, $id)
+{
+    // Validasi input
+    $request->validate([
+        'verifikasi' => 'required|string|in:menunggu,data belum lengkap,diterima,ditolak',
+        'catatan_admin' => 'nullable|string|max:500',
+    ]);
 
-        $pendaftaran = Pendaftaran::findOrFail($id);
+    // Ambil data pendaftaran
+    $pendaftaran = Pendaftaran::findOrFail($id);
 
-        $pendaftaran->update([
-            'verifikasi' => $request->verifikasi,
-            'catatan_admin' => $request->catatan_admin,
-        ]);
+    // Update verifikasi dan catatan admin
+    $pendaftaran->update([
+        'verifikasi' => $request->verifikasi,
+        'catatan_admin' => $request->catatan_admin,
+    ]);
 
-        // Jika diterima, buat kandidat
-        if ($request->verifikasi === 'diterima') {
+    $message = 'Data verifikasi berhasil diperbarui!';
 
-            if (!Kandidat::where('pendaftaran_id', $pendaftaran->id)->exists()) {
+    // Jika status diterima, buat kandidat jika belum ada
+    if ($request->verifikasi === 'diterima') {
+        Kandidat::firstOrCreate(
+            ['pendaftaran_id' => $pendaftaran->id],
+            [
+                'cabang_id'       => $pendaftaran->cabang_id,
+                'status_kandidat' => 'Job Matching',
+                'institusi_id'    => null,
+            ]
+        );
 
-                Kandidat::create([
-                    'pendaftaran_id' => $pendaftaran->id,
-                    'cabang_id'       => $pendaftaran->cabang_id,
-                    'status_kandidat' => 'Job Matching',
-                    'institusi_id'    => null,
-                    // HAPUS 'interview_id' KARENA TIDAK ADA DI DATABASE
-                ]);
-            }
-        }
-
-        // Redirect
-        if ($request->verifikasi === 'diterima') {
-            return redirect()->route('kandidat.data')->with('success', 'Data verifikasi berhasil diperbarui!');
-        }
-
-        return redirect('/kandidat')->with('success', 'Data verifikasi berhasil diperbarui!');
+        $message = 'Data verifikasi berhasil diperbarui dan kandidat dibuat!';
     }
+
+    // Jika AJAX request, kembalikan JSON
+    if ($request->ajax()) {
+        return response()->json([
+            'status' => 'success',
+            'message' => $message,
+        ]);
+    }
+
+    // Jika request biasa, redirect
+    if ($request->verifikasi === 'diterima') {
+        return redirect()->route('kandidat.data')->with('success', $message);
+    }
+
+    return redirect()->back()->with('success', $message);
+}
+
 
 
 
     // Tampilkan halaman kandidat
     public function Kandidat()
     {
-        $kandidats = Kandidat::with(['pendaftaran', 'cabang', 'institusi'])->get();
+        $kandidats = Kandidat::with(['pendaftaran', 'cabang', 'institusi'])->latest('id');
         return view('kandidat.data', compact('kandidats'));
     }
+
+
+    
 }

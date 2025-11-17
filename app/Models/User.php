@@ -17,12 +17,14 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'role_id',
-    ];
+   protected $fillable = [
+    'name',
+    'email',
+    'password',
+    'role_id',
+    'cabang_id',
+];
+
 
     /**
      * The attributes that should be hidden for serialization.
@@ -55,5 +57,11 @@ class User extends Authenticatable
     public function pendaftarans()
     {
         return $this->hasMany(Pendaftaran::class, 'user_id');
+    }
+
+     // User memiliki 1 cabang (opsional)
+    public function cabang()
+    {
+        return $this->belongsTo(Cabang::class);
     }
 }

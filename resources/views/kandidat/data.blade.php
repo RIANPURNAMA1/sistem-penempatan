@@ -1,20 +1,48 @@
 @extends('layouts.app')
 @section('content')
-    <!-- Bootstrap 5 -->
+    <!-- Bootstrap 5 & DataTables CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-
-    <!-- ✅ DataTables Bootstrap 5 CSS -->
     <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+
     </head>
     </style>
 
-    <body class="bg-light">
+    <body class="">
+        @if (session('success'))
+            <script>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Sukses',
+                    text: '{{ session('success') }}',
+                    timer: 20000,
+                    showConfirmButton: false
+                });
+            </script>
+        @endif
         <div class="">
-            <h4 class="mb-3 fw-bold">Data Kandidat</h4>
-
+            <!-- Breadcrumb -->
+            <nav aria-label="breadcrumb" class="mb-4">
+                <ol class="breadcrumb  border rounded-3 px-3 py-2 shadow-sm mb-0">
+                    <li class="breadcrumb-item">
+                        <a href="#" class="text-decoration-none text-secondary">
+                            <i class="bi bi-house-door me-1"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active  fw-semibold" aria-current="page">
+                        <i class="bi bi-people me-1"></i> Daftar Kandidat
+                    </li>
+                </ol>
+            </nav>
+            <!-- Header -->
+            <div class="mb-4 text-center text-md-start">
+                <h2 class="fw-bold  mb-2">
+                    <i class="bi bi-person-lines-fill text-warning me-2"></i> Daftar Kandidat
+                </h2>
+                <p class="text-muted fst-italic">
+                    Berikut adalah data kandidat yang telah masuk dalam sistem.
+                </p>
+            </div>
             <!-- 🔍 Filter Section -->
             <div class="card shadow-sm mb-3">
                 <div class="card-body">
@@ -45,7 +73,7 @@
 
                         <!-- Reset Filter -->
                         <div class="col-12 col-md-4 text-md-end">
-                            <button id="resetFilter" class="btn btn-outline-secondary mt-3 mt-md-0">
+                            <button id="resetFilter" class="btn btn-outline-info mt-3 mt-md-0">
                                 <i class="bi bi-arrow-repeat"></i> Reset Filter
                             </button>
                         </div>
@@ -55,10 +83,11 @@
             <!-- 🧾 Data Table -->
             <div class="card shadow-sm">
                 <div class="card-body table-responsive">
-                    <table class="table table-striped table-bordered p-2 w-100">
-                        <thead>
-                            <tr class="text-white text-center" style="background-color:#00c0ff;">
+                    <table id="tableKandidatutama" class="table table-hover table-bordered p-2 w-100">
+                        <thead class="">
+                            <tr class="text-white text-center">
                                 <th>No</th>
+                                <th>Gambar</th> <!-- ✅ Kolom baru -->
                                 <th>Nama Siswa</th>
                                 <th>Cabang</th>
                                 <th>Status Kandidat</th>
@@ -71,11 +100,28 @@
                                 <th>Aksi</th>
                             </tr>
                         </thead>
-
                         <tbody>
-                            @forelse ($kandidats as $index => $k)
+                            @foreach ($kandidats as $index => $k)
                                 <tr class="text-center align-middle">
                                     <td>{{ $loop->iteration }}</td>
+
+                                    <!-- ✅ Foto dari tabel pendaftarans -->
+                                    <td>
+                                        @php
+                                            $foto = $k->pendaftaran->foto ?? null;
+                                        @endphp
+
+                                        @if ($foto)
+                                            <img src="{{ asset('storage/' . $foto) }}" alt="Foto Kandidat"
+                                                class="rounded-circle" width="50" height="50"
+                                                style="object-fit: cover;">
+                                        @else
+                                            <!-- Placeholder jika tidak ada foto -->
+                                            <img src="https://ui-avatars.com/api/?name={{ urlencode($k->pendaftaran->nama ?? 'User') }}&background=0D8ABC&color=fff"
+                                                class="rounded-circle" width="50" height="50"
+                                                style="object-fit: cover;">
+                                        @endif
+                                    </td>
 
                                     <!-- Nama -->
                                     <td>{{ $k->pendaftaran->nama ?? '-' }}</td>
@@ -142,62 +188,39 @@
                                         </a>
                                     </td>
                                 </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="11" class="text-center text-muted p-3">Tidak ada data kandidat.</td>
-                                </tr>
-                            @endforelse
+                            @endforeach
                         </tbody>
                     </table>
-
-
-
-
                 </div>
             </div>
 
-        </div>
-       
 
-        <!-- ✅ Dependencies -->
+        </div>
+
+
+        <!-- JS Dependencies -->
         <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-
-        <!-- ✅ DataTables JS -->
         <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
         <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
         <script>
-            $(document).ready(function() {
-                var table = $('#tableKandidat').DataTable({
-                    responsive: true,
-                    pageLength: 5, // tampilkan 5 baris per halaman
-                    lengthMenu: [5, 10, 25, 50],
-                    language: {
-                        search: "🔍 Cari:",
-                        lengthMenu: "Tampilkan _MENU_ data",
-                        zeroRecords: "Tidak ada data ditemukan",
-                        info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
-                        paginate: {
-                            previous: "←",
-                            next: "→"
-                        }
+            // Inisialisasi DataTables
+            var table = $('#tableKandidatutama').DataTable({
+                responsive: true,
+                pageLength: 5,
+                lengthMenu: [5, 10, 25, 50],
+                language: {
+                    search: "🔍 Cari:",
+                    lengthMenu: "Tampilkan _MENU_ data",
+                    zeroRecords: "Tidak ada data ditemukan",
+                    info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
+                    paginate: {
+                        previous: "←",
+                        next: "→"
                     }
-                });
-
-                $('#filterCabang').on('change', function() {
-                    table.column(2).search(this.value).draw();
-                });
-
-                $('#filterStatus').on('change', function() {
-                    table.column(3).search(this.value).draw();
-                });
-
-                $('#resetFilter').on('click', function() {
-                    $('#filterCabang').val('');
-                    $('#filterStatus').val('');
-                    table.columns().search('').draw();
-                });
+                }
             });
         </script>
     @endsection

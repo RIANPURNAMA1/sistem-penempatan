@@ -28,13 +28,13 @@
 
     <!-- Breadcrumb -->
     <nav aria-label="breadcrumb" class="mb-4">
-        <ol class="breadcrumb bg-white border rounded-3 px-3 py-2 shadow-sm mb-0">
+        <ol class="breadcrumb border rounded-3 px-3 py-2 shadow-sm mb-0">
             <li class="breadcrumb-item">
                 <a href="#" class="text-decoration-none text-secondary">
                     <i class="bi bi-house-door me-1"></i> Dashboard
                 </a>
             </li>
-            <li class="breadcrumb-item active text-dark fw-semibold" aria-current="page">
+            <li class="breadcrumb-item active fw-semibold" aria-current="page">
                 <i class="bi bi-building me-1"></i> Daftar Institusi
             </li>
         </ol>
@@ -51,7 +51,7 @@
     </div>
 
     <div class="card shadow-sm rounded-3">
-        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+        <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mb-0 fw-semibold">Cabang</h5>
             <a href="{{ url('/cabang/create') }}" class="btn btn-success btn-sm">
                 <i class="bi bi-plus-lg me-1"></i> Tambah Cabang
@@ -59,8 +59,7 @@
         </div>
 
         <div class="card-body table-responsive">
-
-            <table class="table table-hover table-bordered align-middle">
+            <table id="tableCabang" class="table table-hover table-bordered align-middle">
                 <thead class="text-dark fw-bold" style="">
                     <tr>
                         <th class="text-center">No</th>
@@ -72,7 +71,7 @@
                 </thead>
 
                 <tbody>
-                    @forelse ($cabangs as $index => $cabang)
+                    @foreach ($cabangs as $index => $cabang)
                         <tr>
                             <td class="text-center fw-semibold">{{ $index + 1 }}</td>
                             <td class="fw-semibold">{{ $cabang->nama_cabang }}</td>
@@ -98,13 +97,8 @@
                                 </div>
                             </td>
                         </tr>
-                    @empty
-                        <tr>
-                            <td colspan="5" class="text-center text-muted py-3">
-                                Belum ada data cabang.
-                            </td>
-                        </tr>
-                    @endforelse
+                    
+                    @endforeach
                 </tbody>
             </table>
 
@@ -130,6 +124,23 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
+
+    var table = $('#tableCabang').DataTable({
+                    responsive: true,
+                    pageLength: 5, // tampilkan 5 baris per halaman
+                    lengthMenu: [5, 10, 25, 50],
+                    language: {
+                        search: "🔍 Cari:",
+                        lengthMenu: "Tampilkan _MENU_ data",
+                        zeroRecords: "Tidak ada data ditemukan",
+                        info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
+                        paginate: {
+                            previous: "←",
+                            next: "→"
+                        }
+                    }
+                });
+
     // Konfirmasi hapus
     const deleteForms = document.querySelectorAll('.delete-form');
     deleteForms.forEach(form => {
