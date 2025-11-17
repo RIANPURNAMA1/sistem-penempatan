@@ -253,6 +253,15 @@
                             </a>
                         </li>
 
+                        <li class="sidebar-item mt-2">
+                            <a href="https://wa.me/628xxxxxxxxxx" target="_blank" class="sidebar-link"
+                                style="text-decoration: none;">
+                                <i class="bi bi-headset"></i>
+                                <span>Hubungi Admin</span>
+                            </a>
+                        </li>
+
+
                         <script>
                             document.addEventListener('DOMContentLoaded', function() {
                                 const links = document.querySelectorAll('.coming-soon');

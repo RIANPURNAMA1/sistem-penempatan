@@ -3,32 +3,20 @@
 namespace App\Services;
 
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 
-  class FonnteService
+class FonnteService
 {
-    protected static $token = "nP3ttMoWtrqeYuUAL4cM";
-
-    public static function sendMessage($noWa, $pesan)
+    public static function sendMessage($target, $message)
     {
-        if (!$noWa || !$pesan) {
-            return false;
-        }
+        $token = "nP3ttMoWtrqeYuUAL4cM"; // token kamu
 
-        $noWa = preg_replace('/^0/', '62', $noWa);
+        $response = Http::withHeaders([
+            'Authorization' => $token
+        ])->post('https://api.fonnte.com/send', [
+            'target' => $target,
+            'message' => $message,
+        ]);
 
-        try {
-            $response = Http::withHeaders([
-                'Authorization' => self::$token,
-            ])->post('https://api.fonnte.com/send', [
-                'target' => $noWa,
-                'message' => $pesan,
-            ]);
-
-            return $response->json();
-
-        } catch (\Exception $e) {
-            dd("ERROR FONNTE:", $e->getMessage());
-        }
+        return $response->json();
     }
 }

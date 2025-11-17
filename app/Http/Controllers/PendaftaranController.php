@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\KandidatExport;
 use Illuminate\Http\Request;
 use App\Models\Pendaftaran;
 use App\Models\Cabang;
 use App\Models\Kandidat;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
 
 class PendaftaranController extends Controller
 {
@@ -159,4 +162,36 @@ class PendaftaranController extends Controller
         $kandidats = Kandidat::with(['pendaftaran', 'cabang', 'institusi'])->latest('id');
         return view('kandidat.data', compact('kandidats'));
     }
+
+
+
+
+
+
+
+public function destroy($id)
+{
+    $pendaftaran = Pendaftaran::findOrFail($id);
+
+    $files = [
+        $pendaftaran->foto,
+        $pendaftaran->kk,
+        $pendaftaran->ktp,
+        $pendaftaran->bukti_pelunasan,
+        $pendaftaran->akte,
+        $pendaftaran->ijasah,
+    ];
+
+    foreach ($files as $file) {
+        if (!empty($file) && Storage::disk('public')->exists($file)) {
+            Storage::disk('public')->delete($file);
+        }
+    }
+
+    $pendaftaran->delete();
+
+    return redirect()->back()->with('success', 'Data pendaftaran berhasil dihapus.');
+}
+
+
 }

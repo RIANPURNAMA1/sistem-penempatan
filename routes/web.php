@@ -121,7 +121,13 @@ Route::middleware(['auth', 'role:super admin'])
 use App\Http\Controllers\PendaftaranController;
 
 
+
+    Route::delete('/pendaftaran/{id}', [PendaftaranController::class, 'destroy'])
+    ->name('pendaftaran.destroy');
 Route::middleware(['auth', 'role:super admin'])->group(function () {
+
+    Route::get('/pendaftaran/export', [PendaftaranController::class, 'export'])->name('pendaftaran.export');
+
     // Data siswa + paginate
     Route::get('/siswa', [PendaftaranController::class, 'DataKandidat'])
         ->name('siswa.index');

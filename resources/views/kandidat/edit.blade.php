@@ -18,17 +18,28 @@
                     <option value="Interview" {{ $kandidat->status_kandidat == 'Interview' ? 'selected' : '' }}>Interview
                     </option>
                     <option value="Jadwalkan Interview Ulang"
-                        {{ $kandidat->status_kandidat == 'Jadwalkan Interview Ulang' ? 'selected' : '' }}>Jadwalkan
-                        Interview Ulang</option>
+                        {{ $kandidat->status_kandidat == 'Jadwalkan Interview Ulang' ? 'selected' : '' }}>
+                        Jadwalkan Interview Ulang
+                    </option>
                     <option value="Lulus interview" {{ $kandidat->status_kandidat == 'Lulus interview' ? 'selected' : '' }}>
-                        Lulus Interview</option>
+                        Lulus Interview
+                    </option>
                     <option value="Gagal Interview" {{ $kandidat->status_kandidat == 'Gagal Interview' ? 'selected' : '' }}>
-                        Gagal Interview</option>
+                        Gagal Interview
+                    </option>
                     <option value="Pemberkasan" {{ $kandidat->status_kandidat == 'Pemberkasan' ? 'selected' : '' }}>
-                        Pemberkasan</option>
-                    <option value="Berangkat" {{ $kandidat->status_kandidat == 'Berangkat' ? 'selected' : '' }}>Berangkat
+                        Pemberkasan
+                    </option>
+                    <option value="Berangkat" {{ $kandidat->status_kandidat == 'Berangkat' ? 'selected' : '' }}>
+                        Berangkat
+                    </option>
+
+                    <!-- Opsi tambahan -->
+                    <option value="Ditolak" {{ $kandidat->status_kandidat == 'Ditolak' ? 'selected' : '' }}>
+                        Ditolak
                     </option>
                 </select>
+
             </div>
 
             <!-- Institusi / Penempatan -->
@@ -79,7 +90,7 @@
                 $btn.prop("disabled", true);
                 $btn.html(
                     '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Memproses...'
-                    );
+                );
 
                 $.ajax({
                     url: "{{ route('kandidat.update', $kandidat->id) }}",

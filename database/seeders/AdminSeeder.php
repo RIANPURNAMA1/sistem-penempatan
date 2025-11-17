@@ -26,7 +26,7 @@ class AdminSeeder extends Seeder
                 'name' => 'Admin Cianjur',
                 'email' => 'admincianjur@example.com',
                 'password' => 'admincianjur123',
-                'role' => 'admin cianjur',
+                'role' => 'admin cianjur pamoyanan',
             ],
             [
                 'name' => 'Admin Cianjur Selatan',

@@ -45,9 +45,10 @@
                     </div>
                     <!-- Tombol Import, Export & PDF -->
                     <div class="d-flex gap-2 mt-2 mt-md-0">
-                        <button class="btn btn-success btn-sm fw-semibold shadow-sm">
+                        <a href="/pendaftaran/export" class="btn btn-success btn-sm fw-semibold shadow-sm">
                             <i class="bi bi-file-earmark-excel me-1"></i> Export Data
-                        </button>
+                        </a>
+
                         <button class="btn btn-primary btn-sm fw-semibold shadow-sm">
                             <i class="bi bi-file-earmark-arrow-up me-1"></i> Import Data
                         </button>
@@ -190,8 +191,18 @@
 
                                         <a href="{{ route('siswa.edit', $kandidat->id) }}"
                                             class="btn btn-sm btn-warning text-white" title="Edit">
-                                            <i class="bi bi-pencil-square"></i>
+                                            <i class="bi bi-pencil-square"></i>Edit
                                         </a>
+
+                                        <form data-id="{{ $data->id }} method="POST" enctype="multipart/form-data"
+                                            class="delete-form d-inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger btn-sm">
+                                                <i class="bi bi-trash"></i> Hapus
+                                            </button>
+                                        </form>
+
                                     </div>
                                 </td>
                             </tr>
@@ -209,30 +220,82 @@
     </div>
 
 
-        <!-- JS Dependencies -->
-        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-        <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- JS Dependencies -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-        <script>
-            // Inisialisasi DataTables
-            var table = $('#tablependaftar').DataTable({
-                responsive: true,
-                pageLength: 5,
-                lengthMenu: [5, 10, 25, 50],
-                language: {
-                    search: "🔍 Cari:",
-                    lengthMenu: "Tampilkan _MENU_ data",
-                    zeroRecords: "Tidak ada data ditemukan",
-                    info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
-                    paginate: {
-                        previous: "←",
-                        next: "→"
-                    }
+    <script>
+        // Inisialisasi DataTables
+        var table = $('#tablependaftar').DataTable({
+            responsive: true,
+            pageLength: 5,
+            lengthMenu: [5, 10, 25, 50],
+            language: {
+                search: "🔍 Cari:",
+                lengthMenu: "Tampilkan _MENU_ data",
+                zeroRecords: "Tidak ada data ditemukan",
+                info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
+                paginate: {
+                    previous: "←",
+                    next: "→"
+                }
+            }
+        });
+
+        $('.delete-form').on('submit', function(e) {
+            e.preventDefault();
+
+            let form = $(this);
+            let id = form.data('id');
+
+            Swal.fire({
+                title: 'Yakin ingin menghapus?',
+                text: "Data pendaftaran akan terhapus permanen!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                    $.ajax({
+                        url: "/pendaftaran/" + id,
+                        type: "POST",
+                        data: {
+                            _token: form.find('input[name="_token"]').val(),
+                            _method: "DELETE"
+                        },
+                        success: function(response) {
+
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil!',
+                                text: 'Data berhasil dihapus!',
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+
+                            // hapus row dari tabel (opsional)
+                            form.closest('tr').remove();
+                        },
+                        error: function(xhr) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal!',
+                                text: 'Terjadi kesalahan saat menghapus data.'
+                            });
+                        }
+                    });
+
                 }
             });
-        </script>
+
+        });
+    </script>
 
 @endsection

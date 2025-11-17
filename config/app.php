@@ -132,7 +132,10 @@ return [
 
     'aliases' => [
         'Fonnte' => App\Services\FonnteService::class,
+
     ],
+
+
 
     
 

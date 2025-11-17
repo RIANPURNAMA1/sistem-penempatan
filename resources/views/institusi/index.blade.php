@@ -34,7 +34,7 @@
                         <i class="bi bi-house-door me-1"></i> Dashboard
                     </a>
                 </li>
-                <li class="breadcrumb-item active text-dark fw-semibold">
+                <li class="breadcrumb-item active fw-semibold">
                     <i class="bi bi-building me-1"></i> Daftar Institusi
                 </li>
             </ol>

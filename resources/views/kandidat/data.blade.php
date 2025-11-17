@@ -193,12 +193,12 @@
                                     <td>
                                         <a href="{{ route('kandidat.edit', $k->id) }}"
                                             class="btn btn-sm btn-warning text-white mb-1">
-                                            <i class="bi bi-pencil"></i>
+                                            <i class="bi bi-pencil"></i>Edit
                                         </a>
 
                                         <a href="{{ route('kandidat.history', $k->id) }}" class="btn btn-info btn-sm mb-1"
                                             title="History">
-                                            <i class="bi bi-clock-history"></i>
+                                            <i class="bi bi-clock-history"></i>History
                                         </a>
                                     </td>
                                 </tr>
