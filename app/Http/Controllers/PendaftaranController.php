@@ -48,7 +48,7 @@ public function store(Request $request)
         'tanggal_daftar' => 'required|date',
 
         // Semua file wajib
-        'foto' => 'required|file|mimes:jpg,jpeg,png|max:2048', // 2MB
+       'foto' => 'required|mimes:jpg,jpeg,png|max:5120', // max 5MB
         'kk' => 'required|file|mimes:jpg,jpeg,png,pdf|max:4096', // 4MB
         'ktp' => 'required|file|mimes:jpg,jpeg,png,pdf|max:4096',
         'bukti_pelunasan' => 'required|file|mimes:jpg,jpeg,png,pdf|max:4096',
