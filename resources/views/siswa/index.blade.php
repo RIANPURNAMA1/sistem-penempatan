@@ -194,7 +194,7 @@
                                             <i class="bi bi-pencil-square"></i>Edit
                                         </a>
 
-                                        <form data-id="{{ $data->id }} method="POST" enctype="multipart/form-data"
+                                        <form data-id="{{ $kandidat->id }} method="POST" enctype="multipart/form-data"
                                             class="delete-form d-inline">
                                             @csrf
                                             @method('DELETE')
