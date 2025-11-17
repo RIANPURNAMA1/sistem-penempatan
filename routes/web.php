@@ -130,9 +130,18 @@ Route::middleware(['auth', 'role:super admin'])->group(function () {
 |--------------------------------------------------------------------------
 */
 
+// Proses ganti password
+use App\Http\Controllers\Auth\ForgotPasswordController;
+Route::post('/lupa-password', [ForgotPasswordController::class, 'updatePassword'])->name('password.update');
+Route::get('/lupa-password', [ForgotPasswordController::class, 'showForgotForm'])->name('password.request');
+
+// Kirim email reset password
+Route::post('/lupa-password', [ForgotPasswordController::class, 'sendResetLink'])->name('password.email');
 
 use App\Http\Controllers\DokumenController;
 Route::middleware(['auth', 'role:kandidat'])->group(function () {
+
+
 
 
     // Form pendaftaran

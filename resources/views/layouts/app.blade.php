@@ -246,11 +246,31 @@
                         <li class="sidebar-title">Pengaturan</li>
 
                         <li class="sidebar-item">
-                            <a href="{{ url('/profil') }}" class='sidebar-link' style="text-decoration: none;">
+                            <a href="javascript:void(0)" class="sidebar-link coming-soon"
+                                style="text-decoration: none;">
                                 <i class="bi bi-person-circle"></i>
                                 <span>Profil</span>
                             </a>
                         </li>
+
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                const links = document.querySelectorAll('.coming-soon');
+
+                                links.forEach(link => {
+                                    link.addEventListener('click', function(e) {
+                                        e.preventDefault(); // mencegah navigasi
+                                        Swal.fire({
+                                            icon: 'info',
+                                            title: 'Coming Soon',
+                                            text: 'Fitur ini sedang dalam pengembangan!',
+                                            confirmButtonText: 'OK'
+                                        });
+                                    });
+                                });
+                            });
+                        </script>
+
 
                         <li class="sidebar-item">
                             <a href="#" class="sidebar-link" style="text-decoration: none;" id="logout-link">

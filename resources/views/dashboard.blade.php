@@ -466,7 +466,7 @@
 
 
             </div>
-            @include('kandidat.index');
+            @include('kandidat.index')
             @endif
         </section>
     </div>

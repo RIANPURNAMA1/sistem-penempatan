@@ -64,9 +64,9 @@ class AuthController extends Controller
     {
         return view('auth.login');
     }
-    // Login user
+   // Login user
     public function login(Request $request)
-    {
+    { 
         // Validasi input
         $request->validate([
             'email' => 'required|email',

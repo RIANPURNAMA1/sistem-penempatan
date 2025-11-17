@@ -80,7 +80,7 @@
             <p class="mb-1">Belum punya akun?
                 <a href="/registrasi" class="fw-bold text-decoration-none">Daftar</a>
             </p>
-            <a href="#" class="fw-bold text-decoration-none">Lupa Password?</a>
+            <a href="" class="fw-bold text-decoration-none">Lupa Password?</a>
         </div>
 
     </div>
@@ -88,60 +88,70 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <script>
-       $(document).ready(() => {
+        $(document).ready(() => {
 
-    $("#loginForm").on("submit", function(e) {
-        e.preventDefault();
+            $("#loginForm").on("submit", function(e) {
+                e.preventDefault();
 
-        // Tambahkan loading
-        const $btn = $("#loginBtn");
-        $btn.prop("disabled", true);
-        const originalHtml = $btn.html();
-        $btn.html('<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Memproses...');
+                const $btn = $("#loginBtn");
+                $btn.prop("disabled", true);
+                const originalHtml = $btn.html();
+                $btn.html(
+                    '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Memproses...'
+                    );
 
-        $.ajax({
-            url: "{{ route('login.post') }}",
-            type: "POST",
-            data: $(this).serialize(),
+                $.ajax({
+                    url: "{{ route('login.post') }}",
+                    type: "POST",
+                    data: $(this).serialize(),
 
-            success: function(response) {
-                $btn.prop("disabled", false);
-                $btn.html(originalHtml);
+                    success: function(response) {
+                        $btn.prop("disabled", false);
+                        $btn.html(originalHtml);
 
-                if (response.success) {
-                    Swal.fire({
-                        icon: "success",
-                        title: "Login Berhasil!",
-                        timer: 1500,
-                        showConfirmButton: false
-                    });
+                        if (response.success) {
+                            Swal.fire({
+                                icon: "success",
+                                title: "Login Berhasil!",
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
 
-                    setTimeout(() => window.location.href = response.redirect, 1500);
-                } else {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Login Gagal!",
-                        text: response.message ?? "Email atau password salah."
-                    });
-                }
-            },
+                            setTimeout(() => window.location.href = response.redirect, 1500);
 
-            error: function() {
-                $btn.prop("disabled", false);
-                $btn.html(originalHtml);
+                        } else if (response.code === 'ACCOUNT_NOT_FOUND') {
+                            Swal.fire({
+                                icon: "warning",
+                                title: "Akun Tidak Ditemukan",
+                                text: "Email yang kamu masukkan belum terdaftar."
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Login Gagal!",
+                                text: response.message ?? "Email atau password salah."
+                            });
+                        }
+                    },
 
-                Swal.fire({
-                    icon: "error",
-                    title: "Kesalahan Server",
-                    text: "Silakan periksa koneksi atau hubungi admin."
+                    error: function() {
+                        $btn.prop("disabled", false);
+                        $btn.html(originalHtml);
+
+                        Swal.fire({
+                            icon: "error",
+                            title: "Kesalahan Server",
+                            text: "Silakan periksa koneksi atau hubungi admin."
+                        });
+                    }
                 });
-            }
+            });
+
         });
-    });
-
-});
-
     </script>
+
+    
+
 
 </body>
 

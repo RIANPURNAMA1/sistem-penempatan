@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Log;
 
   class FonnteService
 {
-    protected static $token = "jB9Bk1ANacyBXDHNwXiV";
+    protected static $token = "nP3ttMoWtrqeYuUAL4cM";
 
     public static function sendMessage($noWa, $pesan)
     {
