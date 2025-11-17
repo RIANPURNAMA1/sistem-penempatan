@@ -180,6 +180,7 @@
                                 @endforeach
                             </div>
                         </div>
+
                         <!-- Submit -->
                         <div class="text-end mt-4">
                             <button type="reset" class="btn btn-secondary px-4 me-2 mb-2">
@@ -198,102 +199,149 @@
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-    const form = document.querySelector("form");
-    const btnSubmit = document.getElementById("btnSubmit");
+    <script>
+        $(document).ready(function() {
 
-    // Tombol submit manual + loading
-    btnSubmit.addEventListener("click", function (e) {
-        // Jika form valid → kirim normal
-        if (form.checkValidity()) {
-            btnSubmit.disabled = true;
-            btnSubmit.querySelector(".btn-text").classList.add("d-none");
-            btnSubmit.querySelector(".spinner-border").classList.remove("d-none");
-            form.submit();
-        } else {
-            // Jika invalid → tampilkan validasi bootstrap
-            form.classList.add("was-validated");
-        }
-    });
+            // FORM SUBMIT AJAX
+            $("form").on("submit", function(e) {
+                e.preventDefault();
 
-    // Prevent submit default untuk bootstrap
-    form.addEventListener("submit", function (e) {
-        if (!form.checkValidity()) {
-            e.preventDefault();
-            e.stopPropagation();
-        }
-    });
+                let form = this;
 
-    // =========================
-    // API WILAYAH INDONESIA
-    // =========================
+                // Validasi Bootstrap
+                if (!form.checkValidity()) {
+                    form.classList.add("was-validated");
+                    return;
+                }
 
-    const provinsiSelect = document.getElementById("provinsi");
-    const kabKotaSelect = document.getElementById("kab_kota");
-    const kecamatanSelect = document.getElementById("kecamatan");
-    const kelurahanSelect = document.getElementById("kelurahan");
+                let btn = $("#btnSubmit");
 
-    // Load Provinsi
-    fetch("https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json")
-        .then(res => res.json())
-        .then(data => {
-            data.forEach(p => {
-                provinsiSelect.innerHTML += `<option value="${p.name}" data-id="${p.id}">${p.name}</option>`;
+                // ANIMASI LOADING
+                btn.prop("disabled", true);
+                btn.find(".btn-text").addClass("d-none");
+                btn.find(".spinner-border").removeClass("d-none");
+
+                let formData = new FormData(form);
+
+                $.ajax({
+                    url: $(form).attr("action"),
+                    type: "POST",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(res) {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Berhasil",
+                            text: "Pendaftaran berhasil dikirim.",
+                            timer: 3000,
+                            showConfirmButton: false
+                        });
+
+                        form.reset();
+                        form.classList.remove("was-validated");
+                    },
+                    error: function(xhr) {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Gagal Mengirim",
+                            text: xhr.responseJSON?.message ??
+                                "Terjadi kesalahan, coba lagi."
+                        });
+                    },
+                    complete: function() {
+                        // KEMBALIKAN TOMBOL NORMAL
+                        btn.prop("disabled", false);
+                        btn.find(".btn-text").removeClass("d-none");
+                        btn.find(".spinner-border").addClass("d-none");
+                    }
+                });
+
             });
+
+            // Bootstrap validation
+            'use strict';
+            const forms = document.querySelectorAll('.needs-validation');
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', function(event) {
+                    if (!form.checkValidity()) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+
+            // API WILAYAH
+            const provinsiSelect = document.getElementById('provinsi');
+            const kabKotaSelect = document.getElementById('kab_kota');
+            const kecamatanSelect = document.getElementById('kecamatan');
+            const kelurahanSelect = document.getElementById('kelurahan');
+
+            // Ambil provinsi
+            fetch('https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json')
+                .then(res => res.json())
+                .then(data => {
+                    data.forEach(p => {
+                        provinsiSelect.innerHTML +=
+                            `<option value="${p.name}" data-id="${p.id}">${p.name}</option>`;
+                    });
+                });
+
+            // Saat provinsi berubah
+            provinsiSelect.addEventListener('change', function() {
+                kabKotaSelect.innerHTML = '<option value="">-- Pilih Kab/Kota --</option>';
+                kecamatanSelect.innerHTML = '<option value="">-- Pilih Kecamatan --</option>';
+                kelurahanSelect.innerHTML = '<option value="">-- Pilih Kelurahan --</option>';
+
+                const provId = this.selectedOptions[0].dataset.id;
+                if (!provId) return;
+
+                fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${provId}.json`)
+                    .then(res => res.json())
+                    .then(data => {
+                        data.forEach(k => {
+                            kabKotaSelect.innerHTML +=
+                                `<option value="${k.name}" data-id="${k.id}">${k.name}</option>`;
+                        });
+                    });
+            });
+
+            // Saat kab/kota berubah
+            kabKotaSelect.addEventListener('change', function() {
+                kecamatanSelect.innerHTML = '<option value="">-- Pilih Kecamatan --</option>';
+                kelurahanSelect.innerHTML = '<option value="">-- Pilih Kelurahan --</option>';
+
+                const kabId = this.selectedOptions[0].dataset.id;
+                if (!kabId) return;
+
+                fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/districts/${kabId}.json`)
+                    .then(res => res.json())
+                    .then(data => {
+                        data.forEach(c => {
+                            kecamatanSelect.innerHTML +=
+                                `<option value="${c.name}" data-id="${c.id}">${c.name}</option>`;
+                        });
+                    });
+            });
+
+            // Saat kecamatan berubah
+            kecamatanSelect.addEventListener('change', function() {
+                kelurahanSelect.innerHTML = '<option value="">-- Pilih Kelurahan --</option>';
+
+                const kecId = this.selectedOptions[0].dataset.id;
+                if (!kecId) return;
+
+                fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/villages/${kecId}.json`)
+                    .then(res => res.json())
+                    .then(data => {
+                        data.forEach(v => {
+                            kelurahanSelect.innerHTML +=
+                                `<option value="${v.name}">${v.name}</option>`;
+                        });
+                    });
+            });
+
         });
-
-    // Load Kab/Kota
-    provinsiSelect.addEventListener("change", function () {
-        kabKotaSelect.innerHTML = `<option value="">-- Pilih Kab/Kota --</option>`;
-        kecamatanSelect.innerHTML = `<option value="">-- Pilih Kecamatan --</option>`;
-        kelurahanSelect.innerHTML = `<option value="">-- Pilih Kelurahan --</option>`;
-
-        const provId = this.selectedOptions[0].dataset.id;
-        if (!provId) return;
-
-        fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${provId}.json`)
-            .then(res => res.json())
-            .then(data => {
-                data.forEach(k => {
-                    kabKotaSelect.innerHTML += `<option value="${k.name}" data-id="${k.id}">${k.name}</option>`;
-                });
-            });
-    });
-
-    // Load Kecamatan
-    kabKotaSelect.addEventListener("change", function () {
-        kecamatanSelect.innerHTML = `<option value="">-- Pilih Kecamatan --</option>`;
-        kelurahanSelect.innerHTML = `<option value="">-- Pilih Kelurahan --</option>`;
-
-        const kabId = this.selectedOptions[0].dataset.id;
-        if (!kabId) return;
-
-        fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/districts/${kabId}.json`)
-            .then(res => res.json())
-            .then(data => {
-                data.forEach(c => {
-                    kecamatanSelect.innerHTML += `<option value="${c.name}" data-id="${c.id}">${c.name}</option>`;
-                });
-            });
-    });
-
-    // Load Kelurahan
-    kecamatanSelect.addEventListener("change", function () {
-        kelurahanSelect.innerHTML = `<option value="">-- Pilih Kelurahan --</option>`;
-
-        const kecId = this.selectedOptions[0].dataset.id;
-        if (!kecId) return;
-
-        fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/villages/${kecId}.json`)
-            .then(res => res.json())
-            .then(data => {
-                data.forEach(v => {
-                    kelurahanSelect.innerHTML += `<option value="${v.name}">${v.name}</option>`;
-                });
-            });
-    });
-});
-</script>
-
+    </script>
 @endsection
