@@ -59,14 +59,49 @@ class AuthController extends Controller
 
 
 
+    // Tampilkan form lupa password
+    public function showLupaPassword()
+    {
+        return view('auth.lupa-password');
+    }
+
+    // Proses reset password
+    // Proses reset password via AJAX
+        // Tampilkan form lupa password
+    public function showForgotPassword()
+    {
+        return view('auth.forgot-password');
+    }
+
+    // Proses reset password via email
+    public function resetPassword(Request $request)
+    {
+        // Validasi input
+        $request->validate([
+            'email' => 'required|email|exists:users,email',
+            'password' => 'required|confirmed|min:6',
+        ]);
+
+        // Cari user berdasarkan email
+        $user = User::where('email', $request->email)->first();
+
+        // Update password
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        return response()->json([
+            'message' => 'Password berhasil direset!'
+        ]);
+    }
+
     // Form login
     public function showLogin()
     {
         return view('auth.login');
     }
-   // Login user
+    // Login user
     public function login(Request $request)
-    { 
+    {
         // Validasi input
         $request->validate([
             'email' => 'required|email',
@@ -104,5 +139,11 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
 
         return redirect()->route('login');
+    }
+
+
+    public function lupapassword()
+    {
+        return view('forgot-password');
     }
 }

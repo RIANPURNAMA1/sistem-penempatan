@@ -25,168 +25,175 @@
 
         <div class="card shadow-sm border-0 rounded-4">
             <div class="card-body p-4">
-                <form action="{{ route('pendaftaran.store') }}" method="POST" enctype="multipart/form-data"
-                    class="needs-validation" novalidate>
-                    @csrf
-                    @method('POST')
-
-                    <!-- ==================== Data Pribadi ==================== -->
-                    <div class="mb-4">
-                        <h5 class="fw-bold border-bottom pb-2 mb-3">
-                            <i class="bi bi-person-lines-fill me-2 text-primary"></i> Data Pribadi
-                        </h5>
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label">NIK <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" name="nik" placeholder="Masukkan NIK"
-                                    required pattern="\d{16}">
-                                <div class="invalid-feedback">NIK wajib diisi dan harus 16 digit angka.</div>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Nama Lengkap <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" name="nama"
-                                    placeholder="Masukkan nama lengkap" required>
-                                <div class="invalid-feedback">Nama lengkap wajib diisi.</div>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Email <span class="text-danger">*</span></label>
-                                <input type="email" class="form-control" name="email" placeholder="contoh@email.com"
-                                    required>
-                                <div class="invalid-feedback">Silakan masukkan email yang valid.</div>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Nomor WhatsApp <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" name="no_wa" placeholder="08xxxxxxxxxx"
-                                    required pattern="08\d{8,12}">
-                                <div class="invalid-feedback">Nomor WA wajib diisi dan format harus benar.</div>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Jenis Kelamin <span class="text-danger">*</span></label>
-                                <select class="form-select" name="jenis_kelamin" required>
-                                    <option value="">-- Pilih Jenis Kelamin --</option>
-                                    <option value="Laki-laki">Laki-laki</option>
-                                    <option value="Perempuan">Perempuan</option>
-                                </select>
-                                <div class="invalid-feedback">Silakan pilih jenis kelamin.</div>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Cabang <span class="text-danger">*</span></label>
-                                <select class="form-select" name="cabang_id" required>
-                                    <option value="">-- Pilih Cabang --</option>
-                                    @foreach ($cabangs as $cabang)
-                                        <option value="{{ $cabang->id }}">{{ $cabang->nama_cabang }}</option>
-                                    @endforeach
-                                </select>
-                                <div class="invalid-feedback">Silakan pilih cabang.</div>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Tanggal Daftar <span class="text-danger">*</span></label>
-                                <input type="date" class="form-control" name="tanggal_daftar" required>
-                                <div class="invalid-feedback">Tanggal daftar wajib dipilih.</div>
-                            </div>
-                            <div class="col-12">
-                                <label class="form-label">Alamat Lengkap <span class="text-danger">*</span></label>
-                                <textarea class="form-control" name="alamat" rows="3" required></textarea>
-                                <div class="invalid-feedback">Alamat lengkap wajib diisi.</div>
-                            </div>
-
-                            <!-- Lokasi -->
-                            <div class="col-md-6">
-                                <label class="form-label">Provinsi <span class="text-danger">*</span></label>
-                                <select class="form-select" id="provinsi" name="provinsi" required>
-                                    <option value="">-- Pilih Provinsi --</option>
-                                </select>
-                                <div class="invalid-feedback">Silakan pilih provinsi.</div>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Kab/Kota <span class="text-danger">*</span></label>
-                                <select class="form-select" id="kab_kota" name="kab_kota" required>
-                                    <option value="">-- Pilih Kab/Kota --</option>
-                                </select>
-                                <div class="invalid-feedback">Silakan pilih Kab/Kota.</div>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Kecamatan <span class="text-danger">*</span></label>
-                                <select class="form-select" id="kecamatan" name="kecamatan" required>
-                                    <option value="">-- Pilih Kecamatan --</option>
-                                </select>
-                                <div class="invalid-feedback">Silakan pilih kecamatan.</div>
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Kelurahan <span class="text-danger">*</span></label>
-                                <select class="form-select" id="kelurahan" name="kelurahan" required>
-                                    <option value="">-- Pilih Kelurahan --</option>
-                                </select>
-                                <div class="invalid-feedback">Silakan pilih kelurahan.</div>
-                            </div>
-                        </div>
+                @if ($alreadyRegistered)
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        Anda sudah melakukan pendaftaran sebelumnya. Form pendaftaran tidak dapat diakses lagi.
                     </div>
+                @else
+                    <form action="{{ route('pendaftaran.store') }}" method="POST" enctype="multipart/form-data"
+                        class="needs-validation" novalidate>
+                        @csrf
+                        @method('POST')
 
-                    <!-- ==================== Upload Dokumen ==================== -->
-                    <div class="mb-4">
-                        <h5 class="fw-bold border-bottom pb-2 mb-3">
-                            <i class="bi bi-folder-symlink me-2 text-primary"></i> Upload Dokumen Persyaratan
-                        </h5>
-                        <div class="row g-3">
-                            @php
-                                $dokumenFields = [
-                                    [
-                                        'label' => 'Foto Diri',
-                                        'name' => 'foto',
-                                        'accept' => 'image/jpeg,image/png,application/pdf',
-                                    ],
-                                    [
-                                        'label' => 'Kartu Keluarga (KK)',
-                                        'name' => 'kk',
-                                        'accept' => 'image/jpeg,image/png,application/pdf',
-                                    ],
-                                    [
-                                        'label' => 'KTP',
-                                        'name' => 'ktp',
-                                        'accept' => 'image/jpeg,image/png,application/pdf',
-                                    ],
-                                    [
-                                        'label' => 'Bukti Pelunasan',
-                                        'name' => 'bukti_pelunasan',
-                                        'accept' => 'image/jpeg,image/png,application/pdf',
-                                    ],
-                                    [
-                                        'label' => 'Akte Kelahiran',
-                                        'name' => 'akte',
-                                        'accept' => 'image/jpeg,image/png,application/pdf',
-                                    ],
-                                    [
-                                        'label' => 'Ijazah Terakhir',
-                                        'name' => 'ijasah',
-                                        'accept' => 'image/jpeg,image/png,application/pdf',
-                                    ],
-                                ];
-                            @endphp
-                            @foreach ($dokumenFields as $dok)
-                                <div class="col-md-4">
-                                    <label class="form-label">{{ $dok['label'] }} <span
-                                            class="text-danger">*</span></label>
-                                    <input type="file" class="form-control" name="{{ $dok['name'] }}"
-                                        accept="{{ $dok['accept'] }}" required>
-                                    <div class="form-text">Format diperbolehkan: PDF, JPG, PNG.</div>
-                                    <div class="invalid-feedback">{{ $dok['label'] }} wajib diunggah.</div>
+                        <!-- ==================== Data Pribadi ==================== -->
+                        <div class="mb-4">
+                            <h5 class="fw-bold border-bottom pb-2 mb-3">
+                                <i class="bi bi-person-lines-fill me-2 text-primary"></i> Data Pribadi
+                            </h5>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">NIK <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="nik" placeholder="Masukkan NIK"
+                                        required pattern="\d{16}">
+                                    <div class="invalid-feedback">NIK wajib diisi dan harus 16 digit angka.</div>
                                 </div>
-                            @endforeach
+                                <div class="col-md-6">
+                                    <label class="form-label">Nama Lengkap <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="nama"
+                                        placeholder="Masukkan nama lengkap" required>
+                                    <div class="invalid-feedback">Nama lengkap wajib diisi.</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Email <span class="text-danger">*</span></label>
+                                    <input type="email" class="form-control" name="email" placeholder="contoh@email.com"
+                                        required>
+                                    <div class="invalid-feedback">Silakan masukkan email yang valid.</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Nomor WhatsApp <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="no_wa" placeholder="08xxxxxxxxxx"
+                                        required pattern="08\d{8,12}">
+                                    <div class="invalid-feedback">Nomor WA wajib diisi dan format harus benar.</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Jenis Kelamin <span class="text-danger">*</span></label>
+                                    <select class="form-select" name="jenis_kelamin" required>
+                                        <option value="">-- Pilih Jenis Kelamin --</option>
+                                        <option value="Laki-laki">Laki-laki</option>
+                                        <option value="Perempuan">Perempuan</option>
+                                    </select>
+                                    <div class="invalid-feedback">Silakan pilih jenis kelamin.</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Cabang <span class="text-danger">*</span></label>
+                                    <select class="form-select" name="cabang_id" required>
+                                        <option value="">-- Pilih Cabang --</option>
+                                        @foreach ($cabangs as $cabang)
+                                            <option value="{{ $cabang->id }}">{{ $cabang->nama_cabang }}</option>
+                                        @endforeach
+                                    </select>
+                                    <div class="invalid-feedback">Silakan pilih cabang.</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Tanggal Daftar <span class="text-danger">*</span></label>
+                                    <input type="date" class="form-control" name="tanggal_daftar" required>
+                                    <div class="invalid-feedback">Tanggal daftar wajib dipilih.</div>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Alamat Lengkap <span class="text-danger">*</span></label>
+                                    <textarea class="form-control" name="alamat" rows="3" required></textarea>
+                                    <div class="invalid-feedback">Alamat lengkap wajib diisi.</div>
+                                </div>
+
+                                <!-- Lokasi -->
+                                <div class="col-md-6">
+                                    <label class="form-label">Provinsi <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="provinsi" name="provinsi" required>
+                                        <option value="">-- Pilih Provinsi --</option>
+                                    </select>
+                                    <div class="invalid-feedback">Silakan pilih provinsi.</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Kab/Kota <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="kab_kota" name="kab_kota" required>
+                                        <option value="">-- Pilih Kab/Kota --</option>
+                                    </select>
+                                    <div class="invalid-feedback">Silakan pilih Kab/Kota.</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Kecamatan <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="kecamatan" name="kecamatan" required>
+                                        <option value="">-- Pilih Kecamatan --</option>
+                                    </select>
+                                    <div class="invalid-feedback">Silakan pilih kecamatan.</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Kelurahan <span class="text-danger">*</span></label>
+                                    <select class="form-select" id="kelurahan" name="kelurahan" required>
+                                        <option value="">-- Pilih Kelurahan --</option>
+                                    </select>
+                                    <div class="invalid-feedback">Silakan pilih kelurahan.</div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- Submit -->
-                    <div class="text-end mt-4">
-                        <button type="reset" class="btn btn-secondary px-4 me-2 mb-2">
-                            <i class="bi bi-arrow-counterclockwise me-1 "></i> Reset
-                        </button>
-                        <button id="btnSubmit" type="submit" class="btn btn-warning px-4">
-                            <span class="btn-text"><i class="bi bi-send-check-fill me-1"></i> Daftar Sekarang</span>
-                            <span class="spinner-border spinner-border-sm d-none" role="status"></span>
-                        </button>
+                        <!-- ==================== Upload Dokumen ==================== -->
+                        <div class="mb-4">
+                            <h5 class="fw-bold border-bottom pb-2 mb-3">
+                                <i class="bi bi-folder-symlink me-2 text-primary"></i> Upload Dokumen Persyaratan
+                            </h5>
+                            <div class="row g-3">
+                                @php
+                                    $dokumenFields = [
+                                        [
+                                            'label' => 'Foto Diri',
+                                            'name' => 'foto',
+                                            'accept' => 'image/jpeg,image/png,application/pdf',
+                                        ],
+                                        [
+                                            'label' => 'Kartu Keluarga (KK)',
+                                            'name' => 'kk',
+                                            'accept' => 'image/jpeg,image/png,application/pdf',
+                                        ],
+                                        [
+                                            'label' => 'KTP',
+                                            'name' => 'ktp',
+                                            'accept' => 'image/jpeg,image/png,application/pdf',
+                                        ],
+                                        [
+                                            'label' => 'Bukti Pelunasan',
+                                            'name' => 'bukti_pelunasan',
+                                            'accept' => 'image/jpeg,image/png,application/pdf',
+                                        ],
+                                        [
+                                            'label' => 'Akte Kelahiran',
+                                            'name' => 'akte',
+                                            'accept' => 'image/jpeg,image/png,application/pdf',
+                                        ],
+                                        [
+                                            'label' => 'Ijazah Terakhir',
+                                            'name' => 'ijasah',
+                                            'accept' => 'image/jpeg,image/png,application/pdf',
+                                        ],
+                                    ];
+                                @endphp
+                                @foreach ($dokumenFields as $dok)
+                                    <div class="col-md-4">
+                                        <label class="form-label">{{ $dok['label'] }} <span
+                                                class="text-danger">*</span></label>
+                                        <input type="file" class="form-control" name="{{ $dok['name'] }}"
+                                            accept="{{ $dok['accept'] }}" required>
+                                        <div class="form-text">Format diperbolehkan: PDF, JPG, PNG.</div>
+                                        <div class="invalid-feedback">{{ $dok['label'] }} wajib diunggah.</div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
 
-                    </div>
-                </form>
+                        <!-- Submit -->
+                        <div class="text-end mt-4">
+                            <button type="reset" class="btn btn-secondary px-4 me-2 mb-2">
+                                <i class="bi bi-arrow-counterclockwise me-1 "></i> Reset
+                            </button>
+                            <button id="btnSubmit" type="submit" class="btn btn-warning px-4">
+                                <span class="btn-text"><i class="bi bi-send-check-fill me-1"></i> Daftar Sekarang</span>
+                                <span class="spinner-border spinner-border-sm d-none" role="status"></span>
+                            </button>
+
+                        </div>
+                    </form>
+                @endif
             </div>
         </div>
     </div>

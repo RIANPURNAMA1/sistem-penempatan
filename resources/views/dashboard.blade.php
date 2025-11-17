@@ -459,14 +459,16 @@
                     </div>
                 @endif
 
-                @if (in_array(auth()->user()->role->name, ['admin cianjur', 'admin cianjur selatan', 'super admin']))
+                @if (in_array(auth()->user()->role->name, ['admin cianjur pamoyanan', 'admin cianjur selatan', 'super admin']))
                     {{-- distribusi status kandidat --}}
                     <!-- Tambahkan script chart -->
 
 
+                    @include('kandidat.index')
 
             </div>
-            @include('kandidat.index')
+            {{-- super admin --}}
+     
             @endif
         </section>
     </div>

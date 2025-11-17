@@ -80,7 +80,7 @@
             <p class="mb-1">Belum punya akun?
                 <a href="/registrasi" class="fw-bold text-decoration-none">Daftar</a>
             </p>
-            <a href="" class="fw-bold text-decoration-none">Lupa Password?</a>
+            <a href="/lupa/password" class="fw-bold text-decoration-none">Lupa Password?</a>
         </div>
 
     </div>

@@ -103,6 +103,9 @@ class DashboardController extends Controller
         $dataKandidat = Pendaftaran::with(['kandidat', 'cabang'])->where('user_id', Auth::id())->get();
 
 
+
+        
+
         return view('dashboard', compact(
             'stats',
             'status_penempatan',
@@ -120,8 +123,6 @@ class DashboardController extends Controller
         $kandidat = Kandidat::with(['pendaftaran', 'cabang', 'institusi'])->findOrFail($id);
         return view('kandidat.show', compact('kandidat'));
     }
-
-
 
     public function DataKandidat(Request $request)
     {

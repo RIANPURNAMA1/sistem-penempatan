@@ -1,5 +1,3 @@
-
-
 <!-- Bootstrap 5 & DataTables CSS -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
@@ -28,7 +26,7 @@
                 </a>
             </li>
             <li class="breadcrumb-item active fw-semibold" aria-current="page">
-                <i class="bi bi-people me-1"></i> Data Kandidat
+                <i class="bi bi-people me-1"></i> Data Semua Kandidat dari semua cabang
             </li>
         </ol>
     </nav>
@@ -36,7 +34,7 @@
     <!-- Header -->
     <div class="mb-4 text-center text-md-start">
         <h2 class="mb-2">
-            <i class="bi bi-people text-primary me-2"></i> Data Kandidat
+            <i class="bi bi-people text-primary me-2"></i> Data Semua Kandidat
         </h2>
         <p class="text-muted fst-italic mb-0">
             Berikut adalah daftar kandidat yang terdaftar dalam sistem.
@@ -70,7 +68,8 @@
                             <td>{{ $kandidat->pendaftaran->nama ?? '-' }}</td>
                             <td>{{ $kandidat->cabang->nama_cabang ?? '-' }}</td>
                             <td class="text-center">
-                                <span class="badge 
+                                <span
+                                    class="badge 
                                     {{ $kandidat->status_kandidat === 'Job Matching' ? 'bg-secondary text-white' : '' }}
                                     {{ $kandidat->status_kandidat === 'Pending' ? 'bg-info text-dark' : '' }}
                                     {{ $kandidat->status_kandidat === 'Interview' ? 'bg-warning text-dark' : '' }}
@@ -84,22 +83,30 @@
                                 </span>
                             </td>
                             <td class="text-center">
-                                <span class="badge {{ $kandidat->jumlah_interview > 0 ? 'bg-success' : 'bg-info text-dark' }}">
+                                <span
+                                    class="badge {{ $kandidat->jumlah_interview > 0 ? 'bg-success' : 'bg-info text-dark' }}">
                                     {{ $kandidat->jumlah_interview > 0 ? 'SELESAI' : 'PENDING' }}
                                 </span>
                             </td>
                             <td class="text-center">
                                 @if ($kandidat->institusi)
-                                    <span class="badge bg-primary">{{ $kandidat->institusi->nama_perusahaan ?? '-' }}</span>
+                                    <span
+                                        class="badge bg-primary">{{ $kandidat->institusi->nama_perusahaan ?? '-' }}</span>
                                 @else
                                     -
                                 @endif
                             </td>
                             <td class="text-center">{{ $kandidat->created_at->format('d-m-Y H:i') }}</td>
-                            <td class="text-center"><span class="badge bg-secondary">{{ $kandidat->jumlah_interview }}</span></td>
+                            <td class="text-center"><span
+                                    class="badge bg-secondary">{{ $kandidat->jumlah_interview }}</span></td>
                             <td class="text-center">
-                                <a href="{{ route('admins.dashboard.kandidat.show', $kandidat->id) }}" class="btn btn-sm btn-info text-white">
+                                <a href="{{ route('admins.dashboard.kandidat.show', $kandidat->id) }}"
+                                    class="btn btn-sm btn-info text-white">
                                     <i class="bi bi-eye"></i>
+                                </a>
+                                <a href="{{ route('kandidat.history', $kandidat->id) }}"
+                                    class="btn btn-sm btn-warning text-white">
+                                    <i class="bi bi-clock-history"></i>
                                 </a>
                             </td>
                         </tr>
@@ -135,5 +142,3 @@
         }
     });
 </script>
-
-

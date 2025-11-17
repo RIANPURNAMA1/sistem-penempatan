@@ -16,15 +16,14 @@ Route::middleware('guest')->group(function () {
     Route::get('/register/activate/{id}', [AuthController::class, 'activate'])->name('registrasi.activate');
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+    Route::get('/lupa/password', [AuthController::class, 'showLupaPassword'])->name('lupa.password');
 });
 
 Route::middleware('auth')->post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::get('/test-wa', function () {
-    return \App\Services\FonnteService::sendMessage('085624251657', 'Tes WA');
-});
-
-
+    
+// Proses reset password
+Route::post('/lupa/password', [AuthController::class, 'resetPassword'])->name('reset.submit');
 
 
 /*
@@ -32,6 +31,7 @@ Route::get('/test-wa', function () {
 | DASHBOARD (AUTH)
 |--------------------------------------------------------------------------
 */
+
 
 use App\Http\Controllers\DashboardController;
 
@@ -199,7 +199,7 @@ Route::middleware(['auth', 'role: super admin'])->prefix('institusi')->name('ins
 
 use App\Http\Controllers\KandidatController;
 
-Route::middleware(['auth','role:super admin'])->group(function () {
+Route::middleware(['auth','role:super admin, admin cianjur pamoyanan, admin cianjur selatan'])->group(function () {
 
     // Data kandidat
     Route::get('/kandidat/data', [KandidatController::class, 'index'])->name('kandidat.data');

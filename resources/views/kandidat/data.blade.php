@@ -60,15 +60,29 @@
 
                         <!-- Filter Status Kandidat -->
                         <div class="col-12 col-md-4">
+                            @php
+                                $statuses = [
+                                    'Job Matching',
+                                    'Pending',
+                                    'Interview',
+                                    'Gagal Interview',
+                                    'Jadwalkan Interview Ulang',
+                                    'Lulus interview',
+                                    'Pemberkasan',
+                                    'Berangkat',
+                                    'Diterima',
+                                    'Ditolak',
+                                ];
+                            @endphp
+
                             <label for="filterStatus" class="form-label fw-semibold">Filter Status Kandidat</label>
                             <select id="filterStatus" class="form-select">
                                 <option value="">Semua Status</option>
-                                <option value="Job Matching">Job Matching</option>
-                                <option value="Berangkat">Berangkat</option>
-                                <option value="Diterima">Diterima</option>
-                                <option value="Ditolak">Ditolak</option>
-                                <option value="Pending">Pending</option>
+                                @foreach ($statuses as $status)
+                                    <option value="{{ $status }}">{{ $status }}</option>
+                                @endforeach
                             </select>
+
                         </div>
 
                         <!-- Reset Filter -->
@@ -221,6 +235,39 @@
                         next: "→"
                     }
                 }
+            });
+
+
+            // Custom filter untuk Cabang dan Status
+            $.fn.dataTable.ext.search.push(
+                function(settings, data, dataIndex) {
+                    var selectedCabang = $('#filterCabang').val();
+                    var selectedStatus = $('#filterStatus').val();
+
+                    // Ambil elemen row
+                    var rowNode = table.row(dataIndex).node();
+
+                    // Ambil teks cabang dan status
+                    var cabang = $('td:eq(3)', rowNode).text().trim(); // kolom Cabang
+                    var status = $('td:eq(4)', rowNode).text().trim(); // kolom Status Kandidat
+
+                    var cabangMatch = selectedCabang === "" || cabang === selectedCabang;
+                    var statusMatch = selectedStatus === "" || status === selectedStatus;
+
+                    return cabangMatch && statusMatch;
+                }
+            );
+
+            // Event filter change
+            $('#filterCabang, #filterStatus').on('change', function() {
+                table.draw(); // redraw tabel dengan filter baru
+            });
+
+            // Reset filter
+            $('#resetFilter').on('click', function() {
+                $('#filterCabang').val('');
+                $('#filterStatus').val('');
+                table.draw();
             });
         </script>
     @endsection
