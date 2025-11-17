@@ -409,7 +409,7 @@
                                         title: 'Belum Melakukan Pendaftaran',
                                         html: `
                     <p>Kamu belum melakukan pendaftaran.</p>
-                    <a href="/pendaftaran" 
+                    <a href="{{ route('pendaftaran.create') }}" 
                        class="btn btn-warning fw-semibold mt-2">
                         <i class="bi bi-pencil-square me-1"></i> Klik di sini untuk daftar
                     </a>

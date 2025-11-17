@@ -11,22 +11,17 @@ use Illuminate\Support\Facades\Auth;
 class PendaftaranController extends Controller
 {
     // 🟢 Menampilkan form pendaftaran
-   public function create()
-{
-    // cek apakah user sudah daftar
+    public function datacabang()
+    {
+        $cabangs = Cabang::all();
+         // Cek apakah user sudah mendaftar
     $alreadyRegistered = Pendaftaran::where('user_id', Auth::id())->exists();
-
-    // ambil data cabang untuk select
-    $cabangs = Cabang::all();
-
-    return view('pendaftaran.form', compact('cabangs', 'alreadyRegistered'));
-}
-
-
+        return view('pendaftaran.index', compact('cabangs', 'alreadyRegistered'));
+    }
 
     public function store(Request $request)
     {
-
+      
         // Validasi semua field wajib
         $request->validate([
             'nik' => 'required|string|size:16|unique:pendaftarans,nik',
