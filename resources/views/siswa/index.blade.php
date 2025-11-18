@@ -192,17 +192,8 @@
                                         <a href="{{ route('siswa.edit', $kandidat->id) }}"
                                             class="btn btn-sm btn-warning text-white" title="Edit">
                                             <i class="bi bi-pencil-square"></i>Edit
-                                        </a>
-
-                                        <form data-id="{{ $kandidat->id }} method="POST" enctype="multipart/form-data"
-                                            class="delete-form d-inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm">
-                                                <i class="bi bi-trash"></i> Hapus
-                                            </button>
-                                        </form>
-
+   
+                                        </a>  
                                     </div>
                                 </td>
                             </tr>

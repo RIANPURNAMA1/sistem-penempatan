@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use App\Models\Kandidat;
 use App\Models\KandidatHistory;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
+
 use GuzzleHttp\Client;
 
 class KandidatController extends Controller
@@ -382,45 +384,48 @@ class KandidatController extends Controller
         'jadwal_interview' => $kandidat->jadwal_interview,
     ]);
 
-    /* ------------------------------------------------------------
-    | 🔔 Kirim WhatsApp langsung via API (tanpa FonnteService)
-    ------------------------------------------------------------ */
-    $noWa = $kandidat->pendaftaran->no_wa ?? null;
-    $nama = $kandidat->pendaftaran->nama ?? $kandidat->nama;
+   /* ------------------------------------------------------------
+| 🔔 Kirim WhatsApp langsung via API (tanpa FonnteService)
+------------------------------------------------------------ */
+$noWa = $kandidat->pendaftaran->no_wa ?? null;
+$nama = $kandidat->pendaftaran->nama ?? $kandidat->nama;
 
-    if (!empty($noWa)) {
-        $noWa = preg_replace('/^08/', '628', $noWa);
+if (!empty($noWa)) {
+    // ubah nomor WA 08xx menjadi 628xx
+    $noWa = preg_replace('/^08/', '628', $noWa);
 
-        $pesan =
-            "Halo *{$nama}*,\n\n" .
-            "Kami dari *Mendunia Jepang* ingin menyampaikan bahwa status proses Anda telah diperbarui.\n\n" .
-            "📄 *Status Terbaru*: {$request->status_kandidat}\n" .
-            "⏰ *Diperbarui Pada*: " . now()->format('d M Y H:i') . "\n" .
-            (!empty($request->catatan_interview) ? "📝 *Catatan*: {$request->catatan_interview}\n\n" : "\n") .
-            "Terima kasih atas kepercayaan Anda.";
+    $pesan =
+        "Halo *{$nama}*,\n\n" .
+        "Kami dari *Mendunia Jepang* ingin menyampaikan bahwa status proses Anda telah diperbarui.\n\n" .
+        "📄 *Status Terbaru*: {$request->status_kandidat}\n" .
+        "⏰ *Diperbarui Pada*: " . now()->format('d M Y H:i') . "\n" .
+        (!empty($request->catatan_interview) ? "📝 *Catatan*: {$request->catatan_interview}\n\n" : "\n") .
+        "Terima kasih atas kepercayaan Anda.";
 
-        try {
-            $apiKey = "nP3ttMoWtrqeYuUAL4cM";
-            $url = "https://api.fonnte.com/sendMessage"; // contoh endpoint
+    try {
+        $apiKey = "9yqpWgvWbEoDZqRKgz5Q";
+        $url = "https://api.fonnte.com/sendMessage"; // contoh endpoint
 
-            $payload = [
-                'to' => $noWa,
-                'message' => $pesan,
-                'apiKey' => $apiKey,
-            ];
+        $payload = [
+            'to' => $noWa,
+            'message' => $pesan,
+            'apiKey' => $apiKey,
+        ];
 
-            $ch = curl_init($url);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
-            curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type:application/json']);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            $response = curl_exec($ch);
-            curl_close($ch);
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type:application/json']);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $response = curl_exec($ch);
+        curl_close($ch);
 
-            \Log::info("Response Fonnte: {$response}");
-        } catch (\Exception $e) {
-            \Log::error("Gagal mengirim WA ke {$noWa}: " . $e->getMessage());
-        }
+        // log response
+        Log::info("Response Fonnte: " . $response);
+
+    } catch (\Exception $e) {
+        Log::error("Gagal mengirim WA ke {$noWa}: " . $e->getMessage());
     }
+}
 
     /* ------------------------------------------------------------
     | 📧 Kirim Email Notifikasi
