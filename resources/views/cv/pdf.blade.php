@@ -1,355 +1,359 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>面談シート</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: "MS Mincho", "ヒラギノ明朝 Pro", serif;
-            background-color: #fff;
-            padding: 20px;
-            font-size: 12px;
-        }
-        
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-            border: 1px solid #000;
-            padding: 15px;
-        }
-        
-        .title {
-            text-align: right;
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        
-        .date-line {
-            text-align: right;
-            margin-bottom: 15px;
-            font-size: 11px;
-        }
-        
-        .main-section {
-            border: 1px solid #000;
-            margin-bottom: 10px;
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        
-        td, th {
-            border: 1px solid #000;
-            padding: 4px 6px;
-            font-size: 11px;
-            vertical-align: middle;
-        }
-        
-        .label-cell {
-            background-color: #f0f0f0;
-            font-weight: bold;
-            text-align: center;
-            white-space: nowrap;
-        }
-        
-        .photo-box {
-            width: 100px;
-            height: 130px;
-            border: 1px solid #000;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-size: 9px;
-            text-align: center;
-            line-height: 1.4;
-            padding: 5px;
-        }
-        
-        .note-section {
-            border: 1px solid #000;
-            padding: 8px;
-            margin-bottom: 10px;
-            font-size: 10px;
-            line-height: 1.6;
-        }
-        
-        .note-title {
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        
-        .vertical-text {
-            writing-mode: vertical-rl;
-            text-orientation: upright;
-            padding: 5px;
-        }
-        
-        .small-text {
-            font-size: 10px;
-        }
-        
-        .underline-space {
-            border-bottom: 1px solid #000;
-            display: inline-block;
-            min-width: 60px;
-        }
-        
-        .section-header {
-            background-color: #e8e8e8;
-            font-weight: bold;
-            text-align: center;
-            padding: 5px;
-        }
-        
-        .no-border-right {
-            border-right: none;
-        }
-        
-        .no-border-left {
-            border-left: none;
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>面談シート</title>
+  <style>
+    /* Reset minimal */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; background: #fff; color: #000; }
+    body {
+      font-family: "MS Gothic", "Yu Gothic", "Hiragino Kaku Gothic ProN", "Segoe UI", Arial, sans-serif;
+      font-size: 13px;
+      line-height: 1.4;
+      padding: 16px;
+      color: #222;
+    }
+
+    /* Container — use table layout for predictable PDF rendering */
+    .root-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+
+    .left-col { width: 64%; vertical-align: top; padding-right: 12px; }
+    .right-col { width: 36%; vertical-align: top; padding-left: 12px; }
+
+    /* Generic table styles used through document */
+    .section-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 12px;
+    }
+    .section-table th,
+    .section-table td {
+      border: 1px solid #333;
+      padding: 8px;
+      vertical-align: top;
+      text-align: left;
+      font-size: 13px;
+    }
+    .section-table th {
+      background: #e3f2fd;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    /* Specific small helpers */
+    .name-cell { width: 120px; font-weight:700; background:#e3f2fd; text-align:left; padding-left:10px; }
+    .large-name { text-align:center; font-size:18px; font-weight:700; padding:18px 8px; }
+    .input-field { background: #fff; min-height: 28px; }
+    .section-header { background:#e3f2fd; font-weight:700; text-align:center; }
+    .year-col { width: 18%; text-align:center; }
+    .month-col { width: 18%; text-align:center; }
+    .content-col { width: 64%; text-align:left; padding-left:12px; }
+
+    /* Photo box */
+    .photo-box {
+      width: 140px;
+      height: 180px;
+      border: 1px dashed #666;
+      text-align:center;
+      font-size:12px;
+      padding:8px;
+      margin-bottom:12px;
+    }
+    .photo-box img { max-width: 100%; height: auto; display:block; margin: 0 auto; }
+
+    /* Comments area */
+    .comment-table td { height: 140px; }
+
+    /* Blue header bars */
+    .blue-row th, .blue-header { background: #e3f2fd; font-weight:700; text-align:center; }
+
+    /* Notes box */
+    .notes {
+      margin-top: 12px;
+      padding: 10px;
+      background: #fff9c4;
+      border-left: 4px solid #fbc02d;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    /* Make sure long text wraps */
+    td, th { word-wrap: break-word; word-break: break-word; }
+
+    /* Print tweaks */
+    @media print {
+      body { padding: 8px; }
+      .photo-box { border-style: dashed; }
+      .root-table { page-break-inside: avoid; }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Title and Date -->
-        <div class="title">面談シート</div>
-        <div class="date-line">
-            <span class="underline-space">&nbsp;&nbsp;&nbsp;&nbsp;</span>年
-            <span class="underline-space">&nbsp;&nbsp;&nbsp;</span>月
-            <span class="underline-space">&nbsp;&nbsp;&nbsp;</span>日現在
-        </div>
-        
-        <!-- Notes Section -->
-        <div class="note-section">
-            <div class="note-title">記入上の注意</div>
-            <div>1．鉛筆以外の黒又は青の筆記具で記入。 2．数字はアラビア数字で、文字はくずさず正確に書く。</div>
-            <div>3．※印のところは、該当するものを○で囲む。</div>
-        </div>
-        
-        <!-- Main Information Section -->
-        <div class="main-section">
-            <table>
-                <tr>
-                    <td colspan="2" class="label-cell" style="width: 15%;">ふりがな</td>
-                    <td colspan="3"></td>
-                    <td rowspan="2" style="width: 110px; text-align: center; padding: 0;">
-                        <div class="photo-box">
-                            <div style="font-weight: bold; margin-bottom: 5px;">写真をはる位置</div>
-                            <div style="font-size: 8px;">写真をはる必要が<br>ある場合</div>
-                            <div style="font-size: 8px; margin-top: 5px;">
-                                1．縦 36～40mm<br>
-                                　横 24～30mm<br>
-                                2.本人単身胸から上<br>
-                                3.裏面のりづけ
-                            </div>
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2" class="label-cell">氏　名</td>
-                    <td colspan="3" style="font-size: 14px; font-weight: bold;">Aldi abduloh</td>
-                </tr>
-                <tr>
-                    <td class="label-cell" style="width: 10%;">国籍</td>
-                    <td style="width: 15%;">インドネシア</td>
-                    <td class="label-cell" style="width: 10%;">生年月日</td>
-                    <td style="width: 18%;">2001年 06月 06日</td>
-                    <td class="label-cell" style="width: 8%;">年齢</td>
-                    <td style="width: 12%;">〇歳</td>
-                    <td class="label-cell" style="width: 8%;">性別</td>
-                    <td>男 ・ 女</td>
-                </tr>
-            </table>
-        </div>
-        
-        <!-- Address Section -->
-        <div class="main-section">
-            <table>
-                <tr>
-                    <td rowspan="2" class="label-cell" style="width: 8%; writing-mode: vertical-rl;">ふりがな</td>
-                    <td rowspan="2" class="label-cell" style="width: 8%; writing-mode: vertical-rl;">現住所</td>
-                    <td style="height: 25px;">〒</td>
-                </tr>
-                <tr>
-                    <td>〇〇県〇〇市</td>
-                </tr>
-                <tr>
-                    <td class="label-cell">在留資格</td>
-                    <td>―</td>
-                    <td class="label-cell">在留期限</td>
-                    <td>―</td>
-                </tr>
-            </table>
-        </div>
-        
-        <!-- Physical Information Section -->
-        <div class="main-section">
-            <table>
-                <tr>
-                    <td class="label-cell" style="width: 12%;">血液型</td>
-                    <td style="width: 13%;">〇型</td>
-                    <td class="label-cell" style="width: 12%;">服サイズ</td>
-                    <td style="width: 13%;">S/M/L/XL</td>
-                    <td class="label-cell" style="width: 12%;">結婚</td>
-                    <td style="width: 13%;">既婚・未婚</td>
-                    <td class="label-cell" style="width: 12%;">矯正視力</td>
-                    <td>有・無</td>
-                </tr>
-                <tr>
-                    <td class="label-cell">身長</td>
-                    <td>〇cm</td>
-                    <td class="label-cell">ズボンサイズ</td>
-                    <td>S/M/L/XL</td>
-                    <td class="label-cell" rowspan="2" style="writing-mode: vertical-rl;">家族構成</td>
-                    <td rowspan="2" style="font-size: 10px;">
-                        自分・母・父・妻・子供(〇人)<br>
-                        兄(〇人)・姉(〇人)<br>
-                        弟(〇人)・妹(〇人)
-                    </td>
-                    <td class="label-cell">聴力異常</td>
-                    <td>有・無</td>
-                </tr>
-                <tr>
-                    <td class="label-cell">体重</td>
-                    <td>〇kg</td>
-                    <td class="label-cell">靴サイズ</td>
-                    <td></td>
-                    <td class="label-cell">宗教</td>
-                    <td>〇〇〇教</td>
-                </tr>
-            </table>
-        </div>
-        
-        <!-- Skills Section -->
-        <div class="main-section">
-            <table>
-                <tr class="text-center">
-                    <td class="label-cell" style="width: 15%;">特技・経験</td>
-                    <td style="width: 35%;"></td>
-                    <td class="label-cell" style="width: 15%;">応募職種</td>
-                    <td style="width: 20%;"></td>
-                    <td class="label-cell" style="width: 15%;">利き手</td>
-                    <td>左・右</td>
-                </tr>
-                <tr class="d-flex justify-between">
-                    <td class="label-cell">趣味</td>
-                    <td colspan="5"></td>
-                </tr>
-            </table>
-        </div>
-        
+  <!-- Root layout: two columns (left = main details, right = supplements like photo, license, comments) -->
+  <table class="root-table">
+    <tr>
+      <td class="left-col">
+
+        <!-- Header -->
+        <table class="section-table">
+          <tr>
+            <th colspan="6" style="text-align:left; font-size:18px; padding:12px;">面談シート</th>
+          </tr>
+          <tr>
+            <td colspan="6" style="text-align:center; font-size:13px; padding:8px;">年　　月　　日現在</td>
+          </tr>
+        </table>
+
+        <!-- Personal info -->
+        <table class="section-table">
+          <tr>
+            <td class="name-cell">ふりがな</td>
+            <td class="input-field" colspan="5"></td>
+          </tr>
+
+          <tr>
+            <td class="name-cell">氏　名</td>
+            <td colspan="5" class="large-name">Aldi abduloh</td>
+          </tr>
+
+          <tr>
+            <td class="name-cell">国籍</td>
+            <td>インドネシア</td>
+
+            <td style="width:12%; font-weight:700; text-align:center;">生年月日</td>
+            <td style="width:20%;">2001年06月06日</td>
+
+            <td style="width:8%; font-weight:700; text-align:center;">年齢</td>
+            <td style="width:12%;">○歳</td>
+          </tr>
+
+          <tr>
+            <td class="name-cell">現住所</td>
+            <td colspan="3">〒　○○県○○市（住所を記載）</td>
+
+            <td style="font-weight:700; text-align:center;">在留資格</td>
+            <td>―</td>
+          </tr>
+
+          <tr>
+            <td class="name-cell">血液型</td>
+            <td>○型</td>
+
+            <td style="font-weight:700; text-align:center;">服サイズ</td>
+            <td>S / M / L / XL</td>
+
+            <td style="font-weight:700; text-align:center;">結婚</td>
+            <td>既婚・未婚</td>
+          </tr>
+
+          <tr>
+            <td class="name-cell">身長</td>
+            <td>○cm</td>
+
+            <td style="font-weight:700; text-align:center;">体重</td>
+            <td>○kg</td>
+
+            <td style="font-weight:700; text-align:center;">靴サイズ</td>
+            <td>○cm</td>
+          </tr>
+        </table>
+
         <!-- Education History -->
-        <div class="main-section">
-            <table>
-                <tr>
-                    <td colspan="3" class="section-header">学　歴</td>
-                </tr>
-                <tr>
-                    <td class="label-cell" style="width: 20%;">年・月</td>
-                    <td class="label-cell" style="width: 50%;">学　歴</td>
-                    <td class="label-cell" style="width: 30%;">学部・学科</td>
-                </tr>
-                <tr>
-                    <td>〇〇〇〇年06月</td>
-                    <td>〇〇〇〇〇〇小学校</td>
-                    <td style="text-align: center;">卒業</td>
-                </tr>
-                <tr>
-                    <td>〇〇〇〇年06月</td>
-                    <td>〇〇〇〇〇〇中学校</td>
-                    <td style="text-align: center;">卒業</td>
-                </tr>
-                <tr>
-                    <td class="text-white">〇〇〇〇年06月</td>
-                    <td>〇〇〇〇〇〇高等学校</td>
-                    <td style="text-align: center;">卒業</td>
-                </tr>
-            </table>
-        </div>xam
-        
+        <table class="section-table">
+          <thead>
+            <tr>
+              <th class="section-header" colspan="2">年・月</th>
+              <th class="section-header" colspan="3">学　歴</th>
+              <th class="section-header" colspan="2">学部・学科</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td colspan="2">○○○○年06月</td>
+              <td colspan="3">○○小学校　卒業</td>
+              <td colspan="2" class="input-field"></td>
+            </tr>
+            <tr>
+              <td colspan="2">○○○○年06月</td>
+              <td colspan="3">○○中学校　卒業</td>
+              <td colspan="2" class="input-field"></td>
+            </tr>
+            <tr>
+              <td colspan="2">○○○○年06月</td>
+              <td colspan="3">○○高等学校　卒業</td>
+              <td colspan="2" class="input-field"></td>
+            </tr>
+            <tr>
+              <td colspan="2" class="input-field"></td>
+              <td colspan="3" class="input-field"></td>
+              <td colspan="2" class="input-field"></td>
+            </tr>
+          </tbody>
+        </table>
+
         <!-- Work History -->
-        <div class="main-section">
-            <table>
-                <tr>
-                    <td colspan="3" class="section-header">職　歴</td>
-                </tr>
-                <tr>
-                    <td class="label-cell" style="width: 20%;">年・月</td>
-                    <td class="label-cell" style="width: 50%;">職　歴</td>
-                    <td class="label-cell" style="width: 30%;">職種</td>
-                </tr>
-                <tr>
-                    <td>〇〇〇〇年〇〇月～<br>〇〇〇〇年〇〇月</td>
-                    <td>株式会社〇〇〇〇〇〇</td>
-                    <td style="text-align: center;">退職</td>
-                </tr>
-                <tr>
-                    <td>〇〇〇〇年〇〇月～<br>〇〇〇〇年〇〇月</td>
-                    <td></td>
-                    <td></td>
-                </tr>
-            </table>
+        <table class="section-table">
+          <thead>
+            <tr>
+              <th class="section-header" colspan="2">年・月</th>
+              <th class="section-header" colspan="3">職　歴</th>
+              <th class="section-header" colspan="2">職種</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- repeat rows as needed -->
+            <tr>
+              <td colspan="2">○○年○○月 ～ ○○年○○月</td>
+              <td colspan="3">株式会社○○○○　退職</td>
+              <td colspan="2" class="input-field"></td>
+            </tr>
+
+            <!-- empty rows for input -->
+            <tr>
+              <td colspan="2" class="input-field"></td>
+              <td colspan="3" class="input-field"></td>
+              <td colspan="2" class="input-field"></td>
+            </tr>
+
+            <tr>
+              <td colspan="2" class="input-field"></td>
+              <td colspan="3" class="input-field"></td>
+              <td colspan="2" class="input-field"></td>
+            </tr>
+            <!-- add more rows if needed -->
+          </tbody>
+        </table>
+
+      </td>
+
+      <!-- RIGHT COLUMN -->
+      <td class="right-col">
+
+        <!-- Photo and basic info block -->
+        <table class="section-table">
+          <tr>
+            <th style="text-align:center;">写真</th>
+          </tr>
+          <tr>
+            <td style="text-align:center;">
+              <div class="photo-box">
+                <!-- Replace src with dynamic image path if using Blade -->
+                <!-- <img src="{{ public_path($cv->foto) }}" alt="Foto"> -->
+                写真をはる位置<br><small>縦36〜40mm、横24〜30mm</small>
+              </div>
+              <div style="font-size:12px; margin-top:6px; text-align:left;">
+                写真の貼り方の注意：本人単身胸から上、裏面のりづけ
+              </div>
+            </td>
+          </tr>
+        </table>
+
+        <!-- License / Qualifications -->
+        <table class="section-table" style="margin-top:12px;">
+          <thead>
+            <tr>
+              <th colspan="2">年・月</th>
+              <th>免許・資格</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="year-col">年</td>
+              <td class="month-col">月</td>
+              <td class="content-col">〇〇〇〇〇 取得</td>
+            </tr>
+            <tr>
+              <td class="year-col">年</td>
+              <td class="month-col">月</td>
+              <td class="content-col">〇〇〇〇〇 取得</td>
+            </tr>
+            <!-- empty rows -->
+            <tr><td class="year-col"></td><td class="month-col"></td><td class="content-col"></td></tr>
+            <tr><td class="year-col"></td><td class="month-col"></td><td class="content-col"></td></tr>
+          </tbody>
+        </table>
+
+        <!-- Skills / Experience -->
+        <table class="section-table" style="margin-top:12px;">
+          <thead>
+            <tr>
+              <th style="width:50%;">特技・経験</th>
+              <th style="width:25%;">応募職種</th>
+              <th style="width:25%;">利き手</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td rowspan="4" class="section-content">
+                <div style="margin-bottom:10px;">
+                  <strong>【やってきた作業】</strong>
+                  <div>〇〇、〇〇、〇〇、〇〇</div>
+                </div>
+                <div style="margin-bottom:10px;">
+                  <strong>【扱ってきた材料】</strong>
+                  <div>〇〇、〇〇、〇〇、〇〇</div>
+                </div>
+                <div style="margin-bottom:10px;">
+                  <strong>【やってきた現場】</strong>
+                  <div>〇〇、〇〇、〇〇、〇〇</div>
+                </div>
+                <div>
+                  <strong>【操作できる重機】</strong>
+                  <div>〇〇、〇〇、〇〇、〇〇</div>
+                </div>
+              </td>
+              <td style="text-align:center; vertical-align:middle;">左・右</td>
+              <td style="text-align:center; vertical-align:middle;">左・右</td>
+            </tr>
+
+            <tr style="background:#e3f2fd;">
+              <td style="text-align:center;">矯正視力</td>
+              <td style="text-align:center;">聴力</td>
+            </tr>
+            <tr>
+              <td style="text-align:center;">有・無</td>
+              <td style="text-align:center;">有・無</td>
+            </tr>
+            <tr>
+              <td colspan="2" style="text-align:center; background:#c8e6ff;">宗教</td>
+            </tr>
+
+            <tr>
+              <td rowspan="3" class="no-border-top"></td>
+              <td colspan="2" style="text-align:center; padding:12px;">〇〇〇数</td>
+            </tr>
+            <tr>
+              <td colspan="2" style="text-align:center; background:#e3f2fd; padding:8px;">趣味</td>
+            </tr>
+            <tr>
+              <td colspan="2" style="padding:12px;"></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- Comments -->
+        <table class="section-table comment-table" style="margin-top:12px;">
+          <tr>
+            <th style="text-align:center;">コメント</th>
+          </tr>
+          <tr>
+            <td></td>
+          </tr>
+        </table>
+
+        <div class="notes">
+          <strong>注意:</strong>
+          <div class="small-text">この用紙は面談情報として使用します。採用·配置に関する最終判断は会社に帰属します。</div>
         </div>
-        
-        <!-- License & Qualifications -->
-        <div class="main-section">
-            <table>
-                <tr>
-                    <td colspan="3" class="section-header">免許・資格</td>
-                </tr>
-                <tr>
-                    <td class="label-cell" style="width: 20%;">年・月</td>
-                    <td class="label-cell" colspan="2">免許・資格</td>
-                </tr>
-                <tr>
-                    <td><span class="underline-space">&nbsp;&nbsp;&nbsp;&nbsp;</span>年<span class="underline-space">&nbsp;&nbsp;</span>月</td>
-                    <td colspan="2">〇〇〇〇〇〇　取得</td>
-                </tr>
-                <tr>
-                    <td><span class="underline-space">&nbsp;&nbsp;&nbsp;&nbsp;</span>年<span class="underline-space">&nbsp;&nbsp;</span>月</td>
-                    <td colspan="2">〇〇〇〇〇〇　取得</td>
-                </tr>
-            </table>
-        </div>
-        
-        <!-- Comments Section -->
-        <div class="main-section">
-            <table>
-                <tr>
-                    <td class="label-cell" style="text-align: center; padding: 10px;">コメント</td>
-                    <td style="padding: 10px;">
-                        <div style="margin-bottom: 8px;"><strong>【やってきた作業】</strong><br>〇〇、〇〇、〇〇、〇〇</div>
-                        <div style="margin-bottom: 8px;"><strong>【扱ってきた材料】</strong><br>〇〇、〇〇、〇〇、〇〇</div>
-                        <div style="margin-bottom: 8px;"><strong>【やってきた現場】</strong><br>〇〇、〇〇、〇〇、〇〇</div>
-                        <div><strong>【操作できる重機】</strong><br>〇〇、〇〇、〇〇、〇〇</div>
-                    </td>
-                </tr>
-            </table>
-        </div>
-        
-        <!-- Additional Section -->
-        <div class="main-section">
-            <table>
-                <tr>
-                    <td class="label-cell" style="width: 20%; text-align: center;">国外・国内</td>
-                    <td style="width: 30%;"></td>
-                    <td class="label-cell" style="width: 20%; text-align: center;">国外・国内</td>
-                    <td style="width: 30%;"></td>
-                </tr>
-            </table>
-        </div>
-    </div>
+
+      </td>
+    </tr>
+  </table>
 </body>
 </html>

@@ -32,7 +32,7 @@
                     <div class="row align-items-start mb-4">
                         <!-- Foto Kandidat -->
                         <div class="col-md-3 text-center mb-3 mb-md-0">
-                            <img src="{{ $kandidat->foto ? asset('storage/' . $kandidat->foto) : 'https://via.placeholder.com/150' }}"
+                            <img src="{{ $kandidat->foto ? asset($kandidat->foto) : 'https://via.placeholder.com/150' }}"
                                 alt="Foto Kandidat" class="rounded-circle border border-3 border-warning shadow-sm"
                                 width="150" height="150" style="object-fit: cover;">
                         </div>
@@ -134,7 +134,7 @@
                                         <i class="{{ $dokumen['icon'] }} fs-1 text-{{ $dokumen['color'] }} mb-3"></i>
                                         <h6 class="fw-semibold mb-2">{{ $dokumen['label'] }}</h6>
                                         @if ($dokumen['file'])
-                                            <a href="{{ asset('storage/' . $dokumen['file']) }}" target="_blank"
+                                            <a href="{{ asset($dokumen['file']) }}" target="_blank"
                                                 class="btn btn-outline-{{ $dokumen['color'] }} btn-sm w-100 d-flex align-items-center justify-content-center"
                                                 style="transition: transform 0.2s, box-shadow 0.2s;">
                                                 <i class="bi bi-file-earmark-text me-1"></i> Lihat {{ $dokumen['label'] }}

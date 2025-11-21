@@ -3,7 +3,7 @@
 @section('title', 'Edit CV')
 
 @section('content')
-    <div class="container mt-4">
+    <div class=" mt-4">
         <h2>Edit CV: {{ $cv->nama_lengkap }}</h2>
 
         <form id="edit-cv-form" enctype="multipart/form-data">

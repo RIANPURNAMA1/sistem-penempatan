@@ -113,6 +113,8 @@ Route::middleware(['auth'])->group(function () {
 |--------------------------------------------------------------------------
 */
 
+
+
 use App\Http\Controllers\CabangController;
 use App\Http\Controllers\CvController;
 use App\Http\Controllers\KandidatController;
@@ -149,6 +151,7 @@ Route::middleware(['auth', 'role:super admin'])->group(function () {
         ->name('siswa.update');
         Route::get('/data/cv/kandidat', [CvController::class, 'index']);
 });
+Route::get('/cv/export-word/{id}', [CvController::class, 'exportWord'])->name('cv.export.word');
 
 
 /*
@@ -174,15 +177,15 @@ use App\Http\Controllers\DokumenController;
 
 
 
-Route::middleware('auth')->group(function () {
-    Route::get('/pendaftaran/cv', [CvController::class, 'create'])->name('pendaftaran.cv.create');
-    Route::post('/pendaftaran/cv', [CvController::class, 'store'])->name('pendaftaran.cv.store');
-});
 
-
+Route::get('/pendaftaran/cv', [CvController::class, 'create'])->name('pendaftaran.cv.create');
 Route::get('/data/pendaftaran/cv', [CvController::class, 'create']);
 Route::middleware(['auth', 'role:kandidat'])->group(function () {
-
+    
+    
+    Route::middleware('auth')->group(function () {
+        Route::post('/pendaftaran/cv', [CvController::class, 'store'])->name('pendaftaran.cv.store');
+    });
     // Menampilkan daftar CV
 
     // Menampilkan form edit CV

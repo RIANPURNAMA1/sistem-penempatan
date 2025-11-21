@@ -122,10 +122,13 @@
                         @foreach ($kandidats as $index => $kandidat)
                             <tr>
                                 <td>{{ $index + 1 }}</td>
+
+                                <!-- FOTO -->
                                 <td>
-                                    <img src="{{ asset('storage/' . $kandidat->foto) }}" alt="Foto Kandidat"
+                                    <img src="{{ asset($kandidat->foto) }}" alt="Foto Kandidat"
                                         class="rounded-circle border" width="50" height="50">
                                 </td>
+
                                 <td>{{ $kandidat->nik }}</td>
                                 <td>{{ $kandidat->nama }}</td>
                                 <td>{{ $kandidat->email }}</td>
@@ -134,33 +137,41 @@
                                 <td>{{ $kandidat->no_wa }}</td>
                                 <td>{{ $kandidat->cabang->nama_cabang ?? '-' }}</td>
 
-                                <!-- Dokumen -->
+                                <!-- KK -->
                                 <td>
-                                    <a href="{{ asset('storage/' . $kandidat->kk) }}" target="_blank"
+                                    <a href="{{ asset($kandidat->kk) }}" target="_blank"
                                         class="btn btn-outline-primary btn-sm">
                                         <i class="bi bi-file-earmark-text"></i>
                                     </a>
                                 </td>
+
+                                <!-- KTP -->
                                 <td>
-                                    <a href="{{ asset('storage/' . $kandidat->ktp) }}" target="_blank"
+                                    <a href="{{ asset($kandidat->ktp) }}" target="_blank"
                                         class="btn btn-outline-primary btn-sm">
                                         <i class="bi bi-file-earmark-text"></i>
                                     </a>
                                 </td>
+
+                                <!-- Bukti Pelunasan -->
                                 <td>
-                                    <a href="{{ asset('storage/' . $kandidat->bukti_pelunasan) }}" target="_blank"
+                                    <a href="{{ asset($kandidat->bukti_pelunasan) }}" target="_blank"
                                         class="btn btn-outline-primary btn-sm">
                                         <i class="bi bi-file-earmark-text"></i>
                                     </a>
                                 </td>
+
+                                <!-- Akte -->
                                 <td>
-                                    <a href="{{ asset('storage/' . $kandidat->akte) }}" target="_blank"
+                                    <a href="{{ asset($kandidat->akte) }}" target="_blank"
                                         class="btn btn-outline-primary btn-sm">
                                         <i class="bi bi-file-earmark-text"></i>
                                     </a>
                                 </td>
+
+                                <!-- Ijazah -->
                                 <td>
-                                    <a href="{{ asset('storage/' . $kandidat->ijasah) }}" target="_blank"
+                                    <a href="{{ asset($kandidat->ijasah) }}" target="_blank"
                                         class="btn btn-outline-primary btn-sm">
                                         <i class="bi bi-file-earmark-text"></i>
                                     </a>
@@ -190,18 +201,20 @@
                                     <div class="btn-group gap-2">
 
                                         <a href="{{ route('siswa.edit', $kandidat->id) }}"
-                                            class="btn btn-sm btn-info text-white" title="Edit">
-                                            <i class="bi bi-pencil-square"></i>Verifikasi
+                                            class="btn btn-sm btn-info text-white">
+                                            <i class="bi bi-pencil-square"></i> Verifikasi
+                                        </a>
 
-                                        </a>
                                         <a href="{{ route('pendaftaran.edit.full', $kandidat->id) }}"
-                                            class="btn btn-sm btn-warning text-white" title="Edit">
-                                            <i class="bi bi-pencil-square"></i>Edit Data
+                                            class="btn btn-sm btn-warning text-white">
+                                            <i class="bi bi-pencil-square"></i> Edit Data
                                         </a>
+
                                         <a href="{{ route('siswa.edit', $kandidat->id) }}"
-                                            class="btn btn-sm btn-success text-white" title="Edit">
+                                            class="btn btn-sm btn-success text-white">
                                             <i class="bi bi-file-earmark-excel me-1"></i> Export Data
                                         </a>
+
                                         <button class="btn btn-sm btn-danger delete-btn" data-id="{{ $kandidat->id }}">
                                             <i class="bi bi-trash"></i> Hapus
                                         </button>
@@ -209,6 +222,7 @@
                                 </td>
                             </tr>
                         @endforeach
+
                     </tbody>
 
                 </table>
@@ -301,7 +315,7 @@
 
 
         // import rquesst
-         $('#importForm').on('submit', function (e) {
+        $('#importForm').on('submit', function(e) {
             e.preventDefault();
 
             let formData = new FormData(this);
@@ -314,11 +328,11 @@
                 processData: false,
                 contentType: false,
 
-                beforeSend: function () {
+                beforeSend: function() {
                     Swal.showLoading();
                 },
 
-                success: function (response) {
+                success: function(response) {
                     Swal.fire({
                         icon: 'success',
                         title: 'Berhasil!',
@@ -328,7 +342,7 @@
                     });
                 },
 
-                error: function (xhr) {
+                error: function(xhr) {
                     Swal.close();
 
                     let msg = 'Terjadi kesalahan saat mengimport data.';

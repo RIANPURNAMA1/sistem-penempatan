@@ -29,9 +29,7 @@
                     <i class="bi bi-person-circle me-2"></i> Foto Kandidat
                 </div>
                 <div class="card-body text-center">
-                    <img src="{{ asset('storage/' . $kandidat->pendaftaran->foto) }}" 
-                         class="img-fluid rounded mb-3" 
-                         alt="Foto Kandidat">
+                   <img src="{{ asset($kandidat->pendaftaran->foto) }}">
                     <p class="text-muted">{{ $kandidat->pendaftaran->nama ?? '-' }}</p>
                 </div>
             </div>
@@ -105,7 +103,7 @@
                 <div class="card-body d-flex flex-wrap gap-3 ">
                     @foreach (['kk', 'ktp', 'bukti_pelunasan', 'akte', 'ijasah'] as $dok)
                         @if ($kandidat->pendaftaran->$dok)
-                            <a href="{{ asset('storage/' . $kandidat->pendaftaran->$dok) }}" target="_blank"
+                            <a href="{{ asset($kandidat->pendaftaran->$dok)}}" target="_blank"
                                class="btn btn-outline-primary btn-sm">
                                {{ strtoupper($dok) }}
                             </a>

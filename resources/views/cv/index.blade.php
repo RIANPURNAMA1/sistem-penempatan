@@ -36,116 +36,99 @@
             </h2>
             <p class="text-muted fst-italic">Berikut merupakan data CV yang telah diinput oleh para kandidat.</p>
         </div>
+        <div class="card shadow-sm border-0 rounded-4 p-3">
+            <div class="table-responsive">
+                <table id="cvTable" class="table table-striped table-bordered align-middle">
+                    <thead class="table-warning">
+                        <tr class="text-center">
+                            <th>No</th>
+                            <th>Nama Lengkap</th>
+                            <th>TTL</th>
+                            <th>Jenis Kelamin</th>
+                            <th>Alamat</th>
+                            <th>Email</th>
+                            <th>No WA</th>
+                            <th>Tinggi / Berat</th>
+                            <th>Pendidikan</th>
+                            <th>Pengalaman</th>
+                            <th>Keahlian</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
 
-        @if ($cvs->isEmpty())
-            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    Swal.fire({
-                        icon: 'info',
-                        title: 'Belum Ada Data CV',
-                        html: `
-                        <p>Belum ada kandidat yang mengisi CV.</p>
-                        <a href="{{ route('pendaftaran.cv.create') }}" 
-                           class="btn btn-warning fw-semibold mt-2">
-                            <i class="bi bi-pencil-square me-1"></i> Isi CV Sekarang
-                        </a>
-                    `,
-                        showConfirmButton: false,
-                        background: '#fffaf0'
-                    });
-                });
-            </script>
-        @else
-            <div class="card shadow-sm border-0 rounded-4 p-3">
-                <div class="table-responsive">
-                    <table id="cvTable" class="table table-striped table-bordered align-middle">
-                        <thead class="table-warning">
-                            <tr class="text-center">
-                                <th>No</th>
-                                <th>Nama Lengkap</th>
-                                <th>TTL</th>
-                                <th>Jenis Kelamin</th>
-                                <th>Alamat</th>
-                                <th>Email</th>
-                                <th>No WA</th>
-                                <th>Tinggi / Berat</th>
-                                <th>Pendidikan</th>
-                                <th>Pengalaman</th>
-                                <th>Keahlian</th>
-                                <th>Aksi</th>
+                    <tbody>
+                        @foreach ($cvs as $index => $cv)
+                            <tr>
+                                <td class="text-center">{{ $index + 1 }}</td>
+
+                                <td>{{ $cv->nama_lengkap }}</td>
+
+                                <td>{{ $cv->tempat_lahir }},
+                                    {{ \Carbon\Carbon::parse($cv->tanggal_lahir)->format('d-m-Y') }}
+                                </td>
+
+                                <td>{{ $cv->jenis_kelamin }}</td>
+
+                                <td>{{ $cv->alamat }}</td>
+
+                                <td>{{ $cv->email }}</td>
+
+                                <td>{{ $cv->no_wa }}</td>
+
+                                <td>{{ $cv->tinggi_badan }} cm / {{ $cv->berat_badan }} kg</td>
+
+                                <td>
+                                    @forelse ($cv->pendidikan as $p)
+                                        <div>• {{ $p->nama }} ({{ $p->tahun }}) - {{ $p->jurusan }}</div>
+                                    @empty
+                                        -
+                                    @endforelse
+                                </td>
+
+                                <td>
+                                    @forelse ($cv->pengalamans as $p)
+                                        <div>• {{ $p->perusahaan }} - {{ $p->jabatan }} ({{ $p->periode }})</div>
+                                    @empty
+                                        -
+                                    @endforelse
+                                </td>
+
+                                <td>{{ $cv->keahlian ?? '-' }}</td>
+
+                                <td class="text-center">
+                                    <div class="d-flex  gap-1">
+
+                                        <a href="{{ route('pendaftaran.cv.edit', $cv->id) }}"
+                                            class="btn btn-warning btn-sm text-white">
+                                            <i class="bi bi-pencil-square me-1"></i>Edit
+                                        </a>
+
+                                        <a href="{{ route('cv.export', $cv->id) }}"
+                                            class="btn btn-success btn-sm text-white">
+                                            <i class="bi bi-file-earmark-excel me-1"></i>Excel
+                                        </a>
+
+                                        <a href="{{ route('cv.export.pdf', $cv->id) }}"
+                                            class="btn btn-danger btn-sm text-white">
+                                            <i class="bi bi-file-earmark-pdf me-1"></i>PDF
+                                        </a>
+                                        <a href="{{ route('cv.export.word', $cv->id) }}"
+                                            class="btn btn-primary btn-sm text-white">
+                                            <i class="bi bi-file-earmark-word me-1"></i>Word
+                                        </a>
+
+
+                                    </div>
+                                </td>
+
                             </tr>
-                        </thead>
+                        @endforeach
+                    </tbody>
 
-                        <tbody>
-                            @foreach ($cvs as $index => $cv)
-                                <tr>
-                                    <td class="text-center">{{ $index + 1 }}</td>
-
-                                    <td>{{ $cv->nama_lengkap }}</td>
-
-                                    <td>{{ $cv->tempat_lahir }},
-                                        {{ \Carbon\Carbon::parse($cv->tanggal_lahir)->format('d-m-Y') }}
-                                    </td>
-
-                                    <td>{{ $cv->jenis_kelamin }}</td>
-
-                                    <td>{{ $cv->alamat }}</td>
-
-                                    <td>{{ $cv->email }}</td>
-
-                                    <td>{{ $cv->no_wa }}</td>
-
-                                    <td>{{ $cv->tinggi_badan }} cm / {{ $cv->berat_badan }} kg</td>
-
-                                    <td>
-                                        @forelse ($cv->pendidikan as $p)
-                                            <div>• {{ $p->nama }} ({{ $p->tahun }}) - {{ $p->jurusan }}</div>
-                                        @empty
-                                            -
-                                        @endforelse
-                                    </td>
-
-                                    <td>
-                                        @forelse ($cv->pengalamans as $p)
-                                            <div>• {{ $p->perusahaan }} - {{ $p->jabatan }} ({{ $p->periode }})</div>
-                                        @empty
-                                            -
-                                        @endforelse
-                                    </td>
-
-                                    <td>{{ $cv->keahlian ?? '-' }}</td>
-
-                                    <td class="text-center">
-                                        <div class="d-flex flex-column gap-1">
-
-                                            <a href="{{ route('pendaftaran.cv.edit', $cv->id) }}"
-                                                class="btn btn-warning btn-sm text-white">
-                                                <i class="bi bi-pencil-square me-1"></i>Edit
-                                            </a>
-
-                                            <a href="{{ route('cv.export', $cv->id) }}"
-                                                class="btn btn-success btn-sm text-white">
-                                                <i class="bi bi-file-earmark-excel me-1"></i>Excel
-                                            </a>
-
-                                            <a href="{{ route('cv.export.pdf', $cv->id) }}"
-                                                class="btn btn-danger btn-sm text-white">
-                                                <i class="bi bi-file-earmark-pdf me-1"></i>PDF
-                                            </a>
-
-                                        </div>
-                                    </td>
-
-                                </tr>
-                            @endforeach
-                        </tbody>
-
-                    </table>
-                </div>
+                </table>
             </div>
+        </div>
 
-        @endif
     </div>
 
     <!-- Dependencies -->

@@ -26,8 +26,7 @@ class PendaftaranController extends Controller
 
     public function store(Request $request)
     {
-
-        // Validasi semua field wajib
+        // Validasi
         $request->validate([
             'nik' => 'required|string|size:16|unique:pendaftarans,nik',
             'nama' => 'required|string|max:255',
@@ -41,6 +40,7 @@ class PendaftaranController extends Controller
             'kelurahan' => 'required|string|max:100',
             'cabang_id' => 'required|exists:cabangs,id',
             'tanggal_daftar' => 'required|date',
+
             'foto' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
             'kk' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
             'ktp' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
@@ -49,13 +49,13 @@ class PendaftaranController extends Controller
             'ijasah' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
         ]);
 
-        // Upload file
-        $foto = $request->file('foto')->store('uploads/foto', 'public');
-        $kk = $request->file('kk')->store('uploads/kk', 'public');
-        $ktp = $request->file('ktp')->store('uploads/ktp', 'public');
-        $bukti_pelunasan = $request->file('bukti_pelunasan')->store('uploads/bukti_pelunasan', 'public');
-        $akte = $request->file('akte')->store('uploads/akte', 'public');
-        $ijasah = $request->file('ijasah')->store('uploads/ijasah', 'public');
+        // Upload manual tanpa storage link
+        $foto = $this->uploadFile($request->file('foto'), 'uploads/foto');
+        $kk = $this->uploadFile($request->file('kk'), 'uploads/kk');
+        $ktp = $this->uploadFile($request->file('ktp'), 'uploads/ktp');
+        $bukti_pelunasan = $this->uploadFile($request->file('bukti_pelunasan'), 'uploads/bukti_pelunasan');
+        $akte = $this->uploadFile($request->file('akte'), 'uploads/akte');
+        $ijasah = $this->uploadFile($request->file('ijasah'), 'uploads/ijasah');
 
         // Simpan data
         Pendaftaran::create([
@@ -72,6 +72,7 @@ class PendaftaranController extends Controller
             'kab_kota' => $request->kab_kota,
             'kecamatan' => $request->kecamatan,
             'kelurahan' => $request->kelurahan,
+
             'foto' => $foto,
             'kk' => $kk,
             'ktp' => $ktp,
@@ -84,6 +85,23 @@ class PendaftaranController extends Controller
             ->with('success', 'Pendaftaran berhasil dikirim!');
     }
 
+    /**
+     * Upload file manual tanpa storage:link
+     */
+    private function uploadFile($file, $path)
+    {
+        // Pastikan folder ada
+        if (!file_exists(public_path($path))) {
+            mkdir(public_path($path), 0777, true);
+        }
+
+        $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+
+        // Pindahkan file ke public/uploads/...
+        $file->move(public_path($path), $filename);
+
+        return $path . '/' . $filename;
+    }
 
 
     // 🟡 Tampilkan semua data kandidat

@@ -1,8 +1,6 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use App\Exports\CvExport;
 use App\Models\Cv;
 use App\Models\Pendidikan;
 use App\Models\Pengalaman;
@@ -11,14 +9,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
-
-
+use PhpOffice\PhpWord\PhpWord;
+use PhpOffice\PhpWord\IOFactory;
 class CvController extends Controller
 {
     public function create()
     {
         $cvs = Cv::with(['pendidikan', 'pengalamans'])->get(); // ambil semua CV beserta relasinya
-        return view('cv.index', compact('cvs'));
+        return view('pendaftaran.cv', compact('cvs'));
     }
     public function index()
     {
@@ -35,12 +33,18 @@ class CvController extends Controller
 
 public function exportPdf($id)
 {
-   $cv = Cv::with(['pendidikan','pengalamans'])->findOrFail($id);
-    $pdf = Pdf::loadView('cv.pdf', compact('cv'))
-              ->setPaper('A4', 'portrait');
-    return $pdf->download('kaigo-cv-' . $cv->id . '.pdf');
-}
+    $cv = Cv::with(['pendidikan', 'pengalamans'])->findOrFail($id);
 
+    $pdf = PDF::loadView('cv.pdf', compact('cv'))
+        ->setPaper('a4')
+        ->setOption('margin-top', 0)
+        ->setOption('margin-bottom', 0)
+        ->setOption('margin-left', 0)
+        ->setOption('margin-right', 0)
+        ->setOption('disable-smart-shrinking', true);
+
+    return $pdf->download('cv-'.$cv->id.'.pdf');
+}
 
 
 
@@ -207,4 +211,104 @@ public function exportPdf($id)
 
         return response()->json(['success' => true]);
     }
+
+
+
+    // word
+    public function exportWord($id)
+{
+    $cv = Cv::with(['pendidikan', 'pengalamans'])->findOrFail($id);
+
+    $phpWord = new PhpWord();
+    $section = $phpWord->addSection();
+
+    // ========== JUDUL ==========
+    $section->addText(
+        'CURRICULUM VITAE',
+        ['bold' => true, 'size' => 18],
+        ['alignment' => 'center']
+    );
+
+    $section->addTextBreak(1);
+
+    // ========== DATA PRIBADI ==========
+    $section->addText('DATA PRIBADI', ['bold' => true, 'size' => 14]);
+    $section->addTextBreak(0.3);
+
+    $section->addText('Nama Lengkap: ' . $cv->nama_lengkap);
+    $section->addText('Tempat Lahir: ' . $cv->tempat_lahir);
+    $section->addText('Tanggal Lahir: ' . $cv->tanggal_lahir);
+    $section->addText('Jenis Kelamin: ' . $cv->jenis_kelamin);
+    $section->addText('Alamat: ' . $cv->alamat);
+    $section->addText('Email: ' . $cv->email);
+    $section->addText('No. WA: ' . $cv->no_wa);
+
+    if ($cv->tinggi_badan) {
+        $section->addText('Tinggi Badan: ' . $cv->tinggi_badan . ' cm');
+    }
+
+    if ($cv->berat_badan) {
+        $section->addText('Berat Badan: ' . $cv->berat_badan . ' kg');
+    }
+
+    if ($cv->keahlian) {
+        $section->addText('Keahlian: ' . $cv->keahlian);
+    }
+
+    $section->addTextBreak(1);
+
+    // ========== PENDIDIKAN ==========
+    $section->addText('RIWAYAT PENDIDIKAN', ['bold' => true, 'size' => 14]);
+    $section->addTextBreak(0.3);
+
+    if ($cv->pendidikan->count() > 0) {
+        foreach ($cv->pendidikan as $p) {
+            $section->addListItem(
+                $p->tingkatan . ' - ' . $p->instansi . ' (' . $p->tahun . ')'
+            );
+        }
+    } else {
+        $section->addText('- Tidak ada data pendidikan');
+    }
+
+    $section->addTextBreak(1);
+
+    // ========== PENGALAMAN ==========
+    $section->addText('PENGALAMAN KERJA', ['bold' => true, 'size' => 14]);
+    $section->addTextBreak(0.3);
+
+    if ($cv->pengalamans->count() > 0) {
+        foreach ($cv->pengalamans as $pg) {
+            $section->addListItem(
+                $pg->posisi . ' - ' . $pg->perusahaan . ' (' . $pg->tahun_mulai . ' - ' . $pg->tahun_selesai . ')'
+            );
+        }
+    } else {
+        $section->addText('- Tidak ada data pengalaman');
+    }
+
+    // ========== FOTO (JIKA ADA) ==========
+    if ($cv->foto && file_exists(public_path('uploads/cv/' . $cv->foto))) {
+        $section->addTextBreak(1);
+        $section->addText('Foto:', ['bold' => true]);
+
+        $section->addImage(
+            public_path('uploads/cv/' . $cv->foto),
+            [
+                'width' => 120,
+                'height' => 150,
+                'alignment' => 'left'
+            ]
+        );
+    }
+
+    // ========== EXPORT FILE ==========
+    $filename = 'CV-' . str_replace(' ', '-', $cv->nama_lengkap) . '.docx';
+    $path = storage_path($filename);
+
+    $writer = IOFactory::createWriter($phpWord, 'Word2007');
+    $writer->save($path);
+
+    return response()->download($path)->deleteFileAfterSend(true);
+}
 }
