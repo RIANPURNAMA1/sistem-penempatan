@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Exports\KandidatExport;
+use App\Exports\PendaftaranExport;
+use App\Imports\PendaftaranImport;
 use Illuminate\Http\Request;
 use App\Models\Pendaftaran;
 use App\Models\Cabang;
@@ -17,14 +19,14 @@ class PendaftaranController extends Controller
     public function datacabang()
     {
         $cabangs = Cabang::all();
-         // Cek apakah user sudah mendaftar
-    $alreadyRegistered = Pendaftaran::where('user_id', Auth::id())->exists();
+        // Cek apakah user sudah mendaftar
+        $alreadyRegistered = Pendaftaran::where('user_id', Auth::id())->exists();
         return view('pendaftaran.index', compact('cabangs', 'alreadyRegistered'));
     }
 
     public function store(Request $request)
     {
-      
+
         // Validasi semua field wajib
         $request->validate([
             'nik' => 'required|string|size:16|unique:pendaftarans,nik',
@@ -78,7 +80,7 @@ class PendaftaranController extends Controller
             'ijasah' => $ijasah,
         ]);
 
-        return redirect()->back()
+        return redirect()->route('dashboard')
             ->with('success', 'Pendaftaran berhasil dikirim!');
     }
 
@@ -166,32 +168,129 @@ class PendaftaranController extends Controller
 
 
 
+    // Form edit lengkap
+    public function editFull($id)
+    {
+        $kandidat = Pendaftaran::findOrFail($id);
+        return view('siswa.edit_full', compact('kandidat'));
+    }
+
+    public function updateFull(Request $request, $id)
+    {
+        $pendaftaran = Pendaftaran::findOrFail($id);
+
+        // Validasi semua field wajib diisi (nik unik kecuali dirinya sendiri)
+        $request->validate([
+            'nik' => 'required|string|size:16|unique:pendaftarans,nik,' . $pendaftaran->id,
+            'nama' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'no_wa' => ['required', 'string', 'max:20', 'regex:/^08\d{8,12}$/'],
+            'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
+            'alamat' => 'required|string|max:500',
+            'provinsi' => 'required|string|max:100',
+            'kab_kota' => 'required|string|max:100',
+            'kecamatan' => 'required|string|max:100',
+            'kelurahan' => 'required|string|max:100',
+            'cabang_id' => 'required|exists:cabangs,id',
+            'tanggal_daftar' => 'required|date',
+            'foto' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'kk' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'ktp' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'bukti_pelunasan' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'akte' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'ijasah' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+        ]);
+
+        // Upload file jika ada, jika tidak tetap gunakan file lama
+        $files = [
+            'foto' => 'uploads/foto',
+            'kk' => 'uploads/kk',
+            'ktp' => 'uploads/ktp',
+            'bukti_pelunasan' => 'uploads/bukti_pelunasan',
+            'akte' => 'uploads/akte',
+            'ijasah' => 'uploads/ijasah',
+        ];
+
+        foreach ($files as $field => $folder) {
+            if ($request->hasFile($field)) {
+                // Hapus file lama
+                if ($pendaftaran->$field && Storage::disk('public')->exists($pendaftaran->$field)) {
+                    Storage::disk('public')->delete($pendaftaran->$field);
+                }
+                $pendaftaran->$field = $request->file($field)->store($folder, 'public');
+            }
+        }
+
+        // Update data
+        $pendaftaran->update([
+            'nik' => $request->nik,
+            'nama' => $request->nama,
+            'email' => $request->email,
+            'no_wa' => $request->no_wa,
+            'jenis_kelamin' => $request->jenis_kelamin,
+            'tanggal_daftar' => $request->tanggal_daftar,
+            'alamat' => $request->alamat,
+            'provinsi' => $request->provinsi,
+            'kab_kota' => $request->kab_kota,
+            'kecamatan' => $request->kecamatan,
+            'kelurahan' => $request->kelurahan,
+            'cabang_id' => $request->cabang_id,
+        ]);
+
+        return redirect()->route('siswa.index')
+            ->with('success', 'Pendaftaran berhasil diperbarui!');
+    }
 
 
+    public function destroy($id)
+    {
+        $pendaftaran = Pendaftaran::findOrFail($id);
 
-public function destroy($id)
-{
-    $pendaftaran = Pendaftaran::findOrFail($id);
+        // Hapus user terkait jika ada
+        if ($pendaftaran->user_id) {
+            $pendaftaran->user()->delete();
+        }
 
-    $files = [
-        $pendaftaran->foto,
-        $pendaftaran->kk,
-        $pendaftaran->ktp,
-        $pendaftaran->bukti_pelunasan,
-        $pendaftaran->akte,
-        $pendaftaran->ijasah,
-    ];
+        // Hapus data pendaftaran
+        $pendaftaran->delete();
 
-    foreach ($files as $file) {
-        if (!empty($file) && Storage::disk('public')->exists($file)) {
-            Storage::disk('public')->delete($file);
+        return response()->json(['message' => 'Data berhasil dihapus']);
+    }
+
+
+    // Export Data ke Excel
+    public function export()
+    {
+        return Excel::download(new PendaftaranExport, 'data_pendaftaran.xlsx');
+    }
+    // Import Data dari Excel (Versi AJAX)
+    public function import(Request $request)
+    {
+        try {
+
+            $request->validate([
+                'file' => 'required|mimes:xlsx,xls,csv'
+            ]);
+
+            Excel::import(new PendaftaranImport, $request->file('file'));
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Data berhasil diimport!'
+            ]);
+        } catch (\Throwable $e) {
+
+            return response()->json([
+                'status' => false,
+                'message' => 'Gagal mengimport data. Pastikan format file benar.',
+                'error' => $e->getMessage(),
+            ], 500);
         }
     }
 
-    $pendaftaran->delete();
 
-    return redirect()->back()->with('success', 'Data pendaftaran berhasil dihapus.');
-}
-
-
+    public function cvCreate()
+    {
+        return view('pendaftaran.cv');
+    }
 }

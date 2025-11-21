@@ -21,7 +21,11 @@ Route::middleware('guest')->group(function () {
 
 Route::middleware('auth')->post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-    
+
+Route::get('/cv/export/pdf/{id}', [App\Http\Controllers\CvController::class, 'exportPdf'])
+    ->name('cv.export.pdf');
+
+
 // Proses reset password
 Route::post('/lupa/password', [AuthController::class, 'resetPassword'])->name('reset.submit');
 
@@ -35,9 +39,7 @@ Route::post('/lupa/password', [AuthController::class, 'resetPassword'])->name('r
 
 use App\Http\Controllers\DashboardController;
 
-Route::middleware(['auth', 'role:super admin, admin cianjur selatan,admin cianjur, kandidat'])->group(function () {
-
-});
+Route::middleware(['auth', 'role:super admin, admin cianjur selatan,admin cianjur, kandidat'])->group(function () {});
 Route::middleware('auth')->get('/', [DashboardController::class, 'index'])->name('dashboard');
 
 
@@ -99,7 +101,7 @@ Route::prefix('admin')
 
 
 
-    Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::get('/admin/kandidat', [AdminKandidatController::class, 'index'])
         ->name('admin.kandidat.index');
 });
@@ -112,21 +114,28 @@ Route::prefix('admin')
 */
 
 use App\Http\Controllers\CabangController;
+use App\Http\Controllers\CvController;
+use App\Http\Controllers\KandidatController;
+use App\Http\Controllers\PendaftaranController;
 
 Route::middleware(['auth', 'role:super admin'])
     ->resource('cabang', CabangController::class);
+// routes/web.php
+Route::post('/pendaftaran/import', [PendaftaranController::class, 'import'])->name('pendaftaran.import');
+Route::get('/pendaftaran/export', [PendaftaranController::class, 'export'])->name('pendaftaran.export');
+Route::get('pendaftaran/{id}/edit-full', [PendaftaranController::class, 'editFull'])->name('pendaftaran.edit.full');
+Route::put('pendaftaran/{id}/update-full', [PendaftaranController::class, 'updateFull'])->name('pendaftaran.update.full');
+Route::delete('/pendaftaran/{id}', [App\Http\Controllers\PendaftaranController::class, 'destroy'])->name('pendaftaran.destroy');
 
 
-
-use App\Http\Controllers\PendaftaranController;
-
-
-
-    Route::delete('/pendaftaran/{id}', [PendaftaranController::class, 'destroy'])
+Route::delete('/pendaftaran/{id}', [PendaftaranController::class, 'destroy'])
     ->name('pendaftaran.destroy');
 Route::middleware(['auth', 'role:super admin'])->group(function () {
 
     Route::get('/pendaftaran/export', [PendaftaranController::class, 'export'])->name('pendaftaran.export');
+    // routes/web.php
+    Route::get('/kandidat/export/{id}', [KandidatController::class, 'export'])->name('kandidat.export');
+
 
     // Data siswa + paginate
     Route::get('/siswa', [PendaftaranController::class, 'DataKandidat'])
@@ -138,6 +147,7 @@ Route::middleware(['auth', 'role:super admin'])->group(function () {
 
     Route::put('/siswa/{id}', [PendaftaranController::class, 'update'])
         ->name('siswa.update');
+        Route::get('/data/cv/kandidat', [CvController::class, 'index']);
 });
 
 
@@ -149,16 +159,47 @@ Route::middleware(['auth', 'role:super admin'])->group(function () {
 
 // Proses ganti password
 use App\Http\Controllers\Auth\ForgotPasswordController;
+
+
 Route::post('/lupa-password', [ForgotPasswordController::class, 'updatePassword'])->name('password.update');
 Route::get('/lupa-password', [ForgotPasswordController::class, 'showForgotForm'])->name('password.request');
 
 // Kirim email reset password
 Route::post('/lupa-password', [ForgotPasswordController::class, 'sendResetLink'])->name('password.email');
 
+
 use App\Http\Controllers\DokumenController;
+
+
+
+
+
+Route::middleware('auth')->group(function () {
+    Route::get('/pendaftaran/cv', [CvController::class, 'create'])->name('pendaftaran.cv.create');
+    Route::post('/pendaftaran/cv', [CvController::class, 'store'])->name('pendaftaran.cv.store');
+});
+
+
+Route::get('/data/pendaftaran/cv', [CvController::class, 'create']);
 Route::middleware(['auth', 'role:kandidat'])->group(function () {
 
+    // Menampilkan daftar CV
 
+    // Menampilkan form edit CV
+    Route::get('/pendaftaran/cv/{id}/edit', [CvController::class, 'edit'])->name('pendaftaran.cv.edit');
+
+    // Menyimpan atau update CV
+    Route::post('/pendaftaran/cv', [CvController::class, 'store'])->name('pendaftaran.cv.store');
+
+
+    // Update CV
+    Route::put('/pendaftaran/cv/{id}', [CvController::class, 'update'])->name('pendaftaran.cv.update')->middleware(['auth', 'role:kandidat']);
+    // Menghapus CV
+    Route::delete('/pendaftaran/cv/{id}', [CvController::class, 'destroy'])->name('pendaftaran.cv.destroy');
+});
+
+Route::middleware(['auth', 'role:kandidat'])->group(function () {
+    Route::get('/api/cv', [CVController::class, 'index']);
 
 
     // Form pendaftaran
@@ -172,19 +213,21 @@ Route::middleware(['auth', 'role:kandidat'])->group(function () {
 
     // Detail pendaftaran
     Route::get('/pendaftaran/{id}', [PendaftaranController::class, 'show'])
-    ->name('pendaftaran.show');
+        ->name('pendaftaran.show');
     /*
     |--------------------------------------------------------------------------
     | DOKUMEN KANDIDAT
     |--------------------------------------------------------------------------
     */
+
     
     
     Route::middleware('auth')->get('/dokumen/{id}', [DokumenController::class, 'show'])
-        ->name('dokumen.show');
+    ->name('dokumen.show');
 });
 
 
+Route::get('/cv/export/{id}', [CvController::class, 'export'])->name('cv.export');
 
 
 
@@ -214,9 +257,8 @@ Route::middleware(['auth', 'role: super admin'])->prefix('institusi')->name('ins
 |--------------------------------------------------------------------------
 */
 
-use App\Http\Controllers\KandidatController;
 
-Route::middleware(['auth','role:super admin, admin cianjur pamoyanan, admin cianjur selatan'])->group(function () {
+Route::middleware(['auth', 'role:super admin, admin cianjur pamoyanan, admin cianjur selatan'])->group(function () {
 
     // Data kandidat
     Route::get('/kandidat/data', [KandidatController::class, 'index'])->name('kandidat.data');

@@ -235,12 +235,19 @@
                             title: "Berhasil",
                             text: "Pendaftaran berhasil dikirim.",
                             timer: 3000,
-                            showConfirmButton: false
+                            showConfirmButton: false,
+                            
+
+                        }).then(() => {
+                            // Redirect ke route /
+                            window.location.href = "/";
                         });
 
+                        // Reset form
                         form.reset();
                         form.classList.remove("was-validated");
                     },
+
                     error: function(xhr) {
                         Swal.fire({
                             icon: "error",

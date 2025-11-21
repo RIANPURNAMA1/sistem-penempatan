@@ -17,7 +17,7 @@ class AuthController extends Controller
         return view('auth.register');
     }
 
-    // Register user dengan konfirmasi email
+    // Register user dan langsung login
     public function register(Request $request)
     {
         $request->validate([
@@ -42,7 +42,7 @@ class AuthController extends Controller
         // Ambil role kandidat
         $role = Role::where('name', 'kandidat')->first();
 
-        // Buat user baru (status inactive)
+        // Buat user baru
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -50,12 +50,16 @@ class AuthController extends Controller
             'role_id' => $role->id,
         ]);
 
+        // Langsung login setelah berhasil registrasi
+        Auth::login($user);
+
         return response()->json([
             'success' => true,
-            'redirect' => route('login'),
-            'message' => 'Registrasi berhasil! Silakan login.'
+            'redirect' => route('dashboard'), // Ganti dengan route tujuan
+            'message' => 'Registrasi berhasil! Anda sudah otomatis login.'
         ]);
     }
+
 
 
 
@@ -67,7 +71,7 @@ class AuthController extends Controller
 
     // Proses reset password
     // Proses reset password via AJAX
-        // Tampilkan form lupa password
+    // Tampilkan form lupa password
     public function showForgotPassword()
     {
         return view('auth.forgot-password');

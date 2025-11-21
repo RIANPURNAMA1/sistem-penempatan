@@ -59,6 +59,12 @@ class User extends Authenticatable
         return $this->hasMany(Pendaftaran::class, 'user_id');
     }
 
+    // Relasi ke User
+    public function cv()
+    {
+        return $this->hasMany(Cv::class);
+    }
+
      // User memiliki 1 cabang (opsional)
     public function cabang()
     {

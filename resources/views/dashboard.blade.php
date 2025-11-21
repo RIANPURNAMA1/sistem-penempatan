@@ -237,6 +237,89 @@
                     </script>
                 @endif
                 @if (auth()->user()->role->name === 'kandidat')
+                    <!-- Header Tabel -->
+                    <h4 class="fw-bold text-warning mb-3">
+                        <i class="bi bi-person-lines-fill me-2"></i>Data Diri CV
+                    </h4>
+                    <div class="table-responsive mb-5 mt-3">
+                        @if ($cvs->isEmpty())
+                            <!-- SweetAlert jika belum ada CV -->
+                            <script>
+                                document.addEventListener('DOMContentLoaded', function() {
+                                    Swal.fire({
+                                        icon: 'info',
+                                        title: 'Belum Mengisi CV',
+                                        html: `
+                        <p>Kamu belum mengisi CV.</p>
+                        <a href="/pendaftaran/cv" 
+                           class="btn btn-warning fw-semibold mt-2">
+                            <i class="bi bi-pencil-square me-1"></i> Klik di sini untuk mengisi CV
+                        </a>
+                    `,
+                                        showConfirmButton: false,
+                                        allowOutsideClick: false,
+                                        allowEscapeKey: false,
+                                        background: '#fffaf0',
+                                        color: '#333',
+                                        didOpen: (popup) => {
+                                            popup.querySelector('a').addEventListener('click', () => {
+                                                Swal.close();
+                                            });
+                                        }
+                                    });
+                                });
+                            </script>
+                        @else
+                            <table class="table table-bordered table-hover table-striped align-middle">
+                                <thead class="table-warning text-dark">
+                                    <tr>
+                                        <th>Nama</th>
+                                        <th>Email</th>
+                                        <th>No WA</th>
+                                        <th>Jenis Kelamin</th>
+                                        <th>Tanggal Lahir</th>
+                                        <th>Pendidikan</th>
+                                        <th>Pengalaman</th>
+                                        <th>Keahlian</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($cvs as $cv)
+                                        <tr>
+                                            <td>{{ $cv->nama_lengkap }}</td>
+                                            <td>{{ $cv->email }}</td>
+                                            <td>{{ $cv->no_wa }}</td>
+                                            <td>{{ $cv->jenis_kelamin }}</td>
+                                            <td>{{ $cv->tanggal_lahir->format('d-m-Y') }}</td>
+                                            <td>
+                                                @foreach ($cv->pendidikan as $p)
+                                                    <div>{{ $p->nama }} ({{ $p->tahun }} - {{ $p->jurusan }})
+                                                    </div>
+                                                @endforeach
+                                            </td>
+                                            <td>
+                                                @foreach ($cv->pengalamans as $p)
+                                                    <div>{{ $p->perusahaan }} - {{ $p->jabatan }} ({{ $p->periode }})
+                                                    </div>
+                                                @endforeach
+                                            </td>
+                                            <td>{{ $cv->keahlian }}</td>
+                                            <td>
+                                                <a href="{{ route('pendaftaran.cv.edit', $cv->id) }}"
+                                                    class="btn btn-sm btn-warning">
+                                                    <i class="bi bi-pencil-square me-1"></i>Edit
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        @endif
+                    </div>
+
+
+
                     <div class="row ">
                         {{-- Timeline --}}
                         {{-- Timeline --}}
@@ -468,7 +551,6 @@
 
             </div>
             {{-- super admin --}}
-     
             @endif
         </section>
     </div>

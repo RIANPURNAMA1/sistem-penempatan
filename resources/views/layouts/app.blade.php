@@ -162,9 +162,16 @@
                                         <li class="submenu-item">
                                             <a href="{{ url('/pendaftaran/kandidat') }}" class="submenu-link"
                                                 style="text-decoration: none;">
-                                                Pendaftaran
+                                                <i class="bi bi-person-plus me-2"></i> Pendaftaran
                                             </a>
                                         </li>
+                                        <li class="submenu-item">
+                                            <a href="{{ url('/pendaftaran/cv') }}" class="submenu-link"
+                                                style="text-decoration: none;">
+                                                <i class="bi bi-file-person me-2"></i> Data Diri CV
+                                            </a>
+                                        </li>
+
                                     </ul>
                                 </li>
                             @endif
@@ -199,7 +206,7 @@
                                         <li class="submenu-item">
                                             <a href="{{ url('/kandidat') }}" class="submenu-link"
                                                 style="text-decoration: none;">
-                                                <i class="bi bi-people me-1"></i> Pendaftar
+                                                <i class="bi bi-people me-1"></i> Pendaftaran
                                             </a>
                                         </li>
                                         {{-- Data Kandidat --}}
@@ -233,6 +240,14 @@
                                     </a>
                                 </li>
                                 <li class="sidebar-item">
+                                    <a href="{{ url('/data/cv/kandidat') }}"
+                                        class="sidebar-link d-flex align-items-center gap-2 py-2">
+                                        <i class="bi bi-person-lines-fill"></i>
+                                        <span class="fw-semibold">Data CV Kandidat</span>
+                                    </a>
+                                </li>
+
+                                <li class="sidebar-item">
                                     <a href="{{ url('/admin') }}"
                                         class="sidebar-link d-flex align-items-center gap-2 py-2">
                                         <i class="bi bi-people-fill"></i>
@@ -254,7 +269,7 @@
                         </li>
 
                         <li class="sidebar-item mt-2">
-                            <a href="https://wa.me/628xxxxxxxxxx" target="_blank" class="sidebar-link"
+                            <a href="https://wa.me/62895391685825" target="_blank" class="sidebar-link"
                                 style="text-decoration: none;">
                                 <i class="bi bi-headset"></i>
                                 <span>Hubungi Admin</span>

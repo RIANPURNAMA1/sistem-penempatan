@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cabang;
+use App\Models\Cv;
 use App\Models\Institusi;
 use App\Models\Pendaftaran;
 use App\Models\Kandidat;
@@ -101,18 +102,17 @@ class DashboardController extends Controller
 
 
         $dataKandidat = Pendaftaran::with(['kandidat', 'cabang'])->where('user_id', Auth::id())->get();
-
-
-
-        
-
+        // Ambil CV milik user yang sedang login
+        $userId = Auth::id(); // id user login
+        $cvs = CV::where('user_id', $userId)->with(['pendidikan', 'pengalamans'])->get();
         return view('dashboard', compact(
             'stats',
             'status_penempatan',
             'cabangs',
             'chart_data',
             'dataKandidat',
-            'kandidats' // <-- data kandidat
+            'kandidats',
+            'cvs', // <-- data kandidat
         ));
     }
 
