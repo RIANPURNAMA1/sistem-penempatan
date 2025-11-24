@@ -1,5 +1,5 @@
 .active-sidebar {
-    background-color: #fea901;
+    background-color: #00c0ff;
     border-radius: 12px;      /* sudut rounded */     /* ruang lebih agar terlihat elegan */
     transition: all 0.3s ease; /* efek halus */
     box-shadow: 0 4px 10px rgba(0, 192, 255, 0.35); /* glow lembut */

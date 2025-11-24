@@ -34,7 +34,7 @@
                     </li>
                 </ol>
             </nav>
-            <!-- Header -->
+            {{-- <!-- Header -->
             <div class="mb-4 text-center text-md-start">
                 <h2 class="fw-bold  mb-2">
                     <i class="bi bi-person-lines-fill text-warning me-2"></i> Daftar Kandidat
@@ -42,7 +42,7 @@
                 <p class="text-muted fst-italic">
                     Berikut adalah data kandidat yang telah masuk dalam sistem.
                 </p>
-            </div>
+            </div> --}}
             <!-- 🔍 Filter Section -->
             <div class="card shadow-sm mb-3">
                 <div class="card-body">

@@ -1,30 +1,21 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Cv extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
-    protected $fillable = [
-        'user_id',
-        'nama_lengkap',
-        'tempat_lahir',
-        'tanggal_lahir',
-        'jenis_kelamin',
-        'alamat',
-        'email',
-        'no_wa',
-        'tinggi_badan',
-        'berat_badan',
-        'foto',
-        'keahlian',
-    ];
+    protected $guarded = [];
 
     protected $casts = [
         'tanggal_lahir' => 'date',
+        'pas_foto' => 'array',
+        'sertifikat_files' => 'array',
     ];
 
     // Relasi ke user
@@ -33,8 +24,14 @@ class Cv extends Model
         return $this->belongsTo(User::class);
     }
 
+    // Relasi ke cabang
+    public function cabang()
+    {
+        return $this->belongsTo(Cabang::class, 'cabang_Id');
+    }
+
     // Relasi ke pendidikan (satu CV bisa punya banyak pendidikan)
-    public function pendidikan()
+    public function pendidikans()
     {
         return $this->hasMany(Pendidikan::class);
     }

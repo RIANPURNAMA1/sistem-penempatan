@@ -41,14 +41,14 @@
     </nav>
 
     <!-- Header -->
-    <div class="mb-4 text-center text-md-start">
+    {{-- <div class="mb-4 text-center text-md-start">
         <h2 class="mb-2">
             <i class="bi bi-building text-warning me-2"></i> Daftar Cabang
         </h2>
         <p class="text-muted fst-italic mb-0">
             Berikut adalah data cabang yang telah terdaftar dalam sistem.
         </p>
-    </div>
+    </div> --}}
 
     <div class="card shadow-sm rounded-3">
         <div class="card-header d-flex justify-content-between align-items-center">

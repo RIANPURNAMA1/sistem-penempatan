@@ -12,9 +12,15 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
 
-        // 👉 Daftarkan middleware role di sini
+        // --------- ALIAS (opsional) ----------
         $middleware->alias([
             'role' => \App\Http\Middleware\RoleMiddleware::class,
+            'update.last.activity' => \App\Http\Middleware\UpdateLastActivity::class,
+        ]);
+
+        // --------- WAJIB: MASUKKAN KE GROUP WEB ----------
+        $middleware->web([
+            \App\Http\Middleware\UpdateLastActivity::class,
         ]);
 
     })

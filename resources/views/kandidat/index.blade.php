@@ -17,37 +17,13 @@
         </script>
     @endif
 
-    <!-- Breadcrumb -->
-    <nav aria-label="breadcrumb" class="mb-4">
-        <ol class="breadcrumb border rounded-3 px-3 py-2 shadow-sm mb-0">
-            <li class="breadcrumb-item">
-                <a href="{{ route('dashboard') }}" class="text-decoration-none text-secondary">
-                    <i class="bi bi-house-door me-1"></i> Dashboard
-                </a>
-            </li>
-            <li class="breadcrumb-item active fw-semibold" aria-current="page">
-                <i class="bi bi-people me-1"></i> Data Semua Kandidat dari semua cabang
-            </li>
-        </ol>
-    </nav>
 
-    <!-- Header -->
-    <div class="mb-4 text-center text-md-start">
-        <h2 class="mb-2">
-            <i class="bi bi-people text-primary me-2"></i> Data Semua Kandidat
-        </h2>
-        <p class="text-muted fst-italic mb-0">
-            Berikut adalah daftar kandidat yang terdaftar dalam sistem.
-        </p>
-    </div>
-
-    <div class="card shadow-sm rounded-3">
+    <div class="card   shadow shadow-md border-0 rounded-3">
         <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0 fw-semibold">Kandidat</h5>
         </div>
 
         <div class="card-body table-responsive">
-            <table id="tableKandidat" class="table table-hover table-bordered align-middle">
+            <table id="tableKandidat" class="table align-middle mb-0 bg-white">
                 <thead class="text-dark fw-bold">
                     <tr>
                         <th class="text-center">No</th>

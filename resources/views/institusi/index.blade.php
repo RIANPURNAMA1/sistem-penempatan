@@ -40,15 +40,7 @@
             </ol>
         </nav>
 
-        <!-- Header -->
-        <div class="mb-4 text-center text-md-start">
-            <h2 class="fw-bold mb-2">
-                <i class="bi bi-bank text-warning me-2"></i> Daftar Institusi
-            </h2>
-            <p class="text-muted fst-italic">
-                Berikut adalah data institusi yang telah terdaftar dalam sistem.
-            </p>
-        </div>
+        
 
         <!-- Filter -->
         <div class="card shadow-sm border-0 rounded-3 mb-4">
@@ -57,11 +49,7 @@
                     <h6 class="fw-semibold mb-0 text-secondary">
                         <i class="bi bi-funnel me-1"></i> Filter Data
                     </h6>
-                    <div class="d-flex gap-2 mt-2 mt-md-0">
-                        <button class="btn btn-danger btn-sm fw-semibold shadow-sm">
-                            <i class="bi bi-file-earmark-pdf me-1"></i> Download PDF
-                        </button>
-                    </div>
+                  
                 </div>
             </div>
 

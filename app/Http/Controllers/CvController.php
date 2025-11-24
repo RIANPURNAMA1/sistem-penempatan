@@ -1,314 +1,230 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Cv;
-use App\Models\Pendidikan;
 use App\Models\Pengalaman;
-use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\Pendidikan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
-use Maatwebsite\Excel\Facades\Excel;
-use PhpOffice\PhpWord\PhpWord;
-use PhpOffice\PhpWord\IOFactory;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+
 class CvController extends Controller
 {
-    public function create()
-    {
-        $cvs = Cv::with(['pendidikan', 'pengalamans'])->get(); // ambil semua CV beserta relasinya
-        return view('pendaftaran.cv', compact('cvs'));
-    }
     public function index()
     {
-        $cvs = Cv::with(['pendidikan', 'pengalamans'])->get(); // ambil semua CV beserta relasinya
+        $cvs = Cv::with(['pendidikans', 'pengalamans'])->get();
+
         return view('cv.index', compact('cvs'));
     }
 
-  public function export($id)
-{
-    $cv = Cv::with(['pendidikan', 'pengalamans'])->findOrFail($id);
 
-    return Excel::download(new \App\Exports\CvExport($cv), 'cv-kandidat.xlsx');
-}
+    public function create()
+    {
+        $alreadyRegistered = Cv::where('user_id', Auth::id())->exists();
+        $cabangs = \App\Models\Cabang::all();
+        return view('pendaftaran.cv', compact('cabangs', 'alreadyRegistered'));
+    }
+    public function store(Request $request)
+    {
+        DB::beginTransaction();
 
-public function exportPdf($id)
-{
-    $cv = Cv::with(['pendidikan', 'pengalamans'])->findOrFail($id);
+        try {
 
-    $pdf = PDF::loadView('cv.pdf', compact('cv'))
-        ->setPaper('a4')
-        ->setOption('margin-top', 0)
-        ->setOption('margin-bottom', 0)
-        ->setOption('margin-left', 0)
-        ->setOption('margin-right', 0)
-        ->setOption('disable-smart-shrinking', true);
+            // =============== UPLOAD FILE SERTIFIKAT ===============
+            $sertifikatPaths = [];
+            if ($request->hasFile('sertifikat_files')) {
+                foreach ($request->file('sertifikat_files') as $file) {
+                    $path = $file->store('uploads/sertifikat', 'public');
+                    $sertifikatPaths[] = $path;
+                }
+            }
 
-    return $pdf->download('cv-'.$cv->id.'.pdf');
-}
+            // =============== UPLOAD FOTO ===============
+            $fotoPaths = [];
+            if ($request->hasFile('pas_foto')) {
+                foreach ($request->file('pas_foto') as $file) {
+                    $path = $file->store('uploads/pasfoto', 'public');
+                    $fotoPaths[] = $path;
+                }
+            }
 
+            // =============== SIMPAN DATA CV ===============
+            $cv = Cv::create([
+                'user_id'                      => Auth::id(),
+                'email'                        => $request->email,
+                'cabang_id'                    => $request->cabang_id,
+                'batch'                        => $request->batch,
+                'no_telepon'                   => $request->no_telepon,
+                'no_orang_tua'                 => $request->no_orang_tua,
+                'bidang_sertifikasi'           => $request->bidang_sertifikasi,
+                'bidang_sertifikasi_lainnya'   => $request->bidang_sertifikasi_lainnya,
+                'program_pertanian_kawakami'   => $request->program_pertanian_kawakami,
+                'sertifikat_files'             => json_encode($sertifikatPaths),
+
+                // halaman 2
+                'pas_foto'                     => json_encode($fotoPaths),
+                'nama_lengkap_romaji'          => $request->nama_lengkap_romaji,
+                'nama_lengkap_katakana'        => $request->nama_lengkap_katakana,
+                'nama_panggilan_romaji'        => $request->nama_panggilan_romaji,
+                'nama_panggilan_katakana'      => $request->nama_panggilan_katakana,
+                'jenis_kelamin'                => $request->jenis_kelamin,
+                'agama'                        => $request->agama,
+                'agama_lainnya'                => $request->agama_lainnya,
+                'tempat_tanggal_lahir'         => $request->tempat_tanggal_lahir,
+                'usia'                         => $request->usia,
+                'alamat_lengkap'               => $request->alamat_lengkap,
+                'email_aktif'                  => $request->email_aktif,
+                'status_perkawinan'            => $request->status_perkawinan,
+                'status_perkawinan_lainnya'    => $request->status_perkawinan_lainnya,
+                'golongan_darah'               => $request->golongan_darah,
+                'surat_izin_mengemudi'         => $request->surat_izin_mengemudi,
+                'jenis_sim'                    => $request->jenis_sim,
+                'merokok'                      => $request->merokok,
+                'minum_alkohol'                => $request->minum_alkohol,
+                'bertato'                      => $request->bertato,
+                'tinggi_badan'                 => $request->tinggi_badan,
+                'berat_badan'                  => $request->berat_badan,
+                'ukuran_pinggang'              => $request->ukuran_pinggang,
+                'ukuran_sepatu'                => $request->ukuran_sepatu,
+                'ukuran_atasan_baju'           => $request->ukuran_atasan_baju,
+                'ukuran_atasan_baju_lainnya'   => $request->ukuran_atasan_baju_lainnya,
+                'ukuran_celana'                => $request->ukuran_celana,
+                'tangan_dominan'               => $request->tangan_dominan,
+                'kemampuan_penglihatan_mata'   => $request->kemampuan_penglihatan_mata,
+                'kemampuan_penglihatan_mata_lainnya' => $request->kemampuan_penglihatan_mata_lainnya,
+                'sudah_vaksin_berapa_kali'     => $request->sudah_vaksin_berapa_kali,
+                'sudah_vaksin_berapa_kali_lainnya' => $request->sudah_vaksin_berapa_kali_lainnya,
+                'kesehatan_badan'              => $request->kesehatan_badan,
+                'penyakit_cedera_masa_lalu'    => $request->penyakit_cedera_masa_lalu,
+                'hobi'                         => $request->hobi,
+                'rencana_sumber_biaya_keberangkatan' => $request->rencana_sumber_biaya_keberangkatan,
+                'perkiraan_biaya'              => $request->perkiraan_biaya,
+
+                // halaman 3
+                'lama_belajar_di_mendunia'     => $request->lama_belajar_di_mendunia,
+                'kemampuan_bahasa_jepang'      => $request->kemampuan_bahasa_jepang,
+                'kemampuan_pemahaman_ssw'      => $request->kemampuan_pemahaman_ssw,
+                'kelincahan_dalam_bekerja'     => $request->kelincahan_dalam_bekerja,
+                'kekuatan_tindakan'            => $request->kekuatan_tindakan,
+                'kemampuan_berbahasa_inggris'  => $request->kemampuan_berbahasa_inggris,
+                'kemampuan_berbahasa_inggris_lainnya' => $request->kemampuan_berbahasa_inggris_lainnya,
+                'kebugaran_jasmani_seminggu'   => $request->kebugaran_jasmani_seminggu,
+                'kebugaran_jasmani_seminggu_lainnya' => $request->kebugaran_jasmani_seminggu_lainnya,
+
+                // halaman 5
+                'ada_keluarga_di_jepang'       => $request->ada_keluarga_di_jepang,
+                'hubungan_keluarga_di_jepang'  => $request->hubungan_keluarga_di_jepang,
+                'status_kerabat_di_jepang'     => $request->status_kerabat_di_jepang,
+                'status_kerabat_di_jepang_lainnya' => $request->status_kerabat_di_jepang_lainnya,
+                'ingin_bekerja_berapa_tahun'   => $request->ingin_bekerja_berapa_tahun,
+                'ingin_bekerja_berapa_tahun_lainnya' => $request->ingin_bekerja_berapa_tahun_lainnya,
+                'ingin_pulang_berapa_kali'     => $request->ingin_pulang_berapa_kali,
+                'kelebihan_diri'               => $request->kelebihan_diri,
+                'komentar_guru_kelebihan_diri' => $request->komentar_guru_kelebihan_diri,
+                'kekurangan_diri'              => $request->kekurangan_diri,
+                'komentar_guru_kekurangan_diri' => $request->komentar_guru_kekurangan_diri,
+                'ketertarikan_terhadap_jepang' => $request->ketertarikan_terhadap_jepang,
+                'orang_yang_dihormati'         => $request->orang_yang_dihormati,
+                'point_plus_diri'              => $request->point_plus_diri,
+                'keahlian_khusus'              => $request->keahlian_khusus,
+
+                // halaman 6
+                'anggota_keluarga_istri'       => $request->anggota_keluarga_istri,
+                'anggota_keluarga_suami'       => $request->anggota_keluarga_suami,
+                'anggota_keluarga_anak'        => $request->anggota_keluarga_anak,
+                'anggota_keluarga_ibu'         => $request->anggota_keluarga_ibu,
+                'anggota_keluarga_ayah'        => $request->anggota_keluarga_ayah,
+                'anggota_keluarga_kakak'       => $request->anggota_keluarga_kakak,
+                'anggota_keluarga_adik'        => $request->anggota_keluarga_adik,
+                'rata_rata_penghasilan_keluarga' => $request->rata_rata_penghasilan_keluarga,
+            ]);
+
+            // =============== SIMPAN PENDIDIKAN ===============
+            if ($request->nama_pendidikan) {
+                foreach ($request->nama_pendidikan as $i => $nama) {
+                    Pendidikan::create([
+                        'cv_id'   => $cv->id,
+                        'nama'    => $nama,
+                        'jurusan' => $request->jurusan_pendidikan[$i] ?? null,
+                        'tahun'   => $request->tahun_pendidikan[$i] ?? null,
+                    ]);
+                }
+            }
+
+            // =============== SIMPAN PENGALAMAN KERJA ===============
+            if ($request->perusahaan) {
+                foreach ($request->perusahaan as $i => $perusahaan) {
+                    Pengalaman::create([
+                        'cv_id'        => $cv->id,
+                        'perusahaan'   => $perusahaan,
+                        'jabatan'      => $request->jabatan[$i] ?? null,
+                        'lama_bekerja' => $request->lama_bekerja[$i] ?? null,
+                        'gaji'         => $request->gaji[$i] ?? null,
+                    ]);
+                }
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'CV berhasil disimpan.',
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error("CV ERROR: " . $e->getMessage());
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Gagal menyimpan CV.',
+                'detail' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+
+
+    public function show($id)
+    {
+        $cv = Cv::with(['pendidikans', 'pengalamans'])->findOrFail($id);
+        return view('cv.show', compact('cv'));
+    }
 
 
     public function edit($id)
     {
-        $cv = Cv::with(['pendidikan', 'pengalamans'])->findOrFail($id);
-        return view('pendaftaran.edit_cv', compact('cv'));
+        $cv = Cv::where('id', $id)
+            ->where('user_id', Auth::id())
+            ->with(['pendidikans', 'pengalamans'])
+            ->firstOrFail();
+
+        $cabangs = \App\Models\Cabang::all();
+
+        return view('pendaftaran.edit_cv', compact('cv', 'cabangs'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        // Implementasi update CV
+        // Mirip dengan store, tapi menggunakan update
     }
 
     public function destroy($id)
     {
-        $cv = Cv::findOrFail($id);
-        $cv->pendidikans()->delete();
-        $cv->pengalamans()->delete();
-        $cv->delete();
-        return redirect()->route('pendaftaran.cv.index')->with('success', 'CV berhasil dihapus');
-    }
+        try {
+            $cv = Cv::where('id', $id)
+                ->where('user_id', Auth::id())
+                ->firstOrFail();
 
+            $cv->delete();
 
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'nama_lengkap' => 'required|string|max:255',
-            'tempat_lahir' => 'required|string|max:255',
-            'tanggal_lahir' => 'required|date',
-            'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
-            'alamat' => 'required|string',
-            'email' => 'required|email|max:255',
-            'no_wa' => 'required|string|max:20',
-            'tinggi_badan' => 'nullable|integer|min:30|max:300',
-            'berat_badan' => 'nullable|integer|min:10|max:500',
-            'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'pendidikan_nama.*' => 'required|string|max:255',
-            'pendidikan_tahun.*' => 'required|string|max:50',
-            'pendidikan_jurusan.*' => 'required|string|max:255',
-            'pengalaman_perusahaan.*' => 'nullable|string|max:255',
-            'pengalaman_jabatan.*' => 'nullable|string|max:255',
-            'pengalaman_periode.*' => 'nullable|string|max:255',
-            'keahlian' => 'nullable|string|max:500',
-        ]);
-
-        // Ambil CV berdasarkan ID
-        $cv = Cv::findOrFail($id);
-
-        // Upload foto baru jika ada
-        if ($request->hasFile('foto')) {
-            // Hapus foto lama jika ada
-            if ($cv->foto) {
-                Storage::disk('public')->delete($cv->foto);
-            }
-            $cv->foto = $request->file('foto')->store('cv_foto', 'public');
+            return redirect()->route('pendaftaran.cv')
+                ->with('success', 'CV berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->with('error', 'Gagal menghapus CV.');
         }
-
-        // Update data CV
-        $cv->update([
-            'nama_lengkap' => $request->nama_lengkap,
-            'tempat_lahir' => $request->tempat_lahir,
-            'tanggal_lahir' => $request->tanggal_lahir,
-            'jenis_kelamin' => $request->jenis_kelamin,
-            'alamat' => $request->alamat,
-            'email' => $request->email,
-            'no_wa' => $request->no_wa,
-            'tinggi_badan' => $request->tinggi_badan,
-            'berat_badan' => $request->berat_badan,
-            'keahlian' => $request->keahlian,
-        ]);
-
-        // Update pendidikan
-        $cv->pendidikan()->delete(); // hapus dulu yang lama
-        foreach ($request->pendidikan_nama as $i => $nama) {
-            Pendidikan::create([
-                'cv_id' => $cv->id,
-                'nama' => $nama,
-                'tahun' => $request->pendidikan_tahun[$i],
-                'jurusan' => $request->pendidikan_jurusan[$i],
-            ]);
-        }
-
-        // Update pengalaman
-        $cv->pengalamans()->delete(); // hapus dulu yang lama
-        foreach ($request->pengalaman_perusahaan as $i => $perusahaan) {
-            if ($perusahaan) {
-                Pengalaman::create([
-                    'cv_id' => $cv->id,
-                    'perusahaan' => $perusahaan,
-                    'jabatan' => $request->pengalaman_jabatan[$i] ?? null,
-                    'periode' => $request->pengalaman_periode[$i] ?? null,
-                ]);
-            }
-        }
-
-        return redirect()->back()->with('success', 'CV berhasil diupdate!');
     }
-
-
-    public function store(Request $request)
-    {
-        // Cek apakah user sudah punya CV
-        if (Cv::where('user_id', Auth::id())->exists()) {
-            return response()->json([
-                'message' => 'Kamu sudah mengisi CV, tidak bisa menambah lagi.'
-            ], 422); // HTTP 422 untuk validasi gagal
-        }
-
-        // Validasi input
-        $request->validate([
-            'nama_lengkap' => 'required|string|max:255',
-            'tempat_lahir' => 'required|string|max:255',
-            'tanggal_lahir' => 'required|date',
-            'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
-            'alamat' => 'required|string',
-            'email' => 'required|email|max:255',
-            'no_wa' => 'required|string|max:20',
-            'tinggi_badan' => 'nullable|integer|min:30|max:300',
-            'berat_badan' => 'nullable|integer|min:10|max:500',
-            'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'pendidikan_nama.*' => 'required|string|max:255',
-            'pendidikan_tahun.*' => 'required|string|max:50',
-            'pendidikan_jurusan.*' => 'required|string|max:255',
-            'pengalaman_perusahaan.*' => 'nullable|string|max:255',
-            'pengalaman_jabatan.*' => 'nullable|string|max:255',
-            'pengalaman_periode.*' => 'nullable|string|max:255',
-            'keahlian' => 'nullable|string|max:500',
-        ]);
-
-        // Upload foto
-        $fotoPath = $request->hasFile('foto') ? $request->file('foto')->store('cv_foto', 'public') : null;
-
-        // Simpan CV
-        $cv = Cv::create([
-            'user_id' => Auth::id(),
-            'nama_lengkap' => $request->nama_lengkap,
-            'tempat_lahir' => $request->tempat_lahir,
-            'tanggal_lahir' => $request->tanggal_lahir,
-            'jenis_kelamin' => $request->jenis_kelamin,
-            'alamat' => $request->alamat,
-            'email' => $request->email,
-            'no_wa' => $request->no_wa,
-            'tinggi_badan' => $request->tinggi_badan,
-            'berat_badan' => $request->berat_badan,
-            'foto' => $fotoPath,
-            'keahlian' => $request->keahlian,
-        ]);
-
-        // Simpan pendidikan
-        foreach ($request->pendidikan_nama as $i => $nama) {
-            $cv->pendidikan()->create([
-                'nama' => $nama,
-                'tahun' => $request->pendidikan_tahun[$i],
-                'jurusan' => $request->pendidikan_jurusan[$i],
-            ]);
-        }
-
-        // Simpan pengalaman
-        foreach ($request->pengalaman_perusahaan as $i => $perusahaan) {
-            if ($perusahaan) {
-                $cv->pengalamans()->create([
-                    'perusahaan' => $perusahaan,
-                    'jabatan' => $request->pengalaman_jabatan[$i] ?? null,
-                    'periode' => $request->pengalaman_periode[$i] ?? null,
-                ]);
-            }
-        }
-
-        return response()->json(['success' => true]);
-    }
-
-
-
-    // word
-    public function exportWord($id)
-{
-    $cv = Cv::with(['pendidikan', 'pengalamans'])->findOrFail($id);
-
-    $phpWord = new PhpWord();
-    $section = $phpWord->addSection();
-
-    // ========== JUDUL ==========
-    $section->addText(
-        'CURRICULUM VITAE',
-        ['bold' => true, 'size' => 18],
-        ['alignment' => 'center']
-    );
-
-    $section->addTextBreak(1);
-
-    // ========== DATA PRIBADI ==========
-    $section->addText('DATA PRIBADI', ['bold' => true, 'size' => 14]);
-    $section->addTextBreak(0.3);
-
-    $section->addText('Nama Lengkap: ' . $cv->nama_lengkap);
-    $section->addText('Tempat Lahir: ' . $cv->tempat_lahir);
-    $section->addText('Tanggal Lahir: ' . $cv->tanggal_lahir);
-    $section->addText('Jenis Kelamin: ' . $cv->jenis_kelamin);
-    $section->addText('Alamat: ' . $cv->alamat);
-    $section->addText('Email: ' . $cv->email);
-    $section->addText('No. WA: ' . $cv->no_wa);
-
-    if ($cv->tinggi_badan) {
-        $section->addText('Tinggi Badan: ' . $cv->tinggi_badan . ' cm');
-    }
-
-    if ($cv->berat_badan) {
-        $section->addText('Berat Badan: ' . $cv->berat_badan . ' kg');
-    }
-
-    if ($cv->keahlian) {
-        $section->addText('Keahlian: ' . $cv->keahlian);
-    }
-
-    $section->addTextBreak(1);
-
-    // ========== PENDIDIKAN ==========
-    $section->addText('RIWAYAT PENDIDIKAN', ['bold' => true, 'size' => 14]);
-    $section->addTextBreak(0.3);
-
-    if ($cv->pendidikan->count() > 0) {
-        foreach ($cv->pendidikan as $p) {
-            $section->addListItem(
-                $p->tingkatan . ' - ' . $p->instansi . ' (' . $p->tahun . ')'
-            );
-        }
-    } else {
-        $section->addText('- Tidak ada data pendidikan');
-    }
-
-    $section->addTextBreak(1);
-
-    // ========== PENGALAMAN ==========
-    $section->addText('PENGALAMAN KERJA', ['bold' => true, 'size' => 14]);
-    $section->addTextBreak(0.3);
-
-    if ($cv->pengalamans->count() > 0) {
-        foreach ($cv->pengalamans as $pg) {
-            $section->addListItem(
-                $pg->posisi . ' - ' . $pg->perusahaan . ' (' . $pg->tahun_mulai . ' - ' . $pg->tahun_selesai . ')'
-            );
-        }
-    } else {
-        $section->addText('- Tidak ada data pengalaman');
-    }
-
-    // ========== FOTO (JIKA ADA) ==========
-    if ($cv->foto && file_exists(public_path('uploads/cv/' . $cv->foto))) {
-        $section->addTextBreak(1);
-        $section->addText('Foto:', ['bold' => true]);
-
-        $section->addImage(
-            public_path('uploads/cv/' . $cv->foto),
-            [
-                'width' => 120,
-                'height' => 150,
-                'alignment' => 'left'
-            ]
-        );
-    }
-
-    // ========== EXPORT FILE ==========
-    $filename = 'CV-' . str_replace(' ', '-', $cv->nama_lengkap) . '.docx';
-    $path = storage_path($filename);
-
-    $writer = IOFactory::createWriter($phpWord, 'Word2007');
-    $writer->save($path);
-
-    return response()->download($path)->deleteFileAfterSend(true);
-}
 }

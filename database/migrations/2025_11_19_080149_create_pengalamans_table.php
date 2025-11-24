@@ -16,7 +16,8 @@ return new class extends Migration
             $table->unsignedBigInteger('cv_id');
             $table->string('perusahaan');
             $table->string('jabatan')->nullable();
-            $table->string('periode')->nullable();
+            $table->string('lama_bekerja')->nullable();
+            $table->string('gaji')->nullable();
             $table->timestamps();
 
             $table->foreign('cv_id')->references('id')->on('cvs')->onDelete('cascade');

@@ -1,6 +1,33 @@
 @extends('layouts.app')
 @section('content')
 
+    <style>
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            display: inline-block;
+            border-radius: 50%;
+        }
+
+        .list-group-item:hover {
+            background: #f8f9fa;
+            border-left: 4px solid #0d6efd;
+        }
+
+        .icon-wrapper {
+            transition: 0.3s ease;
+        }
+
+        .card:hover .icon-wrapper {
+            transform: scale(1.05);
+        }
+
+        .card {
+            transition: box-shadow 0.3s ease;
+        }
+    </style>
+
+
     {{-- @if (session('success'))
     <script>
         Swal.fire({
@@ -16,11 +43,13 @@
         });
     </script>
 @endif --}}
+    @include('components.Headers')
+
 
     <div class="page-heading d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between">
 
         {{-- Judul halaman --}}
-        <div class="mb-2 mb-md-0">
+        <div class="mb-2 mb-md-0 mt-3">
             @if (auth()->user()->role->name === 'kandidat')
                 <h3 class="mb-1">Halo, {{ auth()->user()->name }}</h3>
                 <p class="text-muted mb-0">Ini adalah timeline aktivitas Anda.</p>
@@ -33,25 +62,6 @@
             @endif
         </div>
 
-        {{-- Kartu user --}}
-        @if (auth()->check())
-            <div class="d-flex justify-content-md-end justify-content-center mt-3 mt-md-0 w-100">
-                <div class="card shadow-sm w-100 w-md-auto" style="max-width: 360px">
-                    <div class="card-body py-3 px-3 d-flex align-items-center justify-content-center">
-                        <div class="avatar rounded-circle" style="width: 50px; height: 50px; ">
-                            <img src="data:image/jpeg;base64,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"
-                                alt="{{ auth()->user()->name }}">
-                        </div>
-                        <div class="ms-3">
-                            <h6 class="mb-1">Halo, selamat datang</h6>
-                            <h5 class="mb-0">{{ auth()->user()->name }}</h5>
-                            <small class="text-muted d-block">{{ auth()->user()->email }}</small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        @endif
-
     </div>
     <hr>
     <div class="page-content">
@@ -61,7 +71,7 @@
                     <div class="row">
                         @foreach ($stats as $stat)
                             <div class="col-6 col-lg-3 col-md-6">
-                                <div class="card hover-card">
+                                <div class="card hover-card shadow shadow-md border-0 ">
                                     <div class="card-body px-4 py-4-5">
                                         <div class="row align-items-center">
                                             <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 text-center">
@@ -79,7 +89,6 @@
                             </div>
                         @endforeach
                     </div>
-
 
                     <!-- Status Penempatan Kandidat -->
                     <div class="row mt-4">
@@ -115,8 +124,8 @@
 
                         @foreach ($status_penempatan as $status => $jumlah)
                             <div class="col-6 col-lg-3 col-md-6 mb-3">
-                                <div class="card shadow-sm border-0 hover-card">
-                                    <div class="card-body px-4 py-4-5">
+                                <div class="card shadow shadow-md border-0 hover-card">
+                                    <div class="card-body px-4 py-4-5  rounded-2">
                                         <div class="row align-items-center">
                                             <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 text-center">
                                                 <div class="stats-icon rounded-3 d-flex justify-content-center align-items-center mb-2"
@@ -161,7 +170,7 @@
                     {{-- kandidat --}}
                     <div class="row">
                         <div class="col-12">
-                            <div class="card">
+                            <div class="card shadow shadow-md border-0">
                                 <div class="card-header">
                                     <h4>Kandidat Percabang</h4>
                                 </div>
@@ -235,6 +244,149 @@
                             chart.render();
                         });
                     </script>
+
+
+
+                    <div class="row mt-4">
+
+                        <!-- =========================
+                                            BAGIAN KIRI (CHART)
+                                        ========================== -->
+                        <!-- =========================
+                    BAGIAN KIRI (CHART)
+                ========================== -->
+                        <div class="col-12 col-md-8">
+                            <div class="card h-100 shadow-lg border-0 rounded-4">
+
+                                <!-- HEADER CARD -->
+                                <div class="card-header bg-light border-0 py-3">
+                                    <div class="d-flex align-items-center">
+                                        <div class="icon-wrapper bg-primary bg-opacity-10 text-primary rounded-circle me-3"
+                                            style="width: 45px; height: 45px; display:flex; align-items:center; justify-content:center;">
+                                            <i class="bi bi-pie-chart-fill fs-4"></i>
+                                        </div>
+
+                                        <div>
+                                            <h5 class="mb-0 fw-bold">Distribusi Status Kandidat</h5>
+                                            <small class="">Statistik penyebaran status kandidat terbaru</small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- BODY CARD -->
+                                <div class="card-body p-4">
+                                    <div id="chart-status-kandidat" style="height: 350px;"></div>
+                                </div>
+
+                            </div>
+                        </div>
+
+
+                        <div class="col-12 col-md-4 mt-4 mt-md-0">
+
+                            <div class="card h-100 shadow-lg border-0 rounded-4">
+
+                                <!-- HEADER -->
+                                <div class="card-header bg-light border-0 py-3">
+                                    <div class="d-flex align-items-center">
+                                        <div class="icon-wrapper bg-success bg-opacity-10 text-success rounded-circle me-3"
+                                            style="width: 45px; height: 45px; display:flex; align-items:center; justify-content:center;">
+                                            <i class="bi bi-people-fill fs-4"></i>
+                                        </div>
+
+                                        <div>
+                                            <h5 class="fw-bold mb-0">User yang Sedang Login</h5>
+                                            <small class="">Aktivitas pengguna sistem saat ini</small>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- BODY -->
+                                <div class="card-body p-3">
+
+                                    <ul class="list-group list-group-flush">
+
+                                        @foreach ($users as $user)
+                                            <li class="list-group-item d-flex justify-content-between align-items-center py-3"
+                                                style="border-left: 4px solid transparent; transition: .2s;">
+
+                                                <div class="d-flex align-items-center">
+                                                    <!-- Avatar -->
+                                                    <div class="rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center me-3"
+                                                        style="width: 40px; height: 40px; font-size: 18px;">
+                                                        <i class="bi bi-person-fill"></i>
+                                                    </div>
+
+                                                    <!-- Nama User -->
+                                                    <span class="fw-semibold">{{ $user->name }}</span>
+                                                </div>
+
+                                                <!-- Status Dot -->
+                                                @php
+                                                    $isOnline = $user->last_activity >= now()->subMinutes(5);
+                                                @endphp
+
+                                                <span class="d-flex align-items-center">
+                                                    <span
+                                                        class="status-dot {{ $isOnline ? 'bg-success' : 'bg-danger' }}"></span>
+                                                    <small
+                                                        class="ms-2 fw-semibold {{ $isOnline ? 'text-success' : 'text-danger' }}">
+                                                        {{ $isOnline ? 'Online' : 'Offline' }}
+                                                    </small>
+                                                </span>
+
+                                            </li>
+                                        @endforeach
+
+                                    </ul>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function() {
+                            var statusOptions = {
+                                series: @json($statusCounts),
+                                chart: {
+                                    type: 'pie',
+                                    height: 350
+                                },
+                                labels: @json($statusLabels),
+                                legend: {
+                                    position: 'bottom'
+                                },
+                                dataLabels: {
+                                    enabled: true,
+                                    formatter: function(val, opts) {
+                                        return opts.w.globals.series[opts.seriesIndex];
+                                    }
+                                },
+                                colors: [
+                                    '#6c757d', // Job Matching
+                                    '#0dcaf0', // Pending
+                                    '#ffc107', // Interview
+                                    '#dc3545', // Gagal Interview
+                                    '#6610f2', // Jadwalkan Interview Ulang
+                                    '#198754', // Lulus Interview
+                                    '#fd7e14', // Pemberkasan
+                                    '#0d6efd', // Berangkat
+                                    '#000000' // Ditolak
+                                ]
+                            };
+
+                            var chartStatus = new ApexCharts(
+                                document.querySelector("#chart-status-kandidat"),
+                                statusOptions
+                            );
+
+                            chartStatus.render();
+                        });
+                    </script>
                 @endif
                 @if (auth()->user()->role->name === 'kandidat')
                     <!-- Header Tabel -->
@@ -270,51 +422,116 @@
                                 });
                             </script>
                         @else
-                            <table class="table table-bordered table-hover table-striped align-middle">
-                                <thead class="table-warning text-dark">
-                                    <tr>
-                                        <th>Nama</th>
-                                        <th>Email</th>
-                                        <th>No WA</th>
-                                        <th>Jenis Kelamin</th>
-                                        <th>Tanggal Lahir</th>
-                                        <th>Pendidikan</th>
-                                        <th>Pengalaman</th>
-                                        <th>Keahlian</th>
-                                        <th>Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($cvs as $cv)
-                                        <tr>
-                                            <td>{{ $cv->nama_lengkap }}</td>
-                                            <td>{{ $cv->email }}</td>
-                                            <td>{{ $cv->no_wa }}</td>
-                                            <td>{{ $cv->jenis_kelamin }}</td>
-                                            <td>{{ $cv->tanggal_lahir->format('d-m-Y') }}</td>
-                                            <td>
-                                                @foreach ($cv->pendidikan as $p)
-                                                    <div>{{ $p->nama }} ({{ $p->tahun }} - {{ $p->jurusan }})
+                            <div class="card border-0 shadow shadow-md rounded-4">
+                                <div class="card-header py-3 border-0">
+
+                                    @if ($cvs->isEmpty())
+                                        <!-- SweetAlert jika belum ada CV -->
+                                        <script>
+                                            document.addEventListener('DOMContentLoaded', function() {
+                                                Swal.fire({
+                                                    icon: 'info',
+                                                    title: 'Belum Mengisi CV',
+                                                    html: `
+                    <p>Kamu belum mengisi CV.</p>
+                    <a href="{{ route('pendaftaran.cv.create') }}" 
+                       class="btn btn-warning fw-semibold mt-2">
+                        <i class="bi bi-pencil-square me-1"></i> Isi CV Sekarang
+                    </a>
+                `,
+                                                    showConfirmButton: false,
+                                                    allowOutsideClick: false,
+                                                    allowEscapeKey: false,
+                                                    background: '#fffaf0',
+                                                    color: '#333'
+                                                });
+                                            });
+                                        </script>
+                                    @else
+                                        <div class="card border-0 shadow-sm rounded-4 mb-4">
+                                            <div class="card-header  fw-bold py-3 rounded-top-4">
+                                                <i class="bi bi-file-person me-2"></i> Ringkasan Data CV Anda
+                                            </div>
+
+                                            <div class="card-body">
+                                                @foreach ($cvs as $cv)
+                                                    <div class="table-responsive ">
+                                                        <table class="table table-bordered table-striped align-middle">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <th width="30%">Email</th>
+                                                                    <td>{{ $cv->email }}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>Cabang</th>
+                                                                    <td>{{ $cv->cabang_Id }}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>Batch</th>
+                                                                    <td>{{ $cv->batch }}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>No Telepon</th>
+                                                                    <td>{{ $cv->no_telepon }}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>Nama Romaji</th>
+                                                                    <td>{{ $cv->nama_lengkap_romaji }}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>Nama Katakana</th>
+                                                                    <td>{{ $cv->nama_lengkap_katakana }}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>Jenis Kelamin</th>
+                                                                    <td>{{ $cv->jenis_kelamin }}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>Agama</th>
+                                                                    <td>{{ $cv->agama }}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>Alamat Lengkap</th>
+                                                                    <td>{{ $cv->alamat_lengkap }}</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>Tinggi Badan</th>
+                                                                    <td>{{ $cv->tinggi_badan }} cm</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>Berat Badan</th>
+                                                                    <td>{{ $cv->berat_badan }} kg</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>Kebiasaan</th>
+                                                                    <td>
+                                                                        Merokok: <strong>{{ $cv->merokok }}</strong><br>
+                                                                        Minum Alkohol:
+                                                                        <strong>{{ $cv->minum_alkohol }}</strong><br>
+                                                                        Bertato: <strong>{{ $cv->bertato }}</strong>
+                                                                    </td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>Aktivitas Olahraga</th>
+                                                                    <td>{{ $cv->kebugaran_jasmani_seminggu }}</td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
                                                     </div>
                                                 @endforeach
-                                            </td>
-                                            <td>
-                                                @foreach ($cv->pengalamans as $p)
-                                                    <div>{{ $p->perusahaan }} - {{ $p->jabatan }} ({{ $p->periode }})
-                                                    </div>
-                                                @endforeach
-                                            </td>
-                                            <td>{{ $cv->keahlian }}</td>
-                                            <td>
+
                                                 <a href="{{ route('pendaftaran.cv.edit', $cv->id) }}"
-                                                    class="btn btn-sm btn-warning">
-                                                    <i class="bi bi-pencil-square me-1"></i>Edit
+                                                    class="btn btn-warning fw-semibold">
+                                                    <i class="bi bi-pencil-square me-1"></i> Edit CV
                                                 </a>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                                            </div>
+                                        </div>
+                                    @endif
+
+
+
+                                </div>
+                            </div>
                         @endif
                     </div>
 
@@ -442,8 +659,9 @@
                                     <div class="card-body text-center p-4">
                                         <div class="position-relative mb-3">
                                             <img src="{{ asset($kandidat->foto) }}" alt="Foto Kandidat"
-                                                class="rounded-circle border border-3 border-white shadow-sm" width="120"
-                                                height="120" style="object-fit: cover; object-position: center;">
+                                                class="rounded-circle border border-3 border-white shadow-sm"
+                                                width="120" height="120"
+                                                style="object-fit: cover; object-position: center;">
 
                                         </div>
 
@@ -540,6 +758,8 @@
                         </style>
 
                     </div>
+
+
                 @endif
 
                 @if (in_array(auth()->user()->role->name, ['admin cianjur pamoyanan', 'admin cianjur selatan', 'super admin']))

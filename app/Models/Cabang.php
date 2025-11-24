@@ -20,6 +20,10 @@ class Cabang extends Model
     {
         return $this->hasMany(Pendaftaran::class, 'cabang_id');
     }
+    public function cv()
+    {
+        return $this->hasMany(Cv::class, 'cabang_id');
+    }
 
       public function users()
     {

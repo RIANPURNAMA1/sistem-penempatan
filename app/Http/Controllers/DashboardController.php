@@ -6,10 +6,12 @@ use App\Models\Cabang;
 use App\Models\Cv;
 use App\Models\Institusi;
 use App\Models\Pendaftaran;
+use Illuminate\Support\Facades\DB;
 use App\Models\Kandidat;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class DashboardController extends Controller
 {
@@ -95,6 +97,45 @@ class DashboardController extends Controller
             ];
         }
 
+      // ===============================
+        // 1. AMBIL SEMUA USER BESERTA STATUS ONLINE
+        // ===============================
+        $users = User::select('id', 'name', 'last_activity')
+            ->orderBy('name', 'asc')
+            ->get()
+            ->map(function ($user) {
+
+                // Jika belum ada aktivitas → OFFLINE
+                if (!$user->last_activity) {
+                    $user->status = 'Offline';
+                    return $user;
+                }
+
+                $last = Carbon::parse($user->last_activity);
+                $diff = $last->diffInMinutes(now());
+
+                if ($diff <= 2) {
+                    $user->status = 'Online';
+                } elseif ($diff > 2 && $diff <= 10) {
+                    $user->status = 'Idle';
+                } else {
+                    $user->status = 'Offline';
+                }
+
+                return $user;
+            });
+
+        // distribusi status kandidat
+        // Ambil semua status dan jumlahnya
+    $statusData = Kandidat::select('status_kandidat', DB::raw('COUNT(*) as jumlah'))
+        ->groupBy('status_kandidat')
+        ->orderBy('status_kandidat')
+        ->get();
+
+    // Pisahkan menjadi labels & counts
+    $statusLabels = $statusData->pluck('status_kandidat');
+    $statusCounts = $statusData->pluck('jumlah');
+
         // Ambil semua data kandidat untuk tabel
         $kandidats = Kandidat::with(['pendaftaran', 'cabang', 'institusi'])
             ->orderBy('created_at', 'desc')
@@ -104,7 +145,7 @@ class DashboardController extends Controller
         $dataKandidat = Pendaftaran::with(['kandidat', 'cabang'])->where('user_id', Auth::id())->get();
         // Ambil CV milik user yang sedang login
         $userId = Auth::id(); // id user login
-        $cvs = CV::where('user_id', $userId)->with(['pendidikan', 'pengalamans'])->get();
+        $cvs = CV::where('user_id', $userId)->with(['pendidikans', 'pengalamans'])->get();
         return view('dashboard', compact(
             'stats',
             'status_penempatan',
@@ -113,6 +154,9 @@ class DashboardController extends Controller
             'dataKandidat',
             'kandidats',
             'cvs', // <-- data kandidat
+            'statusLabels',
+            'statusCounts',
+            'users'
         ));
     }
 

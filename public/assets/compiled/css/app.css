@@ -10,6 +10,8 @@
     touch-action: auto;
     -ms-touch-action: auto;
 }
+
+
 .ps__rail-x {
     display: none;
     opacity: 0;

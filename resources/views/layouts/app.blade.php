@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - Sistem Penempatan</title>
+    <title>Dashboard - Sistem Penempatan Kandidat</title>
 
     <!-- Favicon -->
     <link rel="shortcut icon" href="{{ asset('assets/compiled/svg/favicon.svg') }}" type="image/x-icon">
@@ -20,46 +20,11 @@
     <!-- Init Theme -->
     <script src="{{ asset('assets/static/js/initTheme.js') }}"></script>
 </head>
-<style>
-    <style>
 
-    /* Sidebar main links */
-    .sidebar-link,
-    .submenu-link {
-        text-decoration: none !important;
-        /* hilangkan garis bawah */
-        color: #333;
-        /* warna default hitam gelap */
-        transition: color 0.3s;
-        /* animasi smooth saat hover */
-    }
-
-    /* Hover effect */
-    .sidebar-link:hover,
-    .submenu-link:hover {
-        color: #000;
-        /* warna hitam saat hover */
-        text-decoration: none;
-        /* pastikan garis bawah tetap hilang */
-        background-color: rgba(0, 0, 0, 0.05);
-        /* opsional: efek highlight ringan */
-    }
-
-    /* Jika ada active state */
-    .sidebar-item.active-sidebar>.sidebar-link {
-        color: #000;
-        /* warna aktif hitam */
-        font-weight: 600;
-    }
-</style>
-
-</style>
-
-<body class="dark">
+<body >
     <div id="app">
         {{-- sidebar --}}
-
-        <div id="sidebar" class="card ">
+        <div id="sidebar" class="card">
 
             <div class="sidebar-wrapper active shadow shadow-md" style="">
                 <div class="sidebar-header position-relative">
@@ -143,10 +108,10 @@
 
                         <li class="sidebar-title">Menu Utama</li>
 
-                        <li class="sidebar-item active-sidebar">
+                        <li class="sidebar-item active-sidebar ">
                             <a href="{{ url('/') }}" class='sidebar-link rounded-full'>
-                                <i class="bi bi-grid-fill text-dark"></i>
-                                <span class="text-active-side">Dashboard</span>
+                                <i class="bi bi-grid-fill "></i>
+                                <span class="text-dark">Dashboard</span>
                             </a>
                         </li>
 

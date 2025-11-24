@@ -1,359 +1,545 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>面談シート</title>
+
+  <title>Lembar Wawancara</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
   <style>
-    /* Reset minimal */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { height: 100%; background: #fff; color: #000; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      font-family: "MS Gothic", "Yu Gothic", "Hiragino Kaku Gothic ProN", "Segoe UI", Arial, sans-serif;
-      font-size: 13px;
-      line-height: 1.4;
-      padding: 16px;
-      color: #222;
+      font-family: Arial, "Segoe UI", sans-serif;
+      padding: 20px;
+      background-color: #ffffff;
     }
 
-    /* Container — use table layout for predictable PDF rendering */
-    .root-table {
+    table {
       width: 100%;
       border-collapse: collapse;
-      table-layout: fixed;
+      margin-bottom: 20px;
     }
 
-    .left-col { width: 64%; vertical-align: top; padding-right: 12px; }
-    .right-col { width: 36%; vertical-align: top; padding-left: 12px; }
-
-    /* Generic table styles used through document */
-    .section-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-bottom: 12px;
-    }
-    .section-table th,
-    .section-table td {
-      border: 1px solid #333;
-      padding: 8px;
-      vertical-align: top;
-      text-align: left;
-      font-size: 13px;
-    }
-    .section-table th {
-      background: #e3f2fd;
-      font-weight: 700;
+    th,
+    td {
+      border: 2px solid #000;
+      padding: 12px;
       text-align: center;
     }
 
-    /* Specific small helpers */
-    .name-cell { width: 120px; font-weight:700; background:#e3f2fd; text-align:left; padding-left:10px; }
-    .large-name { text-align:center; font-size:18px; font-weight:700; padding:18px 8px; }
-    .input-field { background: #fff; min-height: 28px; }
-    .section-header { background:#e3f2fd; font-weight:700; text-align:center; }
-    .year-col { width: 18%; text-align:center; }
-    .month-col { width: 18%; text-align:center; }
-    .content-col { width: 64%; text-align:left; padding-left:12px; }
-
-    /* Photo box */
-    .photo-box {
-      width: 140px;
-      height: 180px;
-      border: 1px dashed #666;
-      text-align:center;
-      font-size:12px;
-      padding:8px;
-      margin-bottom:12px;
+    .header-row {
+      background-color: #ffffff;
+      font-weight: bold;
     }
-    .photo-box img { max-width: 100%; height: auto; display:block; margin: 0 auto; }
 
-    /* Comments area */
-    .comment-table td { height: 140px; }
+    .year-col {
+      width: 10%;
+    }
 
-    /* Blue header bars */
-    .blue-row th, .blue-header { background: #e3f2fd; font-weight:700; text-align:center; }
+    .month-col {
+      width: 10%;
+    }
 
-    /* Notes box */
-    .notes {
-      margin-top: 12px;
+    .content-col {
+      width: 80%;
+      text-align: left;
+      padding-left: 20px;
+    }
+
+    .data-row-alt {
+      background-color: #f9f9f9;
+    }
+
+    .label-cell {
+      background-color: #ffffff;
+      font-weight: bold;
+    }
+
+    .blue-header {
+      background-color: #e3f2fd;
+      font-weight: bold;
+    }
+
+    .no-border-top {
+      border-top: none;
+    }
+
+    .section-content {
+      vertical-align: top;
+      text-align: left;
+      padding: 20px;
+    }
+
+    .section-item {
+      margin-bottom: 20px;
+    }
+
+    .section-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .section-title {
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .header {
+      text-align: start;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .date-section {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+
+    .photo-guide {
+      position: absolute;
+      right: 0px;
+      top: 2px;
+      border: 2px dashed;
       padding: 10px;
-      background: #fff9c4;
+      font-size: 11px;
+      line-height: 2.3;
+      width: 200px;
+      background-color: #fafafa;
+    }
+
+    .name-cell {
+      background-color: #e3f2fd;
+      font-weight: bold;
+      width: 100px;
+    }
+
+    .large-name {
+      font-size: 20px;
+      font-weight: bold;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .input-field {
+      background-color: white;
+    }
+
+    .section-header {
+      background-color: #e3f2fd;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .notes {
+      margin-top: 20px;
+      padding: 15px;
+      background-color: #fff9c4;
       border-left: 4px solid #fbc02d;
       font-size: 12px;
-      line-height: 1.5;
+      line-height: 1.8;
     }
 
-    /* Make sure long text wraps */
-    td, th { word-wrap: break-word; word-break: break-word; }
+    .notes strong {
+      display: block;
+      margin-bottom: 5px;
+    }
 
-    /* Print tweaks */
+    .small-text {
+      font-size: 11px;
+    }
+
     @media print {
-      body { padding: 8px; }
-      .photo-box { border-style: dashed; }
-      .root-table { page-break-inside: avoid; }
+      body {
+        background-color: white;
+        padding: 0;
+      }
+
+      
     }
   </style>
 </head>
-<body>
-  <!-- Root layout: two columns (left = main details, right = supplements like photo, license, comments) -->
-  <table class="root-table">
-    <tr>
-      <td class="left-col">
 
-        <!-- Header -->
-        <table class="section-table">
+<body class="container">
+<button id="btnPdf" class="btn btn-primary mb-3">
+    Download PDF
+</button>
+
+
+  <div class="container"  id="PdfArea">                
+    <div>
+      <div class="header">
+        <h1>LEMBAR WAWANCARA</h1>
+      </div>
+
+      <div class="date-section">Tanggal __ / __ / ____</div>
+
+      <div style="position: relative">
+        <div class="photo-guide" style="position: absolute; bottom: 1; left: 1">
+          Tempat Foto<br /><br />
+          Jika diperlukan foto:<br />
+          1. Ukuran 4x6 cm<br />
+          2. Foto close-up<br />
+          dari dada ke atas<br />
+          3. Tempelkan di<br />
+          bagian belakang
+        </div>
+      </div>
+
+      <!-- Informasi Pribadi -->
+      <table>
+        <tr>
+          <th class="name-cell">Nama (Furigana)</th>
+          <td colspan="5" class="input-field"></td>
+        </tr>
+        <tr>
+          <th class="name-cell">Nama Lengkap</th>
+          <td style="height: 200px" colspan="5" class="large-name">
+            Aldi Abduloh
+          </td>
+        </tr>
+        <tr>
+          <th class="name-cell">Kewarganegaraan</th>
+          <td>Indonesia</td>
+          <th>Tanggal Lahir</th>
+          <td>6 Juni 2001</td>
+          <th>Usia</th>
+          <td>○ tahun</td>
+          <th>Jenis Kelamin</th>
+          <td>Laki-laki / Perempuan</td>
+        </tr>
+        <tr>
+          <th class="name-cell">Alamat (Furigana)</th>
+          <td colspan="3" class="input-field"></td>
+          <td colspan="2"><strong>Lokasi</strong></td>
+          <td colspan="2">Luar Negeri / Dalam Negeri</td>
+        </tr>
+        <tr>
+          <th class="name-cell" rowspan="2">Alamat Saat Ini</th>
+          <td rowspan="2" colspan="3">Kode Pos: ______<br /><br />Provinsi, Kota</td>
+          <td colspan="2"><strong>Status Tinggal</strong></td>
+          <td colspan="2">—</td>
+        </tr>
+        <tr>
+          <td colspan="2"><strong>Batas Tinggal</strong></td>
+          <td colspan="2">—</td>
+        </tr>
+        <tr>
+          <th class="name-cell">Golongan Darah</th>
+          <td>○</td>
+          <th>Ukuran Baju</th>
+          <td>S / M / L / XL</td>
+          <th colspan="2">Status Pernikahan</th>
+          <td colspan="2">Menikah / Belum Menikah</td>
+        </tr>
+        <tr>
+          <th class="name-cell">Tinggi Badan</th>
+          <td>○ cm</td>
+          <th>Ukuran Celana</th>
+          <td>S / M / L / XL</td>
+          <th colspan="2" rowspan="3">Komposisi Keluarga</th>
+          <td colspan="2" rowspan="3">
+            Diri sendiri, Ibu, Ayah, Istri/Suami<br />
+            Anak (○ orang)<br />
+            Kakak laki-laki (○), Kakak perempuan (○)<br />
+            Adik laki-laki (○), Adik perempuan (○)
+          </td>
+        </tr>
+        <tr>
+          <th class="name-cell">Berat Badan</th>
+          <td>○ kg</td>
+          <th>Ukuran Sepatu</th>
+          <td></td>
+        </tr>
+      </table>
+
+      <!-- Riwayat Pendidikan -->
+      <table>
+        <tr>
+          <th class="section-header" colspan="2">Tahun / Bulan</th>
+          <th class="section-header" colspan="3">Riwayat Pendidikan</th>
+          <th class="section-header" colspan="2">Jurusan / Fakultas</th>
+        </tr>
+        <tr>
+          <td colspan="2">○○○○ / 06</td>
+          <td colspan="3">SD ○○○○○○ - Lulus</td>
+          <td colspan="2" class="input-field"></td>
+        </tr>
+        <tr>
+          <td colspan="2">○○○○ / 06</td>
+          <td colspan="3">SMP ○○○○○○ - Lulus</td>
+          <td colspan="2" class="input-field"></td>
+        </tr>
+        <tr>
+          <td colspan="2">○○○○ / 06</td>
+          <td colspan="3">SMA ○○○○○○ - Lulus</td>
+          <td colspan="2" class="input-field"></td>
+        </tr>
+        <tr>
+          <td colspan="2" class="input-field"></td>
+          <td colspan="3" class="input-field"></td>
+          <td colspan="2" class="input-field"></td>
+        </tr>
+      </table>
+
+      <!-- Riwayat Pekerjaan -->
+      <table>
+        <tr>
+          <th class="section-header" colspan="2">Tahun / Bulan</th>
+          <th class="section-header" colspan="3">Riwayat Pekerjaan</th>
+          <th class="section-header" colspan="2">Jenis Pekerjaan</th>
+        </tr>
+        <tr>
+          <td colspan="2">○○○○ / ○○<br />s/d<br />○○○○ / ○○</td>
+          <td colspan="3">PT ○○○○○○ - Berhenti</td>
+          <td colspan="2" class="input-field"></td>
+        </tr>
+        <tr>
+          <td colspan="2">○○○○ / ○○<br />s/d<br />○○○○ / ○○</td>
+          <td colspan="3" class="input-field"></td>
+          <td colspan="2" class="input-field"></td>
+        </tr>
+        <tr>
+          <td colspan="2" class="input-field"></td>
+          <td colspan="3" class="input-field"></td>
+          <td colspan="2" class="input-field"></td>
+        </tr>
+        <tr>
+          <td colspan="2" class="input-field"></td>
+          <td colspan="3" class="input-field"></td>
+          <td colspan="2" class="input-field"></td>
+        </tr>
+        <tr>
+          <td colspan="2" class="input-field"></td>
+          <td colspan="3" class="input-field"></td>
+          <td colspan="2" class="input-field"></td>
+        </tr>
+        <tr>
+          <td colspan="2" class="input-field"></td>
+          <td colspan="3" class="input-field"></td>
+          <td colspan="2" class="input-field"></td>
+        </tr>
+        <tr>
+          <td colspan="2" class="input-field"></td>
+          <td colspan="3" class="input-field"></td>
+          <td colspan="2" class="input-field"></td>
+        </tr>
+        <tr>
+          <td colspan="2" class="input-field"></td>
+          <td colspan="3" class="input-field"></td>
+          <td colspan="2" class="input-field"></td>
+        </tr>
+        <tr>
+          <td colspan="2" class="input-field"></td>
+          <td colspan="3" class="input-field"></td>
+          <td colspan="2" class="input-field"></td>
+        </tr>
+        <tr>
+          <td colspan="2" class="input-field"></td>
+          <td colspan="3" class="input-field"></td>
+          <td colspan="2" class="input-field"></td>
+        </tr>
+        <tr>
+          <td colspan="2" class="input-field"></td>
+          <td colspan="3" class="input-field"></td>
+          <td colspan="2" class="input-field"></td>
+        </tr>
+        <tr>
+          <td colspan="2" class="input-field"></td>
+          <td colspan="3" class="input-field"></td>
+          <td colspan="2" class="input-field"></td>
+        </tr>
+        <tr>
+          <td colspan="2" class="input-field"></td>
+          <td colspan="3" class="input-field"></td>
+          <td colspan="2" class="input-field"></td>
+        </tr>
+        <tr>
+          <td colspan="2" class="input-field"></td>
+          <td colspan="3" class="input-field"></td>
+          <td colspan="2" class="input-field"></td>
+        </tr>
+        <tr>
+          <td colspan="2" class="input-field"></td>
+          <td colspan="3" class="input-field"></td>
+          <td colspan="2" class="input-field"></td>
+        </tr>
+        <tr>
+          <td colspan="2" class="input-field"></td>
+          <td colspan="3" class="input-field"></td>
+          <td colspan="2" class="input-field"></td>
+        </tr>
+        <tr>
+          <td colspan="2" class="input-field"></td>
+          <td colspan="3" class="input-field"></td>
+          <td colspan="2" class="input-field"></td>
+        </tr>
+      </table>
+    </div>
+
+    <div>
+      <!-- Lisensi dan Sertifikat -->
+      <table style="width: 900px; margin-top: 4rem">
+        <thead>
+          <tr class="header-row">
+            <th colspan="2">Tahun / Bulan</th>
+            <th>Lisensi & Sertifikat</th>
+          </tr>
+        </thead>
+        <tbody>
           <tr>
-            <th colspan="6" style="text-align:left; font-size:18px; padding:12px;">面談シート</th>
+            <td class="year-col">Tahun</td>
+            <td class="month-col">Bulan</td>
+            <td class="content-col">○○○○○○ - Diperoleh</td>
+          </tr>
+          <tr class="data-row-alt">
+            <td class="year-col">Tahun</td>
+            <td class="month-col">Bulan</td>
+            <td class="content-col">○○○○○○ - Diperoleh</td>
           </tr>
           <tr>
-            <td colspan="6" style="text-align:center; font-size:13px; padding:8px;">年　　月　　日現在</td>
-          </tr>
-        </table>
-
-        <!-- Personal info -->
-        <table class="section-table">
-          <tr>
-            <td class="name-cell">ふりがな</td>
-            <td class="input-field" colspan="5"></td>
-          </tr>
-
-          <tr>
-            <td class="name-cell">氏　名</td>
-            <td colspan="5" class="large-name">Aldi abduloh</td>
-          </tr>
-
-          <tr>
-            <td class="name-cell">国籍</td>
-            <td>インドネシア</td>
-
-            <td style="width:12%; font-weight:700; text-align:center;">生年月日</td>
-            <td style="width:20%;">2001年06月06日</td>
-
-            <td style="width:8%; font-weight:700; text-align:center;">年齢</td>
-            <td style="width:12%;">○歳</td>
-          </tr>
-
-          <tr>
-            <td class="name-cell">現住所</td>
-            <td colspan="3">〒　○○県○○市（住所を記載）</td>
-
-            <td style="font-weight:700; text-align:center;">在留資格</td>
-            <td>―</td>
-          </tr>
-
-          <tr>
-            <td class="name-cell">血液型</td>
-            <td>○型</td>
-
-            <td style="font-weight:700; text-align:center;">服サイズ</td>
-            <td>S / M / L / XL</td>
-
-            <td style="font-weight:700; text-align:center;">結婚</td>
-            <td>既婚・未婚</td>
-          </tr>
-
-          <tr>
-            <td class="name-cell">身長</td>
-            <td>○cm</td>
-
-            <td style="font-weight:700; text-align:center;">体重</td>
-            <td>○kg</td>
-
-            <td style="font-weight:700; text-align:center;">靴サイズ</td>
-            <td>○cm</td>
-          </tr>
-        </table>
-
-        <!-- Education History -->
-        <table class="section-table">
-          <thead>
-            <tr>
-              <th class="section-header" colspan="2">年・月</th>
-              <th class="section-header" colspan="3">学　歴</th>
-              <th class="section-header" colspan="2">学部・学科</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td colspan="2">○○○○年06月</td>
-              <td colspan="3">○○小学校　卒業</td>
-              <td colspan="2" class="input-field"></td>
-            </tr>
-            <tr>
-              <td colspan="2">○○○○年06月</td>
-              <td colspan="3">○○中学校　卒業</td>
-              <td colspan="2" class="input-field"></td>
-            </tr>
-            <tr>
-              <td colspan="2">○○○○年06月</td>
-              <td colspan="3">○○高等学校　卒業</td>
-              <td colspan="2" class="input-field"></td>
-            </tr>
-            <tr>
-              <td colspan="2" class="input-field"></td>
-              <td colspan="3" class="input-field"></td>
-              <td colspan="2" class="input-field"></td>
-            </tr>
-          </tbody>
-        </table>
-
-        <!-- Work History -->
-        <table class="section-table">
-          <thead>
-            <tr>
-              <th class="section-header" colspan="2">年・月</th>
-              <th class="section-header" colspan="3">職　歴</th>
-              <th class="section-header" colspan="2">職種</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- repeat rows as needed -->
-            <tr>
-              <td colspan="2">○○年○○月 ～ ○○年○○月</td>
-              <td colspan="3">株式会社○○○○　退職</td>
-              <td colspan="2" class="input-field"></td>
-            </tr>
-
-            <!-- empty rows for input -->
-            <tr>
-              <td colspan="2" class="input-field"></td>
-              <td colspan="3" class="input-field"></td>
-              <td colspan="2" class="input-field"></td>
-            </tr>
-
-            <tr>
-              <td colspan="2" class="input-field"></td>
-              <td colspan="3" class="input-field"></td>
-              <td colspan="2" class="input-field"></td>
-            </tr>
-            <!-- add more rows if needed -->
-          </tbody>
-        </table>
-
-      </td>
-
-      <!-- RIGHT COLUMN -->
-      <td class="right-col">
-
-        <!-- Photo and basic info block -->
-        <table class="section-table">
-          <tr>
-            <th style="text-align:center;">写真</th>
+            <td class="year-col"></td>
+            <td class="month-col"></td>
+            <td class="content-col"></td>
           </tr>
           <tr>
-            <td style="text-align:center;">
-              <div class="photo-box">
-                <!-- Replace src with dynamic image path if using Blade -->
-                <!-- <img src="{{ public_path($cv->foto) }}" alt="Foto"> -->
-                写真をはる位置<br><small>縦36〜40mm、横24〜30mm</small>
+            <td class="year-col"></td>
+            <td class="month-col"></td>
+            <td class="content-col"></td>
+          </tr>
+          <tr>
+            <td class="year-col"></td>
+            <td class="month-col"></td>
+            <td class="content-col"></td>
+          </tr>
+          <tr>
+            <td class="year-col"></td>
+            <td class="month-col"></td>
+            <td class="content-col"></td>
+          </tr>
+          <tr>
+            <td class="year-col"></td>
+            <td class="month-col"></td>
+            <td class="content-col"></td>
+          </tr>
+          <tr>
+            <td class="year-col"></td>
+            <td class="month-col"></td>
+            <td class="content-col"></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Keahlian dan Pengalaman -->
+      <table>
+        <thead>
+          <tr class="header-row">
+            <th style="width: 50%">Keahlian & Pengalaman</th>
+            <th style="width: 25%">Posisi yang Dilamar</th>
+            <th style="width: 25%">Tangan Dominan</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td rowspan="4" class="section-content">
+              <div class="section-item">
+                <div class="section-title">【Pekerjaan yang Pernah Dilakukan】</div>
+                <div>○○, ○○, ○○, ○○</div>
               </div>
-              <div style="font-size:12px; margin-top:6px; text-align:left;">
-                写真の貼り方の注意：本人単身胸から上、裏面のりづけ
+
+              <div class="section-item">
+                <div class="section-title">【Material yang Pernah Ditangani】</div>
+                <div>○○, ○○, ○○, ○○</div>
+              </div>
+
+              <div class="section-item">
+                <div class="section-title">【Lokasi Kerja yang Pernah Dikunjungi】</div>
+                <div>○○, ○○, ○○, ○○</div>
+              </div>
+
+              <div class="section-item">
+                <div class="section-title">【Alat Berat yang Bisa Dioperasikan】</div>
+                <div>○○, ○○, ○○, ○○</div>
               </div>
             </td>
+            <td style="text-align: center;">Kiri / Kanan</td>
+            <td style="text-align: center;">Kiri / Kanan</td>
           </tr>
-        </table>
-
-        <!-- License / Qualifications -->
-        <table class="section-table" style="margin-top:12px;">
-          <thead>
-            <tr>
-              <th colspan="2">年・月</th>
-              <th>免許・資格</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="year-col">年</td>
-              <td class="month-col">月</td>
-              <td class="content-col">〇〇〇〇〇 取得</td>
-            </tr>
-            <tr>
-              <td class="year-col">年</td>
-              <td class="month-col">月</td>
-              <td class="content-col">〇〇〇〇〇 取得</td>
-            </tr>
-            <!-- empty rows -->
-            <tr><td class="year-col"></td><td class="month-col"></td><td class="content-col"></td></tr>
-            <tr><td class="year-col"></td><td class="month-col"></td><td class="content-col"></td></tr>
-          </tbody>
-        </table>
-
-        <!-- Skills / Experience -->
-        <table class="section-table" style="margin-top:12px;">
-          <thead>
-            <tr>
-              <th style="width:50%;">特技・経験</th>
-              <th style="width:25%;">応募職種</th>
-              <th style="width:25%;">利き手</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td rowspan="4" class="section-content">
-                <div style="margin-bottom:10px;">
-                  <strong>【やってきた作業】</strong>
-                  <div>〇〇、〇〇、〇〇、〇〇</div>
-                </div>
-                <div style="margin-bottom:10px;">
-                  <strong>【扱ってきた材料】</strong>
-                  <div>〇〇、〇〇、〇〇、〇〇</div>
-                </div>
-                <div style="margin-bottom:10px;">
-                  <strong>【やってきた現場】</strong>
-                  <div>〇〇、〇〇、〇〇、〇〇</div>
-                </div>
-                <div>
-                  <strong>【操作できる重機】</strong>
-                  <div>〇〇、〇〇、〇〇、〇〇</div>
-                </div>
-              </td>
-              <td style="text-align:center; vertical-align:middle;">左・右</td>
-              <td style="text-align:center; vertical-align:middle;">左・右</td>
-            </tr>
-
-            <tr style="background:#e3f2fd;">
-              <td style="text-align:center;">矯正視力</td>
-              <td style="text-align:center;">聴力</td>
-            </tr>
-            <tr>
-              <td style="text-align:center;">有・無</td>
-              <td style="text-align:center;">有・無</td>
-            </tr>
-            <tr>
-              <td colspan="2" style="text-align:center; background:#c8e6ff;">宗教</td>
-            </tr>
-
-            <tr>
-              <td rowspan="3" class="no-border-top"></td>
-              <td colspan="2" style="text-align:center; padding:12px;">〇〇〇数</td>
-            </tr>
-            <tr>
-              <td colspan="2" style="text-align:center; background:#e3f2fd; padding:8px;">趣味</td>
-            </tr>
-            <tr>
-              <td colspan="2" style="padding:12px;"></td>
-            </tr>
-          </tbody>
-        </table>
-
-        <!-- Comments -->
-        <table class="section-table comment-table" style="margin-top:12px;">
-          <tr>
-            <th style="text-align:center;">コメント</th>
+          <tr style="background-color: #e3f2fd;">
+            <td style="text-align: center; background-color: #e3f2fd;" class="label-cell">Penglihatan (Koreksi)</td>
+            <td style="text-align: center;">Kelainan Pendengaran</td>
           </tr>
           <tr>
-            <td></td>
+            <td class="label-cell">Ada / Tidak Ada</td>
+            <td>Ada / Tidak Ada</td>
           </tr>
-        </table>
+          <tr>
+            <td colspan="2" class="blue-header" style="text-align: center;">Agama</td>
+          </tr>
+          <tr>
+            <td rowspan="3" class="no-border-top"></td>
+            <td colspan="2" style="padding: 16px; text-align: center;">Islam / Kristen / Katolik / Hindu / Buddha /
+              Lainnya</td>
+          </tr>
+          <tr>
+            <td colspan="2" class="blue-header" style="text-align: center;">Hobi</td>
+          </tr>
+          <tr>
+            <td colspan="2" style="padding: 16px"></td>
+          </tr>
+        </tbody>
+      </table>
 
-        <div class="notes">
-          <strong>注意:</strong>
-          <div class="small-text">この用紙は面談情報として使用します。採用·配置に関する最終判断は会社に帰属します。</div>
-        </div>
-
-      </td>
-    </tr>
-  </table>
+      <!-- Komentar -->
+      <table class="comment-table">
+        <tr>
+          <td class="comment-header" style="
+                background-color: #e3f2fd;
+                font-weight: bold;
+                text-align: center;
+              ">
+            KOMENTAR
+          </td>
+        </tr>
+        <tr>
+          <td class="comment-body" style="height: 200px"></td>
+        </tr>
+      </table>
+    </div>
+  </div>
 </body>
-</html>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.29/jspdf.plugin.autotable.min.js"></script>
+
+<script>
+    document.getElementById('btnPdf').addEventListener('click', function () {
+        window.print();
+    });
+
+    document.getElementById('btnDownload').addEventListener('click', function () {
+        const element = document.getElementById('pdfArea'); 
+
+        const opt = {
+            margin:       0.5,
+            filename:     'lembar-wawancara.pdf',
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: "#FFFFFF"
+            },
+            jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+        };
+
+        html2pdf().set(opt).from(element).save();
+    });
+</script>
+
+
+</script>
+

@@ -24,7 +24,7 @@
             </ol>
         </nav>
 
-        <!-- Header -->
+        {{-- <!-- Header -->
         <div class="mb-4 text-center text-md-start">
             <h2 class="fw-bold  mb-2">
                 <i class="bi bi-person-lines-fill text-warning me-2"></i> Daftar Pendaftar
@@ -32,7 +32,7 @@
             <p class="text-muted fst-italic">
                 Berikut adalah data pendaftaran kandidat yang telah masuk dalam sistem.
             </p>
-        </div>
+        </div> --}}
 
         <!-- Filter -->
         <div class="card shadow-sm border-0 rounded-3 mb-4">
@@ -57,6 +57,7 @@
                         <a href="{{ route('pendaftaran.export') }}" class="btn btn-success btn-sm fw-semibold shadow-sm">
                             <i class="bi bi-file-earmark-excel me-1"></i> Export Data
                         </a>
+
                     </div>
                 </div>
             </div>
@@ -198,28 +199,51 @@
 
                                 <!-- Aksi -->
                                 <td class="text-center">
-                                    <div class="btn-group gap-2">
-
-                                        <a href="{{ route('siswa.edit', $kandidat->id) }}"
-                                            class="btn btn-sm btn-info text-white">
-                                            <i class="bi bi-pencil-square"></i> Verifikasi
-                                        </a>
-
-                                        <a href="{{ route('pendaftaran.edit.full', $kandidat->id) }}"
-                                            class="btn btn-sm btn-warning text-white">
-                                            <i class="bi bi-pencil-square"></i> Edit Data
-                                        </a>
-
-                                        <a href="{{ route('siswa.edit', $kandidat->id) }}"
-                                            class="btn btn-sm btn-success text-white">
-                                            <i class="bi bi-file-earmark-excel me-1"></i> Export Data
-                                        </a>
-
-                                        <button class="btn btn-sm btn-danger delete-btn" data-id="{{ $kandidat->id }}">
-                                            <i class="bi bi-trash"></i> Hapus
+                                    <div class="dropdown">
+                                        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button"
+                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                            Aksi
                                         </button>
+                                        <ul class="dropdown-menu">
+
+                                            <!-- Verifikasi -->
+                                            <li>
+                                                <a href="{{ route('siswa.edit', $kandidat->id) }}" class="dropdown-item">
+                                                    <i class="bi bi-check2-square me-1"></i> Verifikasi
+                                                </a>
+                                            </li>
+
+                                            <!-- Edit Data -->
+                                            <li>
+                                                <a href="{{ route('pendaftaran.edit.full', $kandidat->id) }}"
+                                                    class="dropdown-item">
+                                                    <i class="bi bi-pencil-square me-1"></i> Edit Data
+                                                </a>
+                                            </li>
+
+                                            <!-- Export Data -->
+                                            <li>
+                                                <a href="{{ route('siswa.edit', $kandidat->id) }}" class="dropdown-item">
+                                                    <i class="bi bi-file-earmark-excel me-1"></i> Export Data
+                                                </a>
+                                            </li>
+
+                                            <li>
+                                                <hr class="dropdown-divider">
+                                            </li>
+
+                                            <!-- Hapus -->
+                                            <li>
+                                                <button class="dropdown-item text-danger delete-btn"
+                                                    data-id="{{ $kandidat->id }}">
+                                                    <i class="bi bi-trash me-1"></i> Hapus
+                                                </button>
+                                            </li>
+
+                                        </ul>
                                     </div>
                                 </td>
+
                             </tr>
                         @endforeach
 

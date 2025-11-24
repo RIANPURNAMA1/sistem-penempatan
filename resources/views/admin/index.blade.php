@@ -43,7 +43,7 @@
         </nav>
 
         <!-- Header & Tambah Admin -->
-        <div
+        {{-- <div
             class="mb-4 d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2">
             <div>
                 <h2 class="fw-bold mb-2">
@@ -53,7 +53,7 @@
                     Berikut adalah data akun admin yang terdaftar dalam sistem manajemen.
                 </p>
             </div>
-        </div>
+        </div> --}}
 
         <!-- Filter -->
         <div class="card shadow-sm border-0 rounded-3 mb-4">

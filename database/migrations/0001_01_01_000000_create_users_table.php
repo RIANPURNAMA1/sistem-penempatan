@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->unsignedBigInteger('role_id')->default(4);
             $table->unsignedBigInteger('cabang_id')->nullable();
+            $table->timestamp('last_activity')->nullable();
             $table->string('password');
             $table->timestamps();
         });
