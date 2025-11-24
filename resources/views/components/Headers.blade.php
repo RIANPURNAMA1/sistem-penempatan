@@ -1,5 +1,5 @@
 <header class="mb-3">
-    <nav class="navbar navbar-expand-lg shadow-sm px-3 py-2 rounded-3" style="background-color:#00c0ff;">
+    <nav class="navbar navbar-expand-lg shadow-lg px-3 py-2 rounded-3" style="background-color:#00c0ff;">
         <div class="container-fluid d-flex justify-content-between align-items-center">
 
             <!-- Branding -->

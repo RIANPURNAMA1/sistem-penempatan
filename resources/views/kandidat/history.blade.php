@@ -27,7 +27,7 @@
         <!-- Profil Kandidat -->
         <div class="d-flex align-items-center mb-4 gap-3">
             @if ($kandidat->pendaftaran->foto ?? false)
-                <img src="{{ asset('storage/' . $kandidat->pendaftaran->foto) }}" alt="Foto Kandidat"
+                <img src="{{ asset($kandidat->pendaftaran->foto) }}" alt="Foto Kandidat"
                     class="rounded-circle border shadow-sm" width="80" height="80">
             @else
                 <div class="rounded-circle border shadow-sm d-flex justify-content-center align-items-center"

@@ -14,6 +14,13 @@ use App\Http\Controllers\AuthController;
 Route::get('/cv',function(){
 return view('cv.pdf');
 });
+Route::get('/cv2',function(){
+return view('cv.pdf2');
+});
+
+Route::get('/cv/violeta',function(){
+return view('cv.pdf1');
+});
 Route::middleware('guest')->group(function () {
     Route::get('/registrasi', [AuthController::class, 'showRegister'])->name('registrasi');
     Route::post('/registrasi', [AuthController::class, 'register'])->name('registrasi.post');
@@ -226,16 +233,18 @@ Route::middleware(['auth', 'role:kandidat'])->group(function () {
     | DOKUMEN KANDIDAT
     |--------------------------------------------------------------------------
     */
-
-    
     
     Route::middleware('auth')->get('/dokumen/{id}', [DokumenController::class, 'show'])
     ->name('dokumen.show');
+    
+    Route::get('/cv/export/{id}', [CvController::class, 'export'])->name('cv.export');
 });
-
 Route::get('/cv/show/{id}', [CvController::class, 'show'])->name('cv.show');
+Route::get('/cv/show/pdf/{id}', [CvController::class, 'showPdf'])->name('cv.show.pdf');
+Route::get('/cv/show/pdf/violeta/{id}', [CvController::class, 'showPdfVioleta'])->name('cv.show.pdf.violeta');
 
-Route::get('/cv/export/{id}', [CvController::class, 'export'])->name('cv.export');
+// cv controller
+
 
 
 

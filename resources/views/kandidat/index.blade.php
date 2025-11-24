@@ -23,7 +23,7 @@
         </div>
 
         <div class="card-body table-responsive">
-            <table id="tableKandidat" class="table align-middle mb-0 bg-white">
+            <table id="tableKandidat" class="table align-middle mb-0 ">
                 <thead class="text-dark fw-bold">
                     <tr>
                         <th class="text-center">No</th>

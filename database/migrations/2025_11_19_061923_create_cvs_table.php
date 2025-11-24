@@ -33,7 +33,7 @@ return new class extends Migration
             $table->json('sertifikat_files')->nullable();
 
             // HALAMAN 2 - Pengisian Data Diri
-            $table->json('pas_foto')->nullable();
+            $table->string('pas_foto')->nullable();
             $table->string('nama_lengkap_romaji');
             $table->string('nama_lengkap_katakana');
             $table->string('nama_panggilan_romaji');

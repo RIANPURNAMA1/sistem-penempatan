@@ -31,24 +31,22 @@ class CvController extends Controller
         DB::beginTransaction();
 
         try {
+            // Simpan sertifikat
+            $sertifikatFile = $request->file('sertifikat_files')[0] ?? null;
+            $sertifikatPath = $sertifikatFile ? $sertifikatFile->store('sertifikat', 'public') : null;
 
-            // =============== UPLOAD FILE SERTIFIKAT ===============
-            $sertifikatPaths = [];
-            if ($request->hasFile('sertifikat_files')) {
-                foreach ($request->file('sertifikat_files') as $file) {
-                    $path = $file->store('uploads/sertifikat', 'public');
-                    $sertifikatPaths[] = $path;
-                }
-            }
+            // ================= UPLOAD PAS FOTO =================
+            $pasFotoPath = null;
 
-            // =============== UPLOAD FOTO ===============
-            $fotoPaths = [];
             if ($request->hasFile('pas_foto')) {
-                foreach ($request->file('pas_foto') as $file) {
-                    $path = $file->store('uploads/pasfoto', 'public');
-                    $fotoPaths[] = $path;
-                }
+                $file = $request->file('pas_foto'); // langsung ambil file tunggal
+                $fileName = time() . '_' . $file->getClientOriginalName();
+                // simpan langsung ke public/uploads/foto
+                $file->move(public_path('uploads/foto'), $fileName);
+                $pasFotoPath = 'uploads/foto/' . $fileName; // path relatif untuk DB
             }
+
+
 
             // =============== SIMPAN DATA CV ===============
             $cv = Cv::create([
@@ -61,10 +59,10 @@ class CvController extends Controller
                 'bidang_sertifikasi'           => $request->bidang_sertifikasi,
                 'bidang_sertifikasi_lainnya'   => $request->bidang_sertifikasi_lainnya,
                 'program_pertanian_kawakami'   => $request->program_pertanian_kawakami,
-                'sertifikat_files'             => json_encode($sertifikatPaths),
+                'sertifikat_files'             => $sertifikatPath,
 
                 // halaman 2
-                'pas_foto'                     => json_encode($fotoPaths),
+                'pas_foto'                     => $pasFotoPath,
                 'nama_lengkap_romaji'          => $request->nama_lengkap_romaji,
                 'nama_lengkap_katakana'        => $request->nama_lengkap_katakana,
                 'nama_panggilan_romaji'        => $request->nama_panggilan_romaji,
@@ -141,30 +139,31 @@ class CvController extends Controller
                 'rata_rata_penghasilan_keluarga' => $request->rata_rata_penghasilan_keluarga,
             ]);
 
-            // =============== SIMPAN PENDIDIKAN ===============
-            if ($request->nama_pendidikan) {
-                foreach ($request->nama_pendidikan as $i => $nama) {
+            // Pendidikan
+            if ($request->pendidikan_nama) {
+                foreach ($request->pendidikan_nama as $i => $nama) {
                     Pendidikan::create([
                         'cv_id'   => $cv->id,
                         'nama'    => $nama,
-                        'jurusan' => $request->jurusan_pendidikan[$i] ?? null,
-                        'tahun'   => $request->tahun_pendidikan[$i] ?? null,
+                        'jurusan' => $request->pendidikan_jurusan[$i] ?? null,
+                        'tahun'   => $request->pendidikan_tahun[$i] ?? null,
                     ]);
                 }
             }
 
-            // =============== SIMPAN PENGALAMAN KERJA ===============
-            if ($request->perusahaan) {
-                foreach ($request->perusahaan as $i => $perusahaan) {
+            // Pengalaman
+            if ($request->pengalaman_perusahaan) {
+                foreach ($request->pengalaman_perusahaan as $i => $perusahaan) {
                     Pengalaman::create([
                         'cv_id'        => $cv->id,
                         'perusahaan'   => $perusahaan,
-                        'jabatan'      => $request->jabatan[$i] ?? null,
-                        'lama_bekerja' => $request->lama_bekerja[$i] ?? null,
-                        'gaji'         => $request->gaji[$i] ?? null,
+                        'jabatan'      => $request->pengalaman_jabatan[$i] ?? null,
+                        'lama_bekerja' => $request->pengalaman_periode[$i] ?? null,
+                        // 'gaji' bisa diisi jika ada field gaji
                     ]);
                 }
             }
+
 
             DB::commit();
 
@@ -190,6 +189,16 @@ class CvController extends Controller
     {
         $cv = Cv::with(['pendidikans', 'pengalamans'])->findOrFail($id);
         return view('cv.show', compact('cv'));
+    }
+    public function showPdf($id)
+    {
+        $cv = Cv::with(['pendidikans', 'pengalamans'])->findOrFail($id);
+        return view('cv.pdf2', compact('cv'));
+    }
+    public function showPdfVioleta($id)
+    {
+        $cv = Cv::with(['pendidikans', 'pengalamans'])->findOrFail($id);
+        return view('cv.pdf_violeta', compact('cv'));
     }
 
 

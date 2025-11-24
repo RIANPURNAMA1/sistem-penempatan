@@ -41,12 +41,12 @@ class PendaftaranController extends Controller
             'cabang_id' => 'required|exists:cabangs,id',
             'tanggal_daftar' => 'required|date',
 
-            'foto' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
-            'kk' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
-            'ktp' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
-            'bukti_pelunasan' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
-            'akte' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
-            'ijasah' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'foto' => 'required|file|mimes:jpg,jpeg,png,pdf|max:51200',
+            'kk' => 'required|file|mimes:jpg,jpeg,png,pdf|max:51200',
+            'ktp' => 'required|file|mimes:jpg,jpeg,png,pdf|max:51200',
+            'bukti_pelunasan' => 'required|file|mimes:jpg,jpeg,png,pdf|max:51200',
+            'akte' => 'required|file|mimes:jpg,jpeg,png,pdf|max:51200',
+            'ijasah' => 'required|file|mimes:jpg,jpeg,png,pdf|max:51200',
         ]);
 
         // Upload manual tanpa storage link

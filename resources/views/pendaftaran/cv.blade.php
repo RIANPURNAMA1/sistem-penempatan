@@ -3,7 +3,7 @@
 @section('title', 'Tambah CV')
 
 @section('content')
-    <div class="container mt-5">
+    <div class=" mt-5">
        @if ($alreadyRegistered)
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -52,11 +52,25 @@
             </script>
         @endif
 
+ <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb border rounded-3 px-3 py-2 shadow-sm mb-0">
+                <li class="breadcrumb-item">
+                    <a href="#" class="text-decoration-none text-secondary">
+                        <i class="bi bi-house-door me-1"></i> Dashboard
+                    </a>
+                </li>
+                <li class="breadcrumb-item active fw-semibold" aria-current="page">
+                    <i class="bi bi-person-lines-fill"></i> Form Pendaftaran Cv
+                </li>
+            </ol>
+        </nav>
+
 
         <div class="row justify-content-center">
             <div class="col-md-12">
                 <div class="card shadow">
-                    <div class="card-header bg-primary text-white">
+                    <div class="card-header text-white">
                         <h4 class="mb-0">Form Curriculum Vitae (CV)</h4>
                     </div>
                     <div class="card-body">
@@ -207,7 +221,7 @@
                                     <div class="row g-3">
                                         <div class="col-md-6">
                                             <label>Upload Pas Foto (JPG/PNG, Max 2MB)</label>
-                                            <input type="file" name="pas_foto[]" class="form-control mt-1" multiple
+                                            <input type="file" name="pas_foto" class="form-control mt-1" multiple
                                                 accept=".jpg,.jpeg,.png">
 
                                             <input type="text" name="nama_lengkap_romaji"

@@ -126,7 +126,7 @@
                                         @endphp
 
                                         @if ($foto)
-                                            <img src="{{ asset('storage/' . $foto) }}" alt="Foto Kandidat"
+                                            <img src="{{ asset( $foto) }}" alt="Foto Kandidat"
                                                 class="rounded-circle" width="50" height="50"
                                                 style="object-fit: cover;">
                                         @else
