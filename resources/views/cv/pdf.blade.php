@@ -200,9 +200,9 @@
     <div class="mb-3">
         <button class="btn btn-success" onclick="printSheet()">Print</button>
         <button class="btn btn-primary" onclick="downloadPDF()">Download PDF</button>
-    <button class="btn btn-info" onclick="window.location='{{ route('dashboard') }}'">
-    Kembali
-</button>
+        <button class="btn btn-info" onclick="window.location='{{ route('dashboard') }}'">
+            Kembali
+        </button>
     </div>
     <div class="container" style="display: flex; margin: 1rem; justify-content: center; gap: 2rem">
         <div class="" style="">
@@ -701,49 +701,53 @@
     integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
 </script>
 <script>
-function printSheet() {
-  const container = document.querySelector('.container');
+    function printSheet() {
+        const container = document.querySelector('.container');
 
-  // Gunakan html2canvas untuk menangkap konten
-  html2canvas(container, { scale: 2 }).then(canvas => {
-    const imgData = canvas.toDataURL('image/png');
-    const pdf = new jspdf.jsPDF('p', 'mm', 'a4'); // ukuran A4 portrait
-    const imgProps = pdf.getImageProperties(imgData);
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+        // Gunakan html2canvas untuk menangkap konten
+        html2canvas(container, {
+            scale: 2
+        }).then(canvas => {
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jspdf.jsPDF('p', 'mm', 'a4'); // ukuran A4 portrait
+            const imgProps = pdf.getImageProperties(imgData);
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
-    // Jika tinggi melebihi satu halaman, buat multi-halaman
-    let heightLeft = pdfHeight;
-    let position = 0;
+            // Jika tinggi melebihi satu halaman, buat multi-halaman
+            let heightLeft = pdfHeight;
+            let position = 0;
 
-    pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
-    heightLeft -= pdf.internal.pageSize.getHeight();
+            pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
+            heightLeft -= pdf.internal.pageSize.getHeight();
 
-    while (heightLeft > 0) {
-      position = heightLeft - pdfHeight;
-      pdf.addPage();
-      pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
-      heightLeft -= pdf.internal.pageSize.getHeight();
+            while (heightLeft > 0) {
+                position = heightLeft - pdfHeight;
+                pdf.addPage();
+                pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
+                heightLeft -= pdf.internal.pageSize.getHeight();
+            }
+
+            pdf.autoPrint(); // buka dialog print
+            window.open(pdf.output('bloburl'), '_blank');
+        });
     }
 
-    pdf.autoPrint(); // buka dialog print
-    window.open(pdf.output('bloburl'), '_blank');
-  });
-}
 
-
-function downloadPDF() {
-  const container = document.querySelector('.container');
-  html2canvas(container, { scale: 2 }).then(canvas => {
-    const imgData = canvas.toDataURL('image/png');
-    const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
-    const imgProps = pdf.getImageProperties(imgData);
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-    pdf.save('mensetsu_sheet.pdf');
-  });
-}
+    function downloadPDF() {
+        const container = document.querySelector('.container');
+        html2canvas(container, {
+            scale: 2
+        }).then(canvas => {
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
+            const imgProps = pdf.getImageProperties(imgData);
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+            pdf.save('mensetsu_sheet.pdf');
+        });
+    }
 </script>
 
 </html>

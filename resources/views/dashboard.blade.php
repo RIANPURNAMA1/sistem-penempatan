@@ -250,9 +250,6 @@
                     <div class="row mt-4">
 
                         <!-- =========================
-                                            BAGIAN KIRI (CHART)
-                                        ========================== -->
-                        <!-- =========================
                     BAGIAN KIRI (CHART)
                 ========================== -->
                         <div class="col-12 col-md-8">
@@ -390,10 +387,8 @@
                 @endif
                 @if (auth()->user()->role->name === 'kandidat')
                     <!-- Header Tabel -->
-                    <h4 class="fw-bold text-warning mb-3">
-                        <i class="bi bi-person-lines-fill me-2"></i>Data Diri CV
-                    </h4>
-                    <div class="table-responsive mb-5 mt-3">
+                  
+                    <div class="table-responsive mt-3">
                         @if ($cvs->isEmpty())
                             <!-- SweetAlert jika belum ada CV -->
                             <script>
@@ -448,84 +443,7 @@
                                             });
                                         </script>
                                     @else
-                                        <div class="card border-0 shadow-sm rounded-4 mb-4">
-                                            <div class="card-header  fw-bold py-3 rounded-top-4">
-                                                <i class="bi bi-file-person me-2"></i> Ringkasan Data CV Anda
-                                            </div>
-
-                                            <div class="card-body">
-                                                @foreach ($cvs as $cv)
-                                                    <div class="table-responsive ">
-                                                        <table class="table table-bordered table-striped align-middle">
-                                                            <tbody>
-                                                                <tr>
-                                                                    <th width="30%">Email</th>
-                                                                    <td>{{ $cv->email }}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th>Cabang</th>
-                                                                    <td>{{ $cv->cabang_Id }}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th>Batch</th>
-                                                                    <td>{{ $cv->batch }}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th>No Telepon</th>
-                                                                    <td>{{ $cv->no_telepon }}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th>Nama Romaji</th>
-                                                                    <td>{{ $cv->nama_lengkap_romaji }}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th>Nama Katakana</th>
-                                                                    <td>{{ $cv->nama_lengkap_katakana }}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th>Jenis Kelamin</th>
-                                                                    <td>{{ $cv->jenis_kelamin }}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th>Agama</th>
-                                                                    <td>{{ $cv->agama }}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th>Alamat Lengkap</th>
-                                                                    <td>{{ $cv->alamat_lengkap }}</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th>Tinggi Badan</th>
-                                                                    <td>{{ $cv->tinggi_badan }} cm</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th>Berat Badan</th>
-                                                                    <td>{{ $cv->berat_badan }} kg</td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th>Kebiasaan</th>
-                                                                    <td>
-                                                                        Merokok: <strong>{{ $cv->merokok }}</strong><br>
-                                                                        Minum Alkohol:
-                                                                        <strong>{{ $cv->minum_alkohol }}</strong><br>
-                                                                        Bertato: <strong>{{ $cv->bertato }}</strong>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <th>Aktivitas Olahraga</th>
-                                                                    <td>{{ $cv->kebugaran_jasmani_seminggu }}</td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                @endforeach
-
-                                                <a href="{{ route('pendaftaran.cv.edit', $cv->id) }}"
-                                                    class="btn btn-warning fw-semibold">
-                                                    <i class="bi bi-pencil-square me-1"></i> Edit CV
-                                                </a>
-                                            </div>
-                                        </div>
+                                     @include('components.cv_kandidat')
                                     @endif
 
 
@@ -538,10 +456,10 @@
 
 
                     <div class="row ">
-                        {{-- Timeline --}}
+
                         {{-- Timeline --}}
                         <div class="col-12 col-md-8">
-                            <div class="card">
+                            <div class="card shadow shadow-md">
                                 <div class="card-header">
                                     <h4 class="mb-0">Timeline Proses Penempatan</h4>
                                 </div>
@@ -647,7 +565,7 @@
 
                         @forelse ($dataKandidat as $kandidat)
                             <div class="col-12 col-md-4">
-                                <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+                                <div class="card shadow shadow-mdborder-0 rounded-4 overflow-hidden">
                                     <!-- Header -->
                                     <div class="card-header text-white text-center p-3 ">
                                         <h5 class="mb-0 fw-bold">

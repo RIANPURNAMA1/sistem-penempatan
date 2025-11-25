@@ -26,7 +26,7 @@
 
 <body class="bg-light d-flex justify-content-center align-items-center min-vh-100">
 
-    <div class="card shadow-lg p-4 p-md-5" style="max-width: 450px; width: 100%; border-radius: 20px;">
+    <div class="card shadow-lg p-4 p-md-5 " style="max-width: 450px; width: 100%; border-radius: 20px;">
         <div class="text-center mb-4">
             <img src="{{ asset('assets/compiled/png/LOGO/logo4.png') }}" alt="Logo" class="img-fluid rounded"
                 style="width: 120px;">
@@ -39,30 +39,32 @@
             @csrf
 
             <div class="mb-3 position-relative">
-                <i class="bi bi-person position-absolute top-50 translate-middle-y ms-3 text-secondary"></i>
-                <input type="text" name="name" class="form-control ps-5 py-2 rounded-pill"
-                    placeholder="Nama Lengkap" required>
+                <i class="bi bi-person position-absolute top-50 translate-middle-y ms-3 text-muted"></i>
+                <input type="text" name="name" class="form-control ps-5 py-2 rounded-md shadow-sm"
+                    placeholder="Nama Lengkap" required style="transition: all 0.3s; border: 1px solid #ced4da;">
             </div>
 
             <div class="mb-3 position-relative">
-                <i class="bi bi-envelope position-absolute top-50 translate-middle-y ms-3 text-secondary"></i>
-                <input type="email" name="email" class="form-control ps-5 py-2 rounded-pill" placeholder="Email"
-                    required>
+                <i class="bi bi-envelope position-absolute top-50 translate-middle-y ms-3 text-muted"></i>
+                <input type="email" name="email" class="form-control ps-5 py-2 rounded-md  shadow-sm"
+                    placeholder="Email" required style="transition: all 0.3s; border: 1px solid #ced4da;">
             </div>
 
             <div class="mb-3 position-relative">
-                <i class="bi bi-shield-lock position-absolute top-50 translate-middle-y ms-3 text-secondary"></i>
-                <input type="password" name="password" class="form-control ps-5 py-2 rounded-pill"
-                    placeholder="Password" required>
+                <i class="bi bi-shield-lock position-absolute top-50 translate-middle-y ms-3 text-muted"></i>
+                <input type="password" name="password" class="form-control ps-5 py-2 rounded-md  shadow-sm"
+                    placeholder="Password" required style="transition: all 0.3s; border: 1px solid #ced4da;">
             </div>
 
             <div class="mb-3 position-relative">
-                <i class="bi bi-shield-lock-fill position-absolute top-50 translate-middle-y ms-3 text-secondary"></i>
-                <input type="password" name="password_confirmation" class="form-control ps-5 py-2 rounded-pill"
-                    placeholder="Konfirmasi Password" required>
+                <i class="bi bi-shield-lock-fill position-absolute top-50 translate-middle-y ms-3 text-muted"></i>
+                <input type="password" name="password_confirmation"
+                    class="form-control ps-5 py-2 rounded-md  shadow-sm" placeholder="Konfirmasi Password" required
+                    style="transition: all 0.3s; border: 1px solid #ced4da;">
             </div>
 
-            <button id="btnRegister" type="submit" class="btn btn-warning w-100 py-2 rounded-pill fw-bold">
+            <button id="btnRegister" type="submit" class="btn w-100 py-2 rounded-md  fw-bold text-white"
+                style="background: linear-gradient(90deg, #ffc107, #ffb000); transition: all 0.3s;">
                 <span id="btnText"><i class="bi bi-person-plus me-2"></i>Daftar</span>
                 <span id="btnLoading" class="d-none">
                     <span class="spinner-border spinner-border-sm me-2"></span>Memproses...

@@ -27,7 +27,7 @@
     @endif
 
     <!-- Breadcrumb -->
-    <nav aria-label="breadcrumb" class="mb-4">
+    <nav aria-label="breadcrumb" class="mb-4 shadow shadow-md">
         <ol class="breadcrumb border rounded-3 px-3 py-2 shadow-sm mb-0">
             <li class="breadcrumb-item">
                 <a href="#" class="text-decoration-none text-secondary">
@@ -50,7 +50,7 @@
         </p>
     </div> --}}
 
-    <div class="card shadow-sm rounded-3">
+    <div class="card shadow shadow-md border-none rounded-3">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h5 class="mb-0 fw-semibold">Cabang</h5>
             <a href="{{ url('/cabang/create') }}" class="btn btn-success btn-sm">
@@ -59,7 +59,7 @@
         </div>
 
         <div class="card-body table-responsive">
-            <table id="tableCabang" class="table table-hover table-bordered align-middle">
+            <table id="tableCabang" class="table table-hover align-middle">
                 <thead class="text-dark fw-bold" style="">
                     <tr>
                         <th class="text-center">No</th>

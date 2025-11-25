@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cabang;
 use App\Models\Cv;
 use App\Models\Pengalaman;
 use App\Models\Pendidikan;
@@ -15,8 +16,9 @@ class CvController extends Controller
     public function index()
     {
         $cvs = Cv::with(['pendidikans', 'pengalamans'])->get();
+        $cabang = Cabang::all();
 
-        return view('cv.index', compact('cvs'));
+        return view('cv.index', compact('cvs','cabang'));
     }
 
 

@@ -9,29 +9,7 @@ class Pendaftaran extends Model
 {
     use HasFactory;
 
-   protected $fillable = [
-        'user_id',
-        'cabang_id',
-        'nik',
-        'nama',
-        'email',
-        'no_wa',
-        'jenis_kelamin',
-        'tanggal_daftar',
-        'alamat',
-        'provinsi',
-        'kab_kota',
-        'kecamatan',
-        'kelurahan',
-        'foto',
-        'kk',
-        'ktp',
-        'bukti_pelunasan',
-        'akte',
-        'ijasah',
-        'verifikasi',
-        'catatan_admin'
-    ];
+   protected $guarded = [ ];
 
     // Relasi ke cabang
     public function cabang()

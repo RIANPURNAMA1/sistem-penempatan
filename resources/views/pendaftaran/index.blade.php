@@ -55,6 +55,12 @@
                                     <div class="invalid-feedback">Nama lengkap wajib diisi.</div>
                                 </div>
                                 <div class="col-md-6">
+                                    <label class="form-label">Usia <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="usia" placeholder="Masukkan usia"
+                                        required>
+                                    <div class="invalid-feedback">Usia wajib diisi.</div>
+                                </div>
+                                <div class="col-md-6">
                                     <label class="form-label">Email <span class="text-danger">*</span></label>
                                     <input type="email" class="form-control" name="email" placeholder="contoh@email.com"
                                         required>
@@ -66,6 +72,32 @@
                                         required pattern="08\d{8,12}">
                                     <div class="invalid-feedback">Nomor WA wajib diisi dan format harus benar.</div>
                                 </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Agama <span class="text-danger">*</span></label>
+                                    <select class="form-select" name="agama" required>
+                                        <option value="">-- Pilih Agama --</option>
+                                        <option value="Islam">Islam</option>
+                                        <option value="Kristen">Kristen</option>
+                                        <option value="Katolik">Katolik</option>
+                                        <option value="Hindu">Hindu</option>
+                                        <option value="Buddha">Buddha</option>
+                                        <option value="Konghucu">Konghucu</option>
+                                        <option value="Lainnya">Lainnya</option>
+                                    </select>
+                                    <div class="invalid-feedback">Agama wajib diisi.</div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label">Status <span class="text-danger">*</span></label>
+                                    <select class="form-select" name="status" required>
+                                        <option value="">-- Pilih Status --</option>
+                                        <option value="belum menikah">Belum Menikah</option>
+                                        <option value="menikah">Menikah</option>
+                                        <option value="lajang">Lajang</option>
+                                    </select>
+                                    <div class="invalid-feedback">Silakan pilih status.</div>
+                                </div>
+
                                 <div class="col-md-6">
                                     <label class="form-label">Jenis Kelamin <span class="text-danger">*</span></label>
                                     <select class="form-select" name="jenis_kelamin" required>
@@ -86,6 +118,18 @@
                                     <div class="invalid-feedback">Silakan pilih cabang.</div>
                                 </div>
                                 <div class="col-md-6">
+                                    <label class="form-label"> Tempat Lahir <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" name="tempat_lahir"
+                                        placeholder="Maukan Tempat lahir" required>
+                                    <div class="invalid-feedback">Tempat Lahir.</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label"> Tempat Tanggal Lahir <span
+                                            class="text-danger">*</span></label>
+                                    <input type="date" class="form-control" name="tempat_tanggal_lahir" required>
+                                    <div class="invalid-feedback">Tempat Tanggal Lahir.</div>
+                                </div>
+                                <div class="col-md-6">
                                     <label class="form-label">Tanggal Daftar <span class="text-danger">*</span></label>
                                     <input type="date" class="form-control" name="tanggal_daftar" required>
                                     <div class="invalid-feedback">Tanggal daftar wajib dipilih.</div>
@@ -95,6 +139,54 @@
                                     <textarea class="form-control" name="alamat" rows="3" required></textarea>
                                     <div class="invalid-feedback">Alamat lengkap wajib diisi.</div>
                                 </div>
+
+                                <!-- ==================== Data Tambahan ==================== -->
+                                <div class="mb-4">
+                                    <h5 class="fw-bold border-bottom pb-2 mb-3">
+                                        <i class="bi bi-list-check me-2 text-primary"></i> Data Tambahan
+                                    </h5>
+
+                                    <div class="row g-3">
+
+                                        <!-- ID Prometric -->
+                                        <div class="col-md-6">
+                                            <label class="form-label">ID Prometric</label>
+                                            <input type="text" name="id_prometric" class="form-control"
+                                                placeholder="Masukkan ID Prometric">
+                                            <div class="form-text">Opsional, jika memiliki ID Prometric.</div>
+                                        </div>
+
+                                        <!-- Password Prometric -->
+                                        <div class="col-md-6">
+                                            <label class="form-label">Password Prometric</label>
+                                            <input type="text" name="password_prometric" class="form-control"
+                                                placeholder="Masukkan Password Prometric">
+                                            <div class="form-text">Opsional, digunakan jika ada akun Prometric.</div>
+                                        </div>
+
+                                        <!-- Pernah ke Jepang -->
+                                        <div class="col-md-6">
+                                            <label class="form-label">Pernah ke Jepang? <span
+                                                    class="text-danger">*</span></label>
+                                            <select name="pernah_ke_jepang" class="form-select" required>
+                                                <option value="">-- Pilih Jawaban --</option>
+                                                <option value="Ya">Ya</option>
+                                                <option value="Tidak">Tidak</option>
+                                            </select>
+                                            <div class="invalid-feedback">Silakan pilih apakah pernah ke Jepang.</div>
+                                        </div>
+
+                                        <!-- Upload Paspor -->
+                                        <div class="col-md-6">
+                                            <label class="form-label">Upload Paspor</label>
+                                            <input type="file" name="paspor" class="form-control"
+                                                accept="image/jpeg,image/png,application/pdf">
+                                            <div class="form-text">PDF, JPG, PNG maks 10MB.</div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
 
                                 <!-- Lokasi -->
                                 <div class="col-md-6">
@@ -127,6 +219,8 @@
                                 </div>
                             </div>
                         </div>
+
+
 
                         <!-- ==================== Upload Dokumen ==================== -->
                         <div class="mb-4">
@@ -164,6 +258,16 @@
                                         [
                                             'label' => 'Ijazah Terakhir',
                                             'name' => 'ijasah',
+                                            'accept' => 'image/jpeg,image/png,application/pdf',
+                                        ],
+                                        [
+                                            'label' => 'Sertifikat JFT',
+                                            'name' => 'sertifikat_jft',
+                                            'accept' => 'image/jpeg,image/png,application/pdf',
+                                        ],
+                                        [
+                                            'label' => 'Sertifikat SSW',
+                                            'name' => 'sertifikat_ssw',
                                             'accept' => 'image/jpeg,image/png,application/pdf',
                                         ],
                                     ];
@@ -236,7 +340,7 @@
                             text: "Pendaftaran berhasil dikirim.",
                             timer: 3000,
                             showConfirmButton: false,
-                            
+
 
                         }).then(() => {
                             // Redirect ke route /

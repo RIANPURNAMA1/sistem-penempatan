@@ -22,7 +22,7 @@
         @endif
         <div class="">
             <!-- Breadcrumb -->
-            <nav aria-label="breadcrumb" class="mb-4">
+            <nav aria-label="breadcrumb" class="mb-4 shadow shadow-md">
                 <ol class="breadcrumb  border rounded-3 px-3 py-2 shadow-sm mb-0">
                     <li class="breadcrumb-item">
                         <a href="#" class="text-decoration-none text-secondary">
@@ -44,7 +44,7 @@
                 </p>
             </div> --}}
             <!-- 🔍 Filter Section -->
-            <div class="card shadow-sm mb-3">
+            <div class="card shadow shadow-md mb-3">
                 <div class="card-body">
                     <div class="row g-3">
                         <!-- Filter Cabang -->
@@ -95,9 +95,9 @@
                 </div>
             </div>
             <!-- 🧾 Data Table -->
-            <div class="card shadow-sm">
+            <div class="card shadow shadow-md">
                 <div class="card-body table-responsive">
-                    <table id="tableKandidatutama" class="table table-hover table-bordered p-2 w-100">
+                    <table id="tableKandidatutama" class="table table-hover shadow shadow-md p-2 w-100">
                         <thead class="">
                             <tr class="text-white text-center">
                                 <th>No</th>

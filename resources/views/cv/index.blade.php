@@ -10,14 +10,69 @@
 
     <div class="">
 
-        <div class="mb-4">
-            <h2 class="fw-bold mb-2"><i class="bi bi-card-checklist text-warning me-2"></i> Daftar CV Kandidat</h2>
-            <p class="text-muted fst-italic">Berikut merupakan data CV yang telah diinput oleh para kandidat.</p>
+        
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-4 shadow shadow-md">
+            <ol class="breadcrumb  border rounded-3 px-3 py-2 shadow-sm mb-0">
+                <li class="breadcrumb-item">
+                    <a href="#" class="text-decoration-none text-secondary">
+                        <i class="bi bi-house-door me-1"></i> Dashboard
+                    </a>
+                </li>
+                <li class="breadcrumb-item active  fw-semibold" aria-current="page">
+                    <i class="bi bi-people me-1"></i> Daftar CV Kandidat
+                </li>
+            </ol>
+        </nav>
+
+        <!-- Filter -->
+        <div class="card shadow shadow-md border-0 rounded-3 mb-4">
+            <div class="card-header py-3 px-4 rounded-top-4 border-bottom-0">
+                <div class="d-flex flex-wrap justify-content-between align-items-center">
+                    <div>
+                        <h6 class="fw-semibold mb-0 text-secondary">
+                            <i class="bi bi-funnel me-1"></i> Filter Data
+                        </h6>
+                    </div>
+
+              
+                </div>
+            </div>
+
+            <div class="card-body shadow shadow-md">
+                <div class="row g-3 align-items-end">
+                    <!-- Filter Cabang -->
+                    <div class="col-12 col-md-6">
+                        <form action="{{ route('pendaftar') }}" method="GET" id="filterForm">
+                            <label for="filterCabang" class="form-label fw-semibold text-secondary">Cabang</label>
+                            <select name="cabang_id" id="filterCabang" class="form-select shadow-sm rounded-3 border-1"
+                                onchange="document.getElementById('filterForm').submit()">
+                                <option value="">Semua Cabang</option>
+                                @foreach ($cabang as $item)
+                                    <option value="{{ $item->id }}"
+                                        {{ request('cabang_id') == $item->id ? 'selected' : '' }}>
+                                        {{ $item->nama_cabang }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </form>
+                    </div>
+
+                    <!-- Tombol Reset -->
+                    <div class="col-12 col-md-6 d-flex justify-content-end">
+                        <button id="resetFilter" class="btn btn-outline-info fw-semibold shadow-sm px-4 py-2 rounded-3">
+                            <i class="bi bi-arrow-clockwise me-1"></i> Reset Filter
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="card shadow-sm border-0 rounded-4 p-3">
+
+
+        <div class="card shadow shadow-md border-0 rounded-4 p-3">
             <div class="table-responsive">
-                <table id="cvTable" class="table table-striped table-bordered align-middle table-sm">
+                <table id="cvTable" class="table table-striped  align-middle table-sm shadow shadow-md">
                     <thead class="text-center">
                         <tr>
                             <th>No</th>

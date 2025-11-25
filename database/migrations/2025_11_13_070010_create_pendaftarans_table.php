@@ -16,10 +16,15 @@ return new class extends Migration
             // Identitas dasar
             $table->string('nik', 20)->unique(); // NIK unik dan wajib
             $table->string('nama');
+            $table->string('usia');
+            $table->string('agama');
+            $table->enum('status', ['belum menikah', 'menikah', 'lajang']);
             $table->string('email');
             $table->string('no_wa');
             $table->enum('jenis_kelamin', ['Laki-laki', 'Perempuan']);
             $table->date('tanggal_daftar');
+            $table->date('tempat_tanggal_lahir');
+            $table->string('tempat_lahir');
             $table->text('alamat');
 
             // Lokasi lengkap
@@ -28,8 +33,17 @@ return new class extends Migration
             $table->string('kecamatan', 100);
             $table->string('kelurahan', 100);
 
+
+            // Tambahan sesuai permintaan
+            $table->string('id_prometric')->nullable();
+            $table->string('password_prometric')->nullable();
+            $table->enum('pernah_ke_jepang', ['Ya', 'Tidak'])->default('Tidak');
+            $table->string('paspor')->nullable()->comment('Upload paspor jika sudah memiliki');
+
             // Dokumen upload (semua wajib)
             $table->string('foto');
+            $table->string('sertifikat_jft');
+            $table->string('sertifikat_ssw');
             $table->string('kk');
             $table->string('ktp');
             $table->string('bukti_pelunasan');
@@ -48,8 +62,6 @@ return new class extends Migration
             $table->text('catatan_admin')->nullable()->comment('Catatan atau alasan verifikasi oleh admin');
 
             $table->timestamps();
-
-        
         });
     }
 

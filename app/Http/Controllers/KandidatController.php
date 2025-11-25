@@ -384,18 +384,19 @@ class KandidatController extends Controller
         'jadwal_interview' => $kandidat->jadwal_interview,
     ]);
 
-   /* ------------------------------------------------------------
+/* ------------------------------------------------------------
 | 🔔 Kirim WhatsApp langsung via API (tanpa FonnteService)
 ------------------------------------------------------------ */
+
 $noWa = $kandidat->pendaftaran->no_wa ?? null;
 $nama = $kandidat->pendaftaran->nama ?? $kandidat->nama;
 
 if (!empty($noWa)) {
-    // ubah nomor WA 08xx menjadi 628xx
+    // Ubah nomor WA 08xx menjadi 628xx
     $noWa = preg_replace('/^08/', '628', $noWa);
 
-    $pesan =
-        "Halo *{$nama}*,\n\n" .
+    // Pesan WA
+    $pesan = "Halo *{$nama}*,\n\n" .
         "Kami dari *Mendunia Jepang* ingin menyampaikan bahwa status proses Anda telah diperbarui.\n\n" .
         "📄 *Status Terbaru*: {$request->status_kandidat}\n" .
         "⏰ *Diperbarui Pada*: " . now()->format('d M Y H:i') . "\n" .
@@ -403,8 +404,8 @@ if (!empty($noWa)) {
         "Terima kasih atas kepercayaan Anda.";
 
     try {
-        $apiKey = "9yqpWgvWbEoDZqRKgz5Q";
-        $url = "https://api.fonnte.com/sendMessage"; // contoh endpoint
+        $apiKey = "jB9Bk1ANacyBXDHNwXiV";
+        $url = "https://api.fonnte.com/sendMessage"; // endpoint API Fonnte
 
         $payload = [
             'to' => $noWa,
@@ -413,19 +414,29 @@ if (!empty($noWa)) {
         ];
 
         $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
-        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type:application/json']);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $response = curl_exec($ch);
-        curl_close($ch);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 10); // timeout 10 detik
 
-        // log response
-        Log::info("Response Fonnte: " . $response);
+        $response = curl_exec($ch);
+
+        if ($response === false) {
+            $error = curl_error($ch);
+            Log::error("Gagal mengirim WA ke {$noWa}: {$error}");
+        } else {
+            $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            Log::info("WA ke {$noWa} berhasil dikirim. HTTP Code: {$httpCode}, Response: {$response}");
+        }
+
+        curl_close($ch);
 
     } catch (\Exception $e) {
         Log::error("Gagal mengirim WA ke {$noWa}: " . $e->getMessage());
     }
 }
+
 
     /* ------------------------------------------------------------
     | 📧 Kirim Email Notifikasi

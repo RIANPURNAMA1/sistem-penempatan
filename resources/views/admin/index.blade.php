@@ -26,10 +26,8 @@
             });
         </script>
     @endif
-
-
         <!-- Breadcrumb -->
-        <nav aria-label="breadcrumb" class="mb-4">
+        <nav aria-label="breadcrumb" class="mb-4 shadow shadow-md border-none">
             <ol class="breadcrumb  border rounded-3 px-3 py-2 shadow-sm mb-0">
                 <li class="breadcrumb-item">
                     <a href="{{ url('/') }}" class="text-decoration-none text-secondary">
@@ -56,7 +54,7 @@
         </div> --}}
 
         <!-- Filter -->
-        <div class="card shadow-sm border-0 rounded-3 mb-4">
+        <div class="card shadow shadow-md border-none border-0 rounded-3 mb-4">
             <div class="card-body">
                 <div class="row g-3 align-items-end">
                     <div class="col-12 col-md-6 col-lg-6">
@@ -75,9 +73,9 @@
         </div>
 
         <!-- Data Table -->
-        <div class="card shadow-sm border-0 rounded-4">
+        <div class="card shadow-sm border-0 shadow shadow-md border-none rounded-4">
             <div class="card-body table-responsive">
-                <table class="table table-striped table-bordered align-middle nowrap" id="tableAdmin" style="width:100%">
+                <table class="table table-striped shadow shadow-md border-none align-middle nowrap" id="tableAdmin" style="width:100%">
                     <thead>
                         <tr>
                             <th class=" text-center">No</th>

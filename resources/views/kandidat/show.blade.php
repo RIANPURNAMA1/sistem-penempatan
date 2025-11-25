@@ -29,7 +29,7 @@
                     <i class="bi bi-person-circle me-2"></i> Foto Kandidat
                 </div>
                 <div class="card-body text-center">
-                   <img src="{{ asset($kandidat->pendaftaran->foto) }}">
+                   <img src="{{ asset($kandidat->pendaftaran->foto) }}" width="300">
                     <p class="text-muted">{{ $kandidat->pendaftaran->nama ?? '-' }}</p>
                 </div>
             </div>

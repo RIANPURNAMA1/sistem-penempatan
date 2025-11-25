@@ -148,6 +148,8 @@ Route::middleware(['auth', 'role:super admin'])->group(function () {
     Route::get('/pendaftaran/export', [PendaftaranController::class, 'export'])->name('pendaftaran.export');
     // routes/web.php
     Route::get('/kandidat/export/{id}', [KandidatController::class, 'export'])->name('kandidat.export');
+    
+Route::get('/pendaftaran/export-pdf', [PendaftaranController::class, 'exportPDF'])->name('pendaftaran.export.pdf');
 
 
     // Data siswa + paginate

@@ -30,7 +30,7 @@
     th,
     td {
         border: 2px solid #000;
-        padding: 12px;
+        padding: 6px;
         text-align: center;
     }
 
@@ -65,6 +65,7 @@
     .blue-header {
         background-color: #e3f2fd;
         font-weight: bold;
+        font-weight: bold;
     }
 
     .no-border-top {
@@ -74,6 +75,7 @@
     .section-content {
         vertical-align: top;
         text-align: left;
+        padding: 20px;
     }
 
     .section-item {
@@ -89,12 +91,14 @@
         margin-bottom: 8px;
     }
 
+    .container {}
+
     .header {
         text-align: start;
     }
 
     .header h1 {
-        font-size: 28px;
+        font-size: 14px;
         font-weight: bold;
         margin-bottom: 10px;
     }
@@ -107,22 +111,26 @@
 
     .photo-guide {
         position: absolute;
-        right: -6px;
-        top: 2px;
-        border: 2px dashed;
+        right: -1rem;
+        top: -1rem;
         padding: 10px;
         font-size: 11px;
         line-height: 2.3;
         width: 170px;
-        background-color: #fafafa;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 20px;
     }
 
     th,
     td {
         border: 1px solid #333;
-        padding: 8px;
+        padding: 5px;
         text-align: left;
-        font-size: 13px;
+        font-size: 10px;
     }
 
     th {
@@ -148,9 +156,32 @@
     }
 
     .section-header {
-        background-color: #daf0ff;
+        background-color: #e3f2fd;
+        font-weight: bold;
         font-weight: bold;
         text-align: center;
+    }
+
+    .notes {
+        margin-top: 20px;
+        padding: 15px;
+        background-color: #fff9c4;
+        border-left: 4px solid #fbc02d;
+        font-size: 12px;
+        line-height: 1.8;
+    }
+
+    .notes strong {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .small-text {
+        font-size: 11px;
+    }
+
+    .no-border-top td {
+        border-top: none !important;
     }
 
     @media print {
@@ -163,145 +194,205 @@
             box-shadow: none;
             padding: 10px;
         }
-        
+    }
+</style>
+
+<style>
+    .btn-container {
+        margin-bottom: 1rem;
+        display: flex;
+        gap: 10px;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        color: #fff;
+        font-weight: bold;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-success {
+        background-color: #28a745;
+    }
+
+    .btn-success:hover {
+        background-color: #218838;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+    }
+
+    .btn-primary:hover {
+        background-color: #0069d9;
+    }
+
+    .btn-info {
+        background-color: #17a2b8;
+    }
+
+    .btn-info:hover {
+        background-color: #138496;
+    }
+
+    /* Hanya untuk print */
+    @media print {
         .btn-container {
-            display: none;
+            display: none !important;
         }
     }
 </style>
 </head>
 
 <body>
-    <div class="mb-3 btn-container">
-        <button class="btn btn-success" onclick="printSheet()">印刷</button>
-        <button class="btn btn-primary" onclick="downloadPDF()">PDF保存</button>
-        <a href="/data/cv/kandidat" class="btn btn-info">
-            戻る
-        </a>
+    <div class="mb-3 btn-container" style="display: flex; flex-wrap: wrap; gap: 10px;">
+        <button class="btn btn-success" onclick="window.print()">印刷 PDF</button>
+        <button class="btn btn-primary" onclick="downloadPDF()">Download PDF</button>
+        <button class="btn btn-success" onclick="translateToJapanese()">日本語に翻訳 Translator To Japan</button>
+        <button class="btn btn-primary" onclick="capitalizeText()">Huruf Awal Kapital</button>
+        <button class="btn btn-info" onclick="window.location='/data/cv/kandidat'">Kembali</button>
     </div>
+
     <div class="container" style="display: flex; margin: 1rem; justify-content: center; gap: 2rem">
         <div class="" style="">
             <div class="header">
                 <h1>面談シート</h1>
             </div>
 
-            <div class="date-section">年　　月　　日現在</div>
+            <div class="date-section" id="date-section"></div>
+
+            <script>
+                document.addEventListener('DOMContentLoaded', function() {
+                    const dateDiv = document.getElementById('date-section');
+
+                    const today = new Date();
+                    const year = today.getFullYear();
+                    const month = today.getMonth() + 1; // 0-indexed
+                    const day = today.getDate();
+
+                    // Format: 2025年 11月 25日現在
+                    dateDiv.textContent = `${year}年 ${month}月 ${day}日現在`;
+                });
+            </script>
+
 
             <div class="" style="position: relative">
-                <div class="photo-guide" style="position: absolute; bottom: 1; left: 1">
-                    <img src="{{ asset($cv->pas_foto) }}" alt="写真" width="150" height="200">
+                <div class="photo-guide" style="position: absolute; bottom: 10rem;">
+                    <img src="{{ asset($cv->pas_foto) }}" width=130" height="" alt="">
                 </div>
             </div>
 
             <!-- Personal Information Section -->
             <table>
                 <tr>
-                    <th class="name-cell">ふりがな</th>
-                    <td colspan="5" class="input-field">{{ $cv->nama_lengkap_romaji }}</td>
+                    <th class="name-cell" style="text-align: center">ふりがな</th>
+                    <td colspan="5" class="input-field"> {{ $cv->nama_lengkap_romaji }}</td>
                 </tr>
                 <tr>
-                    <th class="name-cell">氏　名</th>
-                    <td style="height: 200px" colspan="5" class="large-name">
-                        {{ $cv->nama_lengkap_katakana }}
+                    <th class="name-cell" style="text-align: center">氏　名</th>
+                    <td style="height: 150px" colspan="5" class="large-name">
+                        {{ $cv->nama_lengkap_romaji }}
                     </td>
                 </tr>
                 <tr>
-                    <th class="name-cell">国籍</th>
-                    <td>インドネシア</td>
-                    <th>生年月日</th>
+                    <th class="name-cell" style="text-align: center">国籍</th>
+                    <td>Indonesia</td>
+                    <th style="text-align: center">生年月日</th>
                     <td>{{ $cv->tempat_tanggal_lahir }}</td>
-                    <th>年齢</th>
-                    <td>{{ $cv->usia }}歳</td>
-                    <th>性別</th>
+                    <th style="text-align: center">年齢</th>
+                    <td>{{ $cv->usia }}</td>
+                    <th style="text-align: center">性別</th>
                     <td>{{ $cv->jenis_kelamin }}</td>
                 </tr>
                 <tr>
-                    <th class="name-cell">ふりがな</th>
-                    <td colspan="3" class="input-field">{{ $cv->nama_panggilan_romaji }}</td>
-                    <td colspan="2"><strong>国内</strong></td>
-                    <td colspan="2">国外・国内</td>
+                    <th class="name-cell" style="text-align: center">ふりがな</th>
+                    <td colspan="3" class="input-field">{{ $cv->nama_lengkap_romaji }}</td>
+                    <td colspan="2" style="text-align: center"><strong>国外・国内</strong></td>
+                    <td colspan="2" style="text-align: center">国外・国内</td>
                 </tr>
                 <tr>
-                    <th class="name-cell" rowspan="2">現住所</th>
+                    <th class="name-cell" style="text-align: center" rowspan="2">現住所</th>
                     <td rowspan="2" colspan="3">{{ $cv->alamat_lengkap }}</td>
-                    <td colspan="2"><strong>在留資格</strong></td>
-                    <td colspan="2">両親</td>
-                </tr>
-                <tr>
-                    <td colspan="2"><strong>在留期限</strong></td>
+                    <td colspan="2" style="text-align: center"><strong>在留資格</strong></td>
                     <td colspan="2">―</td>
                 </tr>
                 <tr>
-                    <th class="name-cell">血液型</th>
-                    <td>{{ $cv->golongan_darah }}型</td>
-                    <th>服サイズ</th>
-                    <td>{{ $cv->ukuran_atasan_baju }}</td>
-                    <th colspan="2">結婚</th>
-                    <td colspan="2">{{ $cv->status_perkawinan == 'Sudah Menikah' ? '既婚' : '未婚' }}</td>
+                    <td colspan="2" style="text-align: center"><strong>在留期限</strong></td>
+                    <td colspan="2">―</td>
                 </tr>
                 <tr>
-                    <th class="name-cell">身長</th>
-                    <td>{{ $cv->tinggi_badan }}cm</td>
-                    <th>ズボンサイズ</th>
+                    <th class="name-cell" style="text-align: center">血液型</th>
+                    <td>{{ $cv->golongan_darah }}</td>
+                    <th style="text-align: center">服サイズ</th>
+                    <td>{{ $cv->ukuran_atasan_baju }}</td>
+                    <th colspan="2" style="text-align: center">結婚</th>
+                    <td colspan="2">{{ $cv->status_perkawinan }}</td>
+                </tr>
+                <tr>
+                    <th class="name-cell" style="text-align: center">身長</th>
+                    <td>{{ $cv->tinggi_badan }}</td>
+                    <th style="text-align: center">ズボンサイズ</th>
                     <td>{{ $cv->ukuran_celana }}</td>
-                    <th colspan="2" rowspan="3">家族構成</th>
+                    <th colspan="2" rowspan="3" style="text-align: center">家族構成</th>
                     <td colspan="2" rowspan="3">
-                        {{ $cv->anggota_keluarga_ibu ?? '' }}
-                        {{ $cv->anggota_keluarga_ayah ?? '' }}
-                        {{ $cv->anggota_keluarga_istri ?? '' }}
-                        {{ $cv->anggota_keluarga_suami ?? '' }}
-                        {{ $cv->anggota_keluarga_anak ?? '' }}
-                        {{ $cv->anggota_keluarga_kakak ?? '' }}
-                        {{ $cv->anggota_keluarga_adik ?? '' }}
+                        自分・母・父・妻・子供(○人)<br />兄(○人)・姉(○人)<br />弟(○人)・妹(○人)
                     </td>
                 </tr>
                 <tr>
-                    <th class="name-cell">体重</th>
-                    <td>{{ $cv->berat_badan }}kg</td>
-                    <th>靴サイズ</th>
+                    <th class="name-cell" style="text-align: center">体重</th>
+                    <td>{{ $cv->berat_badan }}</td>
+                    <th style="text-align: center">靴サイズ</th>
                     <td>{{ $cv->ukuran_sepatu }}</td>
                 </tr>
             </table>
-
             <!-- Education History -->
-            <table>
+            <table border="1" cellpadding="5" cellspacing="0">
                 <tr>
                     <th class="section-header" colspan="2">年・月</th>
                     <th class="section-header" colspan="3">学　歴</th>
                     <th class="section-header" colspan="2">学部・学科</th>
                 </tr>
-                @forelse($cv->pendidikans ?? [] as $p)
+
+                @forelse($cv->pendidikans as $pendidikan)
                     <tr>
-                        <td colspan="2">{{ $p->tahun }}年{{ $p->bulan ?? '' }}月</td>
-                        <td colspan="3">{{ $p->nama }}　卒業</td>
-                        <td colspan="2" class="input-field">{{ $p->jurusan }}</td>
+                        <td colspan="2">{{ $pendidikan->tahun }}</td>
+                        <td colspan="3">{{ $pendidikan->nama }}　卒業</td>
+                        <td colspan="2" class="input-field">{{ $pendidikan->jurusan ?? '-' }}</td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="2">-</td>
-                        <td colspan="3">-</td>
-                        <td colspan="2" class="input-field">-</td>
+                        <td colspan="2" class="input-field"></td>
+                        <td colspan="3" class="input-field"></td>
+                        <td colspan="2" class="input-field"></td>
                     </tr>
                 @endforelse
             </table>
 
             <!-- Work History -->
-            <table>
+            <table border="1" cellpadding="5" cellspacing="0">
                 <tr>
                     <th class="section-header" colspan="2">年・月</th>
                     <th class="section-header" colspan="3">職　歴</th>
                     <th class="section-header" colspan="2">職種</th>
                 </tr>
-                @forelse($cv->pengalamans ?? [] as $p)
+
+                @forelse($cv->pengalamans as $pengalaman)
                     <tr>
-                        <td colspan="2">{{ $p->periode ?? '○○○○年○○月～○○○○年○○月' }}</td>
-                        <td colspan="3">{{ $p->perusahaan ?? '株式会社○○○○○○　退職' }}</td>
-                        <td colspan="2" class="input-field">{{ $p->jabatan ?? '' }}</td>
+                        <td colspan="2">
+                            {{ $pengalaman->lama_bekerja ?? '○○○○年○○月～○○○○年○○月' }}
+                        </td>
+                        <td colspan="3">{{ $pengalaman->perusahaan }}　退職</td>
+                        <td colspan="2" class="input-field">{{ $pengalaman->jabatan ?? '-' }}</td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="2">○○○○年○○月～<br>○○○○年○○月</td>
-                        <td colspan="3">株式会社○○○○○○　退職</td>
+                        <td colspan="2" class="input-field"></td>
+                        <td colspan="3" class="input-field"></td>
                         <td colspan="2" class="input-field"></td>
                     </tr>
                 @endforelse
@@ -310,109 +401,141 @@
 
         <div>
             <!-- Tabel 1: Lisensi dan Kualifikasi -->
-            <table style="width: 600px; margin-top: 4rem">
+            <table style="width: 600px; margin-top: 5rem">
                 <thead>
                     <tr class="header-row">
-                        <th colspan="2">年・月</th>
-                        <th>免許・資格</th>
+                        <th colspan="2" style=" text-align:center;">年・月</th>
+                        <th style=" text-align:center;">免許・資格</th>
                     </tr>
                 </thead>
                 <tbody>
+                    <tr>
+                        <td class="year-col">年</td>
+                        <td class="month-col">月</td>
+                        <td class="content-col">〇〇〇〇〇〇　取得</td>
+                    </tr>
+                    <tr class="data-row-alt">
+                        <td class="year-col">年</td>
+                        <td class="month-col">月</td>
+                        <td class="content-col">〇〇〇〇〇〇　取得</td>
+                    </tr>
                     <tr>
                         <td class="year-col"></td>
                         <td class="month-col"></td>
-                        <td class="content-col">
-                            {{ $cv->surat_izin_mengemudi == 'Ada' ? $cv->jenis_sim . '　取得' : '' }}
-                        </td>
+                        <td class="content-col"></td>
                     </tr>
-                    @for ($i = 0; $i < 7; $i++)
-                        <tr class="{{ $i % 2 == 1 ? 'data-row-alt' : '' }}">
-                            <td class="year-col"></td>
-                            <td class="month-col"></td>
-                            <td class="content-col"></td>
-                        </tr>
-                    @endfor
+                    <tr>
+                        <td class="year-col"></td>
+                        <td class="month-col"></td>
+                        <td class="content-col"></td>
+                    </tr>
+                    <tr>
+                        <td class="year-col"></td>
+                        <td class="month-col"></td>
+                        <td class="content-col"></td>
+                    </tr>
+                    <tr>
+                        <td class="year-col"></td>
+                        <td class="month-col"></td>
+                        <td class="content-col"></td>
+                    </tr>
+                    <tr>
+                        <td class="year-col"></td>
+                        <td class="month-col"></td>
+                        <td class="content-col"></td>
+                    </tr>
+                    <tr>
+                        <td class="year-col"></td>
+                        <td class="month-col"></td>
+                        <td class="content-col"></td>
+                    </tr>
                 </tbody>
             </table>
-
             <!-- Tabel 2: Keahlian dan Pengalaman -->
             <table>
                 <thead>
-                    <tr class="header-row">
-                        <th style="width: 50%">特技・経験</th>
-                        <th style="width: 25%">応募職種</th>
-                        <th style="width: 25%">利き手</th>
+                    <tr class="header-row" style="text-align: center">
+                        <th style="width: 50%; text-align:center;">特技・経験</th>
+                        <th style="width: 25% ; text-align:center;">応募職種</th>
+                        <th style="width: 25%;  text-align:center;">利き手</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td rowspan="4" class="section-content">
+                    <tr class="no-border-top">
+                        <td rowspan="7" class="section-content">
                             <div class="section-item">
                                 <div class="section-title">【やってきた作業】</div>
-                                <div>{{ $cv->keahlian_khusus ?? '―' }}</div>
+                                <div>{{ $cv->kelincahan_dalam_bekerja ?? '—' }}</div>
                             </div>
 
                             <div class="section-item">
                                 <div class="section-title">【扱ってきた材料】</div>
-                                <div>―</div>
+                                <div>{{ $cv->kekuatan_tindakan ?? '—' }}</div>
                             </div>
 
                             <div class="section-item">
                                 <div class="section-title">【やってきた現場】</div>
-                                <div>―</div>
+                                <div>{{ $cv->kemampuan_pemahaman_ssw ?? '—' }}</div>
                             </div>
 
                             <div class="section-item">
                                 <div class="section-title">【操作できる重機】</div>
-                                <div>―</div>
+                                <div>{{ $cv->kemampuan_berbahasa_inggris ?? '—' }}</div>
                             </div>
                         </td>
-                        <td style="text-align: center;">{{ $cv->bidang_sertifikasi }}</td>
-                        <td style="text-align: center;">{{ $cv->tangan_dominan == 'Kanan' ? '右' : '左' }}</td>
+                        <td colspan="2" style="text-align: center;">{{ $cv->tangan_dominan ?? '左・右' }}</td>
                     </tr>
                     <tr>
                         <td style="text-align: center;" class="label-cell">矯正視力</td>
                         <td style="text-align: center;">聴力異常</td>
                     </tr>
                     <tr>
-                        <td class="label-cell">{{ $cv->kemampuan_penglihatan_mata != 'Normal' ? '有' : '無' }}</td>
-                        <td>無</td>
+                        <td style="text-align: center;">{{ $cv->kemampuan_penglihatan_mata ?? '有・無' }}</td>
+                        <td style="text-align: center;">{{ $cv->gangguan_pendengaran ?? '有・無' }}</td>
                     </tr>
                     <tr>
                         <td colspan="2" class="blue-header" style="text-align: center;">宗教</td>
                     </tr>
                     <tr>
-                        <td rowspan="3" class="no-border-top"></td>
-                        <td colspan="2" style="padding: 16px; text-align: center;">{{ $cv->agama }}</td>
+                        <td colspan="2" style="padding: 16px; text-align: center;">
+                            {{ $cv->agama ?? '—' }}
+                        </td>
                     </tr>
                     <tr>
                         <td colspan="2" class="blue-header" style="text-align: center;">趣味</td>
                     </tr>
                     <tr>
-                        <td colspan="2" style="padding: 16px; text-align:center;">{{ $cv->hobi }}</td>
+                        <td colspan="2" style="padding: 16px; text-align: center;">{{ $cv->hobi ?? '—' }}</td>
                     </tr>
                 </tbody>
             </table>
 
-            <table class="comment-table">
+            <table class="comment-table" style="width: 100%; margin-top: 1rem; border-collapse: collapse;">
                 <tr>
                     <td class="comment-header"
                         style="
                 background-color: #e3f2fd;
                 font-weight: bold;
                 text-align: center;
-              ">
+                padding: 8px;
+                border: 1px solid #000000;
+            ">
                         コメント
                     </td>
                 </tr>
                 <tr>
-                    <td class="comment-body" style="height: 200px; padding: 15px; text-align: left; vertical-align: top;">
-                        <strong>長所：</strong> {{ $cv->kelebihan_diri }}<br><br>
-                        <strong>短所：</strong> {{ $cv->kekurangan_diri }}<br><br>
-                        <strong>セールスポイント：</strong> {{ $cv->point_plus_diri }}
+                    <td class="comment-body"
+                        style="
+                height: 200px; 
+                padding: 8px; 
+                border: 1px solid #000000;
+                vertical-align: top;
+            ">
+                        {{ $cv->komentar_guru_kelebihan_diri ?? '—' }}
                     </td>
                 </tr>
             </table>
+
         </div>
     </div>
 </body>
@@ -423,6 +546,65 @@
     integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
 </script>
 <script>
+    function capitalizeText() {
+        const textNodes = [];
+        const walker = document.createTreeWalker(
+            document.querySelector('.container'),
+            NodeFilter.SHOW_TEXT,
+            null,
+            false
+        );
+
+        while (walker.nextNode()) {
+            const node = walker.currentNode;
+            if (node.nodeValue.trim() !== '') {
+                textNodes.push(node);
+            }
+        }
+
+        textNodes.forEach(node => {
+            node.nodeValue = node.nodeValue.replace(/\b\w/g, char => char.toUpperCase());
+        });
+    }
+
+    async function translateToJapanese() {
+        // Ambil semua elemen teks
+        const textNodes = [];
+        const walker = document.createTreeWalker(
+            document.querySelector('.container'),
+            NodeFilter.SHOW_TEXT,
+            null,
+            false
+        );
+
+        while (walker.nextNode()) {
+            const node = walker.currentNode;
+            if (node.nodeValue.trim() !== '') {
+                textNodes.push(node);
+            }
+        }
+
+        // Kirim teks ke API penerjemah
+        for (let node of textNodes) {
+            const originalText = node.nodeValue.trim();
+            try {
+                const translated = await translateText(originalText);
+                node.nodeValue = translated; // replace teks asli
+            } catch (err) {
+                console.error('Terjemahan gagal untuk:', originalText, err);
+            }
+        }
+    }
+
+    // Contoh fungsi translate via API publik (DeepL atau Google Translate)
+    async function translateText(text) {
+        // Contoh menggunakan API Google Translate gratis via fetch
+        const res = await fetch(
+            `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=id|ja`);
+        const data = await res.json();
+        return data.responseData.translatedText;
+    }
+
     function printSheet() {
         const container = document.querySelector('.container');
 
@@ -453,6 +635,40 @@
         });
     }
 
+
+
+    function printSheet() {
+        const container = document.querySelector('.container');
+
+        html2canvas(container, {
+            scale: 2
+        }).then(canvas => {
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
+            const imgProps = pdf.getImageProperties(imgData);
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+            let heightLeft = pdfHeight;
+            let position = 0;
+
+            pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
+            heightLeft -= pdf.internal.pageSize.getHeight();
+
+            while (heightLeft > 0) {
+                position = heightLeft - pdfHeight;
+                pdf.addPage();
+                pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
+                heightLeft -= pdf.internal.pageSize.getHeight();
+            }
+
+            pdf.autoPrint();
+            window.open(pdf.output('bloburl'), '_blank');
+        });
+    }
+
+
+
     function downloadPDF() {
         const container = document.querySelector('.container');
         html2canvas(container, {
@@ -464,7 +680,7 @@
             const pdfWidth = pdf.internal.pageSize.getWidth();
             const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
             pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-            pdf.save('面談シート_{{ $cv->nama_lengkap_romaji }}.pdf');
+            pdf.save('mensetsu_sheet.pdf');
         });
     }
 </script>

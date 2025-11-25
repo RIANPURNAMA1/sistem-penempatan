@@ -27,7 +27,7 @@
         @endif
 
         <!-- Breadcrumb -->
-        <nav aria-label="breadcrumb" class="mb-4">
+        <nav aria-label="breadcrumb" class="mb-4 shadow shadow-md">
             <ol class="breadcrumb border rounded-3 px-3 py-2 shadow-sm mb-0">
                 <li class="breadcrumb-item">
                     <a href="{{ route('dashboard') }}" class="text-decoration-none text-secondary">
@@ -43,7 +43,7 @@
         
 
         <!-- Filter -->
-        <div class="card shadow-sm border-0 rounded-3 mb-4">
+        <div class="card  border-0 rounded-3 mb-4 shadow shadow-md">
             <div class="card-header  border-bottom-0 py-3 px-4">
                 <div class="d-flex flex-wrap justify-content-between align-items-center">
                     <h6 class="fw-semibold mb-0 text-secondary">
@@ -70,7 +70,7 @@
         </div>
 
         <!-- Tabel manual -->
-        <div class="card shadow-sm border-0 rounded-4">
+        <div class="card shadow shadow-md border-0 rounded-4">
             <div class="card-body table-responsive">
               <div class="d-flex justify-content-end">
 
@@ -79,7 +79,7 @@
                   </a>
               </div>
 
-                <table id="tableInstitusi" class="table table-striped table-bordered align-middle" id="tableInstitusi">
+                <table id="tableInstitusi" class="table table-striped shadow shadow-md align-middle" id="tableInstitusi">
                     <thead>
                         <tr>
                             <th class=" text-center">No</th>

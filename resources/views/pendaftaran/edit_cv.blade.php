@@ -4,7 +4,7 @@
 
 @section('content')
 
-<div class="container mt-4">
+<div class=" mt-4">
     <h2 class="fw-bold mb-4">Edit CV</h2>
 
     <form id="edit-cv-form" enctype="multipart/form-data">
@@ -258,11 +258,6 @@
 
             </div>
         </div>
-
-
-
-
-
 
         <button type="submit" class="btn btn-primary">Update CV</button>
         <a href="{{ route('dashboard') }}" class="btn btn-secondary">Kembali</a>

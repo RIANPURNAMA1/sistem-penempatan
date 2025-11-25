@@ -27,6 +27,10 @@ class PendaftaranExport implements FromCollection, WithHeadings, WithMapping, Wi
             'Email',
             'Alamat',
             'Jenis Kelamin',
+            'Agama',
+            'Status',
+            'Tempat Lahir',
+            'Tanggal Lahir',
             'No. WhatsApp',
             'Provinsi',
             'Kota/Kabupaten',
@@ -36,6 +40,14 @@ class PendaftaranExport implements FromCollection, WithHeadings, WithMapping, Wi
             'Tanggal Daftar',
             'Status Verifikasi',
             'Catatan Admin',
+            'Foto',
+            'Sertifikat JFT',
+            'Sertifikat SSW',
+            'KK',
+            'KTP',
+            'Bukti Pelunasan',
+            'Akte',
+            'Ijazah',
         ];
     }
 
@@ -47,6 +59,10 @@ class PendaftaranExport implements FromCollection, WithHeadings, WithMapping, Wi
             $p->email,
             $p->alamat,
             $p->jenis_kelamin,
+            $p->agama,
+            $p->status,
+            $p->tempat_lahir,
+            $p->tempat_tanggal_lahir,
             $p->no_wa,
             $p->provinsi,
             $p->kab_kota,
@@ -56,45 +72,43 @@ class PendaftaranExport implements FromCollection, WithHeadings, WithMapping, Wi
             $p->tanggal_daftar,
             $p->verifikasi,
             $p->catatan_admin,
+            $p->foto ? asset('storage/'.$p->foto) : '-',
+            $p->sertifikat_jft ? asset('storage/'.$p->sertifikat_jft) : '-',
+            $p->sertifikat_ssw ? asset('storage/'.$p->sertifikat_ssw) : '-',
+            $p->kk ? asset('storage/'.$p->kk) : '-',
+            $p->ktp ? asset('storage/'.$p->ktp) : '-',
+            $p->bukti_pelunasan ? asset('storage/'.$p->bukti_pelunasan) : '-',
+            $p->akte ? asset('storage/'.$p->akte) : '-',
+            $p->ijasah ? asset('storage/'.$p->ijasah) : '-',
         ];
     }
 
     public function styles(Worksheet $sheet)
     {
         // Heading Style
-        $sheet->getStyle('A1:N1')->getFont()->setBold(true)->setSize(12);
-        $sheet->getStyle('A1:N1')->getAlignment()->setHorizontal('center')->setVertical('center');
+        $sheet->getStyle('A1:Z1')->getFont()->setBold(true)->setSize(12);
+        $sheet->getStyle('A1:Z1')->getAlignment()->setHorizontal('center')->setVertical('center');
 
         // Tinggi baris heading
         $sheet->getRowDimension(1)->setRowHeight(28);
 
-        // Kolom besar (manual) agar lebih enak dibaca
+        // Set column width (manual agar lebih enak dibaca)
         $columnWidths = [
-            'A' => 20,
-            'B' => 25,
-            'C' => 30,
-            'D' => 40,
-            'E' => 15,
-            'F' => 18,
-            'G' => 20,
-            'H' => 22,
-            'I' => 22,
-            'J' => 22,
-            'K' => 20,
-            'L' => 20,
-            'M' => 18,
-            'N' => 35,
+            'A' => 20, 'B' => 25, 'C' => 30, 'D' => 40, 'E' => 15, 'F' => 15, 'G' => 15,
+            'H' => 20, 'I' => 18, 'J' => 18, 'K' => 20, 'L' => 22, 'M' => 22, 'N' => 22,
+            'O' => 20, 'P' => 20, 'Q' => 18, 'R' => 35, 'S' => 25, 'T' => 25, 'U' => 25,
+            'V' => 25, 'W' => 25, 'X' => 25, 'Y' => 25, 'Z' => 25,
         ];
 
         foreach ($columnWidths as $col => $width) {
             $sheet->getColumnDimension($col)->setWidth($width);
         }
 
-        // Wrap Text untuk alamat dan catatan admin
-        $sheet->getStyle('D:N')->getAlignment()->setWrapText(true);
+        // Wrap text untuk alamat dan catatan admin
+        $sheet->getStyle('D:R')->getAlignment()->setWrapText(true);
 
         // Border semua tabel
-        $sheet->getStyle('A1:N' . $sheet->getHighestRow())
+        $sheet->getStyle('A1:Z' . $sheet->getHighestRow())
             ->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
     }
 
@@ -102,16 +116,15 @@ class PendaftaranExport implements FromCollection, WithHeadings, WithMapping, Wi
     {
         return [
             AfterSheet::class => function (AfterSheet $event) {
-
                 // Background heading
-                $event->sheet->getStyle('A1:N1')->getFill()
+                $event->sheet->getStyle('A1:Z1')->getFill()
                     ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
                     ->getStartColor()->setARGB('FF4C8BF5'); // biru elegan
 
                 // Font heading warna putih
-                $event->sheet->getStyle('A1:N1')->getFont()->getColor()->setARGB('FFFFFFFF');
+                $event->sheet->getStyle('A1:Z1')->getFont()->getColor()->setARGB('FFFFFFFF');
 
-                // Set freeze pane (heading tetap di atas)
+                // Freeze pane
                 $event->sheet->freezePane('A2');
             },
         ];
