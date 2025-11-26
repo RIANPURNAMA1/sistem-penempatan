@@ -4,44 +4,43 @@
 
 @section('content')
     <div class="">
-         @if (session('success'))
-        <script>
-            Swal.fire({
-                icon: 'success',
-                title: 'Sukses',
-                text: '{{ session('success') }}',
-                timer: 3000,
-                showConfirmButton: false
-            });
-        </script>
-    @endif
-         @if (session('error'))
-        <script>
-            Swal.fire({
-                icon: 'error',
-                title: 'error',
-                text: '{{ session('success') }}',
-                timer: 3000,
-                showConfirmButton: false
-            });
-        </script>
-    @endif
-        <!-- Breadcrumb -->
+        @if (session('success'))
+            <script>
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Sukses',
+                    text: '{{ session('success') }}',
+                    timer: 3000,
+                    showConfirmButton: false
+                });
+            </script>
+        @endif
+        @if (session('error'))
+            <script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: '{{ session('error') }}',
+                    timer: 3000,
+                    showConfirmButton: false
+                });
+            </script>
+        @endif
+
         <nav aria-label="breadcrumb" class="mb-4 shadow shadow-md border-none">
-            <ol class="breadcrumb  border rounded-3 px-3 py-2 shadow-sm mb-0">
+            <ol class="breadcrumb border rounded-3 px-3 py-2 shadow-sm mb-0">
                 <li class="breadcrumb-item">
                     <a href="{{ url('/') }}" class="text-decoration-none text-secondary">
                         <i class="bi bi-house-door me-1"></i> Dashboard
                     </a>
                 </li>
-                <li class="breadcrumb-item active  fw-semibold" aria-current="page">
+                <li class="breadcrumb-item active fw-semibold" aria-current="page">
                     <i class="bi bi-person-gear me-1"></i> Daftar Admin
                 </li>
             </ol>
         </nav>
 
-        <!-- Header & Tambah Admin -->
-        {{-- <div
+        <div
             class="mb-4 d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2">
             <div>
                 <h2 class="fw-bold mb-2">
@@ -51,54 +50,38 @@
                     Berikut adalah data akun admin yang terdaftar dalam sistem manajemen.
                 </p>
             </div>
-        </div> --}}
-
-        <!-- Filter -->
-        <div class="card shadow shadow-md border-none border-0 rounded-3 mb-4">
-            <div class="card-body">
-                <div class="row g-3 align-items-end">
-                    <div class="col-12 col-md-6 col-lg-6">
-                        <label for="filterRole" class="form-label fw-semibold text-secondary">Filter Berdasarkan
-                            Role</label>
-                        <input type="text" id="filterRole" class="form-control shadow-sm rounded-3 border-1"
-                            placeholder="Masukkan role...">
-                    </div>
-                    <div class="col-12 col-md-6 col-lg-6 d-flex justify-content-end align-items-end">
-                        <button id="resetFilter" class="btn btn-outline-info fw-semibold shadow-sm px-4 py-2 rounded-3">
-                            <i class="bi bi-arrow-clockwise me-1"></i> Reset Filter
-                        </button>
-                    </div>
-                </div>
-            </div>
+            <a href="{{ route('admins.create') }}"
+                class="btn btn-primary fw-semibold shadow-sm px-4 py-2 rounded-3 text-white">
+                <i class="bi bi-plus-circle me-1"></i> Tambah Admin Baru
+            </a>
         </div>
 
-        <!-- Data Table -->
-        <div class="card shadow-sm border-0 shadow shadow-md border-none rounded-4">
+        <div class="card shadow-sm border-0 rounded-4">
             <div class="card-body table-responsive">
-                <table class="table table-striped shadow shadow-md border-none align-middle nowrap" id="tableAdmin" style="width:100%">
+                <table class="table table-striped align-middle nowrap" id="tableAdmin" style="width:100%">
                     <thead>
                         <tr>
-                            <th class=" text-center">No</th>
-                            <th class="">Nama</th>
-                            <th class="">Email</th>
-                            <th class="">Role</th>
-                            <th class="">Tanggal Dibuat</th>
-                            <th class="">Diperbarui</th>
-                            <th class=" text-center">Aksi</th>
+                            <th class="text-center">No</th>
+                            <th>Nama</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Tanggal Dibuat</th>
+                            <th>Diperbarui</th>
+                            <th class="text-center">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($admins as $index => $admin)
-                            @if ($admin->role_id != 4)
-                                {{-- Skip role kandidat --}}
+                            @if ($admin->role !== 'kandidat')
+                                {{-- skip kandidat --}}
                                 <tr>
                                     <td class="text-center">{{ $index + 1 }}</td>
                                     <td>{{ $admin->name }}</td>
                                     <td>{{ $admin->email }}</td>
                                     <td>
                                         @php
-                                            $roleName = $admin->role->name ?? 'Tidak Ada';
-                                            $badge = match ($roleName) {
+                                            $roleName = $admin->role ?? 'Tidak Ada';
+                                            $badge = match (strtolower($roleName)) {
                                                 'super admin' => 'danger',
                                                 'admin cianjur' => 'success',
                                                 'admin cianjur selatan' => 'primary',
@@ -107,7 +90,6 @@
                                         @endphp
                                         <span class="badge bg-{{ $badge }}">{{ ucfirst($roleName) }}</span>
                                     </td>
-
                                     <td>{{ $admin->created_at->format('Y-m-d') }}</td>
                                     <td>{{ $admin->updated_at->format('Y-m-d') }}</td>
                                     <td class="text-center">
@@ -136,10 +118,9 @@
         </div>
     </div>
 
-    <!-- Styles & Scripts -->
+    {{-- CSS & JS --}}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
-
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
@@ -173,7 +154,6 @@
                 table.columns().search('').draw();
             });
 
-            // SweetAlert delete confirmation
             $('.delete-form').on('submit', function(e) {
                 e.preventDefault();
                 const form = this;

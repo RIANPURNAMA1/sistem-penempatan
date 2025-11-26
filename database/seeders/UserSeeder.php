@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Models\Cabang;
 
 class UserSeeder extends Seeder
 {
@@ -14,24 +15,39 @@ class UserSeeder extends Seeder
         User::create([
             'name' => 'Super Admin',
             'email' => 'superadmin@example.com',
-            'password' => Hash::make('superadmin123'), // password default
+            'password' => Hash::make('superadmin123'),
             'role' => 'super admin',
         ]);
 
-        // Admin Cianjur Selatan
-        User::create([
-            'name' => 'Admin Cianjur Selatan',
-            'email' => 'admincianjurselatan@example.com',
-            'password' => Hash::make('admincianjur123'),
-            'role' => 'admin cianjur selatan',
-        ]);
+        // Daftar cabang
+        $cabangRoles = [
+            'Cabang Cianjur Selatan Mendunia',
+            'Cabang Cianjur Pamoyanan Mendunia',
+            'Cabang Batam Mendunia',
+            'Cabang Banyuwangi Mendunia',
+            'Cabang Kendal Mendunia',
+            'Cabang Pati Mendunia',
+            'Cabang Tulung Agung Mendunia',
+            'Cabang Bangkalan Mendunia',
+            'Cabang Bojonegoro Mendunia',
+            'Cabang Jember Mendunia',
+            'Cabang Wonosobo Mendunia',
+            'Cabang Eshan Mendunia',
+        ];
 
-        // Admin Cianjur
-        User::create([
-            'name' => 'Admin Cianjur',
-            'email' => 'admincianjur@example.com',
-            'password' => Hash::make('admincianjur123'),
-            'role' => 'admin cianjur',
-        ]);
+        foreach ($cabangRoles as $roleName) {
+            // Ambil ID cabang dari tabel cabangs
+            $cabang = Cabang::where('nama_cabang', $roleName)->first();
+
+            if ($cabang) {
+                User::create([
+                    'name' => "Admin " . $cabang->nama_cabang,
+                    'email' => strtolower(str_replace(' ', '', $cabang->nama_cabang)) . '@example.com',
+                    'password' => Hash::make('admin123'),
+                    'role' => $cabang->nama_cabang,
+                    'cabang_id' => $cabang->id,
+                ]);
+            }
+        }
     }
 }

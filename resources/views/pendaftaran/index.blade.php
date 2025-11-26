@@ -178,7 +178,7 @@
 
                                         <!-- Upload Paspor -->
                                         <div class="col-md-6">
-                                            <label class="form-label">Upload Paspor</label>
+                                            <label class="form-label">Upload Paspor Jika Ada</label>
                                             <input type="file" name="paspor" class="form-control"
                                                 accept="image/jpeg,image/png,application/pdf">
                                             <div class="form-text">PDF, JPG, PNG maks 10MB.</div>

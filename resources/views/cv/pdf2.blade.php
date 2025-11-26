@@ -283,7 +283,7 @@
 
             <div class="" style="position: relative">
                 <div class="photo-guide" style="position: absolute; bottom: 10rem;">
-                    <img src="{{ asset($cv->pas_foto) }}" width=130" height="" alt="">
+                    <img src="{{ asset($cv->pas_foto_cv) }}" width=130" height="" alt="">
                 </div>
             </div>
 

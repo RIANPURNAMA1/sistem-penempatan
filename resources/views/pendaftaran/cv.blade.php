@@ -3,33 +3,37 @@
 @section('title', 'Tambah CV')
 
 @section('content')
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        integrity="sha512-u3eJv6TsgUsP62eFZlyDdc0AGJi/7luWGINuD/7++UZ5EONosFVJeFt3PcTJS3BM4tiTqcKoy0ucZZ+jJ7G8Aw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
     <div class=" mt-5">
-       @if ($alreadyRegistered)
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
+        @if ($alreadyRegistered)
+            <script>
+                document.addEventListener("DOMContentLoaded", function() {
 
-        Swal.fire({
-            title: 'Peringatan!',
-            text: 'Anda sudah melakukan pendaftaran sebelumnya dan tidak dapat mendaftar lagi.',
-            icon: 'warning',
-            showCancelButton: false,
-            allowOutsideClick: false,
-            allowEscapeKey: false,
-            confirmButtonText: 'Kembali',
-        }).then((result) => {
-            if (result.isConfirmed) {
-                window.location = '/'; // kembali ke halaman sebelumnya
-            }
-        });
+                    Swal.fire({
+                        title: 'Peringatan!',
+                        text: 'Anda sudah melakukan pendaftaran sebelumnya dan tidak dapat mendaftar lagi.',
+                        icon: 'warning',
+                        showCancelButton: false,
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        confirmButtonText: 'Kembali',
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location = '/'; // kembali ke halaman sebelumnya
+                        }
+                    });
 
-        // Disable semua elemen form
-        const form = document.getElementById("cvForm");
-        if (form) {
-            [...form.elements].forEach(input => input.disabled = true);
-        }
-    });
-</script>
-@endif
+                    // Disable semua elemen form
+                    const form = document.getElementById("cvForm");
+                    if (form) {
+                        [...form.elements].forEach(input => input.disabled = true);
+                    }
+                });
+            </script>
+        @endif
 
 
 
@@ -52,7 +56,7 @@
             </script>
         @endif
 
- <!-- Breadcrumb -->
+        <!-- Breadcrumb -->
         <nav aria-label="breadcrumb" class="mb-4">
             <ol class="breadcrumb border rounded-3 px-3 py-2 shadow-sm mb-0">
                 <li class="breadcrumb-item">
@@ -108,6 +112,7 @@
 
                         <form id="cvForm" action="{{ route('pendaftaran.cv.store') }}" method="POST"
                             enctype="multipart/form-data">
+                            @method('POST')
                             @csrf
 
                             {{-- HALAMAN 1: DATA AWAL --}}
@@ -115,16 +120,22 @@
                                 <div class="card-header fw-bold">Data Awal</div>
                                 <div class="card-body">
                                     <div class="row g-3">
+
                                         <div class="col-md-6">
+
+                                            {{-- Email --}}
+                                            <label class="form-label fw-semibold">Email</label>
                                             <input type="email" name="email"
                                                 class="form-control @error('email') is-invalid @enderror"
-                                                placeholder="Email" value="{{ old('email') }}" required>
+                                                placeholder="Masukkan Email" value="{{ old('email') }}" required>
                                             @error('email')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
 
+                                            {{-- Cabang --}}
+                                            <label class="form-label fw-semibold mt-3">Cabang</label>
                                             <select name="cabang_id"
-                                                class="form-control mt-2 @error('cabang_id') is-invalid @enderror" required>
+                                                class="form-control @error('cabang_id') is-invalid @enderror" required>
                                                 <option value="">-- Pilih Cabang --</option>
                                                 @foreach ($cabangs as $cabang)
                                                     <option value="{{ $cabang->id }}"
@@ -137,25 +148,35 @@
                                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                                             @enderror
 
+                                            {{-- Batch --}}
+                                            <label class="form-label fw-semibold mt-3">Batch</label>
+
                                             <input type="text" name="batch"
-                                                class="form-control mt-2 @error('batch') is-invalid @enderror"
-                                                placeholder="Batch" value="{{ old('batch') }}" required>
+                                                class="form-control  @error('batch') is-invalid @enderror"
+                                                placeholder="Masukkan Batch" value="{{ old('batch') }}" required>
                                             @error('batch')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
 
+                                            {{-- No Telepon --}}
+                                            <label class="form-label fw-semibold mt-3">No Telepon</label>
                                             <input type="text" name="no_telepon"
-                                                class="form-control mt-2 @error('no_telepon') is-invalid @enderror"
-                                                placeholder="No Telepon" value="{{ old('no_telepon') }}" required>
+                                                class="form-control @error('no_telepon') is-invalid @enderror"
+                                                placeholder="Masukkan No Telepon" value="{{ old('no_telepon') }}" required>
                                             @error('no_telepon')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
 
-                                            <input type="text" name="no_orang_tua" class="form-control mt-2"
-                                                placeholder="No Orang Tua" value="{{ old('no_orang_tua') }}">
+                                            {{-- No Orang Tua --}}
+                                            <label class="form-label fw-semibold mt-3">No Orang Tua (Opsional)</label>
+                                            <input type="text" name="no_orang_tua" class="form-control"
+                                                placeholder="Masukkan No Orang Tua" value="{{ old('no_orang_tua') }}">
                                         </div>
 
                                         <div class="col-md-6">
+
+                                            {{-- Bidang Sertifikasi --}}
+                                            <label class="form-label fw-semibold">Bidang Sertifikasi</label>
                                             <select name="bidang_sertifikasi"
                                                 class="form-control @error('bidang_sertifikasi') is-invalid @enderror"
                                                 required>
@@ -186,15 +207,20 @@
                                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                                             @enderror
 
-                                            <input type="text" name="bidang_sertifikasi_lainnya"
-                                                class="form-control mt-2"
-                                                placeholder="Bidang Sertifikasi Lainnya (Opsional)"
+                                            {{-- Bidang Sertifikasi Lainnya --}}
+                                            <label class="form-label fw-semibold mt-3">Bidang Sertifikasi Lainnya
+                                                (Opsional)</label>
+                                            <input type="text" name="bidang_sertifikasi_lainnya" class="form-control"
+                                                placeholder="Isi jika ada bidang sertifikasi lain"
                                                 value="{{ old('bidang_sertifikasi_lainnya') }}">
 
+                                            {{-- Program Kawakami --}}
+                                            <label class="form-label fw-semibold mt-3">Apakah mengikuti program pertanian
+                                                kawakami synshu cyle 2026</label>
                                             <select name="program_pertanian_kawakami"
-                                                class="form-control mt-2 @error('program_pertanian_kawakami') is-invalid @enderror"
+                                                class="form-control @error('program_pertanian_kawakami') is-invalid @enderror"
                                                 required>
-                                                <option value="">-- Program Pertanian Kawakami --</option>
+                                                <option value="">-- Pilih --</option>
                                                 <option value="Ya"
                                                     {{ old('program_pertanian_kawakami') == 'Ya' ? 'selected' : '' }}>Ya
                                                 </option>
@@ -206,13 +232,23 @@
                                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                                             @enderror
 
-                                            <label class="mt-2">Upload Sertifikat (PDF/JPG/PNG, Max 10MB)</label>
-                                            <input type="file" name="sertifikat_files[]" class="form-control mt-1"
-                                                multiple accept=".pdf,.jpg,.jpeg,.png">
+                                            {{-- Upload Sertifikat --}}
+                                            <label class="form-label fw-semibold mt-3">
+                                                Silahkan upload sertifikat yang dimiliki JFT dan SSW (PDF/JPG/PNG, Max 10MB)
+                                            </label>
+
+                                            <input type="file" name="sertifikat_files[]" id="sertifikatInput"
+                                                class="form-control" multiple accept=".pdf,.jpg,.jpeg,.png">
+
+                                            <!-- PREVIEW -->
+                                            <div id="previewSertifikat" class="mt-3 d-flex flex-wrap gap-3"></div>
+
+
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
 
                             {{-- HALAMAN 2: DATA DIRI --}}
                             <div class="card mb-4">
@@ -220,129 +256,246 @@
                                 <div class="card-body">
                                     <div class="row g-3">
                                         <div class="col-md-6">
-                                            <label>Upload Pas Foto (JPG/PNG, Max 2MB)</label>
-                                            <input type="file" name="pas_foto" class="form-control mt-1" multiple
-                                                accept=".jpg,.jpeg,.png">
+                                            <!-- ======================================================
+             MULTI FILE: pas_foto[]
+        ====================================================== -->
+                                            <label class="form-label fw-semibold mb-1">
+                                                Silahkan upload dokumen / foto tambahan 👇
+                                            </label>
+                                            <div class="small" style="line-height: 1.5;">
+                                                Berikut ketentuan upload dokumen/foto tambahan:
+                                                <ul class="mt-1 mb-1">
+                                                    <li>Bisa berupa PDF, DOC, DOCX, atau gambar (.jpg/.jpeg/.png)</li>
+                                                    <li>Maksimal upload 5 file</li>
+                                                    <li>Bukan hasil editan</li>
+                                                    <li>SSW Pertanian: Tambahkan foto full body</li>
+                                                </ul>
+                                            </div>
+                                            <input type="file" id="pasFotoInput" name="pas_foto[]"
+                                                accept=".jpg,.jpeg,.png,.pdf,.doc,.docx" class="form-control" multiple>
+                                            <div id="previewPasFoto" class="mt-3 d-flex flex-wrap gap-3"></div>
+
+                                            <!-- ======================================================
+             SINGLE FILE: pas_foto_cv
+        ====================================================== -->
+                                            <label class="form-label fw-semibold mb-1 mt-4">
+                                                Silahkan upload pas foto untuk CV Anda 👇
+                                            </label>
+                                            <div class="small" style="line-height: 1.5;">
+                                                Ketentuan pas foto CV:
+                                                <ul class="mt-1 mb-1">
+                                                    <li>Ukuran: 4x3 cm (Tinggi x Lebar)</li>
+                                                    <li>Background: 1 biru & 1 putih</li>
+                                                    <li>Pakaian: Jas & dasi (formal)</li>
+                                                    <li>Penampilan: Rambut rapi, tanpa kumis/janggut (laki-laki), tidak
+                                                        memakai makeup berlebihan (perempuan)</li>
+                                                </ul>
+                                                <strong>Hanya 1 file, format gambar (.jpg/.jpeg/.png)</strong>
+                                            </div>
+                                            <input type="file" id="pasFotoInputCv" name="pas_foto_cv"
+                                                accept=".jpg,.jpeg,.png" class="form-control">
+                                            <div id="previewPasFotoCv" class="mt-3 d-flex flex-wrap gap-3"></div>
+
+
+                                            <label class="form-label fw-semibold mt-3">
+                                                Nama Lengkap <span class="text-danger">*</span><br>
+                                                <small class="text-muted">Gunakan huruf Romaji<br>Contoh: Gita</small>
+                                            </label>
 
                                             <input type="text" name="nama_lengkap_romaji"
-                                                class="form-control mt-2 @error('nama_lengkap_romaji') is-invalid @enderror"
-                                                placeholder="Nama Lengkap Romaji"
+                                                class="form-control @error('nama_lengkap_romaji') is-invalid @enderror"
+                                                placeholder="Masukkan nama lengkap (Romaji)"
                                                 value="{{ old('nama_lengkap_romaji') }}" required>
+
                                             @error('nama_lengkap_romaji')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
 
+
+                                            <label class="form-label fw-semibold mt-3">
+                                                Nama Lengkap <span class="text-danger">*</span><br>
+                                                <small class="text-muted">Gunakan huruf Katakana<br>Contoh: ギタ</small>
+                                            </label>
+
                                             <input type="text" name="nama_lengkap_katakana"
-                                                class="form-control mt-2 @error('nama_lengkap_katakana') is-invalid @enderror"
-                                                placeholder="Nama Lengkap Katakana"
+                                                class="form-control @error('nama_lengkap_katakana') is-invalid @enderror"
+                                                placeholder="Masukkan nama lengkap (Katakana)"
                                                 value="{{ old('nama_lengkap_katakana') }}" required>
+
                                             @error('nama_lengkap_katakana')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
 
+
+                                            <label class="form-label fw-semibold mt-3">
+                                                Nama Panggilan <span class="text-danger">*</span><br>
+                                                <small class="text-muted">Gunakan huruf Romaji<br>Contoh: Gita</small>
+                                            </label>
+
                                             <input type="text" name="nama_panggilan_romaji"
-                                                class="form-control mt-2 @error('nama_panggilan_romaji') is-invalid @enderror"
-                                                placeholder="Nama Panggilan Romaji"
+                                                class="form-control @error('nama_panggilan_romaji') is-invalid @enderror"
+                                                placeholder="Masukkan nama panggilan (Romaji)"
                                                 value="{{ old('nama_panggilan_romaji') }}" required>
+
                                             @error('nama_panggilan_romaji')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
 
+
+                                            <label class="form-label fw-semibold mt-3">
+                                                Nama Panggilan <span class="text-danger">*</span><br>
+                                                <small class="text-muted">Gunakan huruf Katakana<br>Contoh: ギタ</small>
+                                            </label>
+
                                             <input type="text" name="nama_panggilan_katakana"
-                                                class="form-control mt-2 @error('nama_panggilan_katakana') is-invalid @enderror"
-                                                placeholder="Nama Panggilan Katakana"
+                                                class="form-control @error('nama_panggilan_katakana') is-invalid @enderror"
+                                                placeholder="Masukkan nama panggilan (Katakana)"
                                                 value="{{ old('nama_panggilan_katakana') }}" required>
+
                                             @error('nama_panggilan_katakana')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
 
+                                            {{-- JENIS KELAMIN --}}
+                                            <label class="form-label fw-semibold mt-2">
+                                                Jenis Kelamin <span class="text-danger">*</span><br>
+                                                <small class="text-muted">Pilih sesuai identitas resmi</small>
+                                            </label>
                                             <select name="jenis_kelamin"
-                                                class="form-control mt-2 @error('jenis_kelamin') is-invalid @enderror"
+                                                class="form-control @error('jenis_kelamin') is-invalid @enderror"
                                                 required>
                                                 <option value="">-- Pilih Jenis Kelamin --</option>
                                                 <option value="男 (Laki-laki)"
-                                                    {{ old('jenis_kelamin') == '男 (Laki-laki)' ? 'selected' : '' }}>男
-                                                    (Laki-laki)</option>
+                                                    {{ old('jenis_kelamin') == '男 (Laki-laki)' ? 'selected' : '' }}>
+                                                    男 (Laki-laki)
+                                                </option>
                                                 <option value="女 (Perempuan)"
-                                                    {{ old('jenis_kelamin') == '女 (Perempuan)' ? 'selected' : '' }}>女
-                                                    (Perempuan)</option>
+                                                    {{ old('jenis_kelamin') == '女 (Perempuan)' ? 'selected' : '' }}>
+                                                    女 (Perempuan)
+                                                </option>
                                             </select>
                                             @error('jenis_kelamin')
                                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                                             @enderror
 
+
+                                            {{-- AGAMA --}}
+                                            <label class="form-label fw-semibold mt-3">
+                                                Agama <span class="text-danger">*</span><br>
+                                                <small class="text-muted">Isi sesuai KTP/KK</small>
+                                            </label>
                                             <input type="text" name="agama"
-                                                class="form-control mt-2 @error('agama') is-invalid @enderror"
+                                                class="form-control @error('agama') is-invalid @enderror"
                                                 placeholder="Agama" value="{{ old('agama') }}" required>
                                             @error('agama')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
 
-                                            <input type="text" name="agama_lainnya" class="form-control mt-2"
+
+                                            {{-- AGAMA LAINNYA --}}
+                                            <label class="form-label fw-semibold mt-2">
+                                                Agama Lainnya (Opsional)
+                                            </label>
+                                            <input type="text" name="agama_lainnya" class="form-control"
                                                 placeholder="Agama Lainnya (Opsional)"
                                                 value="{{ old('agama_lainnya') }}">
 
+
+                                            {{-- TEMPAT/TANGGAL LAHIR --}}
+                                            <label class="form-label fw-semibold mt-3">
+                                                Tempat / Tanggal Lahir <span class="text-danger">*</span><br>
+                                                <small class="text-muted">Contoh: Bandung, 12-10-2004</small>
+                                            </label>
                                             <input type="text" name="tempat_tanggal_lahir"
-                                                class="form-control mt-2 @error('tempat_tanggal_lahir') is-invalid @enderror"
+                                                class="form-control @error('tempat_tanggal_lahir') is-invalid @enderror"
                                                 placeholder="Tempat / Tanggal Lahir"
                                                 value="{{ old('tempat_tanggal_lahir') }}" required>
                                             @error('tempat_tanggal_lahir')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
 
+
+                                            {{-- USIA --}}
+                                            <label class="form-label fw-semibold mt-3">
+                                                Usia <span class="text-danger">*</span><br>
+                                                <small class="text-muted">Isi dalam angka, contoh: 23</small>
+                                            </label>
                                             <input type="text" name="usia"
-                                                class="form-control mt-2 @error('usia') is-invalid @enderror"
+                                                class="form-control @error('usia') is-invalid @enderror"
                                                 placeholder="Usia" value="{{ old('usia') }}" required>
                                             @error('usia')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
 
-                                            <textarea name="alamat_lengkap" class="form-control mt-2 @error('alamat_lengkap') is-invalid @enderror"
+
+                                            {{-- ALAMAT LENGKAP --}}
+                                            <label class="form-label fw-semibold mt-3">
+                                                Alamat Lengkap <span class="text-danger">*</span><br>
+                                                <small class="text-muted">Isi sesuai domisili saat ini</small>
+                                            </label>
+                                            <textarea name="alamat_lengkap" class="form-control @error('alamat_lengkap') is-invalid @enderror"
                                                 placeholder="Alamat Lengkap" required>{{ old('alamat_lengkap') }}</textarea>
                                             @error('alamat_lengkap')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
 
+
+                                            {{-- EMAIL AKTIF --}}
+                                            <label class="form-label fw-semibold mt-3">
+                                                Email Aktif <span class="text-danger">*</span><br>
+                                                <small class="text-muted">Gunakan email yang masih bisa dihubungi</small>
+                                            </label>
                                             <input type="email" name="email_aktif"
-                                                class="form-control mt-2 @error('email_aktif') is-invalid @enderror"
+                                                class="form-control @error('email_aktif') is-invalid @enderror"
                                                 placeholder="Email Aktif" value="{{ old('email_aktif') }}" required>
                                             @error('email_aktif')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
 
+
+                                            {{-- STATUS PERKAWINAN --}}
+                                            <label class="form-label fw-semibold mt-3">
+                                                Status Perkawinan <span class="text-danger">*</span><br>
+                                                <small class="text-muted">Pilih status terbaru</small>
+                                            </label>
                                             <select name="status_perkawinan"
-                                                class="form-control mt-2 @error('status_perkawinan') is-invalid @enderror"
+                                                class="form-control @error('status_perkawinan') is-invalid @enderror"
                                                 required>
                                                 <option value="">-- Status Perkawinan --</option>
                                                 <option value="Sudah Menikah"
                                                     {{ old('status_perkawinan') == 'Sudah Menikah' ? 'selected' : '' }}>
-                                                    Sudah Menikah</option>
+                                                    Sudah Menikah
+                                                </option>
                                                 <option value="Belum Menikah"
                                                     {{ old('status_perkawinan') == 'Belum Menikah' ? 'selected' : '' }}>
-                                                    Belum Menikah</option>
+                                                    Belum Menikah
+                                                </option>
                                             </select>
                                             @error('status_perkawinan')
                                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                                             @enderror
 
-                                            <input type="text" name="status_perkawinan_lainnya"
-                                                class="form-control mt-2"
-                                                placeholder="Status Perkawinan Lainnya (Opsional)"
-                                                value="{{ old('status_perkawinan_lainnya') }}">
 
+
+                                            {{-- GOLONGAN DARAH --}}
+                                            <label class="form-label fw-semibold mt-3">
+                                                Golongan Darah <span class="text-danger">*</span>
+                                            </label>
                                             <select name="golongan_darah"
-                                                class="form-control mt-2 @error('golongan_darah') is-invalid @enderror"
+                                                class="form-control @error('golongan_darah') is-invalid @enderror"
                                                 required>
                                                 <option value="">-- Golongan Darah --</option>
                                                 @foreach (['A', 'B', 'AB', 'O'] as $gol)
                                                     <option value="{{ $gol }}"
                                                         {{ old('golongan_darah') == $gol ? 'selected' : '' }}>
-                                                        {{ $gol }}</option>
+                                                        {{ $gol }}
+                                                    </option>
                                                 @endforeach
                                             </select>
                                             @error('golongan_darah')
                                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                                             @enderror
+
 
                                             <select name="surat_izin_mengemudi"
                                                 class="form-control mt-2 @error('surat_izin_mengemudi') is-invalid @enderror"
@@ -370,6 +523,9 @@
                                         </div>
 
                                         <div class="col-md-6">
+
+                                            <!-- Merokok -->
+                                            <label class="mt-2 fw-bold">Apakah Anda Merokok?</label>
                                             <select name="merokok"
                                                 class="form-control @error('merokok') is-invalid @enderror" required>
                                                 <option value="">-- Merokok --</option>
@@ -382,8 +538,10 @@
                                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                                             @enderror
 
+                                            <!-- Minum Alkohol -->
+                                            <label class="mt-3 fw-bold">Apakah Anda Minum Alkohol?</label>
                                             <select name="minum_alkohol"
-                                                class="form-control mt-2 @error('minum_alkohol') is-invalid @enderror"
+                                                class="form-control @error('minum_alkohol') is-invalid @enderror"
                                                 required>
                                                 <option value="">-- Minum Alkohol --</option>
                                                 <option value="Ya"
@@ -395,8 +553,10 @@
                                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                                             @enderror
 
+                                            <!-- Bertato -->
+                                            <label class="mt-3 fw-bold">Apakah Anda Bertato?</label>
                                             <select name="bertato"
-                                                class="form-control mt-2 @error('bertato') is-invalid @enderror" required>
+                                                class="form-control @error('bertato') is-invalid @enderror" required>
                                                 <option value="">-- Bertato --</option>
                                                 <option value="Ya" {{ old('bertato') == 'Ya' ? 'selected' : '' }}>Ya
                                                 </option>
@@ -407,38 +567,48 @@
                                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                                             @enderror
 
+                                            <!-- Tinggi Badan -->
+                                            <label class="mt-3 fw-bold">Tinggi Badan (cm)</label>
                                             <input type="text" name="tinggi_badan"
-                                                class="form-control mt-2 @error('tinggi_badan') is-invalid @enderror"
+                                                class="form-control @error('tinggi_badan') is-invalid @enderror"
                                                 placeholder="Tinggi Badan (cm)" value="{{ old('tinggi_badan') }}"
                                                 required>
                                             @error('tinggi_badan')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
 
+                                            <!-- Berat Badan -->
+                                            <label class="mt-3 fw-bold">Berat Badan (kg)</label>
                                             <input type="text" name="berat_badan"
-                                                class="form-control mt-2 @error('berat_badan') is-invalid @enderror"
+                                                class="form-control @error('berat_badan') is-invalid @enderror"
                                                 placeholder="Berat Badan (kg)" value="{{ old('berat_badan') }}" required>
                                             @error('berat_badan')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
 
+                                            <!-- Ukuran Pinggang -->
+                                            <label class="mt-3 fw-bold">Ukuran Pinggang (cm)</label>
                                             <input type="text" name="ukuran_pinggang"
-                                                class="form-control mt-2 @error('ukuran_pinggang') is-invalid @enderror"
+                                                class="form-control @error('ukuran_pinggang') is-invalid @enderror"
                                                 placeholder="Ukuran Pinggang (cm)" value="{{ old('ukuran_pinggang') }}"
                                                 required>
                                             @error('ukuran_pinggang')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
 
+                                            <!-- Ukuran Sepatu -->
+                                            <label class="mt-3 fw-bold">Ukuran Sepatu</label>
                                             <input type="text" name="ukuran_sepatu"
-                                                class="form-control mt-2 @error('ukuran_sepatu') is-invalid @enderror"
+                                                class="form-control @error('ukuran_sepatu') is-invalid @enderror"
                                                 placeholder="Ukuran Sepatu" value="{{ old('ukuran_sepatu') }}" required>
                                             @error('ukuran_sepatu')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
 
+                                            <!-- Ukuran Atasan Baju -->
+                                            <label class="mt-3 fw-bold">Ukuran Atasan Baju</label>
                                             <select name="ukuran_atasan_baju"
-                                                class="form-control mt-2 @error('ukuran_atasan_baju') is-invalid @enderror"
+                                                class="form-control @error('ukuran_atasan_baju') is-invalid @enderror"
                                                 required>
                                                 <option value="">-- Ukuran Atasan Baju --</option>
                                                 @foreach (['XS', 'S', 'M', 'L', 'XL', 'XXL'] as $size)
@@ -452,11 +622,13 @@
                                             @enderror
 
                                             <input type="text" name="ukuran_atasan_baju_lainnya"
-                                                class="form-control mt-2" placeholder="Ukuran Atasan Lainnya"
+                                                class="form-control mt-2" placeholder="Ukuran Atasan Lainnya (Opsional)"
                                                 value="{{ old('ukuran_atasan_baju_lainnya') }}">
 
+                                            <!-- Ukuran Celana -->
+                                            <label class="mt-3 fw-bold">Ukuran Celana</label>
                                             <select name="ukuran_celana"
-                                                class="form-control mt-2 @error('ukuran_celana') is-invalid @enderror"
+                                                class="form-control @error('ukuran_celana') is-invalid @enderror"
                                                 required>
                                                 <option value="">-- Ukuran Celana --</option>
                                                 @foreach (['XS', 'S', 'M', 'L', 'XL', 'XXL'] as $size)
@@ -469,8 +641,10 @@
                                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                                             @enderror
 
+                                            <!-- Tangan Dominan -->
+                                            <label class="mt-3 fw-bold">Tangan Dominan</label>
                                             <select name="tangan_dominan"
-                                                class="form-control mt-2 @error('tangan_dominan') is-invalid @enderror"
+                                                class="form-control @error('tangan_dominan') is-invalid @enderror"
                                                 required>
                                                 <option value="">-- Tangan Dominan --</option>
                                                 <option value="Kanan"
@@ -482,88 +656,98 @@
                                                 <div class="invalid-feedback d-block">{{ $message }}</div>
                                             @enderror
 
+                                            <!-- Penglihatan -->
+                                            <label class="mt-3 fw-bold">Kemampuan Penglihatan</label>
                                             <select name="kemampuan_penglihatan_mata"
-                                                class="form-control mt-2 @error('kemampuan_penglihatan_mata') is-invalid @enderror"
+                                                class="form-control @error('kemampuan_penglihatan_mata') is-invalid @enderror"
                                                 required>
                                                 <option value="">-- Kemampuan Penglihatan Mata --</option>
                                                 <option value="Minus"
                                                     {{ old('kemampuan_penglihatan_mata') == 'Minus' ? 'selected' : '' }}>
-                                                    Minus</option>
+                                                    Minus
+                                                </option>
                                                 <option value="Normal"
                                                     {{ old('kemampuan_penglihatan_mata') == 'Normal' ? 'selected' : '' }}>
-                                                    Normal</option>
+                                                    Normal
+                                                </option>
                                                 <option value="Silinders"
                                                     {{ old('kemampuan_penglihatan_mata') == 'Silinders' ? 'selected' : '' }}>
                                                     Silinders</option>
                                             </select>
-                                            @error('kemampuan_penglihatan_mata')
-                                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                                            @enderror
-
                                             <input type="text" name="kemampuan_penglihatan_mata_lainnya"
                                                 class="form-control mt-2" placeholder="Informasi Tambahan"
                                                 value="{{ old('kemampuan_penglihatan_mata_lainnya') }}">
 
+                                            <!-- Vaksin -->
+                                            <label class="mt-3 fw-bold">Sudah Vaksin Berapa Kali?</label>
                                             <select name="sudah_vaksin_berapa_kali"
-                                                class="form-control mt-2 @error('sudah_vaksin_berapa_kali') is-invalid @enderror"
+                                                class="form-control @error('sudah_vaksin_berapa_kali') is-invalid @enderror"
                                                 required>
-                                                <option value="">-- Sudah Vaksin Berapa Kali --</option>
+                                                <option value="">-- Sudah Vaksin --</option>
                                                 <option value="1x Vaksin"
                                                     {{ old('sudah_vaksin_berapa_kali') == '1x Vaksin' ? 'selected' : '' }}>
-                                                    1x Vaksin</option>
+                                                    1x
+                                                    Vaksin</option>
                                                 <option value="2x Vaksin"
                                                     {{ old('sudah_vaksin_berapa_kali') == '2x Vaksin' ? 'selected' : '' }}>
-                                                    2x Vaksin</option>
+                                                    2x
+                                                    Vaksin</option>
                                                 <option value="3x Vaksin"
                                                     {{ old('sudah_vaksin_berapa_kali') == '3x Vaksin' ? 'selected' : '' }}>
-                                                    3x Vaksin</option>
+                                                    3x
+                                                    Vaksin</option>
                                             </select>
-                                            @error('sudah_vaksin_berapa_kali')
-                                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                                            @enderror
 
                                             <input type="text" name="sudah_vaksin_berapa_kali_lainnya"
                                                 class="form-control mt-2" placeholder="Lainnya"
                                                 value="{{ old('sudah_vaksin_berapa_kali_lainnya') }}">
 
-                                            <textarea name="kesehatan_badan" class="form-control mt-2" placeholder="Kesehatan Badan">{{ old('kesehatan_badan') }}</textarea>
+                                            <!-- Kesehatan -->
+                                            <label class="mt-3 fw-bold">Kondisi Kesehatan Badan</label>
+                                            <textarea name="kesehatan_badan" class="form-control" placeholder="Kesehatan Badan">{{ old('kesehatan_badan') }}</textarea>
 
-                                            <textarea name="penyakit_cedera_masa_lalu" class="form-control mt-2" placeholder="Riwayat Penyakit/Cedera">{{ old('penyakit_cedera_masa_lalu') }}</textarea>
+                                            <label class="mt-3 fw-bold">Riwayat Penyakit / Cedera</label>
+                                            <textarea name="penyakit_cedera_masa_lalu" class="form-control" placeholder="Riwayat Penyakit & Cedera">{{ old('penyakit_cedera_masa_lalu') }}</textarea>
 
-                                            <textarea name="hobi" class="form-control mt-2" placeholder="Hobi">{{ old('hobi') }}</textarea>
+                                            <label class="mt-3 fw-bold">Hobi</label>
+                                            <textarea name="hobi" class="form-control" placeholder="Hobi">{{ old('hobi') }}</textarea>
 
+                                            <!-- Sumber Biaya -->
+                                            <label class="mt-3 fw-bold">Rencana Sumber Biaya Keberangkatan</label>
                                             <select name="rencana_sumber_biaya_keberangkatan"
-                                                class="form-control mt-2 @error('rencana_sumber_biaya_keberangkatan') is-invalid @enderror"
+                                                class="form-control @error('rencana_sumber_biaya_keberangkatan') is-invalid @enderror"
                                                 required>
                                                 <option value="">-- Sumber Biaya Keberangkatan --</option>
                                                 @foreach (['Dana talang LPK', 'Dana Pribadi', 'Dana Ortu', 'Dana pinjaman pihak lain'] as $sumber)
                                                     <option value="{{ $sumber }}"
                                                         {{ old('rencana_sumber_biaya_keberangkatan') == $sumber ? 'selected' : '' }}>
-                                                        {{ $sumber }}</option>
+                                                        {{ $sumber }}
+                                                    </option>
                                                 @endforeach
                                             </select>
-                                            @error('rencana_sumber_biaya_keberangkatan')
-                                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                                            @enderror
 
+                                            <!-- Perkiraan Biaya -->
+                                            <label class="mt-3 fw-bold">Perkiraan Biaya</label>
                                             <select name="perkiraan_biaya"
-                                                class="form-control mt-2 @error('perkiraan_biaya') is-invalid @enderror"
+                                                class="form-control @error('perkiraan_biaya') is-invalid @enderror"
                                                 required>
                                                 <option value="">-- Perkiraan Biaya --</option>
                                                 <option value="10.000.000 - 20.000.000"
                                                     {{ old('perkiraan_biaya') == '10.000.000 - 20.000.000' ? 'selected' : '' }}>
-                                                    10.000.000 - 20.000.000</option>
+                                                    10.000.000 - 20.000.000
+                                                </option>
                                                 <option value="20.000.000 - 30.000.000"
                                                     {{ old('perkiraan_biaya') == '20.000.000 - 30.000.000' ? 'selected' : '' }}>
-                                                    20.000.000 - 30.000.000</option>
+                                                    20.000.000 - 30.000.000
+                                                </option>
                                                 <option value="30.000.000 - 40.000.000"
                                                     {{ old('perkiraan_biaya') == '30.000.000 - 40.000.000' ? 'selected' : '' }}>
-                                                    30.000.000 - 40.000.000</option>
+                                                    30.000.000 - 40.000.000
+                                                </option>
                                             </select>
-                                            @error('perkiraan_biaya')
-                                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                                            @enderror
+
                                         </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -573,51 +757,157 @@
                                 <div class="card-header fw-bold">Kemampuan & Kebugaran</div>
                                 <div class="card-body">
                                     <div class="row g-3">
+
+                                        {{-- KOLOM KIRI --}}
                                         <div class="col-md-6">
-                                            <label class="form-label">Lama Belajar di Mendunia</label>
+
+                                            {{-- LAMA BELAJAR DI MENDUNIA --}}
+                                            <label class="form-label">Lama Belajar di Mendunia <span
+                                                    class="text-danger">*</span></label>
                                             <input type="text" name="lama_belajar_di_mendunia"
                                                 class="form-control @error('lama_belajar_di_mendunia') is-invalid @enderror"
-                                                placeholder="Contoh: 6 bulan"
+                                                placeholder="Contoh: 2024年／01月 ～ 2024年／04月"
                                                 value="{{ old('lama_belajar_di_mendunia') }}" required>
                                             @error('lama_belajar_di_mendunia')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
 
-                                            <label class="form-label mt-2">Kemampuan Bahasa Jepang</label>
-                                            <textarea name="kemampuan_bahasa_jepang" class="form-control @error('kemampuan_bahasa_jepang') is-invalid @enderror"
-                                                placeholder="Jelaskan kemampuan bahasa Jepang Anda" required>{{ old('kemampuan_bahasa_jepang') }}</textarea>
+                                            {{-- KEMAMPUAN BAHASA JEPANG --}}
+                                            <label class="form-label mt-2">Kemampuan Bahasa Jepang <span
+                                                    class="text-danger">*</span></label>
+                                            <select name="kemampuan_bahasa_jepang"
+                                                class="form-select @error('kemampuan_bahasa_jepang') is-invalid @enderror"
+                                                required>
+                                                <option value="">-- Pilih Tingkat Kemampuan --</option>
+                                                <option value="A"
+                                                    {{ old('kemampuan_bahasa_jepang') == 'A' ? 'selected' : '' }}>A:
+                                                    Sangat Baik
+                                                    (±90%)</option>
+                                                <option value="B"
+                                                    {{ old('kemampuan_bahasa_jepang') == 'B' ? 'selected' : '' }}>B: Baik
+                                                    (±75%)
+                                                </option>
+                                                <option value="C"
+                                                    {{ old('kemampuan_bahasa_jepang') == 'C' ? 'selected' : '' }}>C: Belum
+                                                    Cukup
+                                                    Baik (±50%)</option>
+                                                <option value="D"
+                                                    {{ old('kemampuan_bahasa_jepang') == 'D' ? 'selected' : '' }}>D: Tidak
+                                                    Mampu
+                                                    (±49%)</option>
+                                            </select>
                                             @error('kemampuan_bahasa_jepang')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
 
-                                            <label class="form-label mt-2">Kemampuan Pemahaman SSW</label>
-                                            <textarea name="kemampuan_pemahaman_ssw" class="form-control @error('kemampuan_pemahaman_ssw') is-invalid @enderror"
-                                                placeholder="Jelaskan pemahaman Anda tentang SSW" required>{{ old('kemampuan_pemahaman_ssw') }}</textarea>
+                                            {{-- KEMAMPUAN PEMAHAMAN SSW --}}
+                                            <label class="form-label mt-2">Kemampuan Pemahaman SSW <span
+                                                    class="text-danger">*</span></label>
+                                            <select name="kemampuan_pemahaman_ssw"
+                                                class="form-select @error('kemampuan_pemahaman_ssw') is-invalid @enderror"
+                                                required>
+                                                <option value="">-- Pilih Tingkat Pemahaman --</option>
+                                                <option value="A"
+                                                    {{ old('kemampuan_pemahaman_ssw') == 'A' ? 'selected' : '' }}>A:
+                                                    Sangat Baik
+                                                    (±90%)</option>
+                                                <option value="B"
+                                                    {{ old('kemampuan_pemahaman_ssw') == 'B' ? 'selected' : '' }}>B: Baik
+                                                    (±75%)
+                                                </option>
+                                                <option value="C"
+                                                    {{ old('kemampuan_pemahaman_ssw') == 'C' ? 'selected' : '' }}>C: Belum
+                                                    Cukup
+                                                    Baik (±50%)</option>
+                                                <option value="D"
+                                                    {{ old('kemampuan_pemahaman_ssw') == 'D' ? 'selected' : '' }}>D: Tidak
+                                                    Mampu
+                                                    (±49%)</option>
+                                            </select>
                                             @error('kemampuan_pemahaman_ssw')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
 
-                                            <label class="form-label mt-2">Kelincahan dalam Bekerja</label>
-                                            <textarea name="kelincahan_dalam_bekerja"
-                                                class="form-control @error('kelincahan_dalam_bekerja') is-invalid @enderror"
-                                                placeholder="Jelaskan kelincahan Anda" required>{{ old('kelincahan_dalam_bekerja') }}</textarea>
+                                            {{-- KELINCAHAN DALAM BEKERJA --}}
+                                            <label class="form-label mt-2">Kelincahan dalam Bekerja <span
+                                                    class="text-danger">*</span></label>
+                                            <select name="kelincahan_dalam_bekerja"
+                                                class="form-select @error('kelincahan_dalam_bekerja') is-invalid @enderror"
+                                                required>
+                                                <option value="">-- Pilih Tingkat Kelincahan --</option>
+                                                <option value="A"
+                                                    {{ old('kelincahan_dalam_bekerja') == 'A' ? 'selected' : '' }}>A:
+                                                    Sangat
+                                                    Baik (±90%)</option>
+                                                <option value="B"
+                                                    {{ old('kelincahan_dalam_bekerja') == 'B' ? 'selected' : '' }}>B: Baik
+                                                    (±75%)</option>
+                                                <option value="C"
+                                                    {{ old('kelincahan_dalam_bekerja') == 'C' ? 'selected' : '' }}>C:
+                                                    Belum
+                                                    Cukup Baik (±50%)</option>
+                                                <option value="D"
+                                                    {{ old('kelincahan_dalam_bekerja') == 'D' ? 'selected' : '' }}>D:
+                                                    Tidak
+                                                    Mampu (±49%)</option>
+                                            </select>
                                             @error('kelincahan_dalam_bekerja')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
+
                                         </div>
 
+                                        {{-- KOLOM KANAN --}}
                                         <div class="col-md-6">
-                                            <label class="form-label">Kekuatan Tindakan</label>
-                                            <textarea name="kekuatan_tindakan" class="form-control @error('kekuatan_tindakan') is-invalid @enderror"
-                                                placeholder="Jelaskan kekuatan tindakan Anda" required>{{ old('kekuatan_tindakan') }}</textarea>
+
+                                            {{-- KEKUATAN TINDAKAN --}}
+                                            <label class="form-label">Kekuatan Tindakan <span
+                                                    class="text-danger">*</span></label>
+                                            <select name="kekuatan_tindakan"
+                                                class="form-select @error('kekuatan_tindakan') is-invalid @enderror"
+                                                required>
+                                                <option value="">-- Pilih Tingkat Kekuatan Tindakan --</option>
+                                                <option value="A"
+                                                    {{ old('kekuatan_tindakan') == 'A' ? 'selected' : '' }}>
+                                                    A: Sangat Baik (±90%)</option>
+                                                <option value="B"
+                                                    {{ old('kekuatan_tindakan') == 'B' ? 'selected' : '' }}>
+                                                    B: Baik (±75%)</option>
+                                                <option value="C"
+                                                    {{ old('kekuatan_tindakan') == 'C' ? 'selected' : '' }}>
+                                                    C: Belum Cukup Baik (±50%)</option>
+                                                <option value="D"
+                                                    {{ old('kekuatan_tindakan') == 'D' ? 'selected' : '' }}>
+                                                    D: Tidak Mampu (±49%)</option>
+                                            </select>
                                             @error('kekuatan_tindakan')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
 
-                                            <label class="form-label mt-2">Kemampuan Berbahasa Inggris</label>
-                                            <textarea name="kemampuan_berbahasa_inggris"
-                                                class="form-control @error('kemampuan_berbahasa_inggris') is-invalid @enderror"
-                                                placeholder="Jelaskan kemampuan bahasa Inggris Anda" required>{{ old('kemampuan_berbahasa_inggris') }}</textarea>
+                                            {{-- KEMAMPUAN BAHASA INGGRIS --}}
+                                            <label class="form-label mt-2">Kemampuan Berbahasa Inggris <span
+                                                    class="text-danger">*</span></label>
+                                            <select name="kemampuan_berbahasa_inggris"
+                                                class="form-select @error('kemampuan_berbahasa_inggris') is-invalid @enderror"
+                                                required>
+                                                <option value="">-- Pilih Tingkat Kemampuan --</option>
+                                                <option value="A"
+                                                    {{ old('kemampuan_berbahasa_inggris') == 'A' ? 'selected' : '' }}>A:
+                                                    Sangat
+                                                    Baik (±90%)</option>
+                                                <option value="B"
+                                                    {{ old('kemampuan_berbahasa_inggris') == 'B' ? 'selected' : '' }}>B:
+                                                    Baik
+                                                    (±75%)</option>
+                                                <option value="C"
+                                                    {{ old('kemampuan_berbahasa_inggris') == 'C' ? 'selected' : '' }}>C:
+                                                    Belum
+                                                    Cukup Baik (±50%)</option>
+                                                <option value="D"
+                                                    {{ old('kemampuan_berbahasa_inggris') == 'D' ? 'selected' : '' }}>D:
+                                                    Tidak
+                                                    Mampu (±49%)</option>
+                                            </select>
                                             @error('kemampuan_berbahasa_inggris')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -626,110 +916,188 @@
                                                 class="form-control mt-2" placeholder="Informasi Tambahan"
                                                 value="{{ old('kemampuan_berbahasa_inggris_lainnya') }}">
 
-                                            <label class="form-label mt-2">Kebugaran Jasmani (aktivitas per minggu)</label>
+                                            {{-- KEBUGARAN JASMANI --}}
+                                            <label class="form-label mt-2">Kebugaran Jasmani (aktivitas per minggu) <span
+                                                    class="text-danger">*</span></label>
                                             <select name="kebugaran_jasmani_seminggu"
                                                 class="form-select @error('kebugaran_jasmani_seminggu') is-invalid @enderror"
                                                 required>
                                                 <option value="">-- Pilih Frekuensi Olahraga --</option>
                                                 <option value="3 kali/1 minggu"
                                                     {{ old('kebugaran_jasmani_seminggu') == '3 kali/1 minggu' ? 'selected' : '' }}>
-                                                    3 kali / 1 minggu
-                                                </option>
-                                                <option value="4 Kali/1 minggu"
-                                                    {{ old('kebugaran_jasmani_seminggu') == '4 Kali/1 minggu' ? 'selected' : '' }}>
-                                                    4 kali / 1 minggu
-                                                </option>
-                                                <option value="5 Kali/1 minggu"
-                                                    {{ old('kebugaran_jasmani_seminggu') == '5 Kali/1 minggu' ? 'selected' : '' }}>
-                                                    5 kali / 1 minggu
-                                                </option>
-                                                <option value="10 Kali/1 minggu"
-                                                    {{ old('kebugaran_jasmani_seminggu') == '10 Kali/1 minggu' ? 'selected' : '' }}>
-                                                    10 kali / 1 minggu
-                                                </option>
+                                                    3 kali / 1 minggu</option>
+                                                <option value="4 kali/1 minggu"
+                                                    {{ old('kebugaran_jasmani_seminggu') == '4 kali/1 minggu' ? 'selected' : '' }}>
+                                                    4 kali / 1 minggu</option>
+                                                <option value="5 kali/1 minggu"
+                                                    {{ old('kebugaran_jasmani_seminggu') == '5 kali/1 minggu' ? 'selected' : '' }}>
+                                                    5 kali / 1 minggu</option>
+                                                <option value="10 kali/1 minggu"
+                                                    {{ old('kebugaran_jasmani_seminggu') == '10 kali/1 minggu' ? 'selected' : '' }}>
+                                                    10 kali / 1 minggu</option>
                                             </select>
+
+                                            <input type="text" name="kebugaran_jasmani_seminggu_lainnya"
+                                                class="form-control mt-2" placeholder="Informasi Tambahan"
+                                                value="{{ old('kebugaran_jasmani_seminggu_lainnya') }}">
 
                                             @error('kebugaran_jasmani_seminggu')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
 
-                                            <input type="text" name="kebugaran_jasmani_seminggu_lainnya"
-                                                class="form-control mt-2" placeholder="Informasi Tambahan"
-                                                value="{{ old('kebugaran_jasmani_seminggu_lainnya') }}">
                                         </div>
+
                                     </div>
                                 </div>
                             </div>
+
 
                             {{-- HALAMAN 4: PENDIDIKAN --}}
                             <div class="card mb-4">
                                 <div class="card-header fw-bold">Riwayat Pendidikan</div>
                                 <div class="card-body">
+
                                     <div id="pendidikanContainer">
-                                        <div class="row g-3 mb-2 pendidikan-item">
+
+                                        <div class="row g-3 mb-3 pendidikan-item">
+
+                                            <!-- Nama Sekolah -->
                                             <div class="col-md-4">
+                                                <label class="form-label fw-bold">Nama Sekolah *</label>
+                                                <p class="text-muted small mb-4">
+                                                    Cantumkan pendidikan terakhir Anda.
+                                                </p>
                                                 <input type="text" name="pendidikan_nama[]" class="form-control"
-                                                    placeholder="Nama Sekolah/Universitas">
+                                                    placeholder="Contoh: SMK Negeri 1 Bandung / Universitas Indonesia"
+                                                    required>
                                             </div>
+
+                                            <!-- Lama Pendidikan -->
                                             <div class="col-md-4">
-                                                <input type="text" name="pendidikan_jurusan[]" class="form-control"
-                                                    placeholder="Jurusan">
-                                            </div>
-                                            <div class="col-md-3">
+                                                <label class="form-label fw-bold">Lama Pendidikan Sekolah Terakhir
+                                                    *</label>
+                                                <p class="text-muted small mb-1">
+                                                    Cantumkan Bulan dan Tahun<br>
+                                                    <b>Contoh: 2020年／01月 ～ 2024年／04月</b>
+                                                </p>
                                                 <input type="text" name="pendidikan_tahun[]" class="form-control"
-                                                    placeholder="Tahun (2015-2018)">
+                                                    placeholder="Contoh: 2020年／01月 ～ 2024年／04月" required>
                                             </div>
-                                            <div class="col-md-1 d-flex">
+
+                                            <!-- Jurusan -->
+                                            <div class="col-md-3">
+                                                <label class="form-label fw-bold">Jurusan Sekolah *</label>
+                                                <p class="text-muted small mb-1">
+                                                    Isi menggunakan bahasa Jepang<br>
+                                                    <b>Contoh: 技術</b>
+                                                </p>
+                                                <input type="text" name="pendidikan_jurusan[]" class="form-control"
+                                                    placeholder="Contoh: 技術" required>
+                                            </div>
+
+                                            <!-- Remove button -->
+                                            <div class="col-md-1 d-flex align-items-end">
                                                 <button type="button" class="btn btn-danger btn-sm remove-row">X</button>
                                             </div>
+
                                         </div>
+
                                     </div>
-                                    <button type="button" class="btn btn-secondary mt-2" id="addPendidikan">+ Tambah
-                                        Pendidikan</button>
+
+                                    <button type="button" class="btn btn-secondary mt-2" id="addPendidikan">
+                                        + Tambah Pendidikan
+                                    </button>
+
                                 </div>
                             </div>
+
 
                             {{-- HALAMAN 4: PENGALAMAN KERJA --}}
                             <div class="card mb-4">
                                 <div class="card-header fw-bold">Pengalaman Kerja</div>
                                 <div class="card-body">
+
                                     <div id="pengalamanContainer">
+
                                         <div class="row g-3 mb-3 pengalaman-item">
+
+                                            <!-- Nama Perusahaan -->
                                             <div class="col-md-4">
-                                                <label class="form-label">Nama Perusahaan</label>
+                                                <label class="form-label fw-bold">Nama Perusahaan *</label>
+                                                <p class="text-muted small mb-1">
+                                                    Cantumkan nama perusahaan tempat Anda bekerja sebelumnya.
+                                                    <br><b>Contoh: PT. Maju Jaya Abadi</b>
+                                                </p>
                                                 <input type="text" name="pengalaman_perusahaan[]" class="form-control"
-                                                    placeholder="Nama Perusahaan">
+                                                    placeholder="Contoh: PT. Maju Jaya Abadi" required>
                                             </div>
+
+                                            <!-- Jabatan -->
                                             <div class="col-md-4">
-                                                <label class="form-label">Jabatan</label>
+                                                <label class="form-label fw-bold">Jabatan *</label>
+                                                <p class="text-muted small mb-1">
+                                                    Isi jabatan terakhir Anda di perusahaan tersebut.
+                                                    <br><b>Contoh: Operator Produksi / Staff Administrasi</b>
+                                                </p>
                                                 <input type="text" name="pengalaman_jabatan[]" class="form-control"
-                                                    placeholder="Jabatan">
+                                                    placeholder="Contoh: Operator Produksi" required>
                                             </div>
+
+                                            <!-- Periode / Lama Bekerja -->
                                             <div class="col-md-3">
-                                                <label class="form-label">Periode/Lama Bekerja</label>
+                                                <label class="form-label fw-bold">Periode / Lama Bekerja *</label>
+                                                <p class="text-muted small mb-1">
+                                                    Cantumkan periode bekerja dengan format Jepang.
+                                                    <br><b>Contoh: 2021年／02月 ～ 2023年／08月</b>
+                                                </p>
                                                 <input type="text" name="pengalaman_periode[]" class="form-control"
-                                                    placeholder="2019-2021 (2 tahun)">
+                                                    placeholder="Contoh: 2021年／02月 ～ 2023年／08月" required>
                                             </div>
+
+                                            <!-- Remove Button -->
                                             <div class="col-md-1 d-flex align-items-end">
                                                 <button type="button" class="btn btn-danger btn-sm remove-row">X</button>
                                             </div>
+
                                         </div>
+
                                     </div>
-                                    <button type="button" class="btn btn-secondary mt-2" id="addPengalaman">+ Tambah
-                                        Pengalaman</button>
+
+                                    <button type="button" class="btn btn-secondary mt-2" id="addPengalaman">
+                                        + Tambah Pengalaman
+                                    </button>
+
                                 </div>
                             </div>
+
                             {{-- HALAMAN 5: INFORMASI TAMBAHAN --}}
                             <div class="card mb-4">
                                 <div class="card-header fw-bold">Informasi Tambahan</div>
+
                                 <div class="card-body">
+
+
+                                    <!-- INFORMASI PENTING -->
+                                    <div class="bg-info text-dark rounded-3 py-4 px-4">
+                                        <strong class="d-block mb-1">Perhatian:</strong>
+                                        <ul class="mb-0 ps-3">
+                                            <li>Semua bagian yang berisi teks wajib ditulis dalam <strong>bahasa
+                                                    Jepang</strong>.</li>
+                                            <li>Gunakan kalimat singkat, sopan, dan mudah dipahami.</li>
+                                            <li>Jika tidak memiliki keterangan, isi dengan 「なし」.</li>
+                                        </ul>
+                                    </div>
+
+
                                     <div class="row g-3">
 
-                                        {{-- KOLOM KIRI --}}
+                                        {{-- ====================== KOLOM KIRI ====================== --}}
                                         <div class="col-md-6">
 
                                             {{-- Ada keluarga di Jepang --}}
-                                            <label class="form-label">Ada Keluarga di Jepang?</label>
+                                            <label class="form-label">
+                                                Ada Keluarga di Jepang? <span class="text-danger">*</span>
+                                            </label>
                                             <select name="ada_keluarga_di_jepang"
                                                 class="form-control @error('ada_keluarga_di_jepang') is-invalid @enderror"
                                                 required>
@@ -741,13 +1109,12 @@
                                                     {{ old('ada_keluarga_di_jepang') == 'Tidak' ? 'selected' : '' }}>Tidak
                                                 </option>
                                             </select>
-                                            @error('ada_keluarga_di_jepang')
-                                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                                            @enderror
 
-                                            {{-- Hubungan keluarga di Jepang --}}
-                                            <label class="form-label mt-2">Hubungan Keluarga di Jepang</label>
-                                            <select name="hubungan_keluarga_di_jepang" class="form-control">
+                                            {{-- Hubungan keluarga --}}
+                                            <label class="form-label mt-2">
+                                                Hubungan dengan Keluarga di Jepang <span class="text-danger">*</span>
+                                            </label>
+                                            <select name="hubungan_keluarga_di_jepang" class="form-control" required>
                                                 <option value="">-- Pilih --</option>
                                                 @foreach (['Ayah', 'Ibu', 'Paman', 'Kakak', 'Adik', 'Bibi', 'Kakek', 'Nenek', 'Tidak ada'] as $opt)
                                                     <option value="{{ $opt }}"
@@ -757,9 +1124,10 @@
                                                 @endforeach
                                             </select>
 
-                                            {{-- Status Kerabat di Jepang --}}
-                                            <label class="form-label mt-2">Status Kerabat di Jepang</label>
-                                            <select name="status_kerabat_di_jepang" class="form-control">
+                                            {{-- Status kerabat --}}
+                                            <label class="form-label mt-2">Status Kerabat di Jepang <span
+                                                    class="text-danger">*</span></label>
+                                            <select name="status_kerabat_di_jepang" class="form-control" required>
                                                 <option value="">-- Pilih --</option>
                                                 @foreach (['TG 1', 'Jishusei 1', 'Jishusei 2', 'Jishusei 3', 'EIJU', 'Tokutei katsudou', 'Tidak ada'] as $opt)
                                                     <option value="{{ $opt }}"
@@ -769,13 +1137,16 @@
                                                 @endforeach
                                             </select>
 
-                                            {{-- Tambahan status kerabat --}}
+                                            {{-- Tambahan informasi --}}
                                             <input type="text" name="status_kerabat_di_jepang_lainnya"
-                                                class="form-control mt-2" placeholder="Informasi Tambahan"
+                                                class="form-control mt-2"
+                                                placeholder="Jika ada tambahan (contoh: 東京に住んでいます)"
                                                 value="{{ old('status_kerabat_di_jepang_lainnya') }}">
 
-                                            {{-- Ingin bekerja berapa tahun --}}
-                                            <label class="form-label mt-2">Ingin Bekerja Berapa Tahun?</label>
+                                            {{-- Lama bekerja --}}
+                                            <label class="form-label mt-2">
+                                                Ingin Bekerja Berapa Tahun? <span class="text-danger">*</span>
+                                            </label>
                                             <select name="ingin_bekerja_berapa_tahun"
                                                 class="form-control @error('ingin_bekerja_berapa_tahun') is-invalid @enderror"
                                                 required>
@@ -787,16 +1158,16 @@
                                                     </option>
                                                 @endforeach
                                             </select>
-                                            @error('ingin_bekerja_berapa_tahun')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
 
                                             <input type="text" name="ingin_bekerja_berapa_tahun_lainnya"
-                                                class="form-control mt-2" placeholder="Informasi Tambahan"
+                                                class="form-control mt-2"
+                                                placeholder="Jika ada tambahan (contoh: できるだけ長く働きたいです)"
                                                 value="{{ old('ingin_bekerja_berapa_tahun_lainnya') }}">
 
-                                            {{-- Ingin pulang berapa kali --}}
-                                            <label class="form-label mt-2">Ingin Pulang Berapa Kali?</label>
+                                            {{-- Pulang ke Indonesia --}}
+                                            <label class="form-label mt-2">
+                                                Ingin Pulang Berapa Kali? <span class="text-danger">*</span>
+                                            </label>
                                             <select name="ingin_pulang_berapa_kali"
                                                 class="form-control @error('ingin_pulang_berapa_kali') is-invalid @enderror"
                                                 required>
@@ -808,37 +1179,48 @@
                                                     </option>
                                                 @endforeach
                                             </select>
-                                            @error('ingin_pulang_berapa_kali')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
+
                                         </div>
 
-                                        {{-- KOLOM KANAN --}}
+                                        {{-- ====================== KOLOM KANAN ====================== --}}
                                         <div class="col-md-6">
 
-                                            <label class="form-label">Kelebihan Diri</label>
-                                            <textarea name="kelebihan_diri" class="form-control">{{ old('kelebihan_diri') }}</textarea>
+                                            {{-- Kelebihan diri --}}
+                                            <label class="form-label">Kelebihan Diri <span
+                                                    class="text-danger">*</span></label>
+                                            <textarea name="kelebihan_diri" class="form-control" placeholder="Contoh: 私の長所は責任感が強く、時間を守れることです。">{{ old('kelebihan_diri') }}</textarea>
 
-                                            <label class="form-label mt-2">Komentar Guru tentang Kelebihan Diri</label>
-                                            <textarea name="komentar_guru_kelebihan_diri" class="form-control">{{ old('komentar_guru_kelebihan_diri') }}</textarea>
+                                            {{-- Komentar guru ttg kelebihan --}}
+                                            <label class="form-label mt-2">Komentar Guru tentang Kelebihan Anda</label>
+                                            <textarea name="komentar_guru_kelebihan_diri" class="form-control" placeholder="Contoh: 真面目で、毎日一生懸命頑張っています。">{{ old('komentar_guru_kelebihan_diri') }}</textarea>
 
-                                            <label class="form-label mt-2">Kekurangan Diri</label>
-                                            <textarea name="kekurangan_diri" class="form-control">{{ old('kekurangan_diri') }}</textarea>
+                                            {{-- Kekurangan --}}
+                                            <label class="form-label mt-2">Kekurangan Diri <span
+                                                    class="text-danger">*</span></label>
+                                            <textarea name="kekurangan_diri" class="form-control" placeholder="Contoh: 忘れやすいですが、大事な事をメモして改善しています。">{{ old('kekurangan_diri') }}</textarea>
 
-                                            <label class="form-label mt-2">Komentar Guru tentang Kekurangan Diri</label>
-                                            <textarea name="komentar_guru_kekurangan_diri" class="form-control">{{ old('komentar_guru_kekurangan_diri') }}</textarea>
+                                            {{-- Komentar guru ttg kekurangan --}}
+                                            <label class="form-label mt-2">Komentar Guru tentang Kekurangan Anda</label>
+                                            <textarea name="komentar_guru_kekurangan_diri" class="form-control" placeholder="Contoh: もっと集中力を高める必要があります。">{{ old('komentar_guru_kekurangan_diri') }}</textarea>
 
-                                            <label class="form-label mt-2">Ketertarikan terhadap Jepang</label>
-                                            <textarea name="ketertarikan_terhadap_jepang" class="form-control">{{ old('ketertarikan_terhadap_jepang') }}</textarea>
+                                            {{-- Ketertarikan terhadap Jepang --}}
+                                            <label class="form-label mt-2">Ketertarikan terhadap Jepang <span
+                                                    class="text-danger">*</span></label>
+                                            <textarea name="ketertarikan_terhadap_jepang" class="form-control" placeholder="Contoh: 日本の文化が好きで、技術を学びたいと思いました。">{{ old('ketertarikan_terhadap_jepang') }}</textarea>
 
-                                            <label class="form-label mt-2">Orang yang Dihormati</label>
-                                            <textarea name="orang_yang_dihormati" class="form-control">{{ old('orang_yang_dihormati') }}</textarea>
+                                            {{-- Orang yang dihormati --}}
+                                            <label class="form-label mt-2">Orang yang Dihormati dan Alasannya</label>
+                                            <textarea name="orang_yang_dihormati" class="form-control" placeholder="Contoh: 両親です。いつも支えてくれました。">{{ old('orang_yang_dihormati') }}</textarea>
 
+                                            {{-- Point plus --}}
                                             <label class="form-label mt-2">Point Plus Diri</label>
-                                            <textarea name="point_plus_diri" class="form-control">{{ old('point_plus_diri') }}</textarea>
+                                            <textarea name="point_plus_diri" class="form-control" placeholder="Contoh: 仕事が早くて正確にできます。">{{ old('point_plus_diri') }}</textarea>
 
-                                            <label class="form-label mt-2">Keahlian Khusus</label>
-                                            <textarea name="keahlian_khusus" class="form-control">{{ old('keahlian_khusus') }}</textarea>
+                                            {{-- Keahlian khusus --}}
+                                            <label class="form-label mt-2">Keahlian Khusus yang Menunjang Pekerjaan <span
+                                                    class="text-danger">*</span></label>
+                                            <textarea name="keahlian_khusus" class="form-control" placeholder="Contoh: 機械操作が得意で、小さな部品の検査も正確にできます。">{{ old('keahlian_khusus') }}</textarea>
+
                                         </div>
 
                                     </div>
@@ -848,71 +1230,99 @@
 
                             {{-- HALAMAN 6: DATA KELUARGA --}}
                             <div class="card mb-4">
-                                <div class="card-header fw-bold">Data Keluarga</div>
+                                <div class="card-header fw-bold">DATA ANGGOTA KELUARGA</div>
                                 <div class="card-body">
+
+                                    <!-- INFORMASI PENTING -->
+                                    <div class="bg-info text-dark rounded-3 py-3 px-4 mb-3">
+                                        <strong class="d-block mb-1">Perhatian:</strong>
+                                        <ul class="mb-0 ps-3">
+                                            <li>Semua bagian harus diisi menggunakan <strong>bahasa Jepang</strong>.</li>
+                                            <li>Tuliskan format: 「Nama - Umur - Pekerjaan」.</li>
+                                            <li>Jika tidak ada, isi dengan 「なし」.</li>
+                                            <li>Contoh: 母 - ギタ - 30 歳 - 主婦</li>
+                                        </ul>
+                                    </div>
+
                                     <div class="row g-3">
+
+                                        {{-- ==================== KOLOM KIRI ==================== --}}
                                         <div class="col-md-6">
-                                            <label class="form-label">Ayah (Nama, Usia, Pekerjaan)</label>
-                                            <input type="text" name="anggota_keluarga_ayah"
-                                                class="form-control @error('anggota_keluarga_ayah') is-invalid @enderror"
-                                                placeholder="Contoh: Ahmad, 50 tahun, Petani"
-                                                value="{{ old('anggota_keluarga_ayah') }}" required>
-                                            @error('anggota_keluarga_ayah')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
 
-                                            <label class="form-label mt-2">Ibu (Nama, Usia, Pekerjaan)</label>
-                                            <input type="text" name="anggota_keluarga_ibu"
-                                                class="form-control @error('anggota_keluarga_ibu') is-invalid @enderror"
-                                                placeholder="Contoh: Siti, 48 tahun, Ibu Rumah Tangga"
-                                                value="{{ old('anggota_keluarga_ibu') }}" required>
-                                            @error('anggota_keluarga_ibu')
-                                                <div class="invalid-feedback">{{ $message }}</div>
-                                            @enderror
-
-                                            <label class="form-label mt-2">Istri (Opsional)</label>
+                                            {{-- ISTRI --}}
+                                            <label class="form-label">Cantumkan anggota keluarga (Nama Istri - Umur -
+                                                Pekerjaan) <span class="text-danger">*</span></label>
                                             <input type="text" name="anggota_keluarga_istri" class="form-control"
-                                                placeholder="Nama, Usia, Pekerjaan"
-                                                value="{{ old('anggota_keluarga_istri') }}">
+                                                placeholder="Contoh: 妻 - アニ - 28 歳 - 会社員"
+                                                value="{{ old('anggota_keluarga_istri') }}" required>
 
-                                            <label class="form-label mt-2">Suami (Opsional)</label>
+                                            {{-- SUAMI --}}
+                                            <label class="form-label mt-2">Cantumkan anggota keluarga (Nama Suami - Umur -
+                                                Pekerjaan) <span class="text-danger">*</span></label>
                                             <input type="text" name="anggota_keluarga_suami" class="form-control"
-                                                placeholder="Nama, Usia, Pekerjaan"
-                                                value="{{ old('anggota_keluarga_suami') }}">
+                                                placeholder="Contoh: 夫 - リアン - 30 歳 - エンジニア"
+                                                value="{{ old('anggota_keluarga_suami') }}" required>
+
+                                            {{-- ANAK --}}
+                                            <label class="form-label mt-2">Cantumkan anggota keluarga (Nama Anak - Umur -
+                                                Pekerjaan) <span class="text-danger">*</span></label>
+                                            <input type="text" name="anggota_keluarga_anak" class="form-control"
+                                                placeholder="Contoh: 子供 - サラ - 5 歳 - なし"
+                                                value="{{ old('anggota_keluarga_anak') }}" required>
+
+                                            {{-- IBU --}}
+                                            <label class="form-label mt-2">Cantumkan anggota keluarga (Nama Ibu - Umur -
+                                                Pekerjaan) <span class="text-danger">*</span></label>
+                                            <input type="text" name="anggota_keluarga_ibu" class="form-control"
+                                                placeholder="Contoh: 母 - ギタ - 30 歳 - 主婦"
+                                                value="{{ old('anggota_keluarga_ibu') }}" required>
+
                                         </div>
 
+                                        {{-- ==================== KOLOM KANAN ==================== --}}
                                         <div class="col-md-6">
-                                            <label class="form-label">Anak (Opsional)</label>
-                                            <input type="text" name="anggota_keluarga_anak" class="form-control"
-                                                placeholder="Nama, Usia (jika ada)"
-                                                value="{{ old('anggota_keluarga_anak') }}">
 
-                                            <label class="form-label mt-2">Kakak (Opsional)</label>
+                                            {{-- AYAH --}}
+                                            <label class="form-label">Cantumkan anggota keluarga (Nama Ayah - Umur -
+                                                Pekerjaan) <span class="text-danger">*</span></label>
+                                            <input type="text" name="anggota_keluarga_ayah" class="form-control"
+                                                placeholder="Contoh: 父 - アブディ - 55 歳 - 農家"
+                                                value="{{ old('anggota_keluarga_ayah') }}" required>
+
+                                            {{-- KAKAK --}}
+                                            <label class="form-label mt-2">Cantumkan anggota keluarga (Nama Kakak - Umur -
+                                                Pekerjaan) <span class="text-danger">*</span></label>
                                             <input type="text" name="anggota_keluarga_kakak" class="form-control"
-                                                placeholder="Nama, Usia, Pekerjaan (pisahkan dengan koma)"
-                                                value="{{ old('anggota_keluarga_kakak') }}">
+                                                placeholder="Contoh: 姉 - リナ - 25 歳 - 看護師"
+                                                value="{{ old('anggota_keluarga_kakak') }}" required>
 
-                                            <label class="form-label mt-2">Adik (Opsional)</label>
+                                            {{-- ADIK --}}
+                                            <label class="form-label mt-2">Cantumkan anggota keluarga (Nama Adik - Umur -
+                                                Pekerjaan) <span class="text-danger">*</span></label>
                                             <input type="text" name="anggota_keluarga_adik" class="form-control"
-                                                placeholder="Nama, Usia, Pekerjaan (pisahkan dengan koma)"
-                                                value="{{ old('anggota_keluarga_adik') }}">
+                                                placeholder="Contoh: 弟 - ユスフ - 18 歳 - 学生"
+                                                value="{{ old('anggota_keluarga_adik') }}" required>
 
-                                            <label class="form-label mt-2">Rata-rata Penghasilan Keluarga</label>
+                                            {{-- PENGHASILAN KELUARGA --}}
+                                            <label class="form-label mt-2">Rata-rata Penghasilan Keluarga per Bulan (円)
+                                                <span class="text-danger">*</span></label>
                                             <input type="text" name="rata_rata_penghasilan_keluarga"
                                                 class="form-control @error('rata_rata_penghasilan_keluarga') is-invalid @enderror"
-                                                placeholder="Contoh: Rp 5.000.000/bulan"
+                                                placeholder="Contoh: 80000 円"
                                                 value="{{ old('rata_rata_penghasilan_keluarga') }}" required>
                                             @error('rata_rata_penghasilan_keluarga')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
+
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <button type="submit" class="btn btn-primary btn-lg mb-5" id="btnSubmit">
-                                <i class="fas fa-save me-2"></i>Simpan CV
+                            <button type="submit" class="btn btn-info btn-lg mb-5" id="btnSubmit">
+                                <i class="fas fa-save me-2"></i>Kirim
                             </button>
+
                         </form>
 
                     </div>
@@ -925,6 +1335,168 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
+        document.getElementById('pasFotoInputCv').addEventListener('change', function(event) {
+            const file = event.target.files[0]; // ambil hanya file pertama
+            const preview = document.getElementById('previewPasFotoCv');
+
+            preview.innerHTML = ""; // reset preview
+
+            if (!file) return; // jika tidak ada file, keluar
+
+            const fileType = file.type;
+            const container = document.createElement('div');
+            container.style.width = "120px";
+            container.style.textAlign = "center";
+
+            // Jika file adalah gambar
+            if (fileType.includes("image")) {
+                const img = document.createElement('img');
+                img.src = URL.createObjectURL(file);
+                img.className = "img-thumbnail";
+                img.style.width = "100%";
+                img.style.height = "140px";
+                img.style.objectFit = "cover";
+
+                container.appendChild(img);
+            } else {
+                // Untuk PDF / DOC / DOCX → tampilkan ikon
+                const icon = document.createElement('div');
+                icon.innerHTML = `
+            <div style="
+                width:100%; 
+                height:140px; 
+                display:flex;
+                justify-content:center; 
+                align-items:center;
+                background:#f1f1f1;
+                border-radius:6px;
+                font-size:40px;">
+                📄
+            </div>
+        `;
+                container.appendChild(icon);
+            }
+
+            const label = document.createElement('p');
+            label.className = "small mt-1";
+            label.textContent = file.name.length > 12 ? file.name.substring(0, 12) + "..." : file.name;
+
+            container.appendChild(label);
+            preview.appendChild(container);
+        });
+
+        document.getElementById('pasFotoInput').addEventListener('change', function(event) {
+            const files = event.target.files;
+            const preview = document.getElementById('previewPasFoto');
+
+            preview.innerHTML = ""; // reset
+
+            if (files.length > 5) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Upload Terlalu Banyak',
+                    text: 'Maksimal upload 5 file!',
+                    confirmButtonColor: '#d33'
+                });
+
+                event.target.value = "";
+                return;
+            }
+
+            Array.from(files).forEach(file => {
+                const fileType = file.type;
+                const container = document.createElement('div');
+                container.style.width = "120px";
+                container.style.textAlign = "center";
+
+                // Jika file adalah gambar
+                if (fileType.includes("image")) {
+                    const img = document.createElement('img');
+                    img.src = URL.createObjectURL(file);
+                    img.className = "img-thumbnail";
+                    img.style.width = "100%";
+                    img.style.height = "140px";
+                    img.style.objectFit = "cover";
+
+                    container.appendChild(img);
+                } else {
+                    // Untuk PDF / DOC / DOCX → tampilkan ikon
+                    const icon = document.createElement('div');
+                    icon.innerHTML = `
+                <div style="
+                    width:100%; 
+                    height:140px; 
+                    display:flex;
+                    justify-content:center; 
+                    align-items:center;
+                    background:#f1f1f1;
+                    border-radius:6px;
+                    font-size:40px;">
+                    📄
+                </div>
+            `;
+                    container.appendChild(icon);
+                }
+
+                const label = document.createElement('p');
+                label.className = "small mt-1";
+                label.textContent = file.name.length > 12 ? file.name.substring(0, 12) + "..." : file.name;
+
+                container.appendChild(label);
+                preview.appendChild(container);
+            });
+        });
+
+
+
+        // sertifikat
+        document.getElementById('sertifikatInput').addEventListener('change', function(e) {
+            const preview = document.getElementById('previewSertifikat');
+            preview.innerHTML = ""; // reset preview
+
+            const files = Array.from(e.target.files);
+
+            files.forEach((file, index) => {
+                const ext = file.name.split('.').pop().toLowerCase();
+                const fileURL = URL.createObjectURL(file);
+
+                // wrapper
+                const wrapper = document.createElement('div');
+                wrapper.style.width = "110px";
+                wrapper.style.textAlign = "center";
+
+                // Tipe Gambar
+                if (['jpg', 'jpeg', 'png'].includes(ext)) {
+                    const img = document.createElement('img');
+                    img.src = fileURL;
+                    img.style.width = "100px";
+                    img.style.height = "100px";
+                    img.style.objectFit = "cover";
+                    img.style.borderRadius = "8px";
+                    img.style.border = "1px solid #ccc";
+                    wrapper.appendChild(img);
+
+                    // Tipe PDF
+                } else if (ext === "pdf") {
+                    const pdfDiv = document.createElement('div');
+                    pdfDiv.innerHTML = `
+                <i class="bi bi-file-earmark-pdf text-danger" style="font-size:48px;"></i>
+                <div class="small mt-1">${file.name.substring(0, 12)}...</div>
+            `;
+                    wrapper.appendChild(pdfDiv);
+                }
+
+                // Nama file
+                const fileName = document.createElement('div');
+                fileName.classList.add('small', 'mt-1');
+                fileName.innerText = file.name.length > 15 ? file.name.substring(0, 12) + "..." : file.name;
+                wrapper.appendChild(fileName);
+
+                preview.appendChild(wrapper);
+            });
+        });
+
+
         $(document).ready(function() {
 
             // =============== ADD ROW PENDIDIKAN ===============
@@ -1011,8 +1583,8 @@
                             });
 
                             setTimeout(function() {
-                                window.location.href = response.redirect ?? window
-                                    .location.href;
+                                // Redirect ke dashboard setelah Swal selesai
+                                window.location.href = '/';
                             }, 1500);
                         }
                     },

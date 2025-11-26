@@ -48,31 +48,44 @@ class PendaftaranController extends Controller
             'tempat_tanggal_lahir' => 'required|date',
             'tanggal_daftar' => 'required|date',
 
-            // Tambahan field baru:
+            // Tambahan field baru
             'id_prometric' => 'required|string|max:255',
             'password_prometric' => 'required|string|max:255',
             'pernah_ke_jepang' => 'required|in:Ya,Tidak',
 
-            // Paspor file upload
-            'paspor' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:10240',
+            // Paspor file upload (boleh kosong)
+            'paspor' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:51200', // 50MB
 
-            // File upload wajib
-            'foto' => 'required|file|mimes:jpg,jpeg,png,pdf|max:10240',
-            'kk' => 'required|file|mimes:jpg,jpeg,png,pdf|max:10240',
-            'ktp' => 'required|file|mimes:jpg,jpeg,png,pdf|max:10240',
-            'bukti_pelunasan' => 'required|file|mimes:jpg,jpeg,png,pdf|max:10240',
-            'akte' => 'required|file|mimes:jpg,jpeg,png,pdf|max:10240',
-            'ijasah' => 'required|file|mimes:jpg,jpeg,png,pdf|max:10240',
-            'sertifikat_jft' => 'required|file|mimes:jpg,jpeg,png,pdf|max:10240',
-            'sertifikat_ssw' => 'required|file|mimes:jpg,jpeg,png,pdf|max:10240',
+            // File upload wajib (50MB)
+            'foto' => 'required|file|mimes:jpg,jpeg,png,pdf|max:51200',
+            'kk' => 'required|file|mimes:jpg,jpeg,png,pdf|max:51200',
+            'ktp' => 'required|file|mimes:jpg,jpeg,png,pdf|max:51200',
+            'bukti_pelunasan' => 'required|file|mimes:jpg,jpeg,png,pdf|max:51200',
+            'akte' => 'required|file|mimes:jpg,jpeg,png,pdf|max:51200',
+            'ijasah' => 'required|file|mimes:jpg,jpeg,png,pdf|max:51200',
+            'sertifikat_jft' => 'required|file|mimes:jpg,jpeg,png,pdf|max:51200',
+            'sertifikat_ssw' => 'required|file|mimes:jpg,jpeg,png,pdf|max:51200',
+
         ], [
             'nik.size' => 'NIK harus 16 digit',
             'nik.unique' => 'NIK sudah terdaftar',
             'email.unique' => 'Email sudah terdaftar',
             'no_wa.regex' => 'Nomor WhatsApp harus diawali 08 dan 10-13 digit',
             'status.in' => 'Status harus: belum menikah, menikah, atau lajang',
-            'max' => 'File terlalu besar, maksimal 10MB'
+
+            // Pesan ukuran file lebih rapi
+            'file.max' => 'Ukuran file maksimal 50MB',
+            'foto.max' => 'Foto maksimal 50MB',
+            'kk.max' => 'KK maksimal 50MB',
+            'ktp.max' => 'KTP maksimal 50MB',
+            'bukti_pelunasan.max' => 'Bukti Pelunasan maksimal 50MB',
+            'akte.max' => 'Akte maksimal 50MB',
+            'ijasah.max' => 'Ijazah maksimal 50MB',
+            'sertifikat_jft.max' => 'Sertifikat JFT maksimal 50MB',
+            'sertifikat_ssw.max' => 'Sertifikat SSW maksimal 50MB',
+            'paspor.max' => 'Paspor maksimal 50MB'
         ]);
+
 
         // Upload file wajib + paspor
         $files = [
@@ -409,5 +422,11 @@ class PendaftaranController extends Controller
     public function cvCreate()
     {
         return view('pendaftaran.cv');
+    }
+
+    public function show($id)
+    {
+        $kandidat = Pendaftaran::with('cabang')->findOrFail($id);
+        return view('pendaftaran.show', compact('kandidat'));
     }
 }

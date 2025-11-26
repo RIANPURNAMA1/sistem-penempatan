@@ -9,42 +9,43 @@ use Illuminate\Support\Facades\Auth;
 
 class AdminKandidatController extends Controller
 {
- public function index(Request $request)
+    public function index(Request $request)
     {
         $user = Auth::user();
 
         // Pastikan user memiliki role admin cabang
-        $roleName = $user->role->name ?? null;
+        $roleName = $user->role ?? null; // role sekarang string langsung dari enum
 
-        if (!in_array($roleName, ['admin cianjur pamoyanan', 'admin cianjur selatan'])) {
+        // Daftar role admin cabang
+        $adminCabangRoles = [
+            'Cabang Cianjur Selatan Mendunia',
+            'Cabang Cianjur Pamoyanan Mendunia',
+            'Cabang Batam Mendunia',
+            'Cabang Banyuwangi Mendunia',
+            'Cabang Kendal Mendunia',
+            'Cabang Pati Mendunia',
+            'Cabang Tulung Agung Mendunia',
+            'Cabang Bangkalan Mendunia',
+            'Cabang Bojonegoro Mendunia',
+            'Cabang Jember Mendunia',
+            'Cabang Wonosobo Mendunia',
+            'Cabang Eshan Mendunia'
+        ];
+
+        // Jika bukan admin cabang, hentikan
+        if (!in_array($roleName, $adminCabangRoles)) {
             abort(403, 'Unauthorized: Anda bukan admin cabang.');
         }
 
-        // Tentukan keyword cabang berdasarkan role
-        switch ($roleName) {
-            case 'admin cianjur selatan':
-                $cabangKeyword = 'selatan';
-                break;
-            case 'admin cianjur pamoyanan':
-                $cabangKeyword = 'pamoyanan';
-                break;
-            default:
-                $cabangKeyword = null;
-                break;
-        }
+        // Ambil ID cabang sesuai role admin (role = nama cabang)
+        $cabang = Cabang::where('nama_cabang', $roleName)->first();
 
-        // Ambil ID cabang sesuai keyword
-        $cabangIds = Cabang::when($cabangKeyword, function ($query) use ($cabangKeyword) {
-            $query->where('nama_cabang', 'like', "%{$cabangKeyword}%");
-        })->pluck('id');
-
-        // Jika cabang tidak ditemukan, hentikan
-        if ($cabangIds->isEmpty()) {
+        if (!$cabang) {
             abort(403, 'Cabang admin tidak ditemukan.');
         }
 
         // Ambil kandidat sesuai cabang admin
-        $dataKandidat = Kandidat::whereIn('cabang_id', $cabangIds)
+        $dataKandidat = Kandidat::where('cabang_id', $cabang->id)
             ->with(['cabang', 'pendaftaran', 'institusi'])
             ->get();
 
@@ -53,6 +54,4 @@ class AdminKandidatController extends Controller
 
         return view('admin.kandidat.index', compact('dataKandidat', 'cabangs'));
     }
-
-
 }

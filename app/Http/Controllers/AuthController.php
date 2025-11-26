@@ -17,48 +17,46 @@ class AuthController extends Controller
         return view('auth.register');
     }
 
-    // Register user dan langsung login
-    public function register(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:6|confirmed',
-        ], [
-            'name.required' => 'Ups! Nama harus diisi.',
-            'name.string' => 'Ups! Nama harus berupa teks.',
-            'name.max' => 'Ups! Nama maksimal 255 karakter.',
 
-            'email.required' => 'Ups! Alamat email harus diisi.',
-            'email.email' => 'Ups! Alamat email tidak valid.',
-            'email.unique' => 'Ups! Alamat email sudah digunakan.',
+public function register(Request $request)
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|unique:users,email',
+        'password' => 'required|string|min:6|confirmed',
+    ], [
+        'name.required' => 'Ups! Nama harus diisi.',
+        'name.string' => 'Ups! Nama harus berupa teks.',
+        'name.max' => 'Ups! Nama maksimal 255 karakter.',
 
-            'password.required' => 'Ups! Kata sandi harus diisi.',
-            'password.string' => 'Ups! Kata sandi harus berupa teks.',
-            'password.min' => 'Ups! Kata sandi minimal 6 karakter.',
-            'password.confirmed' => 'Ups! Konfirmasi kata sandi tidak cocok.',
-        ]);
+        'email.required' => 'Ups! Alamat email harus diisi.',
+        'email.email' => 'Ups! Alamat email tidak valid.',
+        'email.unique' => 'Ups! Alamat email sudah digunakan.',
 
-        // Ambil role kandidat
-        $role = Role::where('name', 'kandidat')->first();
+        'password.required' => 'Ups! Kata sandi harus diisi.',
+        'password.string' => 'Ups! Kata sandi harus berupa teks.',
+        'password.min' => 'Ups! Kata sandi minimal 6 karakter.',
+        'password.confirmed' => 'Ups! Konfirmasi kata sandi tidak cocok.',
+    ]);
 
-        // Buat user baru
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role_id' => $role->id,
-        ]);
+    // Buat user baru dengan role 'kandidat'
+    $user = User::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => Hash::make($request->password),
+        'role' => 'kandidat', // ganti role_id menjadi role
+    ]);
 
-        // Langsung login setelah berhasil registrasi
-        Auth::login($user);
+    // Langsung login setelah berhasil registrasi
+    Auth::login($user);
 
-        return response()->json([
-            'success' => true,
-            'redirect' => route('dashboard'), // Ganti dengan route tujuan
-            'message' => 'Registrasi berhasil! Anda sudah otomatis login.'
-        ]);
-    }
+    return response()->json([
+        'success' => true,
+        'redirect' => route('dashboard'),
+        'message' => 'Registrasi berhasil! Anda sudah otomatis login.'
+    ]);
+}
+
 
 
 

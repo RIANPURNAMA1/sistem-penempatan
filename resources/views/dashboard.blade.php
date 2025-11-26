@@ -50,13 +50,26 @@
 
         {{-- Judul halaman --}}
         <div class="mb-2 mb-md-0 mt-3">
-            @if (auth()->user()->role->name === 'kandidat')
+            @if (auth()->user()->role === 'kandidat')
                 <h3 class="mb-1">Halo, {{ auth()->user()->name }}</h3>
                 <p class="text-muted mb-0">Ini adalah timeline aktivitas Anda.</p>
-            @elseif(in_array(auth()->user()->role->name, ['admin cianjur', 'admin cianjur selatan']))
+            @elseif(in_array(auth()->user()->role, [
+                    'Cabang Cianjur Selatan Mendunia',
+                    'Cabang Cianjur Pamoyanan Mendunia',
+                    'Cabang Batam Mendunia',
+                    'Cabang Banyuwangi Mendunia',
+                    'Cabang Kendal Mendunia',
+                    'Cabang Pati Mendunia',
+                    'Cabang Tulung Agung Mendunia',
+                    'Cabang Bangkalan Mendunia',
+                    'Cabang Bojonegoro Mendunia',
+                    'Cabang Jember Mendunia',
+                    'Cabang Wonosobo Mendunia',
+                    'Cabang Eshan Mendunia',
+                ]))
                 <h3 class="mb-1">Halo, {{ auth()->user()->name }}</h3>
                 <p class="text-muted mb-0">Menampilkan data kandidat di cabang Anda.</p>
-            @elseif(auth()->user()->role->name === 'super admin')
+            @elseif(auth()->user()->role === 'super admin')
                 <h3 class="mb-1">Halo, {{ auth()->user()->name }}</h3>
                 <p class="text-muted mb-0">Dashboard Super Admin: mengakses semua data dan laporan.</p>
             @endif
@@ -67,7 +80,7 @@
     <div class="page-content">
         <section class="row">
             <div class="col-12 col-lg-12">
-                @if (auth()->user()->role->name === 'super admin')
+                @if (auth()->user()->role === 'super admin')
                     <div class="row">
                         @foreach ($stats as $stat)
                             <div class="col-6 col-lg-3 col-md-6">
@@ -250,8 +263,8 @@
                     <div class="row mt-4">
 
                         <!-- =========================
-                    BAGIAN KIRI (CHART)
-                ========================== -->
+                                    BAGIAN KIRI (CHART)
+                                ========================== -->
                         <div class="col-12 col-md-8">
                             <div class="card h-100 shadow-lg border-0 rounded-4">
 
@@ -299,45 +312,47 @@
                                 </div>
 
                                 <!-- BODY -->
-                                <div class="card-body p-3">
+                                <div class="card-body p-3 rounded-md">
+                                    <!-- Container scrollable -->
+                                    <div class="rounded-md" style="max-height: 400px; overflow-y: auto;">
+                                        <ul class="list-group list-group-flush">
 
-                                    <ul class="list-group list-group-flush">
+                                            @foreach ($users as $user)
+                                                <li class="list-group-item d-flex justify-content-between align-items-center py-3"
+                                                    style="border-left: 4px solid transparent; transition: .2s;">
 
-                                        @foreach ($users as $user)
-                                            <li class="list-group-item d-flex justify-content-between align-items-center py-3"
-                                                style="border-left: 4px solid transparent; transition: .2s;">
+                                                    <div class="d-flex align-items-center">
+                                                        <!-- Avatar -->
+                                                        <div class="rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center me-3"
+                                                            style="width: 40px; height: 40px; font-size: 18px;">
+                                                            <i class="bi bi-person-fill"></i>
+                                                        </div>
 
-                                                <div class="d-flex align-items-center">
-                                                    <!-- Avatar -->
-                                                    <div class="rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center me-3"
-                                                        style="width: 40px; height: 40px; font-size: 18px;">
-                                                        <i class="bi bi-person-fill"></i>
+                                                        <!-- Nama User -->
+                                                        <span class="fw-semibold">{{ $user->name }}</span>
                                                     </div>
 
-                                                    <!-- Nama User -->
-                                                    <span class="fw-semibold">{{ $user->name }}</span>
-                                                </div>
+                                                    <!-- Status Dot -->
+                                                    @php
+                                                        $isOnline = $user->last_activity >= now()->subMinutes(5);
+                                                    @endphp
 
-                                                <!-- Status Dot -->
-                                                @php
-                                                    $isOnline = $user->last_activity >= now()->subMinutes(5);
-                                                @endphp
+                                                    <span class="d-flex align-items-center">
+                                                        <span
+                                                            class="status-dot {{ $isOnline ? 'bg-success' : 'bg-danger' }}"></span>
+                                                        <small
+                                                            class="ms-2 fw-semibold {{ $isOnline ? 'text-success' : 'text-danger' }}">
+                                                            {{ $isOnline ? 'Online' : 'Offline' }}
+                                                        </small>
+                                                    </span>
 
-                                                <span class="d-flex align-items-center">
-                                                    <span
-                                                        class="status-dot {{ $isOnline ? 'bg-success' : 'bg-danger' }}"></span>
-                                                    <small
-                                                        class="ms-2 fw-semibold {{ $isOnline ? 'text-success' : 'text-danger' }}">
-                                                        {{ $isOnline ? 'Online' : 'Offline' }}
-                                                    </small>
-                                                </span>
+                                                </li>
+                                            @endforeach
 
-                                            </li>
-                                        @endforeach
-
-                                    </ul>
-
+                                        </ul>
+                                    </div>
                                 </div>
+
 
                             </div>
 
@@ -385,9 +400,9 @@
                         });
                     </script>
                 @endif
-                @if (auth()->user()->role->name === 'kandidat')
+                @if (auth()->user()->role === 'kandidat')
                     <!-- Header Tabel -->
-                  
+
                     <div class="table-responsive mt-3">
                         @if ($cvs->isEmpty())
                             <!-- SweetAlert jika belum ada CV -->
@@ -443,7 +458,7 @@
                                             });
                                         </script>
                                     @else
-                                     @include('components.cv_kandidat')
+                                        @include('components.cv_kandidat')
                                     @endif
 
 
@@ -680,7 +695,21 @@
 
                 @endif
 
-                @if (in_array(auth()->user()->role->name, ['admin cianjur pamoyanan', 'admin cianjur selatan', 'super admin']))
+                @if (in_array(auth()->user()->role, [
+                        'super admin',
+                        'Cabang Cianjur Selatan Mendunia',
+                        'Cabang Cianjur Pamoyanan Mendunia',
+                        'Cabang Batam Mendunia',
+                        'Cabang Banyuwangi Mendunia',
+                        'Cabang Kendal Mendunia',
+                        'Cabang Pati Mendunia',
+                        'Cabang Tulung Agung Mendunia',
+                        'Cabang Bangkalan Mendunia',
+                        'Cabang Bojonegoro Mendunia',
+                        'Cabang Jember Mendunia',
+                        'Cabang Wonosobo Mendunia',
+                        'Cabang Eshan Mendunia',
+                    ]))
                     {{-- distribusi status kandidat --}}
                     <!-- Tambahkan script chart -->
 

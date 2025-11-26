@@ -23,7 +23,6 @@ return new class extends Migration
             $table->foreign('cv_id')->references('id')->on('cvs')->onDelete('cascade');
         });
     }
-
     /**
      * Reverse the migrations.
      */

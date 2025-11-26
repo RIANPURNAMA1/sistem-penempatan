@@ -15,12 +15,29 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->unsignedBigInteger('role_id')->default(4);
+            $table->enum('role', [
+                'Cabang Cianjur Selatan Mendunia',
+                'Cabang Cianjur Pamoyanan Mendunia',
+                'Cabang Batam Mendunia',
+                'Cabang Banyuwangi Mendunia',
+                'Cabang Kendal Mendunia',
+                'Cabang Pati Mendunia',
+                'Cabang Tulung Agung Mendunia',
+                'Cabang Bangkalan Mendunia',
+                'Cabang Bojonegoro Mendunia',
+                'Cabang Jember Mendunia',
+                'Cabang Wonosobo Mendunia',
+                'Cabang Eshan Mendunia',
+                'super admin',
+                'kandidat'
+            ])->default('kandidat');
+
             $table->unsignedBigInteger('cabang_id')->nullable();
             $table->timestamp('last_activity')->nullable();
             $table->string('password');
             $table->timestamps();
         });
+
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();
             $table->string('token');

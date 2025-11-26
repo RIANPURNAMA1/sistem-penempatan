@@ -1,3 +1,8 @@
+
+
+@if (in_array(auth()->user()->role, ['super admin'
+                    ]))
+
 <!-- Bootstrap 5 & DataTables CSS -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
@@ -118,3 +123,6 @@
         }
     });
 </script>
+
+@endif
+

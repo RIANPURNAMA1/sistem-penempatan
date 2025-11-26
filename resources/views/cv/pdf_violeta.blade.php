@@ -500,8 +500,8 @@
                         <tbody>
                             <tr>
                                 <td style="padding: 0; text-align: center;">
-                                    @if ($cv->pas_foto)
-                                        <img src="{{ asset($cv->pas_foto) }}" alt="Foto Kandidat"
+                                    @if ($cv->pas_foto_cv)
+                                        <img src="{{ asset($cv->pas_foto_cv) }}" alt="Foto Kandidat"
                                             style="width: 100%; height: 180px; object-fit: cover; display: block;">
                                     @else
                                         <span style="font-size: 11px;">Tidak ada foto</span>

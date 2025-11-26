@@ -22,7 +22,7 @@
 
             {{-- Pas Foto --}}
             <div class="text-center mb-4">
-                <img src="{{ asset($cv->pas_foto) }}" alt="Pas Foto" class="rounded-circle border" width="150" height="150">
+                <img src="{{ asset($cv->pas_foto_cv) }}" alt="Pas Foto" class="rounded-circle border" width="150" height="150">
             </div>
 
             {{-- Accordion --}}

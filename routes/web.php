@@ -11,15 +11,15 @@ use App\Http\Controllers\AuthController;
 
 
 
-Route::get('/cv',function(){
-return view('cv.pdf');
+Route::get('/cv', function () {
+    return view('cv.pdf');
 });
-Route::get('/cv2',function(){
-return view('cv.pdf2');
+Route::get('/cv2', function () {
+    return view('cv.pdf2');
 });
 
-Route::get('/cv/violeta',function(){
-return view('cv.pdf1');
+Route::get('/cv/violeta', function () {
+    return view('cv.pdf1');
 });
 Route::middleware('guest')->group(function () {
     Route::get('/registrasi', [AuthController::class, 'showRegister'])->name('registrasi');
@@ -50,8 +50,18 @@ Route::post('/lupa/password', [AuthController::class, 'resetPassword'])->name('r
 
 use App\Http\Controllers\DashboardController;
 
-Route::middleware(['auth', 'role:super admin, admin cianjur selatan,admin cianjur, kandidat'])->group(function () {});
-Route::middleware('auth')->get('/', [DashboardController::class, 'index'])->name('dashboard');
+Route::middleware([
+    'auth',
+    'role:super admin,kandidat,Cabang Cianjur Selatan Mendunia,Cabang Cianjur Pamoyanan Mendunia,Cabang Batam Mendunia,Cabang Banyuwangi Mendunia,Cabang Kendal Mendunia,Cabang Pati Mendunia,Cabang Tulung Agung Mendunia,Cabang Bangkalan Mendunia,Cabang Bojonegoro Mendunia,Cabang Jember Mendunia,Cabang Wonosobo Mendunia,Cabang Eshan Mendunia'
+])->group(function () {
+    // Semua route di sini bisa diakses oleh semua role
+    Route::middleware('auth')->get('/', [DashboardController::class, 'index'])->name('dashboard');
+});
+
+
+
+
+
 
 
 
@@ -98,7 +108,7 @@ use App\Http\Controllers\AdminKandidatController;
 // Resource route untuk manajemen admin (CRUD) hanya bisa diakses SUPER ADMIN
 Route::prefix('admin')
     ->name('admins.')
-    ->middleware('role:super admin, admin cianjur, admin cianjur selatan')
+    ->middleware('auth', 'role:super admin,Cabang Cianjur Selatan Mendunia,Cabang Cianjur Pamoyanan Mendunia,Cabang Batam Mendunia,Cabang Banyuwangi Mendunia,Cabang Kendal Mendunia,Cabang Pati Mendunia,Cabang Tulung Agung Mendunia,Cabang Bangkalan Mendunia,Cabang Bojonegoro Mendunia,Cabang Jember Mendunia,Cabang Wonosobo Mendunia,Cabang Eshan Mendunia')
     ->group(function () {
         Route::get('/dashboard/kandidat/{id}', [DashboardController::class, 'showKandidat'])->name('dashboard.kandidat.show');
         Route::get('/', [AdminController::class, 'index'])->name('index');       // List admin
@@ -139,6 +149,8 @@ Route::get('/pendaftaran/export', [PendaftaranController::class, 'export'])->nam
 Route::get('pendaftaran/{id}/edit-full', [PendaftaranController::class, 'editFull'])->name('pendaftaran.edit.full');
 Route::put('pendaftaran/{id}/update-full', [PendaftaranController::class, 'updateFull'])->name('pendaftaran.update.full');
 Route::delete('/pendaftaran/{id}', [App\Http\Controllers\PendaftaranController::class, 'destroy'])->name('pendaftaran.destroy');
+Route::get('/pendaftaran/{id}/pendaftar', [PendaftaranController::class, 'showPendaftar'])->name('show.Pendaftar');
+
 
 
 Route::delete('/pendaftaran/{id}', [PendaftaranController::class, 'destroy'])
@@ -148,8 +160,8 @@ Route::middleware(['auth', 'role:super admin'])->group(function () {
     Route::get('/pendaftaran/export', [PendaftaranController::class, 'export'])->name('pendaftaran.export');
     // routes/web.php
     Route::get('/kandidat/export/{id}', [KandidatController::class, 'export'])->name('kandidat.export');
-    
-Route::get('/pendaftaran/export-pdf', [PendaftaranController::class, 'exportPDF'])->name('pendaftaran.export.pdf');
+
+    Route::get('/pendaftaran/export-pdf', [PendaftaranController::class, 'exportPDF'])->name('pendaftaran.export.pdf');
 
 
     // Data siswa + paginate
@@ -162,7 +174,7 @@ Route::get('/pendaftaran/export-pdf', [PendaftaranController::class, 'exportPDF'
 
     Route::put('/siswa/{id}', [PendaftaranController::class, 'update'])
         ->name('siswa.update');
-        Route::get('/data/cv/kandidat', [CvController::class, 'index']);
+    Route::get('/data/cv/kandidat', [CvController::class, 'index']);
 });
 Route::get('/cv/export-word/{id}', [CvController::class, 'exportWord'])->name('cv.export.word');
 
@@ -190,16 +202,17 @@ use App\Http\Controllers\DokumenController;
 
 
 
+Route::middleware('auth')->group(function () {
+    Route::get('/pendaftaran/cv', [CvController::class, 'create'])->name('pendaftaran.cv.create');
+    Route::get('/data/pendaftaran/cv', [CvController::class, 'create']);
+});
 
-Route::get('/pendaftaran/cv', [CvController::class, 'create'])->name('pendaftaran.cv.create');
-Route::get('/data/pendaftaran/cv', [CvController::class, 'create']);
+Route::middleware('auth')->group(function () {
+    Route::post('/pendaftaran/cv', [CvController::class, 'store'])->name('pendaftaran.cv.store');
+});
 Route::middleware(['auth', 'role:kandidat'])->group(function () {
-    
-    
-    Route::middleware('auth')->group(function () {
-        Route::post('/pendaftaran/cv', [CvController::class, 'store'])->name('pendaftaran.cv.store');
-    });
-    // Menampilkan daftar CV
+
+
 
     // Menampilkan form edit CV
     Route::get('/pendaftaran/cv/{id}/edit', [CvController::class, 'edit'])->name('pendaftaran.cv.edit');
@@ -235,15 +248,20 @@ Route::middleware(['auth', 'role:kandidat'])->group(function () {
     | DOKUMEN KANDIDAT
     |--------------------------------------------------------------------------
     */
-    
+
     Route::middleware('auth')->get('/dokumen/{id}', [DokumenController::class, 'show'])
-    ->name('dokumen.show');
-    
+        ->name('dokumen.show');
+
     Route::get('/cv/export/{id}', [CvController::class, 'export'])->name('cv.export');
 });
-Route::get('/cv/show/{id}', [CvController::class, 'show'])->name('cv.show');
-Route::get('/cv/show/pdf/{id}', [CvController::class, 'showPdf'])->name('cv.show.pdf');
-Route::get('/cv/show/pdf/violeta/{id}', [CvController::class, 'showPdfVioleta'])->name('cv.show.pdf.violeta');
+
+
+Route::middleware('auth')->group(function () {
+
+    Route::get('/cv/show/{id}', [CvController::class, 'show'])->name('cv.show');
+    Route::get('/cv/show/pdf/{id}', [CvController::class, 'showPdf'])->name('cv.show.pdf');
+    Route::get('/cv/show/pdf/violeta/{id}', [CvController::class, 'showPdfVioleta'])->name('cv.show.pdf.violeta');
+});
 
 // cv controller
 
@@ -276,9 +294,11 @@ Route::middleware(['auth', 'role: super admin'])->prefix('institusi')->name('ins
 |--------------------------------------------------------------------------
 */
 
-
-Route::middleware(['auth', 'role:super admin, admin cianjur pamoyanan, admin cianjur selatan'])->group(function () {
-
+Route::middleware([
+    'auth',
+    'role:super admin,kandidat,Cabang Cianjur Selatan Mendunia,Cabang Cianjur Pamoyanan Mendunia,Cabang Batam Mendunia,Cabang Banyuwangi Mendunia,Cabang Kendal Mendunia,Cabang Pati Mendunia,Cabang Tulung Agung Mendunia,Cabang Bangkalan Mendunia,Cabang Bojonegoro Mendunia,Cabang Jember Mendunia,Cabang Wonosobo Mendunia,Cabang Eshan Mendunia'
+])->group(function () {
+    // Semua route di sini bisa diakses oleh semua role
     // Data kandidat
     Route::get('/kandidat/data', [KandidatController::class, 'index'])->name('kandidat.data');
 

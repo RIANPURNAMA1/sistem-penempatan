@@ -22,8 +22,8 @@ class RoleMiddleware
             return abort(403, 'Role tidak ditemukan. Hubungi admin.');
         }
 
-        // Nama role user
-        $userRole = strtolower($user->role->name);
+        // Nama role user langsung dari kolom role
+        $userRole = strtolower($user->role);
 
         // Normalisasi daftar role yang diizinkan
         $allowedRoles = array_map(fn($r) => strtolower(trim($r)), $roles);
