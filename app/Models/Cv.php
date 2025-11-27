@@ -27,7 +27,11 @@ class Cv extends Model
     // Relasi ke cabang
     public function cabang()
     {
-        return $this->belongsTo(Cabang::class, 'cabang_Id');
+        return $this->belongsTo(Cabang::class, 'cabang_id');
+    }
+    public function Pendaftaran()
+    {
+        return $this->belongsTo(Pendaftaran::class, 'pendaftaran_id');
     }
 
     // Relasi ke pendidikan (satu CV bisa punya banyak pendidikan)

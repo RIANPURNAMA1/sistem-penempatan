@@ -7,7 +7,7 @@
     <div class="">
         <h2 class="fw-bold mb-4 text-primary">Formulir Edit Curriculum Vitae</h2>
 
-        <form id="edit-cv-form" enctype="multipart/form-data">
+        <form id="edit-cv-form" action="{{route('pendaftaran.cv.update', $cv->id)}}" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 

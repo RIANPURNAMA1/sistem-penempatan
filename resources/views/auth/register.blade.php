@@ -26,7 +26,7 @@
 
 <body class="bg-light d-flex justify-content-center align-items-center min-vh-100">
 
-    <div class="card shadow-lg p-4 p-md-5 " style="max-width: 450px; width: 100%; border-radius: 20px;">
+    <div class="card shadow-lg border-0 p-4 p-md-5 " style="max-width: 450px; width: 100%; border-radius: 20px;">
         <div class="text-center mb-4">
             <img src="{{ asset('assets/compiled/png/LOGO/logo4.png') }}" alt="Logo" class="img-fluid rounded"
                 style="width: 120px;">
@@ -63,7 +63,7 @@
                     style="transition: all 0.3s; border: 1px solid #ced4da;">
             </div>
 
-            <button id="btnRegister" type="submit" class="btn w-100 py-2 rounded-md  fw-bold text-white"
+            <button id="btnRegister" type="submit" class="btn w-100 py-2 rounded-md  fw-bold "
                 style="background: linear-gradient(90deg, #ffc107, #ffb000); transition: all 0.3s;">
                 <span id="btnText"><i class="bi bi-person-plus me-2"></i>Daftar</span>
                 <span id="btnLoading" class="d-none">

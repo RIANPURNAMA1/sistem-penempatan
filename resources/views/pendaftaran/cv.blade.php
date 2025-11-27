@@ -257,8 +257,8 @@
                                     <div class="row g-3">
                                         <div class="col-md-6">
                                             <!-- ======================================================
-             MULTI FILE: pas_foto[]
-        ====================================================== -->
+                     MULTI FILE: pas_foto[]
+                ====================================================== -->
                                             <label class="form-label fw-semibold mb-1">
                                                 Silahkan upload dokumen / foto tambahan 👇
                                             </label>
@@ -276,8 +276,8 @@
                                             <div id="previewPasFoto" class="mt-3 d-flex flex-wrap gap-3"></div>
 
                                             <!-- ======================================================
-             SINGLE FILE: pas_foto_cv
-        ====================================================== -->
+                     SINGLE FILE: pas_foto_cv
+                ====================================================== -->
                                             <label class="form-label fw-semibold mb-1 mt-4">
                                                 Silahkan upload pas foto untuk CV Anda 👇
                                             </label>
@@ -384,9 +384,24 @@
                                                 Agama <span class="text-danger">*</span><br>
                                                 <small class="text-muted">Isi sesuai KTP/KK</small>
                                             </label>
-                                            <input type="text" name="agama"
-                                                class="form-control @error('agama') is-invalid @enderror"
-                                                placeholder="Agama" value="{{ old('agama') }}" required>
+
+                                            <select name="agama"
+                                                class="form-select @error('agama') is-invalid @enderror" required>
+                                                <option value="">-- Pilih Agama --</option>
+                                                <option value="Islam" {{ old('agama') == 'Islam' ? 'selected' : '' }}>
+                                                    Islam</option>
+                                                <option value="Kristen" {{ old('agama') == 'Kristen' ? 'selected' : '' }}>
+                                                    Kristen</option>
+                                                <option value="Katolik" {{ old('agama') == 'Katolik' ? 'selected' : '' }}>
+                                                    Katolik</option>
+                                                <option value="Hindu" {{ old('agama') == 'Hindu' ? 'selected' : '' }}>
+                                                    Hindu</option>
+                                                <option value="Buddha" {{ old('agama') == 'Buddha' ? 'selected' : '' }}>
+                                                    Buddha</option>
+                                                <option value="Konghucu"
+                                                    {{ old('agama') == 'Konghucu' ? 'selected' : '' }}>Konghucu</option>
+                                            </select>
+
                                             @error('agama')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -571,7 +586,7 @@
                                             <label class="mt-3 fw-bold">Tinggi Badan (cm)</label>
                                             <input type="text" name="tinggi_badan"
                                                 class="form-control @error('tinggi_badan') is-invalid @enderror"
-                                                placeholder="Tinggi Badan (cm)" value="{{ old('tinggi_badan') }}"
+                                                placeholder="Tinggi Badan (cm)" value="{{ old('tinggi_badan') }} cm"
                                                 required>
                                             @error('tinggi_badan')
                                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -581,7 +596,7 @@
                                             <label class="mt-3 fw-bold">Berat Badan (kg)</label>
                                             <input type="text" name="berat_badan"
                                                 class="form-control @error('berat_badan') is-invalid @enderror"
-                                                placeholder="Berat Badan (kg)" value="{{ old('berat_badan') }}" required>
+                                                placeholder="Berat Badan (kg)" value="{{ old('berat_badan') }} kg" required>
                                             @error('berat_badan')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -590,7 +605,7 @@
                                             <label class="mt-3 fw-bold">Ukuran Pinggang (cm)</label>
                                             <input type="text" name="ukuran_pinggang"
                                                 class="form-control @error('ukuran_pinggang') is-invalid @enderror"
-                                                placeholder="Ukuran Pinggang (cm)" value="{{ old('ukuran_pinggang') }}"
+                                                placeholder="Ukuran Pinggang (cm)" value="{{ old('ukuran_pinggang') }} cm"
                                                 required>
                                             @error('ukuran_pinggang')
                                                 <div class="invalid-feedback">{{ $message }}</div>
@@ -677,6 +692,45 @@
                                             <input type="text" name="kemampuan_penglihatan_mata_lainnya"
                                                 class="form-control mt-2" placeholder="Informasi Tambahan"
                                                 value="{{ old('kemampuan_penglihatan_mata_lainnya') }}">
+
+
+                                            <!-- Pendengaran -->
+                                            <label class="mt-3 fw-bold">Kemampuan Pendengaran</label>
+                                            <select name="kemampuan_pendengaran"
+                                                class="form-control @error('kemampuan_pendengaran') is-invalid @enderror"
+                                                required>
+                                                <option value="">-- Kemampuan Pendengaran --</option>
+
+                                                <option value="Normal"
+                                                    {{ old('kemampuan_pendengaran') == 'Normal' ? 'selected' : '' }}>
+                                                    Normal
+                                                </option>
+
+                                                <option value="Sedang"
+                                                    {{ old('kemampuan_pendengaran') == 'Sedang' ? 'selected' : '' }}>
+                                                    Sedang (pendengaran berkurang ringan)
+                                                </option>
+
+                                                <option value="Kurang"
+                                                    {{ old('kemampuan_pendengaran') == 'Kurang' ? 'selected' : '' }}>
+                                                    Kurang (membutuhkan suara lebih keras)
+                                                </option>
+
+                                                <option value="Tuli Ringan"
+                                                    {{ old('kemampuan_pendengaran') == 'Tuli Ringan' ? 'selected' : '' }}>
+                                                    Tuli Ringan
+                                                </option>
+
+                                                <option value="Tuli Berat"
+                                                    {{ old('kemampuan_pendengaran') == 'Tuli Berat' ? 'selected' : '' }}>
+                                                    Tuli Berat
+                                                </option>
+                                            </select>
+
+                                            @error('kemampuan_pendengaran')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+
 
                                             <!-- Vaksin -->
                                             <label class="mt-3 fw-bold">Sudah Vaksin Berapa Kali?</label>
@@ -1050,7 +1104,7 @@
                                                     Cantumkan periode bekerja dengan format Jepang.
                                                     <br><b>Contoh: 2021年／02月 ～ 2023年／08月</b>
                                                 </p>
-                                                <input type="text" name="pengalaman_periode[]" class="form-control"
+                                                <input type="text" name="pengalaman_lama_bekerja[]" class="form-control"
                                                     placeholder="Contoh: 2021年／02月 ～ 2023年／08月" required>
                                             </div>
 
@@ -1534,7 +1588,7 @@
                     </div>
                     <div class="col-md-3">
                         <label class="form-label">Periode/Lama Bekerja</label>
-                        <input type="text" name="pengalaman_periode[]" class="form-control" placeholder="2019-2021 (2 tahun)">
+                        <input type="text" name="pengalaman_lama_bekerja[]" class="form-control" placeholder="2019-2021 (2 tahun)">
                     </div>
                     <div class="col-md-1 d-flex align-items-end">
                         <button type="button" class="btn btn-danger btn-sm remove-row">X</button>

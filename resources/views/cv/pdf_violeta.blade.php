@@ -12,6 +12,10 @@
     /> --> --}}
 </head>
 <style>
+    body {
+        font-size: 10px !important;
+    }
+
     .btn-container {
         margin-bottom: 1rem;
         display: flex;
@@ -24,7 +28,6 @@
         border: none;
         border-radius: 5px;
         color: #fff;
-        font-weight: bold;
         cursor: pointer;
         text-decoration: none;
         /* agar <a> mirip tombol */
@@ -56,6 +59,133 @@
     .btn-info:hover {
         background-color: #138496;
     }
+
+
+
+    .rirekisho-table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    /* Gaya dasar sel tabel */
+    .rirekisho-table th,
+    .rirekisho-table td {
+
+        padding: 3px 8px;
+        vertical-align: middle;
+    }
+
+    /* Styling untuk baris Judul Utama */
+    .title-row th {
+
+        text-align: left;
+        border-bottom: none !important;
+        border-top: none !important;
+        border-left: none !important;
+        border-right: none !important;
+    }
+
+    /* Container untuk 日現在 */
+    .date-container {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 4px;
+        /* gap-1 */
+        padding-right: 0;
+        vertical-align: bottom;
+        border-top: none !important;
+        border-left: none !important;
+        border-right: none !important;
+        border-bottom: none !important;
+    }
+
+    /* Styling untuk garis putus-putus */
+    .dotted-border {
+        border-width: 0 1px 1px 0 !important;
+    }
+
+    /* Bagian Nama dan Gender */
+    .name-row .family-name {
+        width: 25%;
+        /* w-1/4 */
+        text-align: center;
+        text-transform: uppercase;
+        border-right: none;
+    }
+
+    .name-row .given-name {
+        width: 50%;
+        /* w-2/4 */
+        text-align: center;
+        text-transform: uppercase;
+        border-left: none;
+        border-right: none;
+    }
+
+    /* Baris input nama */
+    .input-name-row .dotted-border {
+        text-align: center;
+        border-bottom: 0 !important;
+    }
+
+    /* Kelas untuk sel Gender */
+    .gender-cell {
+        writing-mode: vertical-rl;
+        text-orientation: upright;
+        width: 20px;
+        padding: 0;
+        text-align: center;
+    }
+
+    /* Baris Tanggal Lahir */
+    .birthdate-row .label-cell {
+        width: 120px;
+        /* w-[120px] */
+        text-align: center;
+    }
+
+    .birthdate-row .year-cell {
+        width: 20%;
+        /* w-1/5 */
+        text-align: center;
+    }
+
+    .birthdate-row .narrow-cell {
+        width: 50px;
+        text-align: center;
+    }
+
+    /* Bagian Keluarga dan Pendapatan */
+    .family-header th {
+        text-align: center;
+    }
+
+    .family-row .narrow-left {
+        width: 30px;
+        /* w-[30px] */
+    }
+
+    .family-row .main-cell {
+        width: 50%;
+        /* w-1/2 */
+        height: 20px;
+        /* h-10 */
+    }
+
+    .family-row .narrow-right {
+        width: 30px;
+        /* w-[30px] */
+    }
+
+    .income-row .label-cell {
+        width: 25%;
+        /* w-1/4 */
+        text-align: center;
+
+    }
+
+    .income-row .data-cell {}
 </style>
 <style>
     .btn-container {
@@ -69,7 +199,6 @@
         border: none;
         border-radius: 5px;
         color: #fff;
-        font-weight: bold;
         cursor: pointer;
         text-decoration: none;
         display: inline-block;
@@ -143,27 +272,28 @@
                     class="">
                     <thead>
                         <tr>
-                            <th style="text-align:center;">姓（FAMILY NAME）</th>
-                            <th style="text-align:center;">名（GIVEN NAME）</th>
-                            <th width="20" style="text-align:center;">性別</th>
+                            <td style="text-align:center;">姓（FAMILY NAME）</td>
+                            <td style="text-align:center;">名（GIVEN NAME）</td>
+                            <td width="20" rowspan="" style="text-align:center;">性別</td>
                         </tr>
                     </thead>
                     <tbody>
+
                         <!-- Baris input utama -->
                         <tr>
-                            <td style="height: 50px; text-align:center;">
+                            <td rowspan="" style="height: 50px; text-align:center;">
                                 {{ $namaBelakang }}
                             </td>
                             <td style="text-align:center;">
                                 {{ $namaDepan }}
                             </td>
-                            <td rowspan="2" style="text-align:center;">
+                            <td rowspan="" style="text-align:center; border-bottom:none;">
                                 {{ $cv->jenis_kelamin == '男 (Laki-laki)' ? '男' : '女' }}
                             </td>
                         </tr>
 
                         <tr>
-                            <td style="text-align:center;">姓</td>
+                            <td ro style="text-align:center;">姓</td>
                             <td style="text-align:center;">名</td>
                         </tr>
 
@@ -173,7 +303,7 @@
 
                             <td style="height: 20px;">{{ $namaBelakang }}</td>
                             <td> {{ $namaDepan }}</td>
-                            <td></td>
+
                         </tr>
                     </tbody>
                 </table>
@@ -186,14 +316,14 @@
                     style="width: 450px; border-collapse: collapse; border-top: none;">
                     <thead>
                         <tr>
-                            <th style="width: 140px; padding: 0.5rem;">生年月日</th>
+                            <td style="width: 50px; padding: 0.5rem;">生年月日</td>
                             @php
                                 $tgl = \Carbon\Carbon::hasFormat($cv->tempat_tanggal_lahir, 'Y-m-d')
                                     ? \Carbon\Carbon::parse($cv->tempat_tanggal_lahir)
                                     : null;
                             @endphp
 
-                            <th style="padding-left: 0.5rem;">
+                            <td style="padding-left: 0.5rem;">
                                 @if ($tgl)
                                     {{ $tgl->format('Y') }} 年 /
                                     {{ $tgl->format('m') }} 月 /
@@ -202,7 +332,7 @@
                                 @else
                                     {{ $cv->tempat_tanggal_lahir }} （満 {{ $cv->usia }} 歳）
                                 @endif
-                            </th>
+                            </td>
 
                             {{-- <th style="padding-left: 0.5rem;">
                                 {{ \Carbon\Carbon::parse($cv->tempat_tanggal_lahir)->format('Y') }} 年 /
@@ -216,19 +346,19 @@
                 </table>
 
                 <!-- ========================= -->
-                <!--    出生地・住所（Tempat Lahir & Alamat） -->
+                <!-- Alamat） -->
                 <!-- ========================= -->
                 <table border="1" cellspacing="0"
                     style="width: 450px; border-collapse: collapse; margin-top: 1rem;">
                     <thead>
                         <tr>
-                            <th style="text-align:center; height: 25px;">
-                                出生地：{{ $cv->tempat_tanggal_lahir ?? '-' }}
-                            </th>
+                            <td style="text-align:center; height: 25px;">
+                                フリガナ：{{ $cv->tempat_tanggal_lahir ?? '-' }}
+                            </td>
                         </tr>
                         <tr>
                             <td style="height: 60px; padding-left: 5px;">
-                                住所：{{ $cv->alamat_lengkap ?? '-' }}
+                                現 住 所：{{ $cv->alamat_lengkap ?? '-' }}
                             </td>
                         </tr>
                     </thead>
@@ -241,12 +371,12 @@
                     style="width: 450px; border-collapse: collapse; margin-top: 1rem;">
                     <thead>
                         <tr>
-                            <th colspan="3" style="text-align:center; height: 25px;">学歴</th>
+                            <td colspan="3" style="text-align:center; height: 25px;">学歴</td>
                         </tr>
                         <tr>
-                            <th style="width: 150px; text-align:center;">年／月 ～ 年／月</th>
-                            <th style="width: 200px; text-align:center;">学校名</th>
-                            <th style="width: 100px; text-align:center;">学部等</th>
+                            <td style="width: 150px; text-align:center;">年／月 ～ 年／月</td>
+                            <td style="width: 200px; text-align:center;">学校名</td>
+                            <td style="width: 100px; text-align:center;">学部等</td>
                         </tr>
                     </thead>
 
@@ -294,12 +424,12 @@
                 <table border="1" cellspacing="0" style="width: 450px; border-collapse: collapse;">
                     <thead>
                         <tr>
-                            <th colspan="3" style="text-align:center; height: 25px;">職歴</th>
+                            <td colspan="3" style="text-align:center; height: 25px;">職歴</td>
                         </tr>
                         <tr>
-                            <th style="width: 150px; text-align:center;">年／月 ～ 年／月</th>
-                            <th style="width: 200px; text-align:center;">会社名</th>
-                            <th style="width: 100px; text-align:center;">職種</th>
+                            <td style="width: 150px; text-align:center;">年／月 ～ 年／月</td>
+                            <td style="width: 200px; text-align:center;">会社名</td>
+                            <td style="width: 100px; text-align:center;">職種</td>
                         </tr>
                     </thead>
 
@@ -340,7 +470,7 @@
                 <!-- ========================= -->
                 <!--   現在の収入（Income Section） -->
                 <!-- ========================= -->
-                <table border="1" cellspacing="0" style="width: 450px; border-collapse: collapse;">
+                <table border="1" cellspacing="0" style="width: 450px; border-collapse: collapse; border-top:none;">
                     <tr>
                         <td style="padding: 5px;">
                             現在の収入（無職の場合は最終職歴時の収入）
@@ -350,49 +480,104 @@
                 </table>
 
 
-                <!-- JUDUL KEMAMPUAN -->
-                <table border="1" cellspacing="0" cellpadding="6"
-                    style="margin-top: 1rem; width: 450px; border-collapse: collapse; font-size: 12px;">
-                    <tr>
-                        <th style="text-align: center;">能力</th>
-                    </tr>
-                </table>
+                <!-- BAGIAN KELUARGA DAN PENDAPATAN -->
+                <table border="1" cellspacing="0" cellpadding="2" class="rirekisho-table"
+                    style="margin-top: 1rem; border-collapse: collapse;">
+                    <thead>
+                        <tr class="family-header" style="text-align: center">
+                            <td colspan="4">
+                                家族構成(及び年齢)
+                            </td>
+                        </tr>
+                    </thead>
 
-                <!-- ISI KEMAMPUAN -->
-                <table border="1" cellspacing="0" cellpadding="6"
-                    style="width: 450px; border-collapse: collapse; border-top: none; border-bottom: none; font-size: 12px;">
                     <tbody>
-                        <tr>
-                            <td style="width: 100px;">日本語能力</td>
-                            <td style="width: 125px; height: 40px;">
-                                {{ $cv->kemampuan_bahasa_jepang }}
-                            </td>
 
-                            <td style="width: 100px;">体力</td>
-                            <td style="width: 125px;">
-                                {{ $cv->kebugaran_jasmani_seminggu }}
+                        <!-- AYAH -->
+                        <tr class="family-row">
+                            <td class="narrow-left">父</td>
+                            <td class="main-cell">{{ $cv->anggota_keluarga_ayah }}</td>
+                            <td class="main-cell"></td>
+                            <td class="narrow-right"></td>
+                        </tr>
+
+                        <!-- IBU -->
+                        <tr class="family-row">
+                            <td class="narrow-left">母</td>
+                            <td class="main-cell">{{ $cv->anggota_keluarga_ibu }}</td>
+                            <td class="main-cell"></td>
+                            <td class="narrow-right"></td>
+                        </tr>
+
+                        <!-- SUAMI -->
+                        @if ($cv->anggota_keluarga_suami)
+                            <tr class="family-row">
+                                <td class="narrow-left">夫</td>
+                                <td class="main-cell">{{ $cv->anggota_keluarga_suami }}</td>
+                                <td class="main-cell"></td>
+                                <td class="narrow-right"></td>
+                            </tr>
+                        @endif
+
+                        <!-- ISTRI -->
+                        @if ($cv->anggota_keluarga_istri)
+                            <tr class="family-row">
+                                <td class="narrow-left">妻</td>
+                                <td class="main-cell">{{ $cv->anggota_keluarga_istri }}</td>
+                                <td class="main-cell"></td>
+                                <td class="narrow-right"></td>
+                            </tr>
+                        @endif
+
+                        <!-- ANAK -->
+                        @if ($cv->anggota_keluarga_anak)
+                            <tr class="family-row">
+                                <td class="narrow-left">子</td>
+                                <td class="main-cell">{{ $cv->anggota_keluarga_anak }}</td>
+                                <td class="main-cell"></td>
+                                <td class="narrow-right"></td>
+                            </tr>
+                        @endif
+
+                        <!-- KAKAK -->
+                        @if ($cv->anggota_keluarga_kakak)
+                            <tr class="family-row">
+                                <td class="narrow-left">兄弟(上)</td>
+                                <td class="main-cell">{{ $cv->anggota_keluarga_kakak }}</td>
+                                <td class="main-cell"></td>
+                                <td class="narrow-right"></td>
+                            </tr>
+                        @endif
+
+                        <!-- ADIK -->
+                        @if ($cv->anggota_keluarga_adik)
+                            <tr class="family-row">
+                                <td class="narrow-left">兄弟(下)</td>
+                                <td class="main-cell">{{ $cv->anggota_keluarga_adik }}</td>
+                                <td class="main-cell"></td>
+                                <td class="narrow-right"></td>
+                            </tr>
+                        @endif
+
+                        <!-- Baris Pendapatan Keluarga -->
+                        <tr class="income-row">
+                            <td colspan="2" style="width: 10px !important;" class="label-cell">
+                                家族の収入
+                                <div class="subtitle"></div>
+                            </td>
+                            <td colspan="2" class="data-cell">
+                                {{ $cv->rata_rata_penghasilan_keluarga }}
                             </td>
                         </tr>
 
-                        <tr>
-                            <td>理解力</td>
-                            <td style="height: 40px;">
-                                {{ $cv->kemampuan_pemahaman_ssw }}
-                            </td>
-
-                            <td>行動力</td>
-                            <td>
-                                {{ $cv->kekuatan_tindakan }}
-                            </td>
-                        </tr>
                     </tbody>
                 </table>
 
 
-                <!-- HOBI -->
+                {{-- <!-- HOBI -->
                 <!-- HOBI -->
                 <table border="1" cellspacing="0" cellpadding="6"
-                    style="width: 450px; border-collapse: collapse; font-size: 12px;">
+                    style="width: 450px; border-collapse: collapse; font-size: 10px;">
                     <tbody>
                         <tr>
                             <td style="width: 80px;">趣味</td>
@@ -401,97 +586,98 @@
                             </td>
                         </tr>
                     </tbody>
-                </table>
+                </table> --}}
 
 
-                {{-- TABEL BAHASA --}}
+                {{-- kelebihan --}}
                 <table border="1" cellspacing="0" cellpadding="6"
-                    style="margin-top: 1rem; width: 450px; border-collapse: collapse; font-size: 12px;">
+                    style="margin-top: 1rem; width: 450px; border-collapse: collapse; font-size: 10px;">
                     <thead>
                         <tr>
-                            <th style="width: 225px; text-align: center;">日本語学習期間</th>
-                            <th style="width: 225px; text-align: center;">英語能力</th>
+                            <td style="width: 225px; text-align: center;">長所</td>
+                            <td style="width: 225px; text-align: center;">先生からのコメント</td>
                         </tr>
                         <tr>
-                            <td style="height: 40px; text-align:center;">
-                                {{ $cv->lama_belajar_di_mendunia ?? '-' }}
+                            <td style="height: 20px; text-align:center;">
+                                {{ $cv->kelebihan_diri ?? '-' }}
                             </td>
                             <td style="text-align:center;">
-                                {{ $cv->kemampuan_berbahasa_inggris ?? '-' }}
+                                {{ $cv->komentar_guru_kelebihan_diri ?? '-' }}
                             </td>
                         </tr>
                     </thead>
                 </table>
 
-                {{-- TABEL MINAT & KEAHLIAN --}}
+                {{-- kekuranbgan --}}
                 <table border="1" cellspacing="0" cellpadding="6"
-                    style="margin-top: 1rem; width: 450px; border-collapse: collapse; font-size: 12px;">
+                    style="margin-top: 1rem; width: 450px; border-collapse: collapse; font-size: 10px;">
                     <thead>
                         <tr>
-                            <th style="width: 225px; text-align: center;">関心・興味</th>
-                            <th style="width: 225px; text-align: center;">特技</th>
+                            <td style="width: 225px; text-align: center;">短所</td>
+                            <td style="width: 225px; text-align: center;">先生からのコメント</td>
                         </tr>
                         <tr>
-                            <td style="height: 60px; text-align:center;">
-                                {{ $cv->ketertarikan_terhadap_jepang ?? '-' }}
+                            <td style="height: 20px; text-align:center;">
+                                {{ $cv->kekurangan_diri ?? '-' }}
                             </td>
                             <td style="text-align:center;">
-                                {{ $cv->keahlian_khusus ?? '-' }}
+                                {{ $cv->komentar_guru_kekurangan_diri ?? '-' }}
                             </td>
                         </tr>
                     </thead>
                 </table>
 
-                <!-- KELEBIHAN (長所) -->
+
+
                 <table border="1" cellspacing="0" cellpadding="6"
-                    style="margin-top: 1rem; width: 450px; border-collapse: collapse; font-size: 12px;">
+                    style="margin-top: 1rem; width: 450px; border-collapse: collapse; font-size: 10px;">
                     <tr>
-                        <th height="20px" style="text-align:center;">長所</th>
+                        <td height="20px" style="text-align:center;">興味・関心</td>
                     </tr>
                     <tr>
-                        <td height="150px" style="vertical-align: top; padding: 6px;">
-                            {{ $cv->kelebihan_diri ?? '-' }}
+                        <td height="20px" style="vertical-align: top; padding: 6px;">
+                            {{ $cv->ketertarikan_terhadap_jepang ?? '-' }}
                         </td>
                     </tr>
                 </table>
 
-                <!-- KEKURANGAN (短所) -->
+
+                <!-- ORANG YANG DIHORMATI -->
                 <table border="1" cellspacing="0" cellpadding="6"
-                    style="margin-top: 1rem; width: 450px; border-collapse: collapse; font-size: 12px;">
+                    style="margin-top: 1rem; width: 450px; border-collapse: collapse; font-size: 10px;">
                     <tr>
-                        <th height="20px" style="text-align:center;">短所</th>
+                        <td height="20px" style="text-align:center;">尊敬する人(及びその理由)</td>
                     </tr>
                     <tr>
-                        <td height="100px" style="vertical-align: top; padding: 6px;">
-                            {{ $cv->kekurangan_diri ?? '-' }}
+                        <td height="20px" style="vertical-align: top; padding: 6px;">
+                            {{ $cv->orang_yang_dihormati ?? '-' }}
                         </td>
                     </tr>
                 </table>
 
-                <!-- CATATAN / MEMO (メモ / コメント) -->
+
+
                 <table border="1" cellspacing="0" cellpadding="6"
-                    style="margin-top: 1rem; width: 450px; border-collapse: collapse; font-size: 12px;">
+                    style="margin-top: 1rem; width: 450px; border-collapse: collapse; font-size: 10px;">
                     <tr>
-                        <th height="20px" style="text-align:center;">メモ / コメント</th>
+                        <td height="20px" style="text-align:center;">メモ / コメント</td>
                     </tr>
                     <tr>
-                        <td height="200px" style="vertical-align: top; padding: 6px;">
-                            {{-- Jika ingin digabung --}}
-                            <strong>先生コメント（長所）:</strong><br>
+                        <td height="20px" style="vertical-align: top; padding: 6px;">
+
                             {{ $cv->komentar_guru_kelebihan_diri ?? '-' }}<br><br>
 
-                            <strong>先生コメント（短所）:</strong><br>
+
                             {{ $cv->komentar_guru_kekurangan_diri ?? '-' }}
                         </td>
                     </tr>
                 </table>
 
-
             </div>
 
             <div>
                 <div style="display: flex; position: relative;">
-                    <table border="3" cellspacing="0" style="height: 200px; width: 140px;">
+                    <table border="0" cellspacing="0" style="height: 200px; width: 140px;">
                         <thead>
                             <tr>
 
@@ -502,9 +688,9 @@
                                 <td style="padding: 0; text-align: center;">
                                     @if ($cv->pas_foto_cv)
                                         <img src="{{ asset($cv->pas_foto_cv) }}" alt="Foto Kandidat"
-                                            style="width: 100%; height: 180px; object-fit: cover; display: block;">
+                                            style="width: 100%; height: 200px; object-fit: cover; display: block;">
                                     @else
-                                        <span style="font-size: 11px;">Tidak ada foto</span>
+                                        <span style="font-size: 10px;">Tidak ada foto</span>
                                     @endif
                                 </td>
                             </tr>
@@ -513,7 +699,7 @@
                     </table>
 
                     <!-- Nomor (contoh: ID CV) -->
-                    <h1 style="position: absolute; top: -1rem; right: -3rem; font-size: 24px;">
+                    <h1 style="position: absolute; top: -1rem; right: -3rem; font-size: 10px">
                         {{ $cv->id }}
                     </h1>
                 </div>
@@ -521,86 +707,19 @@
 
                 <div style="padding-top: 1rem;">
                     <table border="1" cellspacing="0" cellpadding="6"
-                        style="width: 260px; border-collapse: collapse; font-size: 12px; text-align: center;">
+                        style="width: 260px; border-collapse: collapse; font-size: 10px; text-align: center;">
                         <tr>
-                            <th>血液型 (Golongan Darah)</th>
-                            <th>視力 (Penglihatan)</th>
+                            <td>出身地</td>
+                            <td>宗教</td>
                         </tr>
                         <tr>
-                            <td style="height: 60px;">
-                                {{ $cv->golongan_darah }}
+                            <td style="height: 30px;">
+                                {{ $cv->tempat_tanggal_lahir ?? '-' }}
                             </td>
                             <td>
-                                {{ $cv->kemampuan_penglihatan_mata }}
-                                @if ($cv->kemampuan_penglihatan_mata_lainnya)
-                                    <br>({{ $cv->kemampuan_penglihatan_mata_lainnya }})
-                                @endif
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-
-                <div style="padding-top: 1rem;">
-                    <table border="1" cellspacing="0" cellpadding="6"
-                        style="width: 260px; border-collapse: collapse; font-size: 12px; text-align: center;">
-                        <tr>
-                            <th>身長 (Tinggi)</th>
-                            <th>体重 (Berat)</th>
-                        </tr>
-                        <tr>
-                            <td style="height: 60px;">
-                                {{ $cv->tinggi_badan }} cm
-                            </td>
-                            <td>
-                                {{ $cv->berat_badan }} kg
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-
-                <div style="padding-top: 1rem;">
-                    <table border="1" cellspacing="0" cellpadding="6"
-                        style="width: 260px; border-collapse: collapse; font-size: 12px; text-align: center;">
-                        <tr>
-                            <th colspan="2">利き手 (Tangan Dominan)</th>
-                        </tr>
-                        <tr>
-                            <td style="height: 60px; width: 40px;">
-                                {{ $cv->tangan_dominan }}
-                            </td>
-                            <td>
-                                {{ $cv->tangan_dominan == 'Kanan' ? '右利き' : '左利き' }}
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-
-                <div style="padding-top: 1rem;">
-                    <table border="1" cellspacing="0" cellpadding="6"
-                        style="width: 260px; border-collapse: collapse; font-size: 12px; text-align: center;">
-                        <tr>
-                            <th>靴のサイズ (Ukuran Sepatu)</th>
-                        </tr>
-                        <tr>
-                            <td style="height: 60px;">
-                                {{ $cv->ukuran_sepatu }} cm
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-
-
-                <div style="padding-top: 1rem;">
-                    <table border="1" cellspacing="0" cellpadding="6"
-                        style="width: 260px; border-collapse: collapse; font-size: 12px; text-align: center;">
-                        <tr>
-                            <th>服のサイズ (Ukuran Baju)</th>
-                        </tr>
-                        <tr>
-                            <td style="height: 60px;">
-                                {{ $cv->ukuran_atasan_baju }}
-                                @if ($cv->ukuran_atasan_baju_lainnya)
-                                    （{{ $cv->ukuran_atasan_baju_lainnya }}）
+                                {{ $cv->agama ?? '-' }}
+                                @if ($cv->agama_lainnya)
+                                    <br>({{ $cv->agama_lainnya }})
                                 @endif
                             </td>
                         </tr>
@@ -610,119 +729,204 @@
 
                 <div style="padding-top: 1rem;">
                     <table border="1" cellspacing="0" cellpadding="6"
-                        style="width: 260px; border-collapse: collapse; font-size: 12px; text-align: center;">
+                        style="width: 260px; border-collapse: collapse; font-size: 10px; text-align: center;">
                         <tr>
-                            <th style="width: 100px;">喫煙<br>(Merokok)</th>
-                            <th style="width: 100px;">飲酒<br>(Minum Alkohol)</th>
+                            <td>配偶者の有無</td>
+                            <td>子供</td>
                         </tr>
                         <tr>
-                            <td style="height: 60px;">
-                                {{ $cv->merokok }}
+                            <td style="height: 30px;">
+                                {{ $cv->status_perkawinan ?? '-' }}
                             </td>
-                            <td style="height: 60px;">
-                                {{ $cv->minum_alkohol }}
+                            <td>
+                                {{ $cv->anggota_keluarga_anak ?? '-' }}
                             </td>
                         </tr>
                     </table>
                 </div>
 
+                <div style="padding-top: 1rem;">
+                    <table border="1" cellspacing="0" cellpadding="6"
+                        style="width: 260px; border-collapse: collapse; font-size: 10px; text-align: center;">
+                        <tr>
+                            <td colspan="2">免許</td>
+                        </tr>
+                        <tr>
+                            <td style="height: 20px; width: 40px;">
+                                {{ $cv->surat_izin_mengemudi ?? '無' }}
+                                @if ($cv->surat_izin_mengemudi == 'Ada' && $cv->jenis_sim)
+                            </td>
+                            <td>
+                                ({{ $cv->jenis_sim }})
+                            </td>
+                            @endif
+                        </tr>
+                    </table>
+                </div>
+
+
+                <div style="padding-top: 1rem;">
+                    <table border="1" cellspacing="0" cellpadding="6"
+                        style="width: 260px; border-collapse: collapse; font-size: 10px; text-align: center;">
+                        <tr>
+                            <td>趣味</td>
+                        </tr>
+                        <tr>
+                            <td style="height: 20px;">
+                                {{ $cv->hobi ?? '-' }}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div style="padding-top: 1rem;">
+                    <table border="1" cellspacing="0" cellpadding="6"
+                        style="width: 260px; border-collapse: collapse; font-size: 10px; text-align: center;">
+                        <tr>
+                            <td>特技</td>
+                        </tr>
+                        <tr>
+                            <td style="height: 20px; text-align: center; padding: 6px;">
+                                {{ $cv->keahlian_khusus ?? '-' }}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+
+
+                <div style="padding-top: 1rem;">
+                    <table border="1" cellspacing="0" cellpadding="4"
+                        style="width: 260px; border-collapse: collapse; font-size: 10px; text-align: center;">
+                        <tr>
+                            <td style="width: 100px;">タバコ</td>
+                            <td style="width: 100px;">飲酒</td>
+                        </tr>
+                        <tr>
+                            <td style="height: 20px;">
+                                {{ $cv->merokok ?? '-' }}
+                            </td>
+                            <td>
+                                {{ $cv->minum_alkohol ?? '-' }}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
 
                 <table border="1" cellpadding="4" cellspacing="0"
-                    style="border-collapse: collapse; width: 260px; text-align:center; margin-top:1rem;">
+                    style="border-collapse: collapse; width: 260px; text-align:center; margin-top:1rem; font-size: 10px;">
                     <tr>
                         <td>身長</td>
-                        <td style="width:40px;">{{ $cv->tinggi_badan }}</td>
+                        <td style="width:40px;">{{ $cv->tinggi_badan ?? '-' }}</td>
                         <td>cm</td>
 
                         <td>体重</td>
-                        <td style="width:40px;">{{ $cv->berat_badan }}</td>
+                        <td style="width:40px;">{{ $cv->berat_badan ?? '-' }}</td>
                         <td>kg</td>
                     </tr>
                     <tr>
                         <td>腰</td>
-                        <td>{{ $cv->ukuran_pinggang }}</td>
+                        <td>{{ $cv->ukuran_pinggang ?? '-' }}</td>
                         <td>cm</td>
 
                         <td>靴</td>
-                        <td>{{ $cv->ukuran_sepatu }}</td>
+                        <td>{{ $cv->ukuran_sepatu ?? '-' }}</td>
                         <td>cm</td>
                     </tr>
                 </table>
 
-                <table border="1" cellpadding="4" cellspacing="0"
-                    style="border-collapse: collapse; width:260px; margin-top:20px; text-align:center; font-size:12px;">
+
+                <table border="1" cellpadding="3" cellspacing="0"
+                    style="border-collapse: collapse; width:260px; margin-top:20px; text-align:center; font-size:10px;">
                     <tr>
-                        <td>服</td>
-                        <td>{{ $cv->ukuran_baju ?? '' }}</td>
+                        <td>{{ $cv->ukuran_atasan_baju ?? '' }}</td>
+                        <td>服サイズ</td>
 
                         <td>血液型</td>
                         <td>{{ $cv->golongan_darah ?? '' }}</td>
                     </tr>
                     <tr>
                         <td rowspan="2">視力</td>
-                        <td>右：{{ $cv->visus_kanan ?? '' }}</td>
+                        <td>右：{{ $cv->tangan_dominan ?? '' }}</td>
 
-                        <td rowspan="2">利き手</td>
-                        <td rowspan="2">{{ $cv->kikite ?? '' }}</td>
+                        <td rowspan="2">視力</td>
+                        <td rowspan="2">{{ $cv->kemampuan_penglihatan_mata ?? '' }}</td>
                     </tr>
                     <tr>
-                        <td>左：{{ $cv->visus_kiri ?? '' }}</td>
+                        <td>利き手：{{ $cv->tangan_dominan ?? '' }}</td>
                     </tr>
                 </table>
 
-                <table border="1" cellpadding="6" cellspacing="0"
-                    style="border-collapse: collapse; width:260px; margin-top:20px; text-align:center; font-size:12px;">
+                <table border="1" cellpadding="3" cellspacing="0"
+                    style="border-collapse: collapse; width:260px; margin-top:20px; text-align:center; font-size:10px;">
                     <tr>
                         <td>日本語学習期間</td>
                     </tr>
                     <tr>
-                        <td>{{ $cv->lama_belajar_jepang ?? '' }} ヶ月　～　今まで</td>
+                        <td>{{ $cv->lama_belajar_di_mendunia ?? '' }}</td>
                     </tr>
                 </table>
 
                 <table border="1" cellpadding="6" cellspacing="0"
                     style="border-collapse: collapse; width:260px; margin-top:20px; text-align:center;">
                     <tr>
-                        <td>日本語能力</td>
+                        <td>日本語
+                            能力</td>
+                        <td>{{ $cv->kemampuan_bahasa_jepang }}</td>
                         <td>機敏性</td>
+                        <td>{{ $cv->kelincahan_dalam_bekerja }}</td>
                     </tr>
                     <tr>
                         <td>忍耐力</td>
+                        <td>A</td>
                         <td>行動力</td>
+                        <td>{{ $cv->kekuatan_tindakan }}</td>
                     </tr>
                     <tr>
                         <td>理解力</td>
+                        <td>{{ $cv->kemampuan_pemahaman_ssw }}</td>
                         <td>英語力</td>
+                        <td>{{ $cv->kemampuan_berbahasa_inggris }}</td>
                     </tr>
                 </table>
-                <table border="1" cellpadding="6" cellspacing="0"
+                <table border="1" cellpadding="3" cellspacing="0"
                     style="border-collapse: collapse; width:260px; margin-top:20px; text-align:center;">
                     <tr>
                         <td>お祈り</td>
+                        <td style="width: 140px"></td>
+
                     </tr>
                     <tr>
                         <td>断食</td>
+                        <td></td>
+
                     </tr>
                     <tr>
                         <td>実習希望期間</td>
+                        <td></td>
+
                     </tr>
                 </table>
-                <table border="1" cellpadding="6" cellspacing="0"
-                    style="border-collapse: collapse; width:260px; margin-top:20px; text-align:center;">
+                <table border="1" cellpadding="3" cellspacing="0"
+                    style="border-collapse: collapse; width:260px; border-top:none; text-align:center;">
+                    <tr>
+                        <td rowspan="5" style=" writing-mode: vertical-rl; padding: 5px;">体力 テス ト</td>
+                        <!-- contoh isi kolom kiri -->
+                    </tr>
                     <tr>
                         <td>腕立</td>
                     </tr>
                     <tr>
-                        <td>1回：8・27回　2回目：21回　3回目：17回</td>
+                        <td>1回目 :27回 2回目 :21回 3回目 :17回</td>
                     </tr>
                     <tr>
                         <td>スクワット</td>
                     </tr>
+                    <tr>
+                        <td style="padding: 1rem"></td>
+                    </tr>
+
                 </table>
-
-
-
-
             </div>
         </div>
     </div>
@@ -738,28 +942,26 @@
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js"></script>
 <script>
+    function capitalizeText() {
+        const textNodes = [];
+        const walker = document.createTreeWalker(
+            document.querySelector('.container2'),
+            NodeFilter.SHOW_TEXT,
+            null,
+            false
+        );
 
-
-function capitalizeText() {
-    const textNodes = [];
-    const walker = document.createTreeWalker(
-        document.querySelector('.container2'),
-        NodeFilter.SHOW_TEXT,
-        null,
-        false
-    );
-
-    while (walker.nextNode()) {
-        const node = walker.currentNode;
-        if (node.nodeValue.trim() !== '') {
-            textNodes.push(node);
+        while (walker.nextNode()) {
+            const node = walker.currentNode;
+            if (node.nodeValue.trim() !== '') {
+                textNodes.push(node);
+            }
         }
-    }
 
-    textNodes.forEach(node => {
-        node.nodeValue = node.nodeValue.replace(/\b\w/g, char => char.toUpperCase());
-    });
-}
+        textNodes.forEach(node => {
+            node.nodeValue = node.nodeValue.replace(/\b\w/g, char => char.toUpperCase());
+        });
+    }
 
     async function translateToJapanese() {
         // Ambil semua elemen teks

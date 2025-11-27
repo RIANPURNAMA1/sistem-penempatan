@@ -34,6 +34,11 @@
         text-align: center;
     }
 
+    .bg-tr {
+        background-color: #DBEEF3;
+        font-weight: bold;
+    }
+
     .header-row {
         background-color: #ffffff;
         font-weight: bold;
@@ -54,7 +59,7 @@
     }
 
     .data-row-alt {
-        background-color: #f9f9f9;
+        background-color: #ffffff;
     }
 
     .label-cell {
@@ -63,7 +68,7 @@
     }
 
     .blue-header {
-        background-color: #e3f2fd;
+        background-color: #DBEEF3;
         font-weight: bold;
         font-weight: bold;
     }
@@ -96,6 +101,9 @@
     .header {
         text-align: start;
     }
+    .border-thin {
+    border-bottom: 1px solid #ccc;
+}
 
     .header h1 {
         font-size: 14px;
@@ -111,8 +119,8 @@
 
     .photo-guide {
         position: absolute;
-        right: -1rem;
-        top: -1rem;
+        right: -2rem;
+        top: -2rem;
         padding: 10px;
         font-size: 11px;
         line-height: 2.3;
@@ -134,12 +142,12 @@
     }
 
     th {
-        background-color: #e3f2fd;
+        background-color: #DBEEF3;
         font-weight: bold;
     }
 
     .name-cell {
-        background-color: #e3f2fd;
+        background-color: #DBEEF3;
         font-weight: bold;
         width: 100px;
     }
@@ -156,7 +164,7 @@
     }
 
     .section-header {
-        background-color: #e3f2fd;
+        background-color: #DBEEF3;
         font-weight: bold;
         font-weight: bold;
         text-align: center;
@@ -252,7 +260,6 @@
 <body>
     <div class="mb-3 btn-container" style="display: flex; flex-wrap: wrap; gap: 10px;">
         <button class="btn btn-success" onclick="window.print()">印刷 PDF</button>
-        <button class="btn btn-primary" onclick="downloadPDF()">Download PDF</button>
         <button class="btn btn-success" onclick="translateToJapanese()">日本語に翻訳 Translator To Japan</button>
         <button class="btn btn-primary" onclick="capitalizeText()">Huruf Awal Kapital</button>
         <button class="btn btn-info" onclick="window.location='/data/cv/kandidat'">Kembali</button>
@@ -282,7 +289,7 @@
 
 
             <div class="" style="position: relative">
-                <div class="photo-guide" style="position: absolute; bottom: 10rem;">
+                <div class="photo-guide" style="position: absolute;">
                     <img src="{{ asset($cv->pas_foto_cv) }}" width=130" height="" alt="">
                 </div>
             </div>
@@ -295,7 +302,7 @@
                 </tr>
                 <tr>
                     <th class="name-cell" style="text-align: center">氏　名</th>
-                    <td style="height: 150px" colspan="5" class="large-name">
+                    <td style="height: 130px" colspan="5" class="large-name ">
                         {{ $cv->nama_lengkap_romaji }}
                     </td>
                 </tr>
@@ -312,17 +319,17 @@
                 <tr>
                     <th class="name-cell" style="text-align: center">ふりがな</th>
                     <td colspan="3" class="input-field">{{ $cv->nama_lengkap_romaji }}</td>
-                    <td colspan="2" style="text-align: center"><strong>国外・国内</strong></td>
+                    <td colspan="2" class="name-cell" style="text-align: center"><strong>国外・国内</strong></td>
                     <td colspan="2" style="text-align: center">国外・国内</td>
                 </tr>
                 <tr>
                     <th class="name-cell" style="text-align: center" rowspan="2">現住所</th>
                     <td rowspan="2" colspan="3">{{ $cv->alamat_lengkap }}</td>
-                    <td colspan="2" style="text-align: center"><strong>在留資格</strong></td>
+                    <td colspan="2" class="name-cell" style="text-align: center"><strong>在留資格</strong></td>
                     <td colspan="2">―</td>
                 </tr>
                 <tr>
-                    <td colspan="2" style="text-align: center"><strong>在留期限</strong></td>
+                    <td colspan="2" class="name-cell" style="text-align: center"><strong>在留期限</strong></td>
                     <td colspan="2">―</td>
                 </tr>
                 <tr>
@@ -350,6 +357,8 @@
                     <td>{{ $cv->ukuran_sepatu }}</td>
                 </tr>
             </table>
+
+
             <!-- Education History -->
             <table border="1" cellpadding="5" cellspacing="0">
                 <tr>
@@ -360,9 +369,9 @@
 
                 @forelse($cv->pendidikans as $pendidikan)
                     <tr>
-                        <td colspan="2">{{ $pendidikan->tahun }}</td>
-                        <td colspan="3">{{ $pendidikan->nama }}　卒業</td>
-                        <td colspan="2" class="input-field">{{ $pendidikan->jurusan ?? '-' }}</td>
+                        <td colspan="2" class=" p-3">{{ $pendidikan->tahun }}</td>
+                        <td colspan="3" class=" p-3">{{ $pendidikan->nama }}　卒業</td>
+                        <td colspan="2" class="input-field  p-3">{{ $pendidikan->jurusan ?? '-' }}</td>
                     </tr>
                 @empty
                     <tr>
@@ -371,10 +380,12 @@
                         <td colspan="2" class="input-field"></td>
                     </tr>
                 @endforelse
-            </table>
-
-            <!-- Work History -->
-            <table border="1" cellpadding="5" cellspacing="0">
+                <tr>
+                    <td colspan="2" class="input-field p-3"></td>
+                    <td colspan="3" class="input-field  p-3"></td>
+                    <td colspan="2" class="input-field  p-3"></td>
+                </tr>
+            
                 <tr>
                     <th class="section-header" colspan="2">年・月</th>
                     <th class="section-header" colspan="3">職　歴</th>
@@ -383,74 +394,135 @@
 
                 @forelse($cv->pengalamans as $pengalaman)
                     <tr>
-                        <td colspan="2">
+                        <td colspan="2" class="p-3">
                             {{ $pengalaman->lama_bekerja ?? '○○○○年○○月～○○○○年○○月' }}
                         </td>
-                        <td colspan="3">{{ $pengalaman->perusahaan }}　退職</td>
-                        <td colspan="2" class="input-field">{{ $pengalaman->jabatan ?? '-' }}</td>
+                        <td colspan="3" class="p-3">{{ $pengalaman->perusahaan }}　退職</td>
+                        <td colspan="2" class="input-field p-3">{{ $pengalaman->jabatan ?? '-' }}</td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="2" class="input-field"></td>
-                        <td colspan="3" class="input-field"></td>
-                        <td colspan="2" class="input-field"></td>
+                        <td colspan="2" class="input-field  p-3"></td>
+                        <td colspan="3" class="input-field  p-3"></td>
+                        <td colspan="2" class="input-field  p-3"></td>
                     </tr>
                 @endforelse
+                <tr>
+                    <td colspan="2" class="input-field p-3"></td>
+                    <td colspan="3" class="input-field  p-3"></td>
+                    <td colspan="2" class="input-field  p-3"></td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="input-field  p-3"></td>
+                    <td colspan="3" class="input-field  p-3"></td>
+                    <td colspan="2" class="input-field  p-3"></td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="input-field  p-3"></td>
+                    <td colspan="3" class="input-field  p-3"></td>
+                    <td colspan="2" class="input-field  p-3"></td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="input-field  p-3"></td>
+                    <td colspan="3" class="input-field  p-3"></td>
+                    <td colspan="2" class="input-field  p-3"></td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="input-field  p-3"></td>
+                    <td colspan="3" class="input-field  p-3"></td>
+                    <td colspan="2" class="input-field  p-3"></td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="input-field  p-3"></td>
+                    <td colspan="3" class="input-field  p-3"></td>
+                    <td colspan="2" class="input-field  p-3"></td>
+                </tr>
+                <tr>
+                    <td colspan="2" class="input-field  p-3"></td>
+                    <td colspan="3" class="input-field  p-3"></td>
+                    <td colspan="2" class="input-field  p-3"></td>
+                </tr>
+              
             </table>
         </div>
 
         <div>
             <!-- Tabel 1: Lisensi dan Kualifikasi -->
-            <table style="width: 600px; margin-top: 5rem">
+            <table style="width: 700px; margin-top: 4rem">
                 <thead>
-                    <tr class="header-row">
-                        <th colspan="2" style=" text-align:center;">年・月</th>
-                        <th style=" text-align:center;">免許・資格</th>
+                    <tr class="header-row ">
+                        <th colspan="2" class="p-3" style="text-align:center;">年・月</th>
+                        <th class="p-3" style="text-align:center;">免許・資格</th>
                     </tr>
                 </thead>
                 <tbody>
+
+                    <!-- BARIS 1: Data SIM -->
                     <tr>
-                        <td class="year-col">年</td>
-                        <td class="month-col">月</td>
-                        <td class="content-col">〇〇〇〇〇〇　取得</td>
+                        <td class="year-col  p-3">{{ now()->format('Y') }}</td>
+                        <td class="month-col  p-3">{{ now()->format('m') }}</td>
+                        <td class="content-col  p-3">
+                            @if ($cv->surat_izin_mengemudi === 'Ada')
+                                {{ $cv->jenis_sim }}　取得
+                            @else
+                                Tidak memiliki SIM
+                            @endif
+                        </td>
                     </tr>
+
+                    
+                    <!-- BARIS 2 (Contoh kosong atau bisa diisi data lain) -->
                     <tr class="data-row-alt">
-                        <td class="year-col">年</td>
-                        <td class="month-col">月</td>
-                        <td class="content-col">〇〇〇〇〇〇　取得</td>
+                        <td class="year-col  p-3"></td>
+                        <td class="month-col  p-3"></td>
+                        <td class="content-col  p-3"></td>
                     </tr>
-                    <tr>
-                        <td class="year-col"></td>
-                        <td class="month-col"></td>
-                        <td class="content-col"></td>
+                    <!-- BARIS 2 (Contoh kosong atau bisa diisi data lain) -->
+                    <tr class="data-row-alt">
+                        <td class="year-col  p-3"></td>
+                        <td class="month-col  p-3"></td>
+                        <td class="content-col  p-3"></td>
                     </tr>
-                    <tr>
-                        <td class="year-col"></td>
-                        <td class="month-col"></td>
-                        <td class="content-col"></td>
+                    <!-- BARIS 2 (Contoh kosong atau bisa diisi data lain) -->
+                    <tr class="data-row-alt">
+                        <td class="year-col  p-3"></td>
+                        <td class="month-col  p-3"></td>
+                        <td class="content-col  p-3"></td>
                     </tr>
-                    <tr>
-                        <td class="year-col"></td>
-                        <td class="month-col"></td>
-                        <td class="content-col"></td>
+                    <!-- BARIS 2 (Contoh kosong atau bisa diisi data lain) -->
+                    <tr class="data-row-alt">
+                        <td class="year-col  p-3"></td>
+                        <td class="month-col  p-3"></td>
+                        <td class="content-col  p-3"></td>
                     </tr>
-                    <tr>
-                        <td class="year-col"></td>
-                        <td class="month-col"></td>
-                        <td class="content-col"></td>
+                    <!-- BARIS 2 (Contoh kosong atau bisa diisi data lain) -->
+                    <tr class="data-row-alt">
+                        <td class="year-col  p-3"></td>
+                        <td class="month-col  p-3"></td>
+                        <td class="content-col  p-3"></td>
                     </tr>
-                    <tr>
-                        <td class="year-col"></td>
-                        <td class="month-col"></td>
-                        <td class="content-col"></td>
+                    <!-- BARIS 2 (Contoh kosong atau bisa diisi data lain) -->
+                    <tr class="data-row-alt">
+                        <td class="year-col  p-3"></td>
+                        <td class="month-col  p-3"></td>
+                        <td class="content-col  p-3"></td>
                     </tr>
-                    <tr>
-                        <td class="year-col"></td>
-                        <td class="month-col"></td>
-                        <td class="content-col"></td>
+                    <!-- BARIS 2 (Contoh kosong atau bisa diisi data lain) -->
+                    <tr class="data-row-alt">
+                        <td class="year-col  p-3"></td>
+                        <td class="month-col  p-3"></td>
+                        <td class="content-col  p-3"></td>
                     </tr>
+                    <!-- BARIS 2 (Contoh kosong atau bisa diisi data lain) -->
+                    <tr class="data-row-alt">
+                        <td class="year-col  p-3"></td>
+                        <td class="month-col  p-3"></td>
+                        <td class="content-col  p-3"></td>
+                    </tr>
+
                 </tbody>
             </table>
+
             <!-- Tabel 2: Keahlian dan Pengalaman -->
             <table>
                 <thead>
@@ -462,7 +534,7 @@
                 </thead>
                 <tbody>
                     <tr class="no-border-top">
-                        <td rowspan="7" class="section-content">
+                        <td rowspan="7" class="section-content text-center">
                             <div class="section-item">
                                 <div class="section-title">【やってきた作業】</div>
                                 <div>{{ $cv->kelincahan_dalam_bekerja ?? '—' }}</div>
@@ -483,15 +555,16 @@
                                 <div>{{ $cv->kemampuan_berbahasa_inggris ?? '—' }}</div>
                             </div>
                         </td>
+                        <td colspan="" style="text-align: center;">{{ $cv->bidang_sertifikasi ?? '左・右' }}</td>
                         <td colspan="2" style="text-align: center;">{{ $cv->tangan_dominan ?? '左・右' }}</td>
                     </tr>
-                    <tr>
-                        <td style="text-align: center;" class="label-cell">矯正視力</td>
-                        <td style="text-align: center;">聴力異常</td>
+                    <tr style="">
+                        <td class="bg-tr" style="text-align: center;" class="">矯正視力</td>
+                        <td class="bg-tr" style="text-align: center;">聴力異常</td>
                     </tr>
                     <tr>
                         <td style="text-align: center;">{{ $cv->kemampuan_penglihatan_mata ?? '有・無' }}</td>
-                        <td style="text-align: center;">{{ $cv->gangguan_pendengaran ?? '有・無' }}</td>
+                        <td style="text-align: center;">{{ $cv->kemampuan_pendengaran ?? '有・無' }}</td>
                     </tr>
                     <tr>
                         <td colspan="2" class="blue-header" style="text-align: center;">宗教</td>
@@ -514,7 +587,7 @@
                 <tr>
                     <td class="comment-header"
                         style="
-                background-color: #e3f2fd;
+                background-color: #DBEEF3;
                 font-weight: bold;
                 text-align: center;
                 padding: 8px;
@@ -526,7 +599,7 @@
                 <tr>
                     <td class="comment-body"
                         style="
-                height: 200px; 
+                height: 176px; 
                 padding: 8px; 
                 border: 1px solid #000000;
                 vertical-align: top;

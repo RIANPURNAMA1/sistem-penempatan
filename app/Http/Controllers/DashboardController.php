@@ -97,7 +97,7 @@ class DashboardController extends Controller
             ];
         }
 
-      // ===============================
+        // ===============================
         // 1. AMBIL SEMUA USER BESERTA STATUS ONLINE
         // ===============================
         $users = User::select('id', 'name', 'last_activity')
@@ -127,14 +127,14 @@ class DashboardController extends Controller
 
         // distribusi status kandidat
         // Ambil semua status dan jumlahnya
-    $statusData = Kandidat::select('status_kandidat', DB::raw('COUNT(*) as jumlah'))
-        ->groupBy('status_kandidat')
-        ->orderBy('status_kandidat')
-        ->get();
+        $statusData = Kandidat::select('status_kandidat', DB::raw('COUNT(*) as jumlah'))
+            ->groupBy('status_kandidat')
+            ->orderBy('status_kandidat')
+            ->get();
 
-    // Pisahkan menjadi labels & counts
-    $statusLabels = $statusData->pluck('status_kandidat');
-    $statusCounts = $statusData->pluck('jumlah');
+        // Pisahkan menjadi labels & counts
+        $statusLabels = $statusData->pluck('status_kandidat');
+        $statusCounts = $statusData->pluck('jumlah');
 
         // Ambil semua data kandidat untuk tabel
         $kandidats = Kandidat::with(['pendaftaran', 'cabang', 'institusi'])
@@ -146,6 +146,46 @@ class DashboardController extends Controller
         // Ambil CV milik user yang sedang login
         $userId = Auth::id(); // id user login
         $cvs = CV::where('user_id', $userId)->with(['pendidikans', 'pengalamans'])->get();
+
+
+        $user = Auth::user();
+        $queryKandidat = Kandidat::with(['pendaftaran', 'cabang', 'institusi']);
+
+        // ===============================
+        // ADMIN CABANG → filter berdasarkan nama role
+        // ===============================
+        if ($user->role !== 'super admin') {
+            // Ambil nama cabang dari role user
+            $namaCabang = $user->role;
+
+            // cocokkan dengan nama cabang di tabel cabang
+            $queryKandidat->whereHas('cabang', function ($q) use ($namaCabang) {
+                $q->where('nama_cabang', $namaCabang);
+            });
+        }
+
+        // ===============================
+        // SUPER ADMIN → boleh filter cabang
+        // ===============================
+        if ($user->role === 'super admin' && request()->filled('cabang_id')) {
+            $queryKandidat->where('cabang_id', request('cabang_id'));
+        }
+
+        // ===============================
+        // FILTER STATUS (berlaku untuk semua role)
+        // ===============================
+        if (request()->filled('status_kandidat')) {
+            $queryKandidat->where('status_kandidat', request('status_kandidat'));
+        }
+
+        $kandidatsFiltered = $queryKandidat
+            ->orderBy('created_at', 'desc')
+            ->paginate(1)   // jumlah per halaman
+            ->withQueryString(); // agar filter tidak hilang saat berpindah halaman
+
+
+
+
         return view('dashboard', compact(
             'stats',
             'status_penempatan',
@@ -154,6 +194,8 @@ class DashboardController extends Controller
             'dataKandidat',
             'kandidats',
             'cvs', // <-- data kandidat
+            'kandidatsFiltered',
+
             'statusLabels',
             'statusCounts',
             'users'

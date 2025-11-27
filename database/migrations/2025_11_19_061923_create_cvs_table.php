@@ -12,10 +12,9 @@ return new class extends Migration
 
             $table->id();
             $table->unsignedBigInteger('user_id');
-
             // HALAMAN 1 - Data Awal
             $table->string('email');
-            $table->unsignedBigInteger('cabang_Id');
+            $table->unsignedBigInteger('cabang_id');
             $table->string('batch');
             $table->string('no_telepon');
             $table->string('no_orang_tua');
@@ -33,8 +32,8 @@ return new class extends Migration
             $table->json('sertifikat_files')->nullable();
 
             // HALAMAN 2 - Pengisian Data Diri
-           $table->json('pas_foto')->nullable();
-           $table->string('pas_foto_cv');
+            $table->json('pas_foto')->nullable();
+            $table->string('pas_foto_cv');
 
             $table->string('nama_lengkap_romaji');
             $table->string('nama_lengkap_katakana');
@@ -64,6 +63,13 @@ return new class extends Migration
             $table->enum('ukuran_celana', ['XS', 'S', 'M', 'L', 'XL', 'XXL']);
             $table->enum('tangan_dominan', ['Kanan', 'Kiri']);
             $table->enum('kemampuan_penglihatan_mata', ['Minus', 'Normal', 'Silinders']);
+            $table->enum('kemampuan_pendengaran', [
+                'Normal',
+                'Sedang',
+                'Kurang',
+                'Tuli Ringan',
+                'Tuli Berat'
+            ])->default('Normal');
             $table->string('kemampuan_penglihatan_mata_lainnya')->nullable();
             $table->enum('sudah_vaksin_berapa_kali', ['1x Vaksin', '2x Vaksin', '3x Vaksin']);
             $table->string('sudah_vaksin_berapa_kali_lainnya')->nullable();

@@ -22,6 +22,11 @@ class Pendaftaran extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+    // Relasi ke user
+    public function cv()
+    {
+        return $this->hasMany(Cv::class, 'cv_id');
+    }
 
 
     public function kandidat()
