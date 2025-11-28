@@ -5,7 +5,6 @@
 @section('content')
 <div class="">
 
-    <!-- Breadcrumb -->
     <nav aria-label="breadcrumb" class="mb-4">
         <ol class="breadcrumb border rounded-3 px-3 py-2 shadow-sm mb-0">
             <li class="breadcrumb-item"><a href="{{ url('/') }}" class="text-decoration-none text-secondary"><i class="bi bi-house-door me-1"></i> Dashboard</a></li>
@@ -22,42 +21,51 @@
             <form id="formTambahAdmin">
                 @csrf
 
-                <!-- Nama -->
                 <div class="mb-3">
-                    <label class="form-label">Nama</label>
-                    <input type="text" name="name" class="form-control" value="{{ old('name') }}" required>
+                    <label for="name" class="form-label">Nama</label>
+                    <input type="text" id="name" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}" required>
+                    @error('name')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
 
-                <!-- Email -->
                 <div class="mb-3">
-                    <label class="form-label">Email</label>
-                    <input type="email" name="email" class="form-control" value="{{ old('email') }}" required>
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" id="email" name="email" class="form-control @error('email') is-invalid @enderror" value="{{ old('email') }}" required>
+                    @error('email')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
 
-                <!-- Password -->
                 <div class="mb-3">
-                    <label class="form-label">Password</label>
-                    <input type="password" name="password" class="form-control" required>
+                    <label for="password" class="form-label">Password</label>
+                    <input type="password" id="password" name="password" class="form-control @error('password') is-invalid @enderror" required>
+                    @error('password')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
                 </div>
 
-                <!-- Konfirmasi Password -->
                 <div class="mb-3">
-                    <label class="form-label">Konfirmasi Password</label>
-                    <input type="password" name="password_confirmation" class="form-control" required>
+                    <label for="password_confirmation" class="form-label">Konfirmasi Password</label>
+                    <input type="password" id="password_confirmation" name="password_confirmation" class="form-control" required>
                 </div>
 
-                <!-- Role -->
                 <div class="mb-3">
-                    <label class="form-label">Role</label>
-                    <select name="role_id" class="form-select" required>
+                    <label for="role" class="form-label">Role</label>
+                    {{-- Ganti name="role_id" menjadi name="role" --}}
+                    <select name="role" id="role" class="form-select @error('role') is-invalid @enderror" required>
                         <option value="">-- Pilih Role --</option>
-                        @foreach($roles as $role)
-                            <option value="{{ $role->id }}" {{ old('role_id') == $role->id ? 'selected' : '' }}>
-                                {{ ucfirst($role->name) }}
+                        {{-- $roles kini adalah array asosiatif string dari AdminController --}}
+                        @foreach($roles as $key => $value)
+                            <option value="{{ $key }}" {{ old('role') == $key ? 'selected' : '' }}>
+                                {{ $value }}
                             </option>
                         @endforeach
                     </select>
-                    <small class="text-muted">Catatan: Role kandidat atau super admin tidak bisa ditambahkan di sini.</small>
+                    @error('role')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                    <small class="text-muted">Catatan: Hanya role Cabang yang bisa ditambahkan. Super Admin dan Kandidat tidak tersedia.</small>
                 </div>
 
                 <div class="text-end mt-4">
@@ -69,12 +77,40 @@
     </div>
 </div>
 
-<!-- jQuery & SweetAlert2 -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
 $(document).ready(function() {
+    
+    // Fungsi untuk membersihkan dan menampilkan error inline
+    function handleValidationErrors(errors) {
+        // Bersihkan error sebelumnya
+        $('.is-invalid').removeClass('is-invalid');
+        $('.invalid-feedback').remove();
+
+        let errorHtml = '';
+        $.each(errors, function(key, value) {
+            errorHtml += `• ${value[0]}<br>`;
+            // Tampilkan error inline
+            $(`#${key}`).addClass('is-invalid').after(`<div class="invalid-feedback">${value[0]}</div>`);
+        });
+        
+        // Tampilkan error di SweetAlert
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops!',
+            html: errorHtml,
+            confirmButtonText: 'Tutup'
+        });
+    }
+
+    // Hapus class is-invalid saat user mengetik
+    $('input, select').on('input change', function() {
+        $(this).removeClass('is-invalid');
+        $(this).next('.invalid-feedback').remove();
+    });
+
     $('#formTambahAdmin').submit(function(e) {
         e.preventDefault();
 
@@ -101,21 +137,16 @@ $(document).ready(function() {
                 });
             },
             error: function(xhr) {
-                let errors = '';
-                if (xhr.responseJSON?.errors) {
-                    $.each(xhr.responseJSON.errors, function(key, value) {
-                        errors += `• ${value[0]}<br>`;
-                    });
+                if (xhr.status === 422 && xhr.responseJSON?.errors) {
+                    handleValidationErrors(xhr.responseJSON.errors);
                 } else {
-                    errors = 'Terjadi kesalahan pada server.';
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops!',
+                        text: 'Terjadi kesalahan pada server.',
+                        confirmButtonText: 'Tutup'
+                    });
                 }
-
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops!',
-                    html: errors,
-                    confirmButtonText: 'Tutup'
-                });
             },
             complete: function() {
                 btn.prop('disabled', false);

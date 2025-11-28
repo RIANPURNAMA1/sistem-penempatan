@@ -11,16 +11,28 @@ use App\Http\Controllers\AuthController;
 
 
 
-Route::get('/cv', function () {
-    return view('cv.pdf');
-});
-Route::get('/cv2', function () {
-    return view('cv.pdf2');
-});
+use Laravel\Socialite\Facades\Socialite;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
-Route::get('/cv/violeta', function () {
-    return view('cv.pdf1');
-});
+
+
+Route::get('/auth/google/redirect', [AuthController::class, 'redirectToGoogle'])
+    ->name('socialite.redirect');
+
+Route::get('/auth/google/callback', [AuthController::class, 'handleGoogleCallback'])
+    ->name('socialite.callback');
+
+// Route::get('/cv', function () {
+//     return view('cv.pdf');
+// });
+// Route::get('/cv2', function () {
+//     return view('cv.pdf2');
+// });
+
+// Route::get('/cv/violeta', function () {
+//     return view('cv.pdf1');
+// });
 Route::middleware('guest')->group(function () {
     Route::get('/registrasi', [AuthController::class, 'showRegister'])->name('registrasi');
     Route::post('/registrasi', [AuthController::class, 'register'])->name('registrasi.post');
@@ -243,17 +255,24 @@ Route::middleware(['auth', 'role:kandidat'])->group(function () {
     // Detail pendaftaran
     Route::get('/pendaftaran/{id}', [PendaftaranController::class, 'show'])
         ->name('pendaftaran.show');
-    /*
-    |--------------------------------------------------------------------------
-    | DOKUMEN KANDIDAT
-    |--------------------------------------------------------------------------
-    */
+
+
+
 
     Route::middleware('auth')->get('/dokumen/{id}', [DokumenController::class, 'show'])
         ->name('dokumen.show');
 
     Route::get('/cv/export/{id}', [CvController::class, 'export'])->name('cv.export');
 });
+
+    /*
+    |--------------------------------------------------------------------------
+    | DOKUMEN KANDIDAT
+    |--------------------------------------------------------------------------
+    */
+    // Route ini memerlukan ID Kandidat sebagai parameter
+    Route::get('/kandidat/{id}/riwayat', [KandidatController::class, 'showHistory'])
+        ->name('kandidat.riwayat');
 
 
 Route::middleware('auth')->group(function () {

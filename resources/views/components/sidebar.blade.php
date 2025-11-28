@@ -1,5 +1,5 @@
         {{-- sidebar --}}
-   <div id="sidebar" class="card" style="z-index: 1050 !important;">
+        <div id="sidebar" class="card" style="z-index: 1050 !important;">
 
             <div class="sidebar-wrapper active shadow shadow-md" style="">
                 <div class="sidebar-header position-relative">
@@ -114,10 +114,13 @@
 
                                     </ul>
                                 </li>
+                                {{-- <li class="sidebar-item">
+                                    <a href="{{ route('kandidat.riwayat', $kandidat->id) }}"
+                                        class="sidebar-link d-flex align-items-center gap-2 py-2">
+                                        <i class="bi bi-clock-history"></i> <span class="fw-semibold">Riwayat</span>
+                                    </a>
+                                </li> --}}
                             @endif
-
-            
-
 
                             {{-- Menu untuk super admin --}}
                             @if (auth()->user()->role === 'super admin')

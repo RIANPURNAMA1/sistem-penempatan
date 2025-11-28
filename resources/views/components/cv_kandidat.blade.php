@@ -35,7 +35,7 @@
                         </tr>
                         {{-- PAS FOTO --}}
                         <tr>
-                            <th>Pas Foto</th>
+                            <th>Foto Lainnya</th>
                             <td>
                                 @php
                                     $pasFotos = json_decode($cv->pas_foto, true) ?? [];
@@ -259,7 +259,7 @@
                 </table>
             </div>
 
-            <button class="btn btn-info btn-sm mb-3 toggle-cv" type="button">
+            <button class="btn btn-info btn-sm mb-3 toggle-cv p-2" type="button">
                 <i class="bi bi-eye"></i> Lihat Semua
             </button>
             <a href="{{ route('pendaftaran.cv.edit', $cv->id) }}" class="btn btn-warning fw-semibold mb-3">

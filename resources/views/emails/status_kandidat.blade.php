@@ -24,8 +24,8 @@
         }
 
         .header {
-            background: linear-gradient(135deg, #0d6efd, #0746b8);
-            color: #ffffff;
+            background: linear-gradient(135deg, #ffffff, #ffffff);
+            color: #000000;
             padding: 35px 20px;
             text-align: center;
         }
@@ -89,44 +89,54 @@
 </head>
 
 <body>
-    <div class="email-container">
-        <div class="header">
-            <img src="{{ asset('assets/compiled/png/LOGO/logo4.png') }}" alt="Logo">
-            <h1 style="margin: 0; font-size: 26px; font-weight: 600;">Pembaruan Status Kandidat</h1>
-        </div>
-
-        <div class="content">
-            <h2>Halo {{ $nama }},</h2>
-
-            <p>
-                Kami ingin menginformasikan bahwa status proses Anda pada sistem kandidat telah diperbarui.
-                Berikut rincian terbaru:
-            </p>
-
-            <div class="status-box">
-                <p><strong>Status Terbaru:</strong> {{ $status }}</p>
-                <p><strong>Tanggal Pembaruan:</strong> {{ $tanggal }}</p>
-
-                @if ($catatan)
-                    <p><strong>Catatan Admin:</strong> {{ $catatan }}</p>
-                @endif
-            </div>
-
-            <p>
-                Untuk melihat detail lengkap mengenai proses Anda, silakan masuk ke portal kandidat melalui tombol berikut:
-            </p>
-
-            <a href="{{ url('/login') }}" class="button">Masuk ke Portal</a>
-
-            <p style="margin-top: 25px;">
-                Terima kasih atas perhatian dan kerja sama Anda.
-            </p>
-        </div>
-
-        <div class="footer">
-            &copy; {{ date('Y') }} Sistem Penempatan. Seluruh hak cipta dilindungi.
-        </div>
+ <div class="email-container">
+    <div class="header">
+        <img src="{{ asset('assets/compiled/png/LOGO/logo4.png') }}" alt="Logo">
+        <h1 style="margin: 0; font-size: 26px; font-weight: 600;">Pembaruan Status Kandidat</h1>
     </div>
+
+    <div class="content">
+        <h2>Halo {{ $nama }},</h2>
+
+        <p>
+            Melalui email ini, kami ingin menyampaikan bahwa terdapat pembaruan terbaru terkait proses seleksi dan administrasi Anda. 
+            Sistem kami mencatat adanya perubahan pada status kandidat yang perlu Anda ketahui untuk memastikan kelancaran tahapan selanjutnya.
+            Berikut informasi lengkap mengenai pembaruan tersebut:
+        </p>
+
+        <div class="status-box">
+            <p><strong>Status Terbaru:</strong> {{ $status }}</p>
+            <p><strong>Tanggal Pembaruan:</strong> {{ $tanggal }}</p>
+
+            @if ($catatan)
+                <p><strong>Catatan dari Admin:</strong> {{ $catatan }}</p>
+            @endif
+        </div>
+
+        <p>
+            Untuk mendapatkan penjelasan yang lebih detail, termasuk langkah-langkah yang perlu Anda lakukan berikutnya,
+            silakan mengakses portal kandidat melalui tombol berikut. Anda akan diarahkan langsung ke halaman login untuk
+            melihat seluruh informasi terbaru terkait proses Anda.
+        </p>
+
+        <a href="{{ url('/login') }}" class="button">Masuk ke Portal</a>
+
+        <p style="margin-top: 25px;">
+            Terima kasih atas waktu dan perhatian Anda. Kami sangat menghargai kerja sama serta komitmen Anda dalam mengikuti setiap tahap proses.
+            Apabila Anda memiliki pertanyaan atau memerlukan bantuan lebih lanjut, tim kami siap membantu kapan saja.
+        </p>
+
+        <p style="margin-top: 10px;">
+            Salam hormat,<br>
+            <strong>Mendunia.id</strong>
+        </p>
+    </div>
+
+    <div class="footer">
+        &copy; {{ date('Y') }} Mendunia.id. Seluruh hak cipta dilindungi.
+    </div>
+</div>
+
 </body>
 
 </html>

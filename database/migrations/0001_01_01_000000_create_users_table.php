@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('google_id')->nullable();
+
             $table->enum('role', [
                 'Cabang Cianjur Selatan Mendunia',
                 'Cabang Cianjur Pamoyanan Mendunia',

@@ -3,95 +3,140 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 
 class AdminController extends Controller
 {
+    // Daftar Role yang valid berdasarkan migration
+    private const VALID_ROLES = [
+        'Cabang Cianjur Selatan Mendunia',
+        'Cabang Cianjur Pamoyanan Mendunia',
+        'Cabang Batam Mendunia',
+        'Cabang Banyuwangi Mendunia',
+        'Cabang Kendal Mendunia',
+        'Cabang Pati Mendunia',
+        'Cabang Tulung Agung Mendunia',
+        'Cabang Bangkalan Mendunia',
+        'Cabang Bojonegoro Mendunia',
+        'Cabang Jember Mendunia',
+        'Cabang Wonosobo Mendunia',
+        'Cabang Eshan Mendunia',
+        'super admin',
+        'kandidat'
+    ];
+
+    // Daftar Role yang TIDAK BOLEH dibuat atau diubah (Super Admin dan Kandidat)
+    private const FORBIDDEN_ROLES = [
+        'super admin',
+        'kandidat'
+    ];
+
+    /**
+     * Tampilkan daftar admin (selain 'kandidat', jika tujuannya adalah user admin)
+     */
     public function index()
     {
-        $admins = User::with('role')->orderBy('created_at', 'desc')->get();
+        // Ambil semua user kecuali yang role-nya 'kandidat'
+        $admins = User::where('role', '!=', 'kandidat')
+                      ->orderBy('created_at', 'desc')
+                      ->get();
+
         return view('admin.index', compact('admins'));
     }
 
+    /**
+     * Tampilkan form untuk membuat admin baru.
+     */
     public function create()
     {
-        // Ambil semua role kecuali super admin (misal id=3)
-        $roles = Role::where('name', '!=', 'super admin')->get();
+        // Ambil daftar role yang diperbolehkan untuk dipilih saat membuat admin baru (selain FORBIDDEN_ROLES)
+        $allowedRoles = array_diff(self::VALID_ROLES, self::FORBIDDEN_ROLES);
+        
+        // Menggunakan array asosiatif untuk kemudahan di view (opsional, tergantung implementasi view)
+        $roles = array_combine($allowedRoles, $allowedRoles);
+
         return view('admin.create', compact('roles'));
     }
 
-   public function store(Request $request)
-{
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'email'=> 'required|email|unique:users,email',
-        'password'=> 'required|min:6|confirmed',
-        'role_id' => 'required|exists:roles,id'
-    ]);
+    /**
+     * Simpan admin baru.
+     */
+    public function store(Request $request)
+    {
+        // Daftar role yang diperbolehkan untuk dibuat (selain 'super admin' dan 'kandidat')
+        $allowedRoles = array_diff(self::VALID_ROLES, self::FORBIDDEN_ROLES);
 
-    // Cek role super admin atau kandidat
-    $role = Role::find($request->role_id);
-    if (in_array($role->name, ['super admin', 'kandidat'])) {
-        return redirect()->back()
-            ->withErrors(['role_id' => 'Tidak diperbolehkan membuat Super Admin atau Kandidat.'])
-            ->withInput();
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:6|confirmed',
+            // Validasi role harus ada di daftar yang diperbolehkan (bukan super admin atau kandidat)
+            'role' => ['required', 'string', Rule::in($allowedRoles)],
+        ]);
+        
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role' => $request->role // Menggunakan kolom 'role'
+        ]);
+
+        return redirect()->route('admins.index')->with('success', 'Admin berhasil ditambahkan');
     }
 
-    User::create([
-        'name' => $request->name,
-        'email'=> $request->email,
-        'password'=> Hash::make($request->password),
-        'role_id' => $request->role_id
-    ]);
-
-    return redirect()->route('admins.index')->with('success', 'Admin berhasil ditambahkan');
-}
-
-
+    /**
+     * Tampilkan form untuk mengedit admin.
+     */
     public function edit(User $admin)
     {
-        $roles = Role::where('name', '!=', 'super admin')->get();
+        // Ambil daftar role yang diperbolehkan untuk dipilih saat edit (selain FORBIDDEN_ROLES)
+        $allowedRoles = array_diff(self::VALID_ROLES, self::FORBIDDEN_ROLES);
+        $roles = array_combine($allowedRoles, $allowedRoles);
+
         return view('admin.edit', compact('admin', 'roles'));
     }
-public function update(Request $request, $id)
-{
-    // Cari admin berdasarkan id
-    $admin = User::findOrFail($id);
 
-    // Validasi input
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'email'=> 'required|email|unique:users,email,' . $admin->id,
-        'password'=> 'nullable|min:6|confirmed',
-        'role_id' => 'required|exists:roles,id'
-    ]);
+    /**
+     * Perbarui admin yang ada.
+     */
+    public function update(Request $request, User $admin)
+    {
+        // Daftar role yang diperbolehkan untuk diubah (selain 'super admin' dan 'kandidat')
+        $allowedRoles = array_diff(self::VALID_ROLES, self::FORBIDDEN_ROLES);
+        
+        // Validasi tidak mengizinkan mengubah role menjadi 'super admin' atau 'kandidat'
+        $request->validate([
+            'name' => 'required|string|max:255',
+            // Pastikan email unik, kecuali untuk diri sendiri
+            'email' => 'required|email|unique:users,email,' . $admin->id,
+            'password' => 'nullable|min:6|confirmed',
+            // Validasi role harus ada di daftar yang diperbolehkan (bukan super admin atau kandidat)
+            'role' => ['required', 'string', Rule::in($allowedRoles)],
+        ]);
 
-    // Cek role super admin
-    $role = Role::find($request->role_id);
-    if ($role->name === 'super admin') {
-        return redirect()->back()
-            ->withErrors(['role_id' => 'Tidak diperbolehkan mengubah menjadi Super Admin.'])
-            ->withInput();
+        // Tidak perlu pengecekan role secara manual di sini, karena sudah divalidasi dengan Rule::in($allowedRoles)
+        // yang sudah mengecualikan 'super admin' dan 'kandidat'.
+
+        $admin->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'role' => $request->role, // Menggunakan kolom 'role'
+            // Perbarui password jika ada, jika tidak gunakan password lama
+            'password' => $request->password ? Hash::make($request->password) : $admin->password
+        ]);
+
+        return redirect()->route('admins.index')->with('success', 'Admin berhasil diperbarui');
     }
 
-    // Update admin
-    $admin->update([
-        'name' => $request->name,
-        'email'=> $request->email,
-        'role_id' => $request->role_id,
-        'password'=> $request->password ? Hash::make($request->password) : $admin->password
-    ]);
-
-    return redirect()->route('admins.index')->with('success', 'Admin berhasil diperbarui');
-}
-
-
+    /**
+     * Hapus admin.
+     */
     public function destroy(User $admin)
     {
         // Cek jika super admin
-        if ($admin->role->name === 'super admin') {
+        if ($admin->role === 'super admin') {
             return redirect()->route('admins.index')->with('error', 'Super Admin tidak bisa dihapus.');
         }
 

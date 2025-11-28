@@ -3,29 +3,48 @@
 @section('title', 'Daftar Admin')
 
 @section('content')
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- ✅ DataTables Bootstrap 5 CSS -->
+    <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
     <div class="">
+        {{-- SWEETALERT DITAMPILKAN DENGAN BLADE --}}
+        {{-- Pastikan Anda sudah memuat SweetAlert2 di layouts.app, atau pindahkan link/script-nya ke luar section content --}}
         @if (session('success'))
             <script>
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Sukses',
-                    text: '{{ session('success') }}',
-                    timer: 3000,
-                    showConfirmButton: false
-                });
+                // Pastikan Swal sudah didefinisikan (script SweetAlert harus dimuat di bawah)
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Sukses',
+                        text: '{{ session('success') }}',
+                        timer: 3000,
+                        showConfirmButton: false
+                    });
+                }
             </script>
         @endif
         @if (session('error'))
             <script>
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: '{{ session('error') }}',
-                    timer: 3000,
-                    showConfirmButton: false
-                });
+                if (typeof Swal !== 'undefined') {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: '{{ session('error') }}',
+                        timer: 3000,
+                        showConfirmButton: false
+                    });
+                }
             </script>
         @endif
+
+        {{-- Hapus Link CSS DataTables/Bootstrap di sini (asumsi dimuat di layouts.app atau di bagian bawah) --}}
+        {{-- Jika Anda meletakkan di sini, ini akan diletakkan di dalam <body>, yang TIDAK direkomendasikan. --}}
+        {{-- Jika Bootstrap 5 & Icons belum dimuat di layouts.app, pindahkan ke layouts.app. --}}
 
         <nav aria-label="breadcrumb" class="mb-4 shadow shadow-md border-none">
             <ol class="breadcrumb border rounded-3 px-3 py-2 shadow-sm mb-0">
@@ -72,8 +91,8 @@
                     </thead>
                     <tbody>
                         @foreach ($admins as $index => $admin)
+                            {{-- Karena AdminController sudah memfilter 'kandidat', if ini opsional tapi tetap baik --}}
                             @if ($admin->role !== 'kandidat')
-                                {{-- skip kandidat --}}
                                 <tr>
                                     <td class="text-center">{{ $index + 1 }}</td>
                                     <td>{{ $admin->name }}</td>
@@ -81,23 +100,30 @@
                                     <td>
                                         @php
                                             $roleName = $admin->role ?? 'Tidak Ada';
+                                            // Menyesuaikan warna badge berdasarkan role yang ada di migration
                                             $badge = match (strtolower($roleName)) {
                                                 'super admin' => 'danger',
-                                                'admin cianjur' => 'success',
-                                                'admin cianjur selatan' => 'primary',
-                                                default => 'secondary',
+                                                'cabang cianjur selatan mendunia',
+                                                'cabang cianjur pamoyanan mendunia'
+                                                    => 'primary',
+                                                'cabang batam mendunia', 'cabang banyuwangi mendunia' => 'success',
+                                                default => 'info', // Default untuk role cabang lainnya
                                             };
+                                            // Membersihkan nama role untuk tampilan (Opsional)
+                                            $displayRole = str_replace('Cabang ', '', $roleName);
+                                            $displayRole = str_replace(' Mendunia', '', $displayRole);
                                         @endphp
-                                        <span class="badge bg-{{ $badge }}">{{ ucfirst($roleName) }}</span>
+                                        <span class="badge bg-{{ $badge }}">{{ ucfirst($displayRole) }}</span>
                                     </td>
-                                    <td>{{ $admin->created_at->format('Y-m-d') }}</td>
-                                    <td>{{ $admin->updated_at->format('Y-m-d') }}</td>
+                                    <td>{{ $admin->created_at->format('Y-m-d H:i') }}</td>
+                                    <td>{{ $admin->updated_at->format('Y-m-d H:i') }}</td>
                                     <td class="text-center">
                                         <div class="btn-group">
                                             <a href="{{ route('admins.edit', $admin->id) }}"
                                                 class="btn btn-sm btn-warning text-white" title="Edit">
                                                 <i class="bi bi-pencil-square"></i>
                                             </a>
+                                            {{-- Admin Super tidak bisa dihapus, cek di controller --}}
                                             <form action="{{ route('admins.destroy', $admin->id) }}" method="POST"
                                                 class="d-inline delete-form">
                                                 @csrf
@@ -117,64 +143,66 @@
             </div>
         </div>
     </div>
-
-    {{-- CSS & JS --}}
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-    <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <!-- ✅ Dependencies -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- ✅ DataTables JS -->
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
-        $(document).ready(function() {
-            const table = $('#tableAdmin').DataTable({
-                responsive: true,
-                pageLength: 10,
-                lengthMenu: [5, 10, 25, 50],
-                ordering: true,
-                language: {
-                    search: "🔍 Cari:",
-                    lengthMenu: "Tampilkan _MENU_ data",
-                    info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
-                    paginate: {
-                        previous: "← Sebelumnya",
-                        next: "Berikutnya →"
-                    },
-                    zeroRecords: "Tidak ada data ditemukan"
+        var table = $('#tableAdmin').DataTable({
+            responsive: true,
+            pageLength: 5, // tampilkan 5 baris per halaman
+            lengthMenu: [5, 10, 25, 50],
+            language: {
+                search: "🔍 Cari:",
+                lengthMenu: "Tampilkan _MENU_ data",
+                zeroRecords: "Tidak ada data ditemukan",
+                info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
+                paginate: {
+                    previous: "←",
+                    next: "→"
+                }
+            }
+        });
+
+      // LOGIC SWEETALERT UNTUK HAPUS
+        $('.delete-form').on('submit', function(e) {
+            e.preventDefault(); // Mencegah form dikirim secara default
+            const form = this; // Menyimpan referensi form saat ini
+            
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Data admin akan dihapus! Tindakan ini tidak dapat dikembalikan.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33', // Merah untuk Hapus
+                cancelButtonColor: '#3085d6', // Biru untuk Batal
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Jika pengguna mengklik 'Ya, hapus!', kirim formulir
+                    form.submit();
                 }
             });
-
-            $('#filterRole').on('keyup', function() {
-                table.column(3).search(this.value).draw();
-            });
-
-            $('#resetFilter').on('click', function() {
-                $('#filterRole').val('');
-                table.columns().search('').draw();
-            });
-
-            $('.delete-form').on('submit', function(e) {
-                e.preventDefault();
-                const form = this;
-                Swal.fire({
-                    title: 'Apakah Anda yakin?',
-                    text: "Data admin akan dihapus!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Ya, hapus!',
-                    cancelButtonText: 'Batal'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        form.submit();
-                    }
-                });
-            });
         });
+
+
+        // Filter Role (jika masih diperlukan, pastikan elemen #filterRole ada)
+        // if ($('#filterRole').length) {
+        //     $('#filterRole').on('keyup', function() {
+        //         table.column(3).search(this.value).draw();
+        //     });
+        // }
     </script>
 
+    {{-- STYLES (biarkan di sini atau pindahkan ke file CSS eksternal) --}}
     <style>
         #tableAdmin thead th {
             text-align: center;

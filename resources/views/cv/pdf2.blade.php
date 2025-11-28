@@ -119,7 +119,7 @@
 
     .photo-guide {
         position: absolute;
-        right: -2rem;
+        right: -2.4rem;
         top: -2rem;
         padding: 10px;
         font-size: 11px;
@@ -260,6 +260,7 @@
 <body>
     <div class="mb-3 btn-container" style="display: flex; flex-wrap: wrap; gap: 10px;">
         <button class="btn btn-success" onclick="window.print()">印刷 PDF</button>
+        <button class="btn btn-success" onclick="downloadPdf()">PDF</button>
         <button class="btn btn-success" onclick="translateToJapanese()">日本語に翻訳 Translator To Japan</button>
         <button class="btn btn-primary" onclick="capitalizeText()">Huruf Awal Kapital</button>
         <button class="btn btn-info" onclick="window.location='/data/cv/kandidat'">Kembali</button>
@@ -679,70 +680,191 @@
     }
 
     function printSheet() {
-        const container = document.querySelector('.container');
+    const container = document.querySelector('.container');
 
-        html2canvas(container, {
-            scale: 2
-        }).then(canvas => {
-            const imgData = canvas.toDataURL('image/png');
-            const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
-            const imgProps = pdf.getImageProperties(imgData);
-            const pdfWidth = pdf.internal.pageSize.getWidth();
-            const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+    // Pastikan container memiliki lebar yang sesuai dengan standar cetak
+    // Misalnya, atur lebar container menjadi 794px (untuk A4 pada 96 DPI)
+    // sebelum html2canvas dieksekusi, lalu kembalikan setelahnya jika perlu.
+    
+    html2canvas(container, {
+        // Gunakan scale yang cukup tinggi (misalnya 2) untuk kualitas gambar yang tajam.
+        // Ini TIDAK memengaruhi lebar/tinggi di PDF, hanya resolusi.
+        scale: 2 
+    }).then(canvas => {
+        const imgData = canvas.toDataURL('image/png');
+        
+        // Inisialisasi jsPDF, 'p' (portrait), 'mm' (satuan), 'a4' (ukuran kertas)
+        const pdf = new jspdf.jsPDF('p', 'mm', 'a4'); 
+        
+        const imgProps = pdf.getImageProperties(imgData);
+        
+        // 📏 Dapatkan Lebar Halaman PDF (Lebar A4 dalam mm, biasanya 210mm)
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        
+        // 📐 Hitung Tinggi Gambar yang Diperlukan
+        // Tinggi disesuaikan secara proporsional agar gambar PASTI pas dengan lebar PDF
+        const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
-            let heightLeft = pdfHeight;
-            let position = 0;
+        let heightLeft = pdfHeight;
+        let position = 0; // Posisi Y di awal halaman (0)
 
+        // 1. Tambahkan gambar ke halaman pertama
+        // Gambar akan pas di lebar (pdfWidth) dan tinggi disesuaikan (pdfHeight)
+        pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
+        heightLeft -= pdf.internal.pageSize.getHeight();
+
+        // 2. Tambahkan halaman baru jika konten lebih panjang dari satu halaman
+        while (heightLeft > 0) {
+            position = heightLeft - pdfHeight; // Pindah ke bagian gambar berikutnya
+            pdf.addPage();
+            
+            // Tambahkan bagian gambar yang tersisa
             pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
             heightLeft -= pdf.internal.pageSize.getHeight();
+        }
 
-            while (heightLeft > 0) {
-                position = heightLeft - pdfHeight;
-                pdf.addPage();
-                pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
-                heightLeft -= pdf.internal.pageSize.getHeight();
-            }
+        // Output PDF
+        pdf.autoPrint();
+        window.open(pdf.output('bloburl'), '_blank');
+    });
+}
 
-            pdf.autoPrint();
-            window.open(pdf.output('bloburl'), '_blank');
-        });
-    }
+    // function printSheet() {
+    //     const container = document.querySelector('.container');
 
+    //     html2canvas(container, {
+    //         scale: 2
+    //     }).then(canvas => {
+    //         const imgData = canvas.toDataURL('image/png');
+    //         const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
+    //         const imgProps = pdf.getImageProperties(imgData);
+    //         const pdfWidth = pdf.internal.pageSize.getWidth();
+    //         const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
+    //         let heightLeft = pdfHeight;
+    //         let position = 0;
 
-    function printSheet() {
-        const container = document.querySelector('.container');
+    //         pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
+    //         heightLeft -= pdf.internal.pageSize.getHeight();
 
-        html2canvas(container, {
-            scale: 2
-        }).then(canvas => {
-            const imgData = canvas.toDataURL('image/png');
-            const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
-            const imgProps = pdf.getImageProperties(imgData);
-            const pdfWidth = pdf.internal.pageSize.getWidth();
-            const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+    //         while (heightLeft > 0) {
+    //             position = heightLeft - pdfHeight;
+    //             pdf.addPage();
+    //             pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
+    //             heightLeft -= pdf.internal.pageSize.getHeight();
+    //         }
 
-            let heightLeft = pdfHeight;
-            let position = 0;
-
-            pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
-            heightLeft -= pdf.internal.pageSize.getHeight();
-
-            while (heightLeft > 0) {
-                position = heightLeft - pdfHeight;
-                pdf.addPage();
-                pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
-                heightLeft -= pdf.internal.pageSize.getHeight();
-            }
-
-            pdf.autoPrint();
-            window.open(pdf.output('bloburl'), '_blank');
-        });
-    }
+    //         pdf.autoPrint();
+    //         window.open(pdf.output('bloburl'), '_blank');
+    //     });
+    // }
 
 
 
-    function downloadPDF() {
+    // function printSheet() {
+    //     const container = document.querySelector('.container');
+
+    //     html2canvas(container, {
+    //         scale: 2
+    //     }).then(canvas => {
+    //         const imgData = canvas.toDataURL('image/png');
+    //         const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
+    //         const imgProps = pdf.getImageProperties(imgData);
+    //         const pdfWidth = pdf.internal.pageSize.getWidth();
+    //         const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+    //         let heightLeft = pdfHeight;
+    //         let position = 0;
+
+    //         pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
+    //         heightLeft -= pdf.internal.pageSize.getHeight();
+
+    //         while (heightLeft > 0) {
+    //             position = heightLeft - pdfHeight;
+    //             pdf.addPage();
+    //             pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
+    //             heightLeft -= pdf.internal.pageSize.getHeight();
+    //         }
+
+    //         pdf.autoPrint();
+    //         window.open(pdf.output('bloburl'), '_blank');
+    //     });
+    // }
+
+//     function printSheet() {
+//     const container = document.querySelector('.container');
+    
+//     // Faktor Skala yang diinginkan (70% = 0.7)
+//     const SCALE_FACTOR = 0.7; 
+
+//     html2canvas(container, {
+//         // Pertahankan scale html2canvas di 2 untuk kualitas gambar yang baik
+//         scale: 2 
+//     }).then(canvas => {
+//         const imgData = canvas.toDataURL('image/png');
+//         const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
+//         const imgProps = pdf.getImageProperties(imgData);
+        
+//         // Dapatkan lebar PDF (lebar halaman A4)
+//         const pdfPageWidth = pdf.internal.pageSize.getWidth();
+        
+//         // Hitung lebar gambar di PDF berdasarkan faktor skala yang baru
+//         // Kita mengambil 70% dari lebar halaman PDF
+//         const scaledPdfWidth = pdfPageWidth * SCALE_FACTOR; 
+        
+//         // Hitung tinggi gambar di PDF, disesuaikan agar aspek rasio tetap
+//         const scaledPdfHeight = (imgProps.height * scaledPdfWidth) / imgProps.width;
+
+//         // Hitung margin kiri untuk memposisikan gambar di tengah (opsional)
+//         const marginLeft = (pdfPageWidth - scaledPdfWidth) / 2;
+
+//         // Tinggi total gambar (untuk perhitungan multihalaman)
+//         const totalImageHeight = scaledPdfHeight / SCALE_FACTOR; // Tinggi gambar asli dalam satuan mm pada skala 1.0
+        
+//         // Tinggi halaman PDF
+//         const pdfPageHeight = pdf.internal.pageSize.getHeight();
+
+//         let heightLeft = totalImageHeight;
+//         let position = 0; // Posisi vertikal saat menambahkan gambar
+
+//         // 1. Tambahkan halaman pertama
+//         // Tambahkan gambar dengan lebar dan tinggi yang diskalakan (scaledPdfWidth, scaledPdfHeight)
+//         // Posisi Y harus dihitung berdasarkan skala (position * SCALE_FACTOR)
+//         pdf.addImage(
+//             imgData, 
+//             'PNG', 
+//             marginLeft, 
+//             position * SCALE_FACTOR, 
+//             scaledPdfWidth, 
+//             scaledPdfHeight
+//         );
+//         heightLeft -= pdfPageHeight;
+
+//         // 2. Tambahkan halaman berikutnya (untuk konten multi-halaman)
+//         while (heightLeft > -10) { // Gunakan toleransi kecil -10
+//             position -= pdfPageHeight; // Pindah ke bagian gambar berikutnya
+//             pdf.addPage();
+            
+//             // Tambahkan gambar dengan posisi Y yang dipotong
+//             pdf.addImage(
+//                 imgData, 
+//                 'PNG', 
+//                 marginLeft, 
+//                 position * SCALE_FACTOR, 
+//                 scaledPdfWidth, 
+//                 scaledPdfHeight
+//             );
+//             heightLeft -= pdfPageHeight;
+//         }
+
+//         pdf.autoPrint();
+//         window.open(pdf.output('bloburl'), '_blank');
+//     });
+// }
+
+
+
+    function downloadPdf() {
         const container = document.querySelector('.container');
         html2canvas(container, {
             scale: 2

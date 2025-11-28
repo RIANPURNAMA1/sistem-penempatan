@@ -107,7 +107,7 @@
                                         <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton{{ $cv->id }}">
                                             <li>
                                                 <a class="dropdown-item" href="{{ route('cv.show', $cv->id) }}">
-                                                    <i class="bi bi-eye me-1"></i> Lihat CV
+                                                    <i class="bi bi-eye me-1"></i> Detail
                                                 </a>
                                             </li>
                                             <li>

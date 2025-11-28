@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Str;
 use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,44 +19,44 @@ class AuthController extends Controller
     }
 
 
-public function register(Request $request)
-{
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'email' => 'required|email|unique:users,email',
-        'password' => 'required|string|min:6|confirmed',
-    ], [
-        'name.required' => 'Ups! Nama harus diisi.',
-        'name.string' => 'Ups! Nama harus berupa teks.',
-        'name.max' => 'Ups! Nama maksimal 255 karakter.',
+    public function register(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|string|min:6|confirmed',
+        ], [
+            'name.required' => 'Ups! Nama harus diisi.',
+            'name.string' => 'Ups! Nama harus berupa teks.',
+            'name.max' => 'Ups! Nama maksimal 255 karakter.',
 
-        'email.required' => 'Ups! Alamat email harus diisi.',
-        'email.email' => 'Ups! Alamat email tidak valid.',
-        'email.unique' => 'Ups! Alamat email sudah digunakan.',
+            'email.required' => 'Ups! Alamat email harus diisi.',
+            'email.email' => 'Ups! Alamat email tidak valid.',
+            'email.unique' => 'Ups! Alamat email sudah digunakan.',
 
-        'password.required' => 'Ups! Kata sandi harus diisi.',
-        'password.string' => 'Ups! Kata sandi harus berupa teks.',
-        'password.min' => 'Ups! Kata sandi minimal 6 karakter.',
-        'password.confirmed' => 'Ups! Konfirmasi kata sandi tidak cocok.',
-    ]);
+            'password.required' => 'Ups! Kata sandi harus diisi.',
+            'password.string' => 'Ups! Kata sandi harus berupa teks.',
+            'password.min' => 'Ups! Kata sandi minimal 6 karakter.',
+            'password.confirmed' => 'Ups! Konfirmasi kata sandi tidak cocok.',
+        ]);
 
-    // Buat user baru dengan role 'kandidat'
-    $user = User::create([
-        'name' => $request->name,
-        'email' => $request->email,
-        'password' => Hash::make($request->password),
-        'role' => 'kandidat', // ganti role_id menjadi role
-    ]);
+        // Buat user baru dengan role 'kandidat'
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role' => 'kandidat', // ganti role_id menjadi role
+        ]);
 
-    // Langsung login setelah berhasil registrasi
-    Auth::login($user);
+        // Langsung login setelah berhasil registrasi
+        Auth::login($user);
 
-    return response()->json([
-        'success' => true,
-        'redirect' => route('dashboard'),
-        'message' => 'Registrasi berhasil! Anda sudah otomatis login.'
-    ]);
-}
+        return response()->json([
+            'success' => true,
+            'redirect' => route('dashboard'),
+            'message' => 'Registrasi berhasil! Anda sudah otomatis login.'
+        ]);
+    }
 
 
 
@@ -101,35 +102,69 @@ public function register(Request $request)
     {
         return view('auth.login');
     }
-    // Login user
+
+
+    // =======================================
+    // === LOGIN GOOGLE : REDIRECT
+    // =======================================
+    public function redirectToGoogle()
+    {
+        return Socialite::driver('google')->redirect();
+    }
+
+
+    // =======================================
+    // === LOGIN GOOGLE : CALLBACK
+    // =======================================
+    public function handleGoogleCallback()
+    {
+        try {
+            $googleUser = Socialite::driver('google')->user();
+
+            // Cari atau buat user
+            $user = User::updateOrCreate(
+                ['google_id' => $googleUser->id],
+                [
+                    'name'  => $googleUser->name,
+                    'email' => $googleUser->email,
+                    'password' => bcrypt(Str::random(20)), // generate random untuk memenuhi DB
+                ]
+            );
+
+            Auth::login($user, true);
+            // ⬅️ Kirim tanda sukses ke halaman login
+        session()->flash('google_success', 'Login Google berhasil!');
+
+            return redirect()->route('login');
+        } catch (\Exception $e) {
+            return redirect('/login')->withErrors([
+                'google_error' => 'Gagal login dengan Google. Coba lagi.'
+            ]);
+        }
+    }
+    // === LOGIN BIASA (Biarkan seperti punya Anda) ===
     public function login(Request $request)
     {
-        // Validasi input
         $request->validate([
             'email' => 'required|email',
             'password' => 'required|string',
         ]);
 
-        // Cek kredensial
         if (Auth::attempt($request->only('email', 'password'))) {
-
-            // Regenerasi session
             $request->session()->regenerate();
 
             return response()->json([
                 'success' => true,
                 'message' => 'Login berhasil',
-                'redirect' => route('dashboard') // ganti sesuai tujuan
+                'redirect' => route('dashboard')
             ]);
         }
 
-        // Jika gagal
         return response()->json([
             'success' => false,
             'message' => 'Email atau password salah.'
         ], 401);
     }
-
 
 
     // Logout

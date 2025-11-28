@@ -26,12 +26,12 @@
 
 <body class="bg-light d-flex justify-content-center align-items-center min-vh-100">
 
-    <div class="card shadow-lg border-0 p-4 p-md-5 " style="max-width: 450px; width: 100%; border-radius: 20px;">
+    <div class=" " style="max-width: 450px; width: 100%; border-radius: 20px;">
         <div class="text-center mb-4">
             <img src="{{ asset('assets/compiled/png/LOGO/logo4.png') }}" alt="Logo" class="img-fluid rounded"
                 style="width: 120px;">
         </div>
-
+a
         <h3 class="text-center fw-bold mb-2">Buat Akun Baru</h3>
         <p class="text-center text-muted mb-4">Isi data berikut untuk mendaftar</p>
 

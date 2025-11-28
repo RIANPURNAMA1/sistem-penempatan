@@ -20,7 +20,7 @@
                 </li>
                 <li class="breadcrumb-item active fw-semibold" aria-current="page">
                     <i class="bi bi-clock-history me-1"></i> History Kandidat
-                </li>
+                </li>w
             </ol>
         </nav>
 

@@ -45,9 +45,22 @@
 @endif --}}
     @include('components.Headers')
 
+    @if (session('google_success'))
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Login Berhasil!',
+                text: '{{ session('google_success') }}',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        </script>
+    @endif
 
-    <div class="page-heading d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between">
 
+    <div
+        class="page-heading d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between">
         {{-- Judul halaman --}}
         <div class="mb-2 mb-md-0 mt-3">
             @if (auth()->user()->role === 'kandidat')
@@ -263,8 +276,8 @@
                     <div class="row mt-4">
 
                         <!-- =========================
-                                    BAGIAN KIRI (CHART)
-                                ========================== -->
+                                                BAGIAN KIRI (CHART)
+                                            ========================== -->
                         <div class="col-12 col-md-8">
                             <div class="card h-100 shadow-lg border-0 rounded-4">
 
@@ -401,6 +414,8 @@
                     </script>
                 @endif
                 @if (auth()->user()->role === 'kandidat')
+
+                    {{-- @include('components.mobile_menu') --}}
                     <!-- Header Tabel -->
 
                     <div class="table-responsive mt-3">

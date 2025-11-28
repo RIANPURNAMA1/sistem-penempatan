@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Log;
 
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Auth;
 
 class KandidatController extends Controller
 {
@@ -384,74 +385,99 @@ class KandidatController extends Controller
         'jadwal_interview' => $kandidat->jadwal_interview,
     ]);
 
-/* ------------------------------------------------------------
-| 🔔 Kirim WhatsApp langsung via API (tanpa FonnteService)
------------------------------------------------------------- */
+// Pastikan variabel $kandidat dan $request sudah didefinisikan sebelum blok ini.
 
+/* ------------------------------------------------------------
+| 📞 Persiapan Data Umum
+------------------------------------------------------------ */
 $noWa = $kandidat->pendaftaran->no_wa ?? null;
 $nama = $kandidat->pendaftaran->nama ?? $kandidat->nama;
+$email = $kandidat->pendaftaran->email ?? null;
 
+// Teks pesan yang akan digunakan untuk WA dan (opsional) Email
+$pesanWa = 
+"Halo *{$nama}*,\n\n" .
+"Kami dari *Mendunia Jepang* ingin menginformasikan bahwa terdapat pembaruan terbaru terkait proses administrasi dan penempatan Anda. Kami terus berupaya memastikan setiap tahapan berjalan dengan transparan, akurat, dan sesuai prosedur yang berlaku.\n\n" .
+
+"📌 *Status Terbaru Anda*: {$request->status_kandidat}\n" .
+"🕒 *Tanggal Pembaruan*: " . now()->format('d M Y H:i') . "\n" .
+
+(!empty($request->catatan_interview)
+    ? "📝 *Catatan Tambahan*:\n{$request->catatan_interview}\n\n"
+    : "\n"
+) .
+
+"Kami berharap informasi ini dapat membantu Anda mengikuti alur proses dengan lebih nyaman.\n\n" .
+"Apabila Anda membutuhkan penjelasan lebih lanjut atau memiliki pertanyaan seputar tahapan berikutnya, silakan menghubungi kami kapan saja. Tim kami siap membantu.\n\n" .
+"Terima kasih atas kepercayaan Anda kepada *Mendunia Jepang*. Semoga setiap langkah Anda menuju Jepang semakin lancar dan diberi kemudahan.\n\n" .
+"Salam hangat,\n" .
+"*Tim Sukses Mendunia*";
+
+
+/* ------------------------------------------------------------
+| 🔔 Kirim WhatsApp langsung via API (Fonnte)
+------------------------------------------------------------ */
 if (!empty($noWa)) {
-    // Ubah nomor WA 08xx menjadi 628xx
-    $noWa = preg_replace('/^08/', '628', $noWa);
-
-    // Pesan WA
-    $pesan = "Halo *{$nama}*,\n\n" .
-        "Kami dari *Mendunia Jepang* ingin menyampaikan bahwa status proses Anda telah diperbarui.\n\n" .
-        "📄 *Status Terbaru*: {$request->status_kandidat}\n" .
-        "⏰ *Diperbarui Pada*: " . now()->format('d M Y H:i') . "\n" .
-        (!empty($request->catatan_interview) ? "📝 *Catatan*: {$request->catatan_interview}\n\n" : "\n") .
-        "Terima kasih atas kepercayaan Anda.";
+    // Ubah nomor WA 08xx menjadi 628xx (Fonnte merekomendasikan format 62xxx)
+    $noWaFormatted = preg_replace('/^08/', '628', $noWa);
 
     try {
+        // PERHATIAN: Pastikan Anda menggunakan API Key yang valid dan telah mengaturnya di akun Fonnte Anda.
         $apiKey = "jB9Bk1ANacyBXDHNwXiV";
-        $url = "https://api.fonnte.com/sendMessage"; // endpoint API Fonnte
+        $url = "https://api.fonnte.com/send"; // Endpoint yang benar untuk mengirim pesan
 
+        // Payload yang disiapkan untuk form-data
         $payload = [
-            'to' => $noWa,
-            'message' => $pesan,
-            'apiKey' => $apiKey,
+            'target' => $noWaFormatted, // Fonnte menggunakan 'target', bukan 'to'
+            'message' => $pesanWa,
         ];
 
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload));
-        curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+        $ch = curl_init();
+
+        // Mengatur opsi cURL
+        curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_TIMEOUT, 10); // timeout 10 detik
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($payload)); // Kirim sebagai form-data
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            "Authorization: {$apiKey}", // API Key diletakkan di header Authorization
+            "Content-Type: application/x-www-form-urlencoded" // Jenis konten form-data
+        ]);
 
         $response = curl_exec($ch);
 
         if ($response === false) {
             $error = curl_error($ch);
-            Log::error("Gagal mengirim WA ke {$noWa}: {$error}");
+            // Anda perlu memastikan class Log tersedia (misalnya, di Laravel)
+            Log::error("Gagal mengirim WA ke {$noWaFormatted}: {$error}"); 
         } else {
             $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            Log::info("WA ke {$noWa} berhasil dikirim. HTTP Code: {$httpCode}, Response: {$response}");
+            Log::info("WA ke {$noWaFormatted} berhasil dikirim. HTTP Code: {$httpCode}, Response: {$response}");
         }
 
         curl_close($ch);
 
     } catch (\Exception $e) {
-        Log::error("Gagal mengirim WA ke {$noWa}: " . $e->getMessage());
+        Log::error("Exception saat mengirim WA ke {$noWaFormatted}: " . $e->getMessage());
     }
 }
 
 
-    /* ------------------------------------------------------------
-    | 📧 Kirim Email Notifikasi
-    ------------------------------------------------------------ */
-    $email = $kandidat->pendaftaran->email ?? null;
 
-    if (!empty($email)) {
-        Mail::to($email)->send(new StatusKandidatUpdated(
-            $nama,
-            $request->status_kandidat,
-            now()->format('d M Y H:i'),
-            $request->catatan_interview
-        ));
-    }
-
+/* ------------------------------------------------------------
+| 📧 Kirim Email Notifikasi
+------------------------------------------------------------ */
+if (!empty($email)) {
+    // Anda perlu memastikan class Mail tersedia (misalnya, di Laravel)
+    Mail::to($email)->send(new StatusKandidatUpdated(
+        $nama,
+        $request->status_kandidat,
+        now()->format('d M Y H:i'),
+        $request->catatan_interview
+    ));
+    Log::info("Email notifikasi berhasil dikirim ke {$email}.");
+}
     /* ------------------------------------------------------------
     | JSON Response sukses
     ------------------------------------------------------------ */
@@ -618,4 +644,34 @@ if (!empty($noWa)) {
 
         return view('kandidat.history', compact('kandidat', 'histories', 'interviewPerPerusahaan'));
     }
+
+  public function showHistory($id)
+{
+    $kandidat = Kandidat::with('pendaftaran', 'histories.institusi')
+        ->findOrFail($id);
+
+    // Otomatis cegah akses tanpa izin
+    if (Auth::user()->kandidat && Auth::user()->kandidat->id !== $kandidat->id) {
+        abort(403, 'Tidak diizinkan mengakses riwayat ini');
+    }
+
+    $histories = $kandidat->histories()->orderBy('created_at', 'desc')->get();
+
+    $summary = $histories->groupBy('institusi_id')->map(function ($group) {
+        $latest = $group->sortByDesc('created_at')->first();
+        return [
+            'institusi'         => $latest->institusi,
+            'jumlah_interview'  => $group->where('status_kandidat', 'Interview')->count(),
+            'status_terakhir'   => $latest->status_kandidat,
+            'tanggal_terakhir'  => $latest->created_at,
+        ];
+    })->values();
+
+    return view('kandidat.riwayat_kandidat', [
+        'kandidat' => $kandidat,
+        'histories' => $histories,
+        'interviewPerPerusahaan' => $summary,
+    ]);
+}
+
 }

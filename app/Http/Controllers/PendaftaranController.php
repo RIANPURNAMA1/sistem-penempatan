@@ -429,4 +429,9 @@ class PendaftaranController extends Controller
         $kandidat = Pendaftaran::with('cabang')->findOrFail($id);
         return view('pendaftaran.show', compact('kandidat'));
     }
+    public function showPendaftar($id)
+    {
+        $kandidat = Pendaftaran::with('cabang')->findOrFail($id);
+        return view('pendaftaran.show', compact('kandidat'));
+    }
 }
