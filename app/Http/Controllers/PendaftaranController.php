@@ -28,7 +28,6 @@ class PendaftaranController extends Controller
 
     public function store(Request $request)
     {
-        // Validasi input
         $validated = $request->validate([
             'nik' => 'required|string|size:16|unique:pendaftarans,nik',
             'nama' => 'required|string|max:255',
@@ -48,43 +47,46 @@ class PendaftaranController extends Controller
             'tempat_tanggal_lahir' => 'required|date',
             'tanggal_daftar' => 'required|date',
 
-            // Tambahan field baru
             'id_prometric' => 'required|string|max:255',
             'password_prometric' => 'required|string|max:255',
             'pernah_ke_jepang' => 'required|in:Ya,Tidak',
 
-            // Paspor file upload (boleh kosong)
-            'paspor' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:51200', // 50MB
+            // Paspor opsional — maksimal 5MB
+            'paspor' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
 
-            // File upload wajib (50MB)
-            'foto' => 'required|file|mimes:jpg,jpeg,png,pdf|max:51200',
-            'kk' => 'required|file|mimes:jpg,jpeg,png,pdf|max:51200',
-            'ktp' => 'required|file|mimes:jpg,jpeg,png,pdf|max:51200',
-            'bukti_pelunasan' => 'required|file|mimes:jpg,jpeg,png,pdf|max:51200',
-            'akte' => 'required|file|mimes:jpg,jpeg,png,pdf|max:51200',
-            'ijasah' => 'required|file|mimes:jpg,jpeg,png,pdf|max:51200',
-            'sertifikat_jft' => 'required|file|mimes:jpg,jpeg,png,pdf|max:51200',
-            'sertifikat_ssw' => 'required|file|mimes:jpg,jpeg,png,pdf|max:51200',
+            // FILE WAJIB — ukuran lebih kecil
+            'foto' => 'required|file|mimes:jpg,jpeg,png|max:3072', // 3MB
+            'kk' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'ktp' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'bukti_pelunasan' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'akte' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'ijasah' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'sertifikat_jft' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'sertifikat_ssw' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
 
         ], [
-            'nik.size' => 'NIK harus 16 digit',
-            'nik.unique' => 'NIK sudah terdaftar',
-            'email.unique' => 'Email sudah terdaftar',
-            'no_wa.regex' => 'Nomor WhatsApp harus diawali 08 dan 10-13 digit',
-            'status.in' => 'Status harus: belum menikah, menikah, atau lajang',
+            // Pesan utama
+            'file.max' => 'Ukuran file melebihi batas.',
 
-            // Pesan ukuran file lebih rapi
-            'file.max' => 'Ukuran file maksimal 50MB',
-            'foto.max' => 'Foto maksimal 50MB',
-            'kk.max' => 'KK maksimal 50MB',
-            'ktp.max' => 'KTP maksimal 50MB',
-            'bukti_pelunasan.max' => 'Bukti Pelunasan maksimal 50MB',
-            'akte.max' => 'Akte maksimal 50MB',
-            'ijasah.max' => 'Ijazah maksimal 50MB',
-            'sertifikat_jft.max' => 'Sertifikat JFT maksimal 50MB',
-            'sertifikat_ssw.max' => 'Sertifikat SSW maksimal 50MB',
-            'paspor.max' => 'Paspor maksimal 50MB'
+            // Pesan khusus untuk setiap file
+            'foto.max' => 'Ukuran foto melebihi batas 3MB.',
+            'kk.max' => 'Ukuran KK melebihi batas 5MB.',
+            'ktp.max' => 'Ukuran KTP melebihi batas 5MB.',
+            'bukti_pelunasan.max' => 'Ukuran bukti pelunasan melebihi batas 5MB.',
+            'akte.max' => 'Ukuran akte melebihi batas 5MB.',
+            'ijasah.max' => 'Ukuran ijazah melebihi batas 5MB.',
+            'sertifikat_jft.max' => 'Ukuran sertifikat JFT melebihi batas 5MB.',
+            'sertifikat_ssw.max' => 'Ukuran sertifikat SSW melebihi batas 5MB.',
+            'paspor.max' => 'Ukuran paspor melebihi batas 5MB.',
+
+            // Error lain
+            'nik.size' => 'NIK harus 16 digit.',
+            'nik.unique' => 'NIK sudah terdaftar.',
+            'email.unique' => 'Email sudah terdaftar.',
+            'no_wa.regex' => 'Nomor WhatsApp harus diawali 08 dan memiliki 10–13 digit.',
+            'status.in' => 'Status harus: belum menikah, menikah, atau lajang.',
         ]);
+
 
 
         // Upload file wajib + paspor
@@ -104,18 +106,22 @@ class PendaftaranController extends Controller
 
         foreach ($files as $fileKey) {
             if ($request->hasFile($fileKey)) {
+
                 $file = $request->file($fileKey);
                 $filename = time() . '_' . $file->getClientOriginalName();
-                $destination = public_path("uploads/{$fileKey}");
 
-                if (!file_exists($destination)) {
-                    mkdir($destination, 0775, true);
-                }
+                // Simpan ke storage/app/public/{folder}
+                $path = $file->storeAs(
+                    "dokumen/{$fileKey}",   // folder
+                    $filename,              // nama file
+                    'public'                // disk
+                );
 
-                $file->move($destination, $filename);
-                $uploadedPaths[$fileKey] = "uploads/{$fileKey}/" . $filename;
+                // Simpan path yang nanti bisa dipanggil dengan asset('storage/...')
+                $uploadedPaths[$fileKey] = "storage/" . $path;
             }
         }
+
 
         // Simpan data
         Pendaftaran::create([

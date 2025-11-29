@@ -30,9 +30,7 @@
             transition: transform 0.3s;
         } */
 
-        .login-card:hover {
-            transform: translateY(-5px);
-        }
+    
 
         .login-card img {
             width: 100px;

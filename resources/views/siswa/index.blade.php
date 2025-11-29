@@ -59,7 +59,7 @@
                         </a>
 
                         <!-- Export PDF Button -->
-                        <a href="" target="_blank" class="btn btn-danger btn-sm fw-semibold shadow-sm">
+                        <a href="{{ route('pendaftaran.export.pdf') }}" target="_blank" class="btn btn-danger btn-sm fw-semibold shadow-sm">
                             <i class="bi bi-file-earmark-pdf me-1"></i> Export PDF
                         </a>
                     </div>
