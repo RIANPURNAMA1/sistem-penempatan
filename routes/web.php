@@ -74,6 +74,9 @@ Route::middleware('auth')->group(function () {
 | DASHBOARD & PROFILE
 |--------------------------------------------------------------------------
 */
+Route::get('/pdf1', function(){
+    return view('cv/pdf1');
+});
 
 // Dashboard Utama (Akses oleh Semua Role yang didefinisikan)
 Route::middleware(['auth', "role:kandidat,$admin_roles"])->group(function () {
@@ -92,6 +95,8 @@ Route::middleware('auth')->group(function () {
 | KANDIDAT & PENDAFTARAN (Role: Kandidat)
 |--------------------------------------------------------------------------
 */
+
+
 
 Route::middleware(['auth', 'role:kandidat'])->group(function () {
     // Form Pendaftaran Kandidat

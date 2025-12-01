@@ -64,7 +64,7 @@
             @include('components.headers')
             <header class="d-flex align-items-center mb-2 justify-content-between py-3 px-3">
                 <div class="d-flex align-items-center gap-2">
-                    <a href="#" class="burger-btn d-block d-xl-none btn btn-light rounded-md  shadow-sm">
+                    <a href="#" class="burger-btn d-block d-xl-none btn btn-warning rounded-md  shadow-sm">
                         <i class="bi bi-list fs-4 text-dark"></i>
                     </a>
                     <h5 class="m-0 fw-semibold"></h5>

@@ -191,7 +191,7 @@
                         <li class="sidebar-title">Pengaturan</li>
 
                         <li class="sidebar-item">
-                            <a href="javascript:void(0)" class="sidebar-link coming-soon"
+                            <a href="/profile" class="sidebar-link "
                                 style="text-decoration: none;">
                                 <i class="bi bi-person-circle"></i>
                                 <span>Profil</span>
