@@ -115,9 +115,11 @@
                                     </ul>
                                 </li>
                                 {{-- <li class="sidebar-item">
-                                    <a href="{{ route('kandidat.riwayat', $kandidat->id) }}"
-                                        class="sidebar-link d-flex align-items-center gap-2 py-2">
-                                        <i class="bi bi-clock-history"></i> <span class="fw-semibold">Riwayat</span>
+                                    {{-- Ini adalah panggilan yang benar untuk Kandidat yang login --}}
+                                    {{-- <a href="{{ route('kandidat.riwayat.saya') }}"
+                                        class="sidebar-link d-flex align-items-center">
+                                        <i class="bi bi-clock-history me-3"></i>
+                                        <span>Riwayat Saya</span>
                                     </a>
                                 </li> --}}
                             @endif

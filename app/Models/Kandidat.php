@@ -19,6 +19,7 @@ class Kandidat extends Model
     }
 
 
+
     // RELASI KE CABANG
     public function cabang()
     {

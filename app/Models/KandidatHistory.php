@@ -17,7 +17,7 @@ class KandidatHistory extends Model
         'catatan_interview',
         'jadwal_interview',
     ];
-
+  
     public function kandidat()
     {
         return $this->belongsTo(Kandidat::class);

@@ -43,7 +43,7 @@
         });
     </script>
 @endif --}}
-    @include('components.Headers')
+
 
     @if (session('google_success'))
         <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>

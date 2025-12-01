@@ -60,12 +60,20 @@
 
 
         <div id="main">
-            <header class="mb-3">
-                <a href="#" class="burger-btn d-block d-xl-none">
-                    <i class="bi bi-justify fs-3"></i>
-                </a>
-            </header>
 
+            @include('components.headers')
+            <header class="d-flex align-items-center mb-2 justify-content-between py-3 px-3">
+                <div class="d-flex align-items-center gap-2">
+                    <a href="#" class="burger-btn d-block d-xl-none btn btn-light rounded-md  shadow-sm">
+                        <i class="bi bi-list fs-4 text-dark"></i>
+                    </a>
+                    <h5 class="m-0 fw-semibold"></h5>
+                </div>
+
+                <div class="d-flex align-items-center gap-3">
+                    <span class="fw-semibold small text-secondary">Welcome {{ auth()->user()->name }}</span>
+                </div>
+            </header>
 
 
             {{-- Content --}}
@@ -92,6 +100,7 @@
 
         </div>
     </div>
+    @include('components.mobile_menu')
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"

@@ -70,5 +70,5 @@ class User extends Authenticatable
     public function cabang()
     {
         return $this->belongsTo(Cabang::class);
-    }
-}
+
+    }}

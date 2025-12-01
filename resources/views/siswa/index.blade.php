@@ -262,7 +262,7 @@
                                     </div>
                                 </td>
 
-                            </tr>w
+                            </tr>
                         @endforeach
 
                     </tbody>
