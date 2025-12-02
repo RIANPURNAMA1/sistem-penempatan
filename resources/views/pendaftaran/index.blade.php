@@ -272,13 +272,21 @@
                                         ],
                                     ];
                                 @endphp
+
                                 @foreach ($dokumenFields as $dok)
                                     <div class="col-md-4">
                                         <label class="form-label">{{ $dok['label'] }} <span
                                                 class="text-danger">*</span></label>
-                                        <input type="file" class="form-control" name="{{ $dok['name'] }}"
-                                            accept="{{ $dok['accept'] }}" required>
+
+                                        <input type="file" class="form-control preview-input"
+                                            name="{{ $dok['name'] }}" accept="{{ $dok['accept'] }}"
+                                            data-preview="{{ $dok['name'] }}-preview" required>
+
                                         <div class="form-text">Format diperbolehkan: PDF, JPG, PNG.</div>
+
+                                        <!-- Preview Container -->
+                                        <div id="{{ $dok['name'] }}-preview" class="mt-2"></div>
+
                                         <div class="invalid-feedback">{{ $dok['label'] }} wajib diunggah.</div>
                                     </div>
                                 @endforeach
@@ -304,6 +312,46 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelectorAll(".preview-input").forEach(input => {
+                input.addEventListener("change", function(e) {
+                    const file = e.target.files[0];
+                    const previewId = e.target.getAttribute("data-preview");
+                    const previewBox = document.getElementById(previewId);
+
+                    previewBox.innerHTML = ""; // reset
+
+                    if (!file) return;
+
+                    const fileType = file.type;
+
+                    if (fileType.includes("image")) {
+                        // Preview Gambar
+                        const img = document.createElement("img");
+                        img.src = URL.createObjectURL(file);
+                        img.style.maxWidth = "120px";
+                        img.style.maxHeight = "120px";
+                        img.classList.add("rounded", "border");
+                        previewBox.appendChild(img);
+
+                    } else if (fileType === "application/pdf") {
+                        // Preview PDF
+                        const pdfIcon = document.createElement("div");
+                        pdfIcon.innerHTML = `
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-file-earmark-pdf-fill text-danger fs-2 me-2"></i>
+                        <a href="${URL.createObjectURL(file)}" target="_blank" class="btn btn-sm btn-primary">
+                            Lihat PDF
+                        </a>
+                    </div>
+                `;
+                        previewBox.appendChild(pdfIcon);
+                    }
+                });
+            });
+        });
+
+
         $(document).ready(function() {
 
             // FORM SUBMIT AJAX

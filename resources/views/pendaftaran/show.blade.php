@@ -36,7 +36,7 @@
 
                     <div class="text-start">
                         <h6><i class="bi bi-journal-text me-1"></i> Catatan Admin:</h6>
-                        <p class="border-top pt-2 ps-2 small text-muted bg-light p-2 rounded">
+                        <p class="border-top pt-2 ps-2 small text-muted  p-2 rounded">
                             {{ $kandidat->catatan_admin ?? 'Tidak ada catatan.' }}
                         </p>
                     </div>

@@ -13,6 +13,7 @@ use App\Http\Controllers\KandidatController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PendaftaranController;
 use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -30,6 +31,10 @@ use Illuminate\Support\Facades\Route;
 $admin_roles = 'super admin,Cabang Cianjur Selatan Mendunia,Cabang Cianjur Pamoyanan Mendunia,Cabang Batam Mendunia,Cabang Banyuwangi Mendunia,Cabang Kendal Mendunia,Cabang Pati Mendunia,Cabang Tulung Agung Mendunia,Cabang Bangkalan Mendunia,Cabang Bojonegoro Mendunia,Cabang Jember Mendunia,Cabang Wonosobo Mendunia,Cabang Eshan Mendunia';
 
 
+Route::get('/generate', function () {
+    Artisan::call('storage:link');
+    return 'Storage link berhasil dibuat!';
+});
 /*
 |--------------------------------------------------------------------------
 | AUTHENTICATION & LOGIN/LOGOUT
@@ -77,6 +82,12 @@ Route::middleware('auth')->group(function () {
 Route::get('/pdf1', function(){
     return view('cv/pdf1');
 });
+Route::get('/pdf_yambo', function(){
+    return view('cv/pdf_yambo');
+});
+Route::get('/pdf_nawasena', function(){
+    return view('cv/pdf_nawasena');
+});
 
 // Dashboard Utama (Akses oleh Semua Role yang didefinisikan)
 Route::middleware(['auth', "role:kandidat,$admin_roles"])->group(function () {
@@ -115,10 +126,11 @@ Route::middleware(['auth', 'role:kandidat'])->group(function () {
     Route::post('/pendaftaran/cv', [CvController::class, 'store'])->name('pendaftaran.cv.store');
     Route::put('/pendaftaran/cv/{id}', [CvController::class, 'update'])->name('pendaftaran.cv.update');
     Route::delete('/pendaftaran/cv/{id}', [CvController::class, 'destroy'])->name('pendaftaran.cv.destroy');
+    Route::get('/pendaftaran/cv/kandidat', [CvController::class, 'create'])->name('pendaftaran.cv.create');
 });
 
 
-Route::get('/pendaftaran/cv', [CvController::class, 'create'])->name('pendaftaran.cv.create');
+// Route::get('/pendaftaran/cv/kandidat', [CvController::class, 'cvCreate'])->name('pendaftaran.cv.kandidat');
 // Route::get('/data/pendaftaran/cv', [CvController::class, 'create']);
 // CV (Akses Umum untuk Form CV - tidak spesifik kandidat, tapi perlu auth)
 Route::middleware('auth')->group(function () {
@@ -172,6 +184,8 @@ Route::middleware(['auth', 'role:super admin'])->group(function () {
     Route::get('/siswa/{id}/edit', [PendaftaranController::class, 'edit'])->name('siswa.edit');
     Route::put('/siswa/{id}', [PendaftaranController::class, 'update'])->name('siswa.update');
     Route::get('/data/cv/kandidat', [CvController::class, 'index']);
+    Route::post('/pendaftaran/{id}/update-full', [PendaftaranController::class, 'updateFull'])
+        ->name('pendaftaran.update.full');
 
     // CRUD Institusi (Perusahaan)
     Route::prefix('institusi')->name('institusi.')->group(function () {

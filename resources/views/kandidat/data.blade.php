@@ -106,7 +106,7 @@
                                 <th>Cabang</th>
                                 <th>Status Kandidat</th>
                                 <th>Penempatan</th>
-                                <th>Bidang Pekerjaan</th>
+                                <th>Bidang Pekerjaan SSW</th>
                                 <th>Tanggal Daftar</th>
                                 <th>Jumlah Interview</th>
                                 <th>Catatan Interview</th>
@@ -169,7 +169,7 @@
                                     <td>{{ $k->institusi->nama_perusahaan ?? '-' }}</td>
 
                                     <!-- Bidang -->
-                                    <td>{{ $k->institusi->bidang_pekerjaan ?? '-' }}</td>
+                                    <td>{{ $k->bidang_ssw ?? '-' }}</td>
 
                                     <!-- Tanggal Daftar -->
                                     <td>

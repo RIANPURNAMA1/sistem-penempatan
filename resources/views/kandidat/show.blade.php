@@ -70,7 +70,7 @@
                     <i class="bi bi-chat-dots me-2"></i> Catatan Admin
                 </div>
                 <div class="card-body">
-                    <p class="card-text fst-italic">{{ $kandidat->pendaftaran->catatan_admin ?? 'Tidak ada catatan.' }}</p>
+                    <p class="card-text text-dark fst-italic">{{ $kandidat->pendaftaran->catatan_admin ?? 'Tidak ada catatan.' }}</p>
                 </div>
             </div>
 

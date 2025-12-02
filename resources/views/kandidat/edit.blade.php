@@ -11,10 +11,10 @@
                     </a>
                 </li>
                 <li class="breadcrumb-item active  fw-semibold" aria-current="page">
-                  Kandidat
+                    Kandidat
                 </li>
                 <li class="breadcrumb-item active  fw-semibold" aria-current="page">
-                Edit
+                    Edit
                 </li>
             </ol>
         </nav>
@@ -60,7 +60,7 @@
 
                     <!-- Institusi / Penempatan -->
                     <div class="col-md-6">
-                        <label for="institusi_id" class="form-label fw-bold">Penempatan / Institusi</label>
+                        <label for="institusi_id" class="form-label fw-bold">Penempatan Perusahaan</label>
                         <select name="institusi_id" id="institusi_id" class="form-select">
                             <option value="">-- Pilih Institusi --</option>
                             @foreach ($institusis as $institusi)
@@ -71,6 +71,53 @@
                             @endforeach
                         </select>
                     </div>
+
+                    <div class="mb-3">
+                        <label for="bidang_ssw" class="form-label">Bidang SSW</label>
+                        <select name="bidang_ssw" id="bidang_ssw" class="form-select">
+                            <option value="">-- Pilih Bidang SSW --</option>
+
+                            <option value="Pengolahan makanan"
+                                {{ old('bidang_ssw', $kandidat->bidang_ssw) == 'Pengolahan makanan' ? 'selected' : '' }}>
+                                Pengolahan makanan
+                            </option>
+
+                            <option value="Restoran"
+                                {{ old('bidang_ssw', $kandidat->bidang_ssw) == 'Restoran' ? 'selected' : '' }}>
+                                Restoran
+                            </option>
+
+                            <option value="Pertanian"
+                                {{ old('bidang_ssw', $kandidat->bidang_ssw) == 'Pertanian' ? 'selected' : '' }}>
+                                Pertanian
+                            </option>
+
+                            <option value="Kaigo (perawat)"
+                                {{ old('bidang_ssw', $kandidat->bidang_ssw) == 'Kaigo (perawat)' ? 'selected' : '' }}>
+                                Kaigo (perawat)
+                            </option>
+
+                            <option value="Building cleaning"
+                                {{ old('bidang_ssw', $kandidat->bidang_ssw) == 'Building cleaning' ? 'selected' : '' }}>
+                                Building cleaning
+                            </option>
+
+                            <option value="Driver"
+                                {{ old('bidang_ssw', $kandidat->bidang_ssw) == 'Driver' ? 'selected' : '' }}>
+                                Driver
+                            </option>
+
+                            <option value="Lainnya"
+                                {{ old('bidang_ssw', $kandidat->bidang_ssw) == 'Lainnya' ? 'selected' : '' }}>
+                                Lainnya
+                            </option>
+                        </select>
+
+                        @error('bidang_ssw')
+                            <small class="text-danger">{{ $message }}</small>
+                        @enderror
+                    </div>
+
 
                     <!-- Jadwal Interview -->
                     <div class="col-md-6">
@@ -88,7 +135,7 @@
                 </div>
 
                 <div class="d-flex justify-content-end gap-2 mt-4">
-                    <button type="submit" id="updateBtn" class="btn btn-primary">
+                    <button type="submit" id="updateBtn" class="btn btn-success">
                         <i class="bi bi-save me-1"></i> Update Status & Penempatan
                     </button>
                     <a href="{{ route('kandidat.data') }}" class="btn btn-secondary">

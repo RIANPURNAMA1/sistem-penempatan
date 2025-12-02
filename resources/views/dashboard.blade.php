@@ -428,7 +428,7 @@
                                         title: 'Belum Mengisi CV',
                                         html: `
                         <p>Kamu belum mengisi CV.</p>
-                        <a href="/pendaftaran/cv" 
+                        <a href="/pendaftaran/cv/kandidat" 
                            class="btn btn-warning fw-semibold mt-2">
                             <i class="bi bi-pencil-square me-1"></i> Klik di sini untuk mengisi CV
                         </a>

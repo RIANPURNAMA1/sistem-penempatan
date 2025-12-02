@@ -240,19 +240,22 @@
 
 
 <body class="p-4">
-    <div class="btn-container">
+    <div class="btn-container d-flex gap-2 flex-wrap">
+
+        <!-- Print PDF -->
         <button class="btn btn-success" onclick="window.print()">印刷 PDF</button>
-        <button class="btn btn-primary" onclick="downloadPDF()">Download PDF</button>
-        <div class="btn-container">
-            <button class="btn btn-success" onclick="translateToJapanese()">日本語に翻訳</button>
-        </div>
-        <div class="btn-container">
-            <button class="btn btn-primary" onclick="capitalizeText()">Huruf Awal Kapital</button>
-        </div>
 
+        <!-- Translate to Japanese -->
+        <button class="btn btn-success" onclick="translateToJapanese()">Ubah ke bahasa jepang</button>
 
-        <a href="/data/cv/kandidat" class="btn btn-info">戻る</a>
+        <!-- Capitalize Text -->
+        <button class="btn btn-primary" onclick="capitalizeText()">Huruf Awal Kapital</button>
+
+        <!-- Back Button -->
+        <a href="/data/cv/kandidat" class="btn btn-info" style="font-size: 12px">Kembali</a>
+
     </div>
+
 
     <div class="container2">
 

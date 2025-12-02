@@ -52,7 +52,7 @@
                 </div>
 
                 <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-warning" id="btnSubmit">
+                    <button type="submit" class="btn btn-success" id="btnSubmit">
                         <i class="bi bi-save me-1"></i> Simpan Perubahan
                     </button>
                     <a href="{{ route('cabang.index') }}" class="btn btn-outline-secondary">

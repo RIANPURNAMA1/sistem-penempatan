@@ -106,7 +106,7 @@
                                             </a>
                                         </li>
                                         <li class="submenu-item">
-                                            <a href="{{ url('/pendaftaran/cv') }}" class="submenu-link"
+                                            <a href="{{ url('/pendaftaran/cv/kandidat') }}" class="submenu-link"
                                                 style="text-decoration: none;">
                                                 <i class="bi bi-file-person me-2"></i> Data Diri CV
                                             </a>
@@ -116,7 +116,7 @@
                                 </li>
                                 {{-- <li class="sidebar-item">
                                     {{-- Ini adalah panggilan yang benar untuk Kandidat yang login --}}
-                                    {{-- <a href="{{ route('kandidat.riwayat.saya') }}"
+                                {{-- <a href="{{ route('kandidat.riwayat.saya') }}"
                                         class="sidebar-link d-flex align-items-center">
                                         <i class="bi bi-clock-history me-3"></i>
                                         <span>Riwayat Saya</span>
@@ -146,6 +146,13 @@
                                                 <i class="bi bi-list-ul me-1"></i> Data Kandidat
                                             </a>
                                         </li>
+                                        <li class="submenu-item">
+                                            <a href="{{ url('/data/cv/kandidat') }}"
+                                                class="submenu-link " style="text-decoration: none;">
+                                                <i class="bi bi-person-lines-fill"></i> Cv kandidat
+                                           
+                                            </a>
+                                        </li>
 
                                         {{-- Interview Kandidat
                                         <li class="submenu-item">
@@ -169,13 +176,6 @@
                                         <span class="fw-semibold">Perusahaan</span>
                                     </a>
                                 </li>
-                                <li class="sidebar-item">
-                                    <a href="{{ url('/data/cv/kandidat') }}"
-                                        class="sidebar-link d-flex align-items-center gap-2 py-2">
-                                        <i class="bi bi-person-lines-fill"></i>
-                                        <span class="fw-semibold">Data CV Kandidat</span>
-                                    </a>
-                                </li>
 
                                 <li class="sidebar-item">
                                     <a href="{{ url('/admin') }}"
@@ -191,8 +191,7 @@
                         <li class="sidebar-title">Pengaturan</li>
 
                         <li class="sidebar-item">
-                            <a href="/profile" class="sidebar-link "
-                                style="text-decoration: none;">
+                            <a href="/profile" class="sidebar-link " style="text-decoration: none;">
                                 <i class="bi bi-person-circle"></i>
                                 <span>Profil</span>
                             </a>

@@ -108,19 +108,26 @@ class PendaftaranController extends Controller
             if ($request->hasFile($fileKey)) {
 
                 $file = $request->file($fileKey);
+
+                // Nama file baru
                 $filename = time() . '_' . $file->getClientOriginalName();
 
-                // Simpan ke storage/app/public/{folder}
-                $path = $file->storeAs(
-                    "dokumen/{$fileKey}",   // folder
-                    $filename,              // nama file
-                    'public'                // disk
-                );
+                // Lokasi tujuan tanpa storage link → langsung ke /public/dokumen/{field}/
+                $destination = public_path("dokumen/{$fileKey}");
 
-                // Simpan path yang nanti bisa dipanggil dengan asset('storage/...')
-                $uploadedPaths[$fileKey] = "storage/" . $path;
+                // Pastikan folder ada
+                if (!file_exists($destination)) {
+                    mkdir($destination, 0777, true);
+                }
+
+                // Pindahkan file
+                $file->move($destination, $filename);
+
+                // Simpan path untuk database → asset('dokumen/...') bisa langsung dipanggil
+                $uploadedPaths[$fileKey] = "dokumen/{$fileKey}/{$filename}";
             }
         }
+
 
 
         // Simpan data
@@ -273,101 +280,136 @@ class PendaftaranController extends Controller
         return view('siswa.edit_full', compact('kandidat'));
     }
 
-    public function updateFull(Request $request, $id)
-    {
-        $pendaftaran = Pendaftaran::findOrFail($id);
+public function updateFull(Request $request, $id)
+{
+    $pendaftaran = Pendaftaran::findOrFail($id);
 
-        // Validasi semua field
-        $request->validate([
-            'nik' => 'required|string|size:16|unique:pendaftarans,nik,' . $pendaftaran->id,
-            'nama' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'no_wa' => ['required', 'string', 'max:20', 'regex:/^08\d{8,12}$/'],
-            'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
-            'agama' => 'required|in:Islam,Kristen,Katolik,Hindu,Buddha,Konghucu,Lainnya',
-            'status' => 'required|in:belum menikah,menikah,lajang',
-            'tempat_lahir' => 'required|string|max:100',
-            'tanggal_lahir' => 'required|date',
-            'alamat' => 'required|string|max:500',
-            'provinsi' => 'required|string|max:100',
-            'kab_kota' => 'required|string|max:100',
-            'kecamatan' => 'required|string|max:100',
-            'kelurahan' => 'required|string|max:100',
-            'cabang_id' => 'required|exists:cabangs,id',
-            'tanggal_daftar' => 'required|date',
+   $request->validate([
+    'nik' => 'sometimes|required|string|size:16|unique:pendaftarans,nik,' . $pendaftaran->id,
+    'nama' => 'sometimes|required|string|max:255',
+    'email' => 'sometimes|required|email|max:255',
+    'no_wa' => ['sometimes', 'required', 'string', 'max:20', 'regex:/^08\d{8,12}$/'],
+    'jenis_kelamin' => 'sometimes|required|in:Laki-laki,Perempuan',
+    'agama' => 'sometimes|required|in:Islam,Kristen,Katolik,Hindu,Buddha,Konghucu,Lainnya',
+    'status' => 'sometimes|required|in:belum menikah,menikah,lajang',
 
-            // FIELD TAMBAHAN
-            'id_prometric' => 'nullable|string|max:255',
-            'password_prometric' => 'nullable|string|max:255',
-            'pernah_ke_jepang' => 'required|in:Ya,Tidak',
+    'tempat_lahir' => 'sometimes|required|string|max:100',
+    'tanggal_lahir' => 'sometimes|required|date',
 
-            'paspor' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+    'tanggal_daftar' => 'sometimes|required|date',
+    'alamat' => 'sometimes|required|string|max:500',
+    'cabang_id' => 'sometimes|required|exists:cabangs,id',
 
-            // File upload
-            'foto' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
-            'kk' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
-            'ktp' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
-            'bukti_pelunasan' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
-            'akte' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
-            'ijasah' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
-            'sertifikat_jft' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
-            'sertifikat_ssw' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
-        ]);
+    'id_prometric' => 'nullable|string|max:255',
+    'password_prometric' => 'nullable|string|max:255',
+    'pernah_ke_jepang' => 'sometimes|required|in:Ya,Tidak',
 
-        // Upload file jika ada
-        $files = [
-            'foto' => 'uploads/foto',
-            'kk' => 'uploads/kk',
-            'ktp' => 'uploads/ktp',
-            'bukti_pelunasan' => 'uploads/bukti_pelunasan',
-            'akte' => 'uploads/akte',
-            'ijasah' => 'uploads/ijasah',
-            'sertifikat_jft' => 'uploads/sertifikat_jft',
-            'sertifikat_ssw' => 'uploads/sertifikat_ssw',
-            'paspor' => 'uploads/paspor', // DITAMBAHKAN
-        ];
+    // Upload
+    'paspor' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+    'foto' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+    'kk' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+    'ktp' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+    'bukti_pelunasan' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+    'akte' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+    'ijasah' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+    'sertifikat_jft' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+    'sertifikat_ssw' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+]);
 
-        foreach ($files as $field => $folder) {
-            if ($request->hasFile($field)) {
 
-                // Hapus file lama jika ada
-                if ($pendaftaran->$field && Storage::disk('public')->exists($pendaftaran->$field)) {
-                    Storage::disk('public')->delete($pendaftaran->$field);
-                }
+    /*
+    |--------------------------------------------------------------------------
+    | 1. CEK APAKAH DATA TIDAK BERUBAH SAMA SEKALI
+    |--------------------------------------------------------------------------
+    */
+    $input = $request->except(['_token', '_method']);
+    $current = $pendaftaran->only(array_keys($input));
 
-                // Simpan file baru
-                $pendaftaran->$field = $request->file($field)->store($folder, 'public');
-            }
+    // cek perubahan text (tanpa file)
+    $hasChange = false;
+    foreach ($input as $key => $value) {
+        if ($value != $current[$key]) {
+            $hasChange = true;
+            break;
         }
-
-        // Update seluruh data
-        $pendaftaran->update([
-            'nik' => $request->nik,
-            'nama' => $request->nama,
-            'email' => $request->email,
-            'no_wa' => $request->no_wa,
-            'jenis_kelamin' => $request->jenis_kelamin,
-            'agama' => $request->agama,
-            'status' => $request->status,
-            'tempat_lahir' => $request->tempat_lahir,
-            'tanggal_lahir' => $request->tanggal_lahir,
-            'tanggal_daftar' => $request->tanggal_daftar,
-            'alamat' => $request->alamat,
-            'provinsi' => $request->provinsi,
-            'kab_kota' => $request->kab_kota,
-            'kecamatan' => $request->kecamatan,
-            'kelurahan' => $request->kelurahan,
-            'cabang_id' => $request->cabang_id,
-
-            // FIELD BARU
-            'id_prometric' => $request->id_prometric,
-            'password_prometric' => $request->password_prometric,
-            'pernah_ke_jepang' => $request->pernah_ke_jepang,
-        ]);
-
-        return redirect()->route('siswa.index')
-            ->with('success', 'Pendaftaran berhasil diperbarui!');
     }
+
+    // jika semua field sama dan tidak ada file upload → tetap submit dan redirect
+    if (!$hasChange && !$this->hasAnyFile($request)) {
+        return redirect()->route('siswa.index')
+            ->with('success', 'Tidak ada perubahan, data tetap tersimpan.');
+    }
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 2. PROSES FILE UPLOAD
+    |--------------------------------------------------------------------------
+    */
+    $files = [
+        'foto' => 'uploads/foto',
+        'kk' => 'uploads/kk',
+        'ktp' => 'uploads/ktp',
+        'bukti_pelunasan' => 'uploads/bukti_pelunasan',
+        'akte' => 'uploads/akte',
+        'ijasah' => 'uploads/ijasah',
+        'sertifikat_jft' => 'uploads/sertifikat_jft',
+        'sertifikat_ssw' => 'uploads/sertifikat_ssw',
+        'paspor' => 'uploads/paspor',
+    ];
+
+    foreach ($files as $field => $folder) {
+        if ($request->hasFile($field)) {
+
+            if ($pendaftaran->$field && Storage::disk('public')->exists($pendaftaran->$field)) {
+                Storage::disk('public')->delete($pendaftaran->$field);
+            }
+
+            $pendaftaran->$field = $request->file($field)->store($folder, 'public');
+        }
+    }
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | 3. UPDATE DATA
+    |--------------------------------------------------------------------------
+    */
+    $pendaftaran->update($input);
+
+
+
+    return redirect()->route('siswa.index')
+        ->with('success', 'Pendaftaran berhasil diperbarui!');
+}
+
+
+
+
+/*
+|--------------------------------------------------------------------------
+|  FUNGSI UNTUK CEK ADA FILE UPLOAD ATAU TIDAK
+|--------------------------------------------------------------------------
+*/
+private function hasAnyFile($request)
+{
+    $fileFields = [
+        'foto','kk','ktp','bukti_pelunasan','akte','ijasah',
+        'sertifikat_jft','sertifikat_ssw','paspor'
+    ];
+
+    foreach ($fileFields as $field) {
+        if ($request->hasFile($field)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+
 
 
 

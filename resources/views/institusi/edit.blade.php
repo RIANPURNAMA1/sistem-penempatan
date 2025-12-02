@@ -54,7 +54,7 @@
 
                 <div class="mt-4 d-flex justify-content-end">
                     <a href="{{ route('institusi.index') }}" class="btn btn-secondary me-2">Batal</a>
-                    <button type="submit" class="btn btn-primary" id="btnUpdate">
+                    <button type="submit" class="btn btn-success" id="btnUpdate">
                         <i class="bi bi-save2 me-1"></i> Update Data
                     </button>
                 </div>

@@ -257,8 +257,8 @@
                                     <div class="row g-3">
                                         <div class="col-md-6">
                                             <!-- ======================================================
-                     MULTI FILE: pas_foto[]
-                ====================================================== -->
+                         MULTI FILE: pas_foto[]
+                    ====================================================== -->
                                             <label class="form-label fw-semibold mb-1">
                                                 Silahkan upload dokumen / foto tambahan 👇
                                             </label>
@@ -276,8 +276,8 @@
                                             <div id="previewPasFoto" class="mt-3 d-flex flex-wrap gap-3"></div>
 
                                             <!-- ======================================================
-                     SINGLE FILE: pas_foto_cv
-                ====================================================== -->
+                         SINGLE FILE: pas_foto_cv
+                    ====================================================== -->
                                             <label class="form-label fw-semibold mb-1 mt-4">
                                                 Silahkan upload pas foto untuk CV Anda 👇
                                             </label>
@@ -596,7 +596,8 @@
                                             <label class="mt-3 fw-bold">Berat Badan (kg)</label>
                                             <input type="text" name="berat_badan"
                                                 class="form-control @error('berat_badan') is-invalid @enderror"
-                                                placeholder="Berat Badan (kg)" value="{{ old('berat_badan') }} kg" required>
+                                                placeholder="Berat Badan (kg)" value="{{ old('berat_badan') }} kg"
+                                                required>
                                             @error('berat_badan')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -605,8 +606,8 @@
                                             <label class="mt-3 fw-bold">Ukuran Pinggang (cm)</label>
                                             <input type="text" name="ukuran_pinggang"
                                                 class="form-control @error('ukuran_pinggang') is-invalid @enderror"
-                                                placeholder="Ukuran Pinggang (cm)" value="{{ old('ukuran_pinggang') }} cm"
-                                                required>
+                                                placeholder="Ukuran Pinggang (cm)"
+                                                value="{{ old('ukuran_pinggang') }} cm" required>
                                             @error('ukuran_pinggang')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -1104,8 +1105,9 @@
                                                     Cantumkan periode bekerja dengan format Jepang.
                                                     <br><b>Contoh: 2021年／02月 ～ 2023年／08月</b>
                                                 </p>
-                                                <input type="text" name="pengalaman_lama_bekerja[]" class="form-control"
-                                                    placeholder="Contoh: 2021年／02月 ～ 2023年／08月" required>
+                                                <input type="text" name="pengalaman_lama_bekerja[]"
+                                                    class="form-control" placeholder="Contoh: 2021年／02月 ～ 2023年／08月"
+                                                    required>
                                             </div>
 
                                             <!-- Remove Button -->
@@ -1374,8 +1376,14 @@
                             </div>
 
                             <button type="submit" class="btn btn-info btn-lg mb-5" id="btnSubmit">
-                                <i class="fas fa-save me-2"></i>Kirim
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="white"
+                                    class="me-2" viewBox="0 0 16 16">
+                                    <path
+                                        d="M15.854.146a.5.5 0 0 1 .11.54l-5.5 14a.5.5 0 0 1-.94-.02L7.14 9.28 1.336 6.48a.5.5 0 0 1 .02-.93l14-5.5a.5.5 0 0 1 .498.096zM6.832 8.753l1.318 3.473L13.44 2.56 2.774 6.832l4.058 1.92z" />
+                                </svg>
+                                Kirim
                             </button>
+
 
                         </form>
 

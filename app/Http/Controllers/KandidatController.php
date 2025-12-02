@@ -48,6 +48,8 @@ class KandidatController extends Controller
             'institusi_id' => 'nullable|exists:institusis,id',
             'catatan_interview' => 'nullable|string',
             'jadwal_interview' => 'nullable|date',
+            // Validasi bidang SSW
+            'bidang_ssw' => 'nullable|in:Pengolahan makanan,Restoran,Pertanian,Kaigo (perawat),Building cleaning,Driver,Lainnya',
         ]);
 
         /* ------------------------------------------------------------
@@ -105,6 +107,7 @@ class KandidatController extends Controller
             'catatan_interview' => $request->catatan_interview,
             'jadwal_interview' => $request->jadwal_interview,
             'jumlah_interview' => $kandidat->jumlah_interview,
+            'bidang_ssw'=>$kandidat->bidang_ssw,
         ]);
 
         /* ------------------------------------------------------------
@@ -120,6 +123,7 @@ class KandidatController extends Controller
         KandidatHistory::create([
             'kandidat_id' => $kandidat->id,
             'status_kandidat' => $kandidat->status_kandidat,
+            'bidang_ssw' => $kandidat->bidang_ssw,
             'status_interview' => $statusInterview,
             'institusi_id' => $kandidat->institusi_id,
             'catatan_interview' => $kandidat->catatan_interview,
@@ -384,8 +388,4 @@ class KandidatController extends Controller
 
         return view('kandidat.history', compact('kandidat', 'histories', 'interviewPerPerusahaan'));
     }
-
-
-
-
 }
