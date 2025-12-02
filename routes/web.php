@@ -118,11 +118,11 @@ Route::middleware(['auth', 'role:kandidat'])->group(function () {
 });
 
 
+Route::get('/pendaftaran/cv', [CvController::class, 'create'])->name('pendaftaran.cv.create');
+// Route::get('/data/pendaftaran/cv', [CvController::class, 'create']);
 // CV (Akses Umum untuk Form CV - tidak spesifik kandidat, tapi perlu auth)
 Route::middleware('auth')->group(function () {
     // Membuat CV
-    Route::get('/pendaftaran/cv', [CvController::class, 'create'])->name('pendaftaran.cv.create');
-    Route::get('/data/pendaftaran/cv', [CvController::class, 'create']);
 
     // Melihat CV (Show)
     Route::get('/cv/show/{id}', [CvController::class, 'show'])->name('cv.show');

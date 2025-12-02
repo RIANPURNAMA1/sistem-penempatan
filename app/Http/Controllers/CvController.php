@@ -16,11 +16,15 @@ class CvController extends Controller
 {
     public function index()
     {
-        $cvs = Cv::with(['pendidikans', 'pengalamans'])->get();
+        $cvs = Cv::with(['pendidikans', 'pengalamans'])
+            ->orderBy('created_at', 'desc') // data terbaru di atas
+            ->get();
+
         $cabang = Cabang::all();
 
         return view('cv.index', compact('cvs', 'cabang'));
     }
+
 
 
     public function create()
@@ -277,7 +281,7 @@ class CvController extends Controller
         return view('pendaftaran.edit_cv', compact('cv', 'cabangs'));
     }
 
-  public function update(Request $request, $id)
+    public function update(Request $request, $id)
     {
         // 1. Cari data CV yang akan diupdate
         $cv = Cv::find($id);
@@ -301,7 +305,7 @@ class CvController extends Controller
                 "pas_foto_cv"          => "nullable|file|mimes:jpg,jpeg,png|max:2048", // Hanya foto untuk CV
                 "sertifikat_files.*"   => "nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:10240",
                 // Hapus required untuk pas_foto.* karena ini update dan mungkin tidak perlu diupload ulang
-                "pas_foto.*"           => "nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:10240", 
+                "pas_foto.*"           => "nullable|file|mimes:jpg,jpeg,png,pdf,doc,docx|max:10240",
             ]);
 
             // Data file lama untuk dihapus
@@ -325,7 +329,7 @@ class CvController extends Controller
                         File::delete(public_path($path));
                     }
                 }
-                
+
                 // Upload file sertifikat baru
                 $sertifikatPaths = [];
                 foreach ($request->file("sertifikat_files") as $file) {
@@ -378,7 +382,7 @@ class CvController extends Controller
             5. PERBARUI DATA CV
             ============================================================ */
             $cv->update([
-                
+
                 // ========= HALAMAN 1 (Data Umum) =========
                 "user_id"                            => Auth::id(), // Mungkin tidak perlu diupdate
                 "email"                              => $request->email,
@@ -474,7 +478,7 @@ class CvController extends Controller
             /* ============================================================
             6. PERBARUI DATA RELASIONAL (PENDIDIKAN & PENGALAMAN)
             ============================================================ */
-            
+
             // Hapus data Pendidikan lama
             Pendidikan::where('cv_id', $cv->id)->delete();
 
@@ -519,7 +523,6 @@ class CvController extends Controller
                 "status" => "success",
                 "message" => "Data CV berhasil diperbarui!"
             ]);
-
         } catch (\Exception $e) {
 
             DB::rollBack();
