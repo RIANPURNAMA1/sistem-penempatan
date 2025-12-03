@@ -107,8 +107,9 @@ class KandidatController extends Controller
             'catatan_interview' => $request->catatan_interview,
             'jadwal_interview' => $request->jadwal_interview,
             'jumlah_interview' => $kandidat->jumlah_interview,
-            'bidang_ssw'=>$kandidat->bidang_ssw,
+            'bidang_ssw' => $request->bidang_ssw, // ← FIX DI SINI
         ]);
+
 
         /* ------------------------------------------------------------
     | Simpan History
@@ -123,7 +124,8 @@ class KandidatController extends Controller
         KandidatHistory::create([
             'kandidat_id' => $kandidat->id,
             'status_kandidat' => $kandidat->status_kandidat,
-            'bidang_ssw' => $kandidat->bidang_ssw,
+            'bidang_ssw' => $request->bidang_ssw,
+
             'status_interview' => $statusInterview,
             'institusi_id' => $kandidat->institusi_id,
             'catatan_interview' => $kandidat->catatan_interview,

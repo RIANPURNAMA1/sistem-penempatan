@@ -254,9 +254,6 @@
         .btn-container {
             display: none !important;
         }
-
-
-
     }
     
 </style>
@@ -280,8 +277,7 @@
                 Kembali
             </a>
         </div>
-    
-    
+
         <div class="container" style="display: flex; margin: 1rem; justify-content: center; gap: 2rem">
             <div class="" style="">
                 <div class="header">

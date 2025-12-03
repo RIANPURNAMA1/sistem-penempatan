@@ -16,7 +16,8 @@ return new class extends Migration
             $table->unsignedBigInteger('cv_id');
             $table->string('perusahaan');
             $table->string('jabatan')->nullable();
-            $table->string('lama_bekerja')->nullable();
+            $table->string('tanggal_masuk')->nullable();   // Tanggal masuk kerja
+            $table->string('tanggal_keluar')->nullable();  // Tanggal keluar kerja
             $table->string('gaji')->nullable();
             $table->timestamps();
 

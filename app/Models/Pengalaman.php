@@ -6,16 +6,17 @@ use Illuminate\Database\Eloquent\Model;
 
 class Pengalaman extends Model
 {
-    use HasFactory;
+   use HasFactory;
 
-    // pastikan nama tabel sesuai migrasi
     protected $table = 'pengalamans';
 
     protected $fillable = [
         'cv_id',
         'perusahaan',
         'jabatan',
-        'periode',
+        'tanggal_masuk',
+        'tanggal_keluar',
+        'gaji',
     ];
 
     public function cv()

@@ -11,7 +11,7 @@
         </a>
 
         <!-- PENDAFTARAN -->
-        <a href="{{ url('/pendaftaran/cv') }}"
+        <a href="{{ url('/pendaftaran/kandidat') }}"
            class="text-center text-decoration-none text-dark">
             <div class="p-2 rounded-3 {{ request()->is('pendaftaran*') ? 'bg-white bg-opacity-75' : '' }}">
                 <i class="bi bi-person-vcard-fill text-dark" style="font-size: 1.45rem;"></i>
@@ -20,7 +20,7 @@
         </a>
 
         <!-- DAFTAR CV -->
-        <a href="{{ url('/pendaftaran/cv') }}"
+        <a href="{{ url('/pendaftaran/cv/kandidat') }}"
            class="text-center text-decoration-none text-dark">
             <div class="p-2 rounded-3 {{ request()->is('cv*') ? 'bg-white bg-opacity-75' : '' }}">
                 <i class="bi bi-card-list text-dark" style="font-size: 1.45rem;"></i>

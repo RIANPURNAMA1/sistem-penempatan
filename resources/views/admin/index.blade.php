@@ -11,6 +11,14 @@
 
     <!-- ✅ DataTables Bootstrap 5 CSS -->
     <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+</head>
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+    }
+</style>
     <div class="">
         {{-- SWEETALERT DITAMPILKAN DENGAN BLADE --}}
         {{-- Pastikan Anda sudah memuat SweetAlert2 di layouts.app, atau pindahkan link/script-nya ke luar section content --}}

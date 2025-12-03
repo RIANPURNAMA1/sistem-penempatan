@@ -6,6 +6,18 @@
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+
+
+    <!-- Init Theme -->
+    <script src="{{ asset('assets/static/js/initTheme.js') }}"></script>
+    </head>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+    </style>
 
     <style>
         .cv-card {
@@ -215,29 +227,69 @@
                         </div>
 
                         <!-- Footer Actions -->
-                        <div class="card-footer bg-light border-0 p-3">
+                        <div class="card-footer  border-0 p-3">
                             <div class="d-grid gap-2">
+
                                 <a href="{{ route('cv.show', $cv->id) }}"
                                     class="btn btn-outline-primary btn-sm action-btn">
                                     <i class="bi bi-eye me-1"></i> Lihat Detail
                                 </a>
 
                                 <div class="row g-2">
+
+                                    <!-- Kaigo -->
                                     <div class="col-6">
                                         <a href="{{ route('cv.show.pdf', $cv->id) }}"
-                                            class="btn btn-outline-danger btn-sm w-100 action-btn">
+                                            class="btn btn-outline-primary btn-sm w-100 action-btn">
                                             <i class="bi bi-file-pdf me-1"></i> CV Kaigo
                                         </a>
                                     </div>
+
+                                    <!-- Violeta -->
                                     <div class="col-6">
                                         <a href="{{ route('cv.show.pdf.violeta', $cv->id) }}"
-                                            class="btn btn-outline-success btn-sm w-100 action-btn">
+                                            class="btn  btn-outline-primary btn-sm w-100 action-btn">
                                             <i class="bi bi-file-pdf me-1"></i> CV Violeta
                                         </a>
                                     </div>
+
+                                    <!-- Nawasena -->
+                                    <div class="col-6">
+                                        <a href="{{ route('cv.show.pdf.nawasena', $cv->id) }}"
+                                            class="btn btn-outline-primary btn-sm w-100 action-btn">
+                                            <i class="bi bi-file-earmark-pdf me-1"></i> CV Nawasena
+                                        </a>
+                                    </div>
+
+                                    <!-- Yambo -->
+                                    <div class="col-6">
+                                        <a href="{{ route('cv.show.pdf.yambo', $cv->id) }}"
+                                            class="btn btn-outline-primary btn-sm w-100 action-btn">
+                                            <i class="bi bi-file-earmark-pdf me-1"></i> CV Yambo
+                                        </a>
+                                    </div>
+
+                                    <!-- Madoka -->
+                                    <div class="col-12">
+                                        <a href="{{ route('cv.show.pdf.madoka', $cv->id) }}"
+                                            class="btn btn-outline-primary btn-sm w-100 action-btn">
+                                            <i class="bi bi-file-earmark-pdf me-1"></i> CV Madoka
+                                        </a>
+                                    </div>
+
+                                    <!-- Mendunia (Tambahan Baru) -->
+                                    <div class="col-12">
+                                        <a href="{{ route('cv.show.pdf.mendunia', $cv->id) }}"
+                                            class="btn btn-outline-primary btn-sm w-100 action-btn">
+                                            <i class="bi bi-file-earmark-pdf me-1"></i> CV Mendunia
+                                        </a>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
+
+
                     </div>
                 </div>
             @empty

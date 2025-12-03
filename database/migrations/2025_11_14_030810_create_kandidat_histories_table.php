@@ -26,6 +26,16 @@ return new class extends Migration {
                 'Diterima',
                 'Ditolak',
             ]);
+            // ENUM Bidang SSW
+            $table->enum('bidang_ssw', [
+                'Pengolahan makanan',
+                'Restoran',
+                'Pertanian',
+                'Kaigo (perawat)',
+                'Building cleaning',
+                'Driver',
+                'Lainnya',
+            ])->nullable(); // jika ingin wajib tinggal hapus nullable()
 
             // mapping status interview
             $table->enum('status_interview', [
@@ -41,9 +51,9 @@ return new class extends Migration {
             $table->timestamps();
 
             $table->foreign('kandidat_id')
-                  ->references('id')
-                  ->on('kandidats')
-                  ->onDelete('cascade');
+                ->references('id')
+                ->on('kandidats')
+                ->onDelete('cascade');
         });
     }
 

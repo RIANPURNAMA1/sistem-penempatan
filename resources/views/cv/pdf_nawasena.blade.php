@@ -41,6 +41,7 @@
             padding: 6px;
             vertical-align: top;
         }
+
         /* Hanya untuk print */
         @media print {
             .btn-container {
@@ -70,20 +71,20 @@
                 <table style="width: 520px;">
                     <tr>
                         <td colspan="2">
-                            フリガナ :
+                            フリガナ : {{ $cv->nama_lengkap_katakana }}
                         </td>
                     </tr>
                     <tr>
                         <td rowspan="2">
-                            名前 :
+                            名前 : {{ $cv->nama_lengkap_romaji }}
                         </td>
                         <td class="" style="width: 20%">
-                            --
+                            性別
                         </td>
                     </tr>
                     <tr>
                         <td style="width: 20%">
-                            --
+                            {{ $cv->jenis_kelamin }}
                         </td>
                     </tr>
                 </table>
@@ -93,8 +94,8 @@
                         <td>
                             生年月日
                         </td>
-                        <td>
-                            年 月 日 (満 歳）
+                        <td style="width: 340px">
+                            {{ $cv->tempat_tanggal_lahir }}
                         </td>
                     </tr>
                     <tr>
@@ -102,7 +103,7 @@
                             ふりがな
                         </td>
                         <td>
-
+                            -
                         </td>
                     </tr>
                 </table>
@@ -125,7 +126,7 @@
                     現住所
                 </td>
                 <td rowspan="2">
-
+                    {{ $cv->alamat_lengkap }}
                 </td>
                 <td style="width: 30%; text-align:center">
                     携帯電話番号
@@ -134,7 +135,7 @@
             <tr>
 
                 <td>
-                    -----
+                    {{ $cv->no_telepon }}
                 </td>
             </tr>
         </table>
@@ -156,11 +157,19 @@
             <tr>
 
                 <td>
-                    無
+                    @if (!empty($cv->anggota_keluarga_istri))
+                        {{ $cv->anggota_keluarga_istri }}
+                    @elseif (!empty($cv->anggota_keluarga_suami))
+                        {{ $cv->anggota_keluarga_suami }}
+                    @else
+                        -
+                    @endif
                 </td>
+
                 <td>
-                    無
+                    {{ $cv->anggota_keluarga_anak ?? '' }}
                 </td>
+
                 <td>
 
                 </td>
@@ -172,31 +181,33 @@
                 <td>月</td>
                 <td style="text-align: center">学歴（高校卒業以降）</td>
             </tr>
-            <tr>
-                <td style="width: 20%"></td>
-                <td></td>
-                <td style="width:70%">NAMA SD 入学</td>
-            </tr>
-            <tr>
-                <td style="width: 20%"></td>
-                <td></td>
-                <td style="width:70%">NAMA SD 入学</td>
-            </tr>
-            <tr>
-                <td style="width: 20%"></td>
-                <td></td>
-                <td style="width:70%">NAMA SD 入学</td>
-            </tr>
-            <tr>
-                <td style="width: 20%"></td>
-                <td></td>
-                <td style="width:70%">NAMA SD 入学</td>
-            </tr>
-            <tr>
-                <td style="width: 20%"></td>
-                <td></td>
-                <td style="width:70%">NAMA SD 入学</td>
-            </tr>
+            @foreach ($cv->pendidikans as $p)
+                <tr>
+                    <td style="width: 20%">{{ $p->tahun }}</td>
+                    <td>{{ $p->bulan ?? '-' }}</td>
+                    <td style="width:70%">{{ $p->nama }}</td>
+                </tr>
+            @endforeach
+            {{-- <tr>
+                    <td style="width: 20%"></td>
+                    <td></td>
+                    <td style="width:70%">NAMA SD 入学</td>
+                </tr>
+                <tr>
+                    <td style="width: 20%"></td>
+                    <td></td>
+                    <td style="width:70%">NAMA SD 入学</td>
+                </tr>
+                <tr>
+                    <td style="width: 20%"></td>
+                    <td></td>
+                    <td style="width:70%">NAMA SD 入学</td>
+                </tr>
+                <tr>
+                    <td style="width: 20%"></td>
+                    <td></td>
+                    <td style="width:70%">NAMA SD 入学</td>
+                </tr> --}}
         </table>
         <table>
             <tr>
@@ -204,16 +215,13 @@
                 <td>月</td>
                 <td style="text-align: center">職歴(なければアルバイト歴)</td>
             </tr>
-            <tr>
-                <td style="width: 20%"></td>
-                <td></td>
-                <td style="width:70%">-----</td>
-            </tr>
-            <tr>
-                <td style="width: 20%"></td>
-                <td></td>
-                <td style="width:70%">-----</td>
-            </tr>
+            @foreach ($cv->pengalamans as $p)
+                <tr>
+                    <td style="width: 20%">{{ $p->lama_bekerja }}</td>
+                    <td>{{ $p->bulan }}</td>
+                    <td style="width:70%">{{ $p->perusahaan }}</td>
+                </tr>
+            @endforeach
             <tr>
                 <td style="width: 20%"></td>
                 <td></td>
@@ -229,22 +237,49 @@
         <table style="margin-top: 1rem;">
             <tr>
                 <td style="text-align: center">
-                    語学力・資格など
+                    語学力・資格など<br>
+                    (Kemampuan Bahasa & Sertifikat)
                 </td>
                 <td style="text-align: center">
-                    趣味・得意な運動など
+                    趣味・得意な運動など<br>
+                    (Hobi & Olahraga yang dikuasai)
                 </td>
             </tr>
+
             <tr>
                 <td>
-                    JFT BASIC A2 <br>
-                    特定技能 外食業
-                </td>
-                <td>
+                    {{-- Kemampuan Bahasa Jepang --}}
+                    @if (!empty($cv->kemampuan_bahasa_jepang))
+                        kemampuan bahasa jepang : {{ $cv->kemampuan_bahasa_jepang }} <br>
+                    @endif
 
+                    {{-- Kemampuan Bahasa Inggris --}}
+                    @if (!empty($cv->kemampuan_berbahasa_inggris))
+                      kemampuan bahasa inggris :  {{ $cv->kemampuan_berbahasa_inggris }} <br>
+                    @endif
+
+                    {{-- Bidang Sertifikasi --}}
+                    @if (!empty($cv->bidang_sertifikasi))
+                        {{ $cv->bidang_sertifikasi }} <br>
+                    @endif
+
+                    {{-- Sertifikasi Lain (jika ada) --}}
+                    @if (!empty($cv->bidang_sertifikasi_lainnya))
+                        {{ $cv->bidang_sertifikasi_lainnya }} <br>
+                    @endif
+                </td>
+
+                <td>
+                    {{-- Hobi --}}
+                    @if (!empty($cv->hobi))
+                        {{ $cv->hobi }}
+                    @else
+                        —
+                    @endif
                 </td>
             </tr>
         </table>
+
 
         <table style="margin-top: 1rem;">
             <tr>

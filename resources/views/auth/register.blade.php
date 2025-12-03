@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registrasi Sistem Kandidat</title>
 
-    <link rel="shortcut icon" href="{{ asset('assets/compiled/svg/logo.svg') }}" type="image/x-icon">
+    {{-- <link rel="icon" href="{{ asset('assets/compiled/png/LOGO/logo4.png') }}" type="image/x-icon"> --}}
+    <link rel="icon" href="{{ asset('assets/compiled/png/LOGO/logo4.png') }}" type="image/png">
 
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -19,6 +20,14 @@
 
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif !important;
+        }
+    </style>
 
     <!-- CSRF -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -37,39 +46,63 @@
         <form id="registerForm">
             @csrf
 
-            <div class="mb-3 position-relative">
-                <i class="bi bi-person position-absolute top-50 translate-middle-y ms-3 text-muted"></i>
-                <input type="text" name="name" class="form-control ps-5 py-2 rounded-md shadow-sm"
-                    placeholder="Nama Lengkap" required style="transition: all 0.3s; border: 1px solid #ced4da;">
+            <!-- Name -->
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Nama Lengkap</label>
+                <div class="input-group shadow-sm">
+                    <span class="input-group-text bg-white">
+                        <i class="bi bi-person"></i>
+                    </span>
+                    <input type="text" name="name" class="form-control" placeholder="Masukkan nama lengkap"
+                        required>
+                </div>
             </div>
 
-            <div class="mb-3 position-relative">
-                <i class="bi bi-envelope position-absolute top-50 translate-middle-y ms-3 text-muted"></i>
-                <input type="email" name="email" class="form-control ps-5 py-2 rounded-md  shadow-sm"
-                    placeholder="Email" required style="transition: all 0.3s; border: 1px solid #ced4da;">
+            <!-- Email -->
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Email</label>
+                <div class="input-group shadow-sm">
+                    <span class="input-group-text bg-white">
+                        <i class="bi bi-envelope"></i>
+                    </span>
+                    <input type="email" name="email" class="form-control" placeholder="Masukkan email" required>
+                </div>
             </div>
 
-            <div class="mb-3 position-relative">
-                <i class="bi bi-shield-lock position-absolute top-50 translate-middle-y ms-3 text-muted"></i>
-                <input type="password" name="password" class="form-control ps-5 py-2 rounded-md  shadow-sm"
-                    placeholder="Password" required style="transition: all 0.3s; border: 1px solid #ced4da;">
+            <!-- Password -->
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Password</label>
+                <div class="input-group shadow-sm">
+                    <span class="input-group-text bg-white">
+                        <i class="bi bi-lock"></i>
+                    </span>
+                    <input type="password" name="password" class="form-control" placeholder="Masukkan password"
+                        required>
+                </div>
             </div>
 
-            <div class="mb-3 position-relative">
-                <i class="bi bi-shield-lock-fill position-absolute top-50 translate-middle-y ms-3 text-muted"></i>
-                <input type="password" name="password_confirmation"
-                    class="form-control ps-5 py-2 rounded-md  shadow-sm" placeholder="Konfirmasi Password" required
-                    style="transition: all 0.3s; border: 1px solid #ced4da;">
+            <!-- Confirm Password -->
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Konfirmasi Password</label>
+                <div class="input-group shadow-sm">
+                    <span class="input-group-text bg-white">
+                        <i class="bi bi-lock-fill"></i>
+                    </span>
+                    <input type="password" name="password_confirmation" class="form-control"
+                        placeholder="Konfirmasi password" required>
+                </div>
             </div>
 
-            <button id="btnRegister" type="submit" class="btn w-100 py-2 rounded-md  fw-bold "
-                style="background: linear-gradient(90deg, #ffc107, #ffb000); transition: all 0.3s;">
-                <span id="btnText"><i class="bi bi-person-plus me-2"></i>Daftar</span>
+            <!-- Button -->
+            <button id="btnRegister" type="submit" class="btn btn-warning w-100 mt-3 fw-bold">
+                <span id="btnText"><i class="bi bi-person-plus me-1"></i> Daftar</span>
                 <span id="btnLoading" class="d-none">
-                    <span class="spinner-border spinner-border-sm me-2"></span>Memproses...
+                    <span class="spinner-border spinner-border-sm me-2"></span> Memproses...
                 </span>
             </button>
+
         </form>
+
 
         <div class="text-center mt-3">
             <p class="text-muted mb-0">

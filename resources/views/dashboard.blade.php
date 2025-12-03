@@ -1,7 +1,12 @@
 @extends('layouts.app')
 @section('content')
-
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
     <style>
+        body {
+            font-family: 'Poppins', sans-serif !important;
+        }
+
         .status-dot {
             width: 10px;
             height: 10px;
@@ -26,6 +31,8 @@
             transition: box-shadow 0.3s ease;
         }
     </style>
+
+
 
 
     {{-- @if (session('success'))
@@ -59,8 +66,7 @@
     @endif
 
 
-    <div
-        class="page-heading d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between">
+    <div class="page-heading d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between">
         {{-- Judul halaman --}}
         <div class="mb-2 mb-md-0 mt-3">
             @if (auth()->user()->role === 'kandidat')
@@ -276,8 +282,8 @@
                     <div class="row mt-4">
 
                         <!-- =========================
-                                                BAGIAN KIRI (CHART)
-                                            ========================== -->
+                                                            BAGIAN KIRI (CHART)
+                                                        ========================== -->
                         <div class="col-12 col-md-8">
                             <div class="card h-100 shadow-lg border-0 rounded-4">
 
@@ -418,70 +424,6 @@
                     {{-- @include('components.mobile_menu') --}}
                     <!-- Header Tabel -->
 
-                    <div class="table-responsive mt-3">
-                        @if ($cvs->isEmpty())
-                            <!-- SweetAlert jika belum ada CV -->
-                            <script>
-                                document.addEventListener('DOMContentLoaded', function() {
-                                    Swal.fire({
-                                        icon: 'info',
-                                        title: 'Belum Mengisi CV',
-                                        html: `
-                        <p>Kamu belum mengisi CV.</p>
-                        <a href="/pendaftaran/cv/kandidat" 
-                           class="btn btn-warning fw-semibold mt-2">
-                            <i class="bi bi-pencil-square me-1"></i> Klik di sini untuk mengisi CV
-                        </a>
-                    `,
-                                        showConfirmButton: false,
-                                        allowOutsideClick: false,
-                                        allowEscapeKey: false,
-                                        background: '#fffaf0',
-                                        color: '#333',
-                                        didOpen: (popup) => {
-                                            popup.querySelector('a').addEventListener('click', () => {
-                                                Swal.close();
-                                            });
-                                        }
-                                    });
-                                });
-                            </script>
-                        @else
-                            <div class="card border-0 shadow shadow-md rounded-4">
-                                <div class="card-header py-3 border-0">
-
-                                    @if ($cvs->isEmpty())
-                                        <!-- SweetAlert jika belum ada CV -->
-                                        <script>
-                                            document.addEventListener('DOMContentLoaded', function() {
-                                                Swal.fire({
-                                                    icon: 'info',
-                                                    title: 'Belum Mengisi CV',
-                                                    html: `
-                    <p>Kamu belum mengisi CV.</p>
-                    <a href="{{ route('pendaftaran.cv.create') }}" 
-                       class="btn btn-warning fw-semibold mt-2">
-                        <i class="bi bi-pencil-square me-1"></i> Isi CV Sekarang
-                    </a>
-                `,
-                                                    showConfirmButton: false,
-                                                    allowOutsideClick: false,
-                                                    allowEscapeKey: false,
-                                                    background: '#fffaf0',
-                                                    color: '#333'
-                                                });
-                                            });
-                                        </script>
-                                    @else
-                                        @include('components.cv_kandidat')
-                                    @endif
-
-
-
-                                </div>
-                            </div>
-                        @endif
-                    </div>
 
 
 
@@ -705,6 +647,73 @@
                             }
                         </style>
 
+                    </div>
+
+
+
+                    <div class="table-responsive mt-3">
+                        @if ($cvs->isEmpty())
+                            <!-- SweetAlert jika belum ada CV -->
+                            <script>
+                                document.addEventListener('DOMContentLoaded', function() {
+                                    Swal.fire({
+                                        icon: 'info',
+                                        title: 'Belum Mengisi CV',
+                                        html: `
+                        <p>Kamu belum mengisi CV.</p>
+                        <a href="/pendaftaran/cv/kandidat" 
+                           class="btn btn-warning fw-semibold mt-2">
+                            <i class="bi bi-pencil-square me-1"></i> Klik di sini untuk mengisi CV
+                        </a>
+                    `,
+                                        showConfirmButton: false,
+                                        allowOutsideClick: false,
+                                        allowEscapeKey: false,
+                                        background: '#fffaf0',
+                                        color: '#333',
+                                        didOpen: (popup) => {
+                                            popup.querySelector('a').addEventListener('click', () => {
+                                                Swal.close();
+                                            });
+                                        }
+                                    });
+                                });
+                            </script>
+                        @else
+                            <div class="card border-0 shadow shadow-md rounded-4">
+                                <div class="card-header py-3 border-0">
+
+                                    @if ($cvs->isEmpty())
+                                        <!-- SweetAlert jika belum ada CV -->
+                                        <script>
+                                            document.addEventListener('DOMContentLoaded', function() {
+                                                Swal.fire({
+                                                    icon: 'info',
+                                                    title: 'Belum Mengisi CV',
+                                                    html: `
+                    <p>Kamu belum mengisi CV.</p>
+                    <a href="{{ route('pendaftaran.cv.create') }}" 
+                       class="btn btn-warning fw-semibold mt-2">
+                        <i class="bi bi-pencil-square me-1"></i> Isi CV Sekarang
+                    </a>
+                `,
+                                                    showConfirmButton: false,
+                                                    allowOutsideClick: false,
+                                                    allowEscapeKey: false,
+                                                    background: '#fffaf0',
+                                                    color: '#333'
+                                                });
+                                            });
+                                        </script>
+                                    @else
+                                        @include('components.cv_kandidat')
+                                    @endif
+
+
+
+                                </div>
+                            </div>
+                        @endif
                     </div>
 
 

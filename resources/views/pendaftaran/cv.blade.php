@@ -7,6 +7,10 @@
         integrity="sha512-u3eJv6TsgUsP62eFZlyDdc0AGJi/7luWGINuD/7++UZ5EONosFVJeFt3PcTJS3BM4tiTqcKoy0ucZZ+jJ7G8Aw=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
 
+    <head>
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+    </head>
+
     <div class=" mt-5">
         @if ($alreadyRegistered)
             <script>
@@ -257,8 +261,8 @@
                                     <div class="row g-3">
                                         <div class="col-md-6">
                                             <!-- ======================================================
-                         MULTI FILE: pas_foto[]
-                    ====================================================== -->
+                                                         MULTI FILE: pas_foto[]
+                                                    ====================================================== -->
                                             <label class="form-label fw-semibold mb-1">
                                                 Silahkan upload dokumen / foto tambahan 👇
                                             </label>
@@ -276,8 +280,8 @@
                                             <div id="previewPasFoto" class="mt-3 d-flex flex-wrap gap-3"></div>
 
                                             <!-- ======================================================
-                         SINGLE FILE: pas_foto_cv
-                    ====================================================== -->
+                                                         SINGLE FILE: pas_foto_cv
+                                                    ====================================================== -->
                                             <label class="form-label fw-semibold mb-1 mt-4">
                                                 Silahkan upload pas foto untuk CV Anda 👇
                                             </label>
@@ -1027,16 +1031,18 @@
                                                     required>
                                             </div>
 
-                                            <!-- Lama Pendidikan -->
-                                            <div class="col-md-4">
-                                                <label class="form-label fw-bold">Lama Pendidikan Sekolah Terakhir
-                                                    *</label>
-                                                <p class="text-muted small mb-1">
-                                                    Cantumkan Bulan dan Tahun<br>
-                                                    <b>Contoh: 2020年／01月 ～ 2024年／04月</b>
-                                                </p>
-                                                <input type="text" name="pendidikan_tahun[]" class="form-control"
-                                                    placeholder="Contoh: 2020年／01月 ～ 2024年／04月" required>
+                                            <!-- Tahun Masuk -->
+                                            <div class="col-md-2">
+                                                <label class="form-label fw-bold">Tahun Masuk *</label>
+                                                <input type="number" name="pendidikan_tahun_masuk[]"
+                                                    class="form-control" placeholder="Contoh: 2020" required>
+                                            </div>
+
+                                            <!-- Tahun Lulus -->
+                                            <div class="col-md-2">
+                                                <label class="form-label fw-bold">Tahun Lulus *</label>
+                                                <input type="number" name="pendidikan_tahun_lulus[]"
+                                                    class="form-control" placeholder="Contoh: 2024" required>
                                             </div>
 
                                             <!-- Jurusan -->
@@ -1077,7 +1083,7 @@
                                         <div class="row g-3 mb-3 pengalaman-item">
 
                                             <!-- Nama Perusahaan -->
-                                            <div class="col-md-4">
+                                            <div class="col-md-3">
                                                 <label class="form-label fw-bold">Nama Perusahaan *</label>
                                                 <p class="text-muted small mb-1">
                                                     Cantumkan nama perusahaan tempat Anda bekerja sebelumnya.
@@ -1088,7 +1094,7 @@
                                             </div>
 
                                             <!-- Jabatan -->
-                                            <div class="col-md-4">
+                                            <div class="col-md-3">
                                                 <label class="form-label fw-bold">Jabatan *</label>
                                                 <p class="text-muted small mb-1">
                                                     Isi jabatan terakhir Anda di perusahaan tersebut.
@@ -1098,16 +1104,25 @@
                                                     placeholder="Contoh: Operator Produksi" required>
                                             </div>
 
-                                            <!-- Periode / Lama Bekerja -->
-                                            <div class="col-md-3">
-                                                <label class="form-label fw-bold">Periode / Lama Bekerja *</label>
-                                                <p class="text-muted small mb-1">
-                                                    Cantumkan periode bekerja dengan format Jepang.
-                                                    <br><b>Contoh: 2021年／02月 ～ 2023年／08月</b>
-                                                </p>
-                                                <input type="text" name="pengalaman_lama_bekerja[]"
-                                                    class="form-control" placeholder="Contoh: 2021年／02月 ～ 2023年／08月"
-                                                    required>
+                                            <!-- Tanggal Masuk -->
+                                            <div class="col-md-2">
+                                                <label class="form-label fw-bold">Tanggal Masuk *</label>
+                                                <input type="month" name="pengalaman_tanggal_masuk[]"
+                                                    class="form-control" required>
+                                            </div>
+
+                                            <!-- Tanggal Keluar -->
+                                            <div class="col-md-2">
+                                                <label class="form-label fw-bold">Tanggal Keluar *</label>
+                                                <input type="month" name="pengalaman_tanggal_keluar[]"
+                                                    class="form-control" required>
+                                            </div>
+
+                                            <!-- Gaji -->
+                                            <div class="col-md-2">
+                                                <label class="form-label fw-bold">Gaji</label>
+                                                <input type="text" name="pengalaman_gaji[]" class="form-control"
+                                                    placeholder="Contoh: 5.000.000">
                                             </div>
 
                                             <!-- Remove Button -->
@@ -1125,6 +1140,8 @@
 
                                 </div>
                             </div>
+
+
 
                             {{-- HALAMAN 5: INFORMASI TAMBAHAN --}}
                             <div class="card mb-4">
@@ -1561,55 +1578,80 @@
 
         $(document).ready(function() {
 
+
             // =============== ADD ROW PENDIDIKAN ===============
             $('#addPendidikan').click(function() {
                 let row = `
-                <div class="row g-3 mb-2 pendidikan-item">
-                    <div class="col-md-4">
-                        <input type="text" name="pendidikan_nama[]" class="form-control" placeholder="Nama Sekolah/Universitas">
-                    </div>
-                    <div class="col-md-4">
-                        <input type="text" name="pendidikan_jurusan[]" class="form-control" placeholder="Jurusan">
-                    </div>
-                    <div class="col-md-3">
-                        <input type="text" name="pendidikan_tahun[]" class="form-control" placeholder="Tahun (2015-2018)">
-                    </div>
-                    <div class="col-md-1 d-flex">
-                        <button type="button" class="btn btn-danger btn-sm remove-row">X</button>
-                    </div>
-                </div>
-            `;
+    <div class="row g-3 mb-3 pendidikan-item">
+        <div class="col-md-4">
+            <input type="text" name="pendidikan_nama[]" class="form-control" placeholder="Nama Sekolah/Universitas" required>
+        </div>
+        <div class="col-md-2">
+            <input type="number" name="pendidikan_tahun_masuk[]" class="form-control" placeholder="Tahun Masuk (2020)" required>
+        </div>
+        <div class="col-md-2">
+            <input type="number" name="pendidikan_tahun_lulus[]" class="form-control" placeholder="Tahun Lulus (2024)" required>
+        </div>
+        <div class="col-md-3">
+            <input type="text" name="pendidikan_jurusan[]" class="form-control" placeholder="Jurusan" required>
+        </div>
+        <div class="col-md-1 d-flex align-items-end">
+            <button type="button" class="btn btn-danger btn-sm remove-row">X</button>
+        </div>
+    </div>
+    `;
                 $('#pendidikanContainer').append(row);
             });
 
-            // =============== ADD ROW PENGALAMAN KERJA ===============
+
+
+
+            // pengalaman kerja 
+
             $('#addPengalaman').click(function() {
                 let row = `
-                <div class="row g-3 mb-3 pengalaman-item">
-                    <div class="col-md-4">
-                        <label class="form-label">Nama Perusahaan</label>
-                        <input type="text" name="pengalaman_perusahaan[]" class="form-control" placeholder="Nama Perusahaan">
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label">Jabatan</label>
-                        <input type="text" name="pengalaman_jabatan[]" class="form-control" placeholder="Jabatan">
-                    </div>
-                    <div class="col-md-3">
-                        <label class="form-label">Periode/Lama Bekerja</label>
-                        <input type="text" name="pengalaman_lama_bekerja[]" class="form-control" placeholder="2019-2021 (2 tahun)">
-                    </div>
-                    <div class="col-md-1 d-flex align-items-end">
-                        <button type="button" class="btn btn-danger btn-sm remove-row">X</button>
-                    </div>
-                </div>
-            `;
+    <div class="row g-3 mb-3 pengalaman-item">
+        <div class="col-md-3">
+            <label class="form-label fw-bold">Nama Perusahaan *</label>
+            <input type="text" name="pengalaman_perusahaan[]" class="form-control" placeholder="Nama Perusahaan" required>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label fw-bold">Jabatan *</label>
+            <input type="text" name="pengalaman_jabatan[]" class="form-control" placeholder="Jabatan" required>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label fw-bold">Tanggal Masuk *</label>
+            <input type="month" name="pengalaman_tanggal_masuk[]" class="form-control" required>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label fw-bold">Tanggal Keluar *</label>
+            <input type="month" name="pengalaman_tanggal_keluar[]" class="form-control" required>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label fw-bold">Gaji</label>
+            <input type="text" name="pengalaman_gaji[]" class="form-control" placeholder="Contoh: 5.000.000">
+        </div>
+        <div class="col-md-1 d-flex align-items-end">
+            <button type="button" class="btn btn-danger btn-sm remove-row">X</button>
+        </div>
+    </div>
+    `;
                 $('#pengalamanContainer').append(row);
             });
 
-            // =============== REMOVE ROW ===============
+            // Remove row
             $(document).on('click', '.remove-row', function() {
-                $(this).closest('.row').remove();
+                $(this).closest('.pengalaman-item').remove();
             });
+
+
+
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
 
             // =============== CLIENT-SIDE VALIDATION ===============
             // SUBMIT FORM

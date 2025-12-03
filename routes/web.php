@@ -79,15 +79,6 @@ Route::middleware('auth')->group(function () {
 | DASHBOARD & PROFILE
 |--------------------------------------------------------------------------
 */
-Route::get('/pdf1', function(){
-    return view('cv/pdf1');
-});
-Route::get('/pdf_yambo', function(){
-    return view('cv/pdf_yambo');
-});
-Route::get('/pdf_nawasena', function(){
-    return view('cv/pdf_nawasena');
-});
 
 // Dashboard Utama (Akses oleh Semua Role yang didefinisikan)
 Route::middleware(['auth', "role:kandidat,$admin_roles"])->group(function () {
@@ -140,6 +131,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/cv/show/{id}', [CvController::class, 'show'])->name('cv.show');
     Route::get('/cv/show/pdf/{id}', [CvController::class, 'showPdf'])->name('cv.show.pdf');
     Route::get('/cv/show/pdf/violeta/{id}', [CvController::class, 'showPdfVioleta'])->name('cv.show.pdf.violeta');
+    Route::get('/cv/show/pdf/pdf_nawasena/{id}', [CvController::class, 'showPdfNawasena'])->name('cv.show.pdf.nawasena');
+    Route::get('/cv/show/pdf/pdf_yambo/{id}', [CvController::class, 'showPdfYambo'])->name('cv.show.pdf.yambo');
+    Route::get('/cv/show/pdf/pdf_madoka/{id}', [CvController::class, 'showPdfMadoka'])->name('cv.show.pdf.madoka');
+    Route::get('/cv/show/pdf/pdf_mendunia/{id}', [CvController::class, 'showPdfMendunia'])->name('cv.show.pdf.mendunia');
 });
 
 

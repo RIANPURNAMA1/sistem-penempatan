@@ -50,11 +50,11 @@
         }
 
         /* Hanya untuk print */
-    @media print {
-        .btn-container {
-            display: none !important;
+        @media print {
+            .btn-container {
+                display: none !important;
+            }
         }
-    }
     </style>
 </head>
 
@@ -76,13 +76,12 @@
 
             <!-- NAMA -->
             <tr>
-                <td style="width:10%;" rowspan="2">①氏名 <br> Nama</td>
+                <td style="width:13%;" rowspan="2">①氏名 <br> Nama</td>
 
                 <td style="width:10%;">
                     アルファベット <br> Alfabet <br><br>
-                    {{ $cv->nama ?? '.............................' }}
                 </td>
-                <td style="width:40%"></td>
+                <td style="width:40%">{{ $cv->nama_lengkap_katakana ?? '.............................' }}</td>
                 <td style="">②性別 <br> Jenis kelamin</td>
                 <td colspan="3">
                     {{ $cv->jenis_kelamin ?? '............................................' }}
@@ -93,12 +92,12 @@
             <tr>
                 <td style="width:10%;">
                     漢字 <br> Kanji <br><br>
-                    {{ $cv->nama_kanji ?? '.............................' }}
+
                 </td>
-                <td></td>
+                <td> {{ $cv->nama_lengkap_romaji ?? '.............................' }}</td>
                 <td style="">③生年月日 <br> Tanggal lahir</td>
                 <td colspan="3">
-                    {{ $cv->tanggal_lahir ?? '............................................' }}
+                    {{ $cv->tempat_tanggal_lahir ?? '............................................' }}
                 </td>
             </tr>
 
@@ -122,27 +121,27 @@
             <td colspan="2">
                 ⑥本国⼜は居住国
             </td>
-            <td colspan="3">---------------------------</td>
+            <td colspan="3"></td>
             <tr>
             </tr>
             <td colspan="2">
                 における住所
             </td>
-            <td colspan="3">---------------------------</td>
+            <td colspan="3">{{ $cv->alamat_lengkap }}</td>
             <tr>
             </tr>
             <td colspan="2">
                 Alamat di negara asal atau negara
             </td>
             <td style="text-align: right" colspan="3">（電話 ）
-                (Telepon )</td>
+               {{$cv->no_telepon}}</td>
             <tr>
             <tr>
             </tr>
             <td colspan="2">
                 tempat tinggal
             </td>
-            <td colspan="3">---------------------------</td>
+            <td colspan="3">{{ $cv->tempat_lahir }}</td>
             </tr>
         </table>
         <table>
@@ -164,36 +163,41 @@
                     Latar belakang pendidikan terbaru/riwayat pekerjaan utama
                 </td>
             </tr>
-            <tr>
-                <td colspan="" style="width:204px">
-                    Latar belakang pendidikan
-                </td>
-                <td>
+            @foreach ($cv->pendidikans as $p)
+                <tr>
+                    <td colspan="" style="width:204px">
+                        Latar belakang pendidikan
+                    </td>
+                    <td>
+                        {{ $p->tahun }}
+                    </td>
+                    <td>
 
-                </td>
-                <td>
+                    </td>
+                    <td style="text-align: center">
+                        {{ $p->nama }}
+                    </td>
+                </tr>
+            @endforeach
 
-                </td>
-                <td>
+            @foreach ($cv->pengalamans as $p)
+                <tr>
+                    <td colspan="" style="width:204px">
 
-                </td>
-            </tr>
-            <tr>
-                <td colspan="" style="width:204px">
+                        riwayat pekerjaan
 
-                    riwayat pekerjaan
+                    </td>
+                    <td>
+                        {{ $p->lama_bekerja }}
+                    </td>
+                    <td>
 
-                </td>
-                <td>
-
-                </td>
-                <td>
-
-                </td>
-                <td>
-
-                </td>
-            </tr>
+                    </td>
+                    <td class="text-center">
+                        {{ $p->perusahaan }}
+                    </td>
+                </tr>
+            @endforeach
         </table>
         <table>
             <tr>
@@ -202,7 +206,7 @@
                     Kualifikasi, lisensi
                 </td>
                 <td>
-                    dadadadd
+                    {{$cv->surat_izin_mengemudi}} - {{$cv->jenis_sim}}
                 </td>
             </tr>
         </table>

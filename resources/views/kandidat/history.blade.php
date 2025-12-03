@@ -20,7 +20,7 @@
                 </li>
                 <li class="breadcrumb-item active fw-semibold" aria-current="page">
                     <i class="bi bi-clock-history me-1"></i> History Kandidat
-                </li>w
+                </li>
             </ol>
         </nav>
 
@@ -52,7 +52,7 @@
                             <th class="py-3">No</th>
                             <th class="py-3">Status Kandidat</th>
                             <th class="py-3">Nama Perusahaan</th>
-                            <th class="py-3">Bidang Pekerjaan</th>
+                            <th class="py-3">Bidang Pekerjaan Ssw</th>
                             <th class="py-3">Tanggal</th>
                         </tr>
                     </thead>
@@ -93,7 +93,7 @@
                                 <td>
                                     <span class="d-block text-truncate" style="max-width: 200px;"
                                         title="{{ $history->institusi->bidang_pekerjaan ?? '-' }}">
-                                        {{ $history->institusi->bidang_pekerjaan ?? '-' }}
+                                        {{ $history->bidang_ssw ?? '-' }}
                                     </span>
                                 </td>
 

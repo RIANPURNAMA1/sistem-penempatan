@@ -19,11 +19,19 @@
 
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif !important;
+        }
+    </style>
 </head>
 
-<body class="bg-light d-flex justify-content-center align-items-center min-vh-100">
+<body class="d-flex justify-content-center align-items-center min-vh-100">
     <div class="container mt-5" style="max-width: 500px;">
-        <div class="card shadow-lg p-4 p-md-5" style="max-width: 420px; width: 100%; border-radius: 20px;">
+        <div class=" p-4 p-md-5" style="max-width: 420px; width: 100%; border-radius: 20px;">
 
             <h4 class="mb-4 text-center">Lupa Password</h4>
 

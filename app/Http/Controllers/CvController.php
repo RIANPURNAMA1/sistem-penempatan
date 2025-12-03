@@ -219,10 +219,11 @@ class CvController extends Controller
             if ($request->pendidikan_nama) {
                 foreach ($request->pendidikan_nama as $i => $nama) {
                     Pendidikan::create([
-                        'cv_id'   => $cv->id,
-                        'nama'    => $nama,
-                        'jurusan' => $request->pendidikan_jurusan[$i] ?? null,
-                        'tahun'   => $request->pendidikan_tahun[$i] ?? null,
+                        'cv_id'       => $cv->id,
+                        'nama'        => $nama,
+                        'jurusan'     => $request->pendidikan_jurusan[$i] ?? null,
+                        'tahun_masuk' => $request->pendidikan_tahun_masuk[$i] ?? null,
+                        'tahun_lulus' => $request->pendidikan_tahun_lulus[$i] ?? null,
                     ]);
                 }
             }
@@ -231,15 +232,15 @@ class CvController extends Controller
             if ($request->pengalaman_perusahaan) {
                 foreach ($request->pengalaman_perusahaan as $i => $perusahaan) {
                     Pengalaman::create([
-                        'cv_id'        => $cv->id,
-                        'perusahaan'   => $perusahaan,
-                        'jabatan'      => $request->pengalaman_jabatan[$i] ?? null,
-                        'lama_bekerja' => $request->pengalaman_lama_bekerja[$i] ?? null,
-                        // 'gaji' bisa diisi jika ada field gaji
+                        'cv_id'          => $cv->id,
+                        'perusahaan'     => $perusahaan,
+                        'jabatan'        => $request->pengalaman_jabatan[$i] ?? null,
+                        'tanggal_masuk'  => $request->pengalaman_tanggal_masuk[$i] ?? null,
+                        'tanggal_keluar' => $request->pengalaman_tanggal_keluar[$i] ?? null,
+                        'gaji'           => $request->pengalaman_gaji[$i] ?? null,
                     ]);
                 }
             }
-
 
             DB::commit();
 
@@ -277,6 +278,26 @@ class CvController extends Controller
     {
         $cv = Cv::with(['pendidikans', 'pengalamans'])->findOrFail($id);
         return view('cv.pdf_violeta', compact('cv'));
+    }
+    public function showPdfNawasena($id)
+    {
+        $cv = Cv::with(['pendidikans', 'pengalamans'])->findOrFail($id);
+        return view('cv.pdf_nawasena', compact('cv'));
+    }
+    public function showPdfYambo($id)
+    {
+        $cv = Cv::with(['pendidikans', 'pengalamans'])->findOrFail($id);
+        return view('cv.pdf_yambo', compact('cv'));
+    }
+    public function showPdfMadoka($id)
+    {
+        $cv = Cv::with(['pendidikans', 'pengalamans'])->findOrFail($id);
+        return view('cv.pdf_madoka', compact('cv'));
+    }
+    public function showPdfMendunia($id)
+    {
+        $cv = Cv::with(['pendidikans', 'pengalamans'])->findOrFail($id);
+        return view('cv.pdf_mendunia', compact('cv'));
     }
 
 

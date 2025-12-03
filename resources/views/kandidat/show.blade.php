@@ -15,7 +15,7 @@
                     <i class="bi bi-people me-1"></i> Kandidat
                 </a>
             </li>
-            <li class="breadcrumb-item active text-dark fw-semibold">
+            <li class="breadcrumb-item active  fw-semibold">
                 <i class="bi bi-person-circle me-1"></i> {{ $kandidat->pendaftaran->nama ?? '-' }}
             </li>
         </ol>
@@ -202,7 +202,7 @@
                     @foreach ($dokumenList as $key => $label)
                         @if ($kandidat->pendaftaran->$key)
                             <a href="{{ asset($kandidat->pendaftaran->$key)}}" target="_blank"
-                               class="btn btn-outline-dark btn-sm fw-bold">
+                               class="btn btn-outline-success btn-sm fw-bold">
                                 <i class="bi bi-file-earmark-arrow-up me-1"></i> {{ $label }}
                             </a>
                         @else
