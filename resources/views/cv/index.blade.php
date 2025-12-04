@@ -158,7 +158,7 @@
         <!-- Cards Container -->
         <div class="row g-4" id="cardsContainer">
             @forelse ($cvs as $cv)
-                <div class="col-12 col-md-6 col-lg-3 cv-item "
+                <div class="col-12 col-md-6 col-lg-4 cv-item "
                     data-name="{{ strtolower($cv->nama_lengkap_romaji ?? ($cv->nama_lengkap_katakana ?? '')) }}"
                     data-email="{{ strtolower($cv->email_aktif ?? ($cv->email ?? '')) }}"
                     data-alamat="{{ strtolower($cv->alamat_lengkap ?? '') }}">

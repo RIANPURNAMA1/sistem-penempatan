@@ -38,7 +38,7 @@
             background-color: #4a90e2;
             color: white;
             font-weight: bold;
- 
+
             padding: 12px;
             text-align: left;
         }
@@ -62,27 +62,34 @@
         .info-section {
             background-color: #fff;
             padding: 10px;
-  
+
             line-height: 1.4;
         }
 
-        @media print {
-            body {
-                background-color: white;
-            }
-
-            .no-print {
-                display: none;
-            }
+          /* Hanya untuk print */
+    @media print {
+        .btn-container {
+            display: none !important;
         }
+    }
     </style>
 </head>
 
-<body>
+<body class="container2">
     <div class="form-container">
 
-        <div class="text-center no-print my-3">
-            <button onclick="window.print()" class="btn btn-primary">Cetak Form</button>
+        <div class="btn-container mb-3 d-flex gap-2 flex-wrap">
+
+            <!-- Print PDF -->
+            <button class="btn btn-success btn-container" onclick="window.print()">印刷 PDF</button>
+
+            <!-- Translate to Japanese -->
+            <button class="btn btn-success btn-container" onclick="translateToJapanese()">Ubah ke bahasa jepang</button>
+
+
+            <!-- Back Button -->
+            <a href="/data/cv/kandidat" class="btn btn-info btn-container" style="font-size: 12px">Kembali</a>
+
         </div>
         <table class="data-table" style="font-size: 12px;">
             <tr>
@@ -90,31 +97,31 @@
             </tr>
             <tr>
                 <td class="label-col">Nama Katakana</td>
-                <td class="value-col">: {{$cv->nama_lengkap_katakana}}</td>
+                <td class="value-col">: {{ $cv->nama_lengkap_katakana }}</td>
             </tr>
             <tr>
                 <td class="label-col">Nama</td>
-                <td class="value-col">: {{$cv->nama_lengkap_katakana}}</td>
+                <td class="value-col">: {{ $cv->nama_lengkap_katakana }}</td>
             </tr>
             <tr>
                 <td class="label-col">Nama panggilan</td>
-                <td class="value-col">:  {{$cv->nama_panggilan_katakana}}</td>
+                <td class="value-col">: {{ $cv->nama_panggilan_katakana }}</td>
             </tr>
             <tr>
                 <td class="label-col">Tempat Tanggal Lahir</td>
-                <td class="value-col">: {{$cv->tempat_tanggal_lahir}}</td>
+                <td class="value-col">: {{ $cv->tempat_tanggal_lahir }}</td>
             </tr>
             <tr>
                 <td class="label-col">Usia</td>
-                <td class="value-col">: {{$cv->usia}}</td>
+                <td class="value-col">: {{ $cv->usia }}</td>
             </tr>
             <tr>
                 <td class="label-col">Jenis Kelamin</td>
-                <td class="value-col">: {{$cv->jenis_kelamin}}</td>
+                <td class="value-col">: {{ $cv->jenis_kelamin }}</td>
             </tr>
             <tr>
                 <td class="label-col">Status</td>
-                <td class="value-col">: {{$cv->status_perkawinan}}</td>
+                <td class="value-col">: {{ $cv->status_perkawinan }}</td>
             </tr>
             <tr>
                 <td class="label-col">Apakah Bersedia Kerja Shift?</td>
@@ -134,34 +141,34 @@
             </tr>
             <tr>
                 <td class="label-col">Ketajaman Mata</td>
-                <td class="value-col">: {{$cv->kemampuan_penglihatan_mata}}</td>
+                <td class="value-col">: {{ $cv->kemampuan_penglihatan_mata }}</td>
             </tr>
             <tr>
                 <td class="label-col">Tinggi Badan</td>
-                <td class="value-col">: {{$cv->tinggi_badan}}</td>
+                <td class="value-col">: {{ $cv->tinggi_badan }}</td>
             </tr>
             <tr>
                 <td class="label-col">Berat Badan</td>
-                <td class="value-col">: {{$cv->berat_badan}}</td>
+                <td class="value-col">: {{ $cv->berat_badan }}</td>
             </tr>
             <tr>
                 <td class="label-col">Golongan Darah</td>
-                <td class="value-col">: {{$cv->golongan_darah}}</td>
+                <td class="value-col">: {{ $cv->golongan_darah }}</td>
             </tr>
             <tr>
                 <td class="label-col">Tangan Dominan</td>
-                <td class="value-col">: {{$cv->tangan_dominan}}</td>
+                <td class="value-col">: {{ $cv->tangan_dominan }}</td>
             </tr>
             <tr>
                 <td colspan="2" class="">Ukuran Baju</td>
             </tr>
             <tr>
                 <td class="label-col">Atasan</td>
-                <td class="value-col">: {{$cv->ukuran_atasan_baju}}</td>
+                <td class="value-col">: {{ $cv->ukuran_atasan_baju }}</td>
             </tr>
             <tr>
                 <td class="label-col">Celana</td>
-                <td class="value-col">: {{$cv->ukuran_celana}}</td>
+                <td class="value-col">: {{ $cv->ukuran_celana }}</td>
             </tr>
             <tr>
                 <td class="label-col">Ukuran Pinggang</td>
@@ -169,23 +176,23 @@
             </tr>
             <tr>
                 <td class="label-col">Ukuran Sepatu</td>
-                <td class="value-col">: {{$cv->ukuran_sepatu}}</td>
+                <td class="value-col">: {{ $cv->ukuran_sepatu }}</td>
             </tr>
             <tr>
                 <td class="label-col">Sudah Vaksin?</td>
-                <td class="value-col">: {{$cv->sudah_vaksin_berapa_kali}}</td>
+                <td class="value-col">: {{ $cv->sudah_vaksin_berapa_kali }}</td>
             </tr>
             <tr>
                 <td class="label-col">Berapa Kali?</td>
-                <td class="value-col">: {{$cv->sudah_vaksin_berapa_kali}}</td>
+                <td class="value-col">: {{ $cv->sudah_vaksin_berapa_kali }}</td>
             </tr>
             <tr>
                 <td class="label-col">Apakah Merokok</td>
-                <td class="value-col">: {{$cv->merokok}}</td>
+                <td class="value-col">: {{ $cv->merokok }}</td>
             </tr>
             <tr>
                 <td class="label-col">Apakah Minum Alkohol</td>
-                <td class="value-col">: {{$cv->minum_alkohol}}</td>
+                <td class="value-col">: {{ $cv->minum_alkohol }}</td>
             </tr>
             <tr>
                 <td class="label-col">Jika Ya, Intensitas Minum</td>
@@ -193,23 +200,23 @@
             </tr>
             <tr>
                 <td class="label-col">Apakah Bertato</td>
-                <td class="value-col">: {{$cv->bertato}}</td>
+                <td class="value-col">: {{ $cv->bertato }}</td>
             </tr>
             <tr>
                 <td class="label-col">Kesehatan Badan</td>
-                <td class="value-col">: {{$cv->kesehatan_badan}}</td>
+                <td class="value-col">: {{ $cv->kesehatan_badan }}</td>
             </tr>
             <tr>
                 <td class="label-col">Penyakit/Cedera Masa Lalu</td>
-                <td class="value-col">: {{$cv->penyakit_cedera_masa_lalu}}</td>
+                <td class="value-col">: {{ $cv->penyakit_cedera_masa_lalu }}</td>
             </tr>
             <tr>
                 <td class="label-col">Agama</td>
-                <td class="value-col">: {{$cv->agama}}</td>
+                <td class="value-col">: {{ $cv->agama }}</td>
             </tr>
             <tr>
                 <td class="label-col">Email</td>
-                <td class="value-col">: {{$cv->email_aktif}}</td>
+                <td class="value-col">: {{ $cv->email_aktif }}</td>
             </tr>
             <tr>
                 <td colspan="2" class="info-section">
@@ -340,18 +347,18 @@
             </thead>
             <tbody style="font-size: 11px">
                 @foreach ($cv->pendidikans as $p)
-                <tr>
-                    <td class="label-col">Nama Sekolah</td>
-                    <td class="input-col">: {{$p->nama}}</td>
-                </tr>
-                <tr>
-                    <td class="label-col">Tahun Bulan</td>
-                    <td class="input-col ">: {{$p->tahun}}</td>
-                </tr>
-                <tr>
-                    <td class="label-col">Jurusan</td>
-                    <td class="input-col">: {{$p->jurusan}}</td>
-                </tr>
+                    <tr>
+                        <td class="label-col">Nama Sekolah</td>
+                        <td class="input-col">: {{ $p->nama }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label-col">Tahun Bulan</td>
+                        <td class="input-col ">: {{ $p->tahun }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label-col">Jurusan</td>
+                        <td class="input-col">: {{ $p->jurusan }}</td>
+                    </tr>
                 @endforeach
             </tbody>
         </table>
@@ -368,22 +375,22 @@
                     <td colspan="2" class="subsection-title">Indonesia</td>
                 </tr>
                 @foreach ($cv->pengalamans as $p)
-                <tr>
-                    <td class="label-col">Nama Perusahaan</td>
-                    <td class="input-col">: {{$p->perusahaan}}</td>
-                </tr>
-                <tr>
-                    <td class="label-col">Nama Kota</td>
-                    <td class="input-col">:</td>
-                </tr>
-                <tr>
-                    <td class="label-col">Bidang Pekerjaan</td>
-                    <td class="input-col">:</td>
-                </tr>
-                <tr>
-                    <td class="label-col">Tahun Bulan</td>
-                    <td class="input-col ">: {{$p->lama_bekerja}}</td>
-                </tr>
+                    <tr>
+                        <td class="label-col">Nama Perusahaan</td>
+                        <td class="input-col">: {{ $p->perusahaan }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label-col">Nama Kota</td>
+                        <td class="input-col">:</td>
+                    </tr>
+                    <tr>
+                        <td class="label-col">Bidang Pekerjaan</td>
+                        <td class="input-col">:</td>
+                    </tr>
+                    <tr>
+                        <td class="label-col">Tahun Bulan</td>
+                        <td class="input-col ">: {{ $p->lama_bekerja }}</td>
+                    </tr>
                 @endforeach
                 <tr>
                     <td colspan="2" class="subsection-title">Magang ( Eks Jisshu )</td>
@@ -433,7 +440,7 @@
                     <th colspan="2" class="section-title section-family">DATA KELUARGA</th>
                 </tr>
             </thead>
-            <tbody  style="font-size: 11px">
+            <tbody style="font-size: 11px">
                 <tr>
                     <td colspan="2" class="subsection-title" style="background-color: #8989c2;">Ayah</td>
                 </tr>
@@ -450,7 +457,7 @@
                     <td class="input-col">:</td>
                 </tr>
                 <tr>
-                    <td colspan="2" class="subsection-title"  style="background-color: #8989c2;">Ibu</td>
+                    <td colspan="2" class="subsection-title" style="background-color: #8989c2;">Ibu</td>
                 </tr>
                 <tr>
                     <td class="label-col">Nama lengkap</td>
@@ -469,7 +476,7 @@
                     <td class="input-col">:</td>
                 </tr>
                 <tr>
-                    <td colspan="2" class="subsection-title"  style="background-color:#8989c2;">Suami/Istri</td>
+                    <td colspan="2" class="subsection-title" style="background-color:#8989c2;">Suami/Istri</td>
                 </tr>
                 <tr>
                     <td class="label-col">Nama lengkap</td>
@@ -567,23 +574,25 @@
         }
     </style>
 </head>
+
 <body>
     <div class="form-container">
         <table class="data-table" style="border: 1px solid black; font-size:11px;">
             <tr>
-                <td colspan="3" class="section-header"   style="font-size: 11px;background-color: #8989c2;">Anak</td>
+                <td colspan="3" class="section-header" style="font-size: 11px;background-color: #8989c2;">Anak
+                </td>
             </tr>
-            <tr  style="font-size: 11px">
+            <tr style="font-size: 11px">
                 <td style="" class="input-col">Jenis Kelamin :</td>
                 <td class="input-col">Jenis Kelamin :</td>
                 <td class="input-col">Jenis Kelamin :</td>
-            </tr >
-            <tr  style="font-size: 11px">
+            </tr>
+            <tr style="font-size: 11px">
                 <td class="input-col">Usia :</td>
                 <td class="input-col">Usia :</td>
                 <td class="input-col">Usia :</td>
             </tr>
-            <tr  style="font-size: 11px" >
+            <tr style="font-size: 11px">
                 <td class="input-col">Pendidikan :</td>
                 <td class="input-col">Pendidikan :</td>
                 <td class="input-col">Pendidikan :</td>
@@ -591,93 +600,93 @@
             <tr>
                 <td colspan="3" class="subsection-header">Saudara kandung (kakak)</td>
             </tr>
-            <tr  style="font-size: 11px">
+            <tr style="font-size: 11px">
                 <td class="label-col">Jenis Kelamin :</td>
                 <td class="label-col">Jenis Kelamin :</td>
                 <td class="label-col">Jenis Kelamin :</td>
             </tr>
-            <tr  style="font-size: 11px">
+            <tr style="font-size: 11px">
                 <td class="value-col">Usia :</td>
                 <td class="value-col">Usia :</td>
                 <td class="value-col">Usia :</td>
             </tr>
-            <tr  style="font-size: 11px">
+            <tr style="font-size: 11px">
                 <td class="value-col">Profesi/Pekerjaan</td>
                 <td class="value-col">Profesi/Pekerjaan</td>
                 <td class="value-col">Profesi/Pekerjaan</td>
             </tr>
-            <tr  style="font-size: 11px">
+            <tr style="font-size: 11px">
                 <td class="value-col">Status saudara : Kandung/Tiri</td>
                 <td class="value-col">Status saudara : Kandung/Tiri</td>
                 <td class="value-col">Status saudara : Kandung/Tiri</td>
             </tr>
-            <tr  style="font-size: 11px">
+            <tr style="font-size: 11px">
                 <td class="value-col">Nama lengkap:</td>
                 <td class="value-col">Nama lengkap:</td>
                 <td class="value-col">Nama lengkap:</td>
             </tr>
-            <tr  style="font-size: 11px">
+            <tr style="font-size: 11px">
                 <td colspan="3" class="subsection-header">Saudara kandung (Adik)</td>
             </tr>
-            <tr  style="font-size: 11px">
+            <tr style="font-size: 11px">
                 <td class="label-col">Jenis Kelamin :</td>
                 <td class="label-col">Jenis Kelamin :</td>
                 <td class="label-col">Jenis Kelamin :</td>
             </tr>
-            <tr  style="font-size: 11px">
+            <tr style="font-size: 11px">
                 <td class="value-col">Usia :</td>
                 <td class="value-col">Usia :</td>
                 <td class="value-col">Usia :</td>
             </tr>
-            <tr  style="font-size: 11px">
+            <tr style="font-size: 11px">
                 <td class="value-col">Profesi/Pekerjaan: Pelajar</td>
                 <td class="value-col">Profesi/Pekerjaan</td>
                 <td class="value-col">Profesi/Pekerjaan</td>
             </tr>
-            <tr  style="font-size: 11px">
+            <tr style="font-size: 11px">
                 <td class="value-col">Status saudara : Kandung</td>
                 <td class="value-col">Status saudara : Kandung/Tiri</td>
                 <td class="value-col">Status saudara : Kandung/Tiri</td>
             </tr>
-            <tr  style="font-size: 11px">
+            <tr style="font-size: 11px">
                 <td class="value-col">Nama lengkap:</td>
                 <td class="value-col">Nama lengkap:</td>
                 <td class="value-col">Nama lengkap:</td>
             </tr>
-            <tr  style="font-size: 11px">
+            <tr style="font-size: 11px">
                 <td colspan="" class="value-col">Jumlah saudara (adik & kakak)</td>
                 <td colspan="" class="value-col"></td>
                 <td colspan="" class="value-col"></td>
             </tr>
-            <tr  style="font-size: 11px">
+            <tr style="font-size: 11px">
                 <td colspan="" class="subsection-header">Persetujuan Keluarga</td>
                 <td colspan="2" class="value-col">:</td>
             </tr>
-            <tr  style="font-size: 11px">
+            <tr style="font-size: 11px">
                 <td class="label-col">Apakah memiliki kenalan di Jepang?</td>
                 <td colspan="2" class="value-col">:</td>
             </tr>
-            <tr  style="font-size: 11px">
+            <tr style="font-size: 11px">
                 <td class="label-col">Tinggal Di Prefektur?</td>
                 <td colspan="2" class="value-col">:</td>
             </tr>
-            <tr  style="font-size: 11px">
+            <tr style="font-size: 11px">
                 <td class="label-col">Kontak kenalan di Jepang</td>
                 <td colspan="2" class="value-col">:</td>
             </tr>
-            <tr  style="font-size: 11px">
+            <tr style="font-size: 11px">
                 <td class="label-col">Penghasilan orang tua</td>
                 <td colspan="2" class="value-col">:</td>
             </tr>
-            <tr  style="font-size: 11px">
+            <tr style="font-size: 11px">
                 <td class="label-col">Sumber biaya keberangkatan</td>
                 <td colspan="2" class="value-col">:</td>
             </tr>
-            <tr  style="font-size: 11px">
+            <tr style="font-size: 11px">
                 <td class="label-col">Perkiraan Biaya yang disiapkan untuk bekerja ke Jepang</td>
                 <td colspan="2" class="value-col">: Choose an item.</td>
             </tr>
-            <tr  style="font-size: 11px">
+            <tr style="font-size: 11px">
                 <td class="label-col">Biaya keberangkatan sebelumnya (bagi eks jisshu)</td>
                 <td colspan="2" class="value-col">:</td>
             </tr>
@@ -793,7 +802,7 @@
             </tr>
             <tr>
                 <td class="label-col">Bidang</td>
-                <td class="value-col">: {{$cv->bidang_sertifikasi}}</td>
+                <td class="value-col">: {{ $cv->bidang_sertifikasi }}</td>
             </tr>
             <tr>
                 <td class="label-col">Lama ingin tinggal di Jepang</td>
@@ -801,23 +810,23 @@
             </tr>
             <tr>
                 <td class="label-col">Lama ingin bekerja di perusahaan ini</td>
-                <td class="value-col">: {{$cv->ingin_bekerja_berapa_tahun}}</td>
+                <td class="value-col">: {{ $cv->ingin_bekerja_berapa_tahun }}</td>
             </tr>
             <tr>
                 <td class="label-col">Ingin pulang ke Indonesia berapa kali dalam 5th</td>
-                <td class="value-col">: {{$cv->ingin_pulang_berapa_kali}}</td>
+                <td class="value-col">: {{ $cv->ingin_pulang_berapa_kali }}</td>
             </tr>
             <tr>
                 <td class="label-col">Apakah ada keluarga di Jepang</td>
-                <td class="value-col">:{{$cv->ada_keluarga_di_jepang}}</td>
+                <td class="value-col">:{{ $cv->ada_keluarga_di_jepang }}</td>
             </tr>
             <tr>
                 <td class="label-col">Hubungan dengan keluarga di Jepang</td>
-                <td class="value-col">:  {{$cv->hubungan_keluarga_di_jepang}}</td>
+                <td class="value-col">: {{ $cv->hubungan_keluarga_di_jepang }}</td>
             </tr>
             <tr>
                 <td class="label-col">Status kerabat di Jepang</td>
-                <td class="value-col">: {{$cv->status_kerabat_di_jepang}}</td>
+                <td class="value-col">: {{ $cv->status_kerabat_di_jepang }}</td>
             </tr>
             <tr>
                 <td class="label-col">Kontak keluarga di Jepang</td>
@@ -1620,7 +1629,7 @@
                         Alamat lengkap
                     </td>
                     <td>
-                        : {{$cv->alamat_lengkap}}
+                        : {{ $cv->alamat_lengkap }}
                     </td>
                 </tr>
                 <tr>
@@ -1628,7 +1637,7 @@
                         Hobi
                     </td>
                     <td>
-                        : {{$cv->hobi}}
+                        : {{ $cv->hobi }}
                     </td>
                 </tr>
                 <tr>
@@ -1636,7 +1645,7 @@
                         Kelebihan pribadi
                     </td>
                     <td>
-                        : {{$cv->kelebihan_diri}}
+                        : {{ $cv->kelebihan_diri }}
                     </td>
                 </tr>
                 <tr>
@@ -1644,7 +1653,7 @@
                         Kekurangan pribadi
                     </td>
                     <td>
-                        : {{$cv->kekurangan_diri}}
+                        : {{ $cv->kekurangan_diri }}
                     </td>
                 </tr>
                 <tr>
@@ -1652,7 +1661,7 @@
                         Alasan pribadi kenapa ingin bekerja ke Jepang
                     </td>
                     <td>
-                        : {{$cv->ketertarikan_terhadap_jepang}}
+                        : {{ $cv->ketertarikan_terhadap_jepang }}
                     </td>
                 </tr>
                 <tr>
@@ -1668,7 +1677,7 @@
                         SIM (Motor & Mobil)
                     </td>
                     <td>
-                        : {{$cv->jenis_sim}}
+                        : {{ $cv->jenis_sim }}
                     </td>
                 </tr>
             </table>
@@ -1678,6 +1687,134 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js"></script>
+    <script>
+        function capitalizeText() {
+            const textNodes = [];
+            const walker = document.createTreeWalker(
+                document.querySelector('.container2'),
+                NodeFilter.SHOW_TEXT,
+                null,
+                false
+            );
+
+            while (walker.nextNode()) {
+                const node = walker.currentNode;
+                if (node.nodeValue.trim() !== '') {
+                    textNodes.push(node);
+                }
+            }
+
+            textNodes.forEach(node => {
+                node.nodeValue = node.nodeValue.replace(/\b\w/g, char => char.toUpperCase());
+            });
+        }
+
+        async function translateToJapanese() {
+            // Ambil semua elemen teks
+            const textNodes = [];
+            const walker = document.createTreeWalker(
+                document.querySelector('.container2'),
+                NodeFilter.SHOW_TEXT,
+                null,
+                false
+            );
+
+            while (walker.nextNode()) {
+                const node = walker.currentNode;
+                if (node.nodeValue.trim() !== '') {
+                    textNodes.push(node);
+                }
+            }
+
+            // Kirim teks ke API penerjemah
+            for (let node of textNodes) {
+                const originalText = node.nodeValue.trim();
+                try {
+                    const translated = await translateText(originalText);
+                    node.nodeValue = translated; // replace teks asli
+                } catch (err) {
+                    console.error('Terjemahan gagal untuk:', originalText, err);
+                }
+            }
+        }
+
+        // Contoh fungsi translate via API publik (DeepL atau Google Translate)
+        async function translateText(text) {
+            // Contoh menggunakan API Google Translate gratis via fetch
+            const res = await fetch(
+                `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=id|ja`);
+            const data = await res.json();
+            return data.responseData.translatedText;
+        }
+
+        function printSheet() {
+            const container = document.querySelector('.container');
+
+            html2canvas(container, {
+                scale: 2
+            }).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
+                const imgProps = pdf.getImageProperties(imgData);
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+                let heightLeft = pdfHeight;
+                let position = 0;
+
+                pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
+                heightLeft -= pdf.internal.pageSize.getHeight();
+
+                while (heightLeft > 0) {
+                    position = heightLeft - pdfHeight;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
+                    heightLeft -= pdf.internal.pageSize.getHeight();
+                }
+
+                pdf.autoPrint();
+                window.open(pdf.output('bloburl'), '_blank');
+            });
+        }
+
+
+        function downloadPDF() {
+            const container = document.querySelector('.container2');
+
+
+            html2canvas(container, {
+                scale: 2
+            }).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
+                const imgProps = pdf.getImageProperties(imgData);
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+                let heightLeft = pdfHeight;
+                let position = 0;
+
+                pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
+                heightLeft -= pdf.internal.pageSize.getHeight();
+
+                while (heightLeft > 0) {
+                    position = heightLeft - pdfHeight;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
+                    heightLeft -= pdf.internal.pageSize.getHeight();
+                }
+
+                pdf.save('mensetsu_sheet.pdf');
+            });
+        }
+    </script>
 </body>
 
 </html>

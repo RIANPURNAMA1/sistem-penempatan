@@ -58,12 +58,24 @@
     </style>
 </head>
 
-<body>
+<body class="container2">
     <div class="d-flex justify-content-center">
 
-        <button class="btn-container btn btn-success" onclick="window.print()">
-            Print PDF
-        </button>
+        <div class="btn-container d-flex gap-2 flex-wrap">
+
+            <!-- Print PDF -->
+            <button class="btn btn-success" onclick="window.print()">印刷 PDF</button>
+
+            <!-- Translate to Japanese -->
+            <button class="btn btn-success" onclick="translateToJapanese()">Ubah ke bahasa jepang</button>
+
+            <!-- Capitalize Text -->
+            <button class="btn btn-primary" onclick="capitalizeText()">Huruf Awal Kapital</button>
+
+            <!-- Back Button -->
+            <a href="/data/cv/kandidat" class="btn btn-info" style="font-size: 12px">Kembali</a>
+
+        </div>
     </div>
     <div class="cv-title">特 定 技 能 外 国 人 の 履 歴 書</div>
     <div class="cv-subtitle">Curriculum Vitae Pekerja Asing Berketerampilan Khusus</div>
@@ -134,7 +146,7 @@
                 Alamat di negara asal atau negara
             </td>
             <td style="text-align: right" colspan="3">（電話 ）
-               {{$cv->no_telepon}}</td>
+                {{ $cv->no_telepon }}</td>
             <tr>
             <tr>
             </tr>
@@ -206,7 +218,7 @@
                     Kualifikasi, lisensi
                 </td>
                 <td>
-                    {{$cv->surat_izin_mengemudi}} - {{$cv->jenis_sim}}
+                    {{ $cv->surat_izin_mengemudi }} - {{ $cv->jenis_sim }}
                 </td>
             </tr>
         </table>
@@ -371,6 +383,136 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js"></script>
+<script>
+    function capitalizeText() {
+        const textNodes = [];
+        const walker = document.createTreeWalker(
+            document.querySelector('.container2'),
+            NodeFilter.SHOW_TEXT,
+            null,
+            false
+        );
+
+        while (walker.nextNode()) {
+            const node = walker.currentNode;
+            if (node.nodeValue.trim() !== '') {
+                textNodes.push(node);
+            }
+        }
+
+        textNodes.forEach(node => {
+            node.nodeValue = node.nodeValue.replace(/\b\w/g, char => char.toUpperCase());
+        });
+    }
+
+    async function translateToJapanese() {
+        // Ambil semua elemen teks
+        const textNodes = [];
+        const walker = document.createTreeWalker(
+            document.querySelector('.container2'),
+            NodeFilter.SHOW_TEXT,
+            null,
+            false
+        );
+
+        while (walker.nextNode()) {
+            const node = walker.currentNode;
+            if (node.nodeValue.trim() !== '') {
+                textNodes.push(node);
+            }
+        }
+
+        // Kirim teks ke API penerjemah
+        for (let node of textNodes) {
+            const originalText = node.nodeValue.trim();
+            try {
+                const translated = await translateText(originalText);
+                node.nodeValue = translated; // replace teks asli
+            } catch (err) {
+                console.error('Terjemahan gagal untuk:', originalText, err);
+            }
+        }
+    }
+
+    // Contoh fungsi translate via API publik (DeepL atau Google Translate)
+    async function translateText(text) {
+        // Contoh menggunakan API Google Translate gratis via fetch
+        const res = await fetch(
+            `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=id|ja`);
+        const data = await res.json();
+        return data.responseData.translatedText;
+    }
+
+    function printSheet() {
+        const container = document.querySelector('.container');
+
+        html2canvas(container, {
+            scale: 2
+        }).then(canvas => {
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
+            const imgProps = pdf.getImageProperties(imgData);
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+            let heightLeft = pdfHeight;
+            let position = 0;
+
+            pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
+            heightLeft -= pdf.internal.pageSize.getHeight();
+
+            while (heightLeft > 0) {
+                position = heightLeft - pdfHeight;
+                pdf.addPage();
+                pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
+                heightLeft -= pdf.internal.pageSize.getHeight();
+            }
+
+            pdf.autoPrint();
+            window.open(pdf.output('bloburl'), '_blank');
+        });
+    }
+
+
+    function downloadPDF() {
+        const container = document.querySelector('.container2');
+
+
+        html2canvas(container, {
+            scale: 2
+        }).then(canvas => {
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jspdf.jsPDF('p', 'mm', 'a4');
+            const imgProps = pdf.getImageProperties(imgData);
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+
+            let heightLeft = pdfHeight;
+            let position = 0;
+
+            pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
+            heightLeft -= pdf.internal.pageSize.getHeight();
+
+            while (heightLeft > 0) {
+                position = heightLeft - pdfHeight;
+                pdf.addPage();
+                pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
+                heightLeft -= pdf.internal.pageSize.getHeight();
+            }
+
+            pdf.save('mensetsu_sheet.pdf');
+        });
+    }
+</script>
+
+
 </body>
 
 </html>
