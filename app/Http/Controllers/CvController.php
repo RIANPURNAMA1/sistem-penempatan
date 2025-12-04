@@ -145,9 +145,18 @@ class CvController extends Controller
                 "jenis_kelamin"               => $request->jenis_kelamin,
                 "agama"                       => $request->agama,
                 "agama_lainnya"               => $request->agama_lainnya,
-                "tempat_tanggal_lahir"        => $request->tempat_tanggal_lahir,
+                "tanggal_lahir"        => $request->tanggal_lahir,
+                "tempat_lahir"        => $request->tempat_lahir,
                 "usia"                        => $request->usia,
                 "alamat_lengkap"              => $request->alamat_lengkap,
+
+
+                // WILAYAH (API)
+                "provinsi"   => $request->provinsi,
+                "kabupaten"  => $request->kabupaten,
+                "kecamatan"  => $request->kecamatan,
+                "kelurahan"  => $request->kelurahan,
+
                 "email_aktif"                 => $request->email_aktif,
                 "status_perkawinan"           => $request->status_perkawinan,
                 "status_perkawinan_lainnya"   => $request->status_perkawinan_lainnya,
@@ -186,6 +195,13 @@ class CvController extends Controller
                 "kebugaran_jasmani_seminggu"  => $request->kebugaran_jasmani_seminggu,
                 "kebugaran_jasmani_seminggu_lainnya" => $request->kebugaran_jasmani_seminggu_lainnya,
 
+                // ========= HALAMAN 3 — Pertanyaan Tambahan =========
+                "bersedia_kerja_shift"   => $request->bersedia_kerja_shift,
+                "bersedia_lembur"        => $request->bersedia_lembur,
+                "bersedia_hari_libur"    => $request->bersedia_hari_libur,
+                "menggunakan_kacamata"   => $request->menggunakan_kacamata,
+
+
                 // ========= HALAMAN 5 =========
                 "ada_keluarga_di_jepang"      => $request->ada_keluarga_di_jepang,
                 "hubungan_keluarga_di_jepang" => $request->hubungan_keluarga_di_jepang,
@@ -203,14 +219,43 @@ class CvController extends Controller
                 "point_plus_diri"             => $request->point_plus_diri,
                 "keahlian_khusus"             => $request->keahlian_khusus,
 
-                // ========= HALAMAN 6 =========
-                "anggota_keluarga_istri"      => $request->anggota_keluarga_istri,
-                "anggota_keluarga_suami"      => $request->anggota_keluarga_suami,
-                "anggota_keluarga_anak"       => $request->anggota_keluarga_anak,
-                "anggota_keluarga_ibu"        => $request->anggota_keluarga_ibu,
-                "anggota_keluarga_ayah"       => $request->anggota_keluarga_ayah,
-                "anggota_keluarga_kakak"      => $request->anggota_keluarga_kakak,
-                "anggota_keluarga_adik"       => $request->anggota_keluarga_adik,
+
+                // ====== ISTRI ======
+                "istri_nama"       => $request->istri_nama,
+                "istri_usia"       => $request->istri_usia,
+                "istri_pekerjaan"  => $request->istri_pekerjaan,
+
+                // ====== ANAK ======
+                "anak_nama"            => $request->anak_nama,
+                "anak_jenis_kelamin"   => $request->anak_jenis_kelamin,
+                "anak_usia"            => $request->anak_usia,
+                "anak_pendidikan"      => $request->anak_pendidikan,
+
+                // ====== IBU ======
+                "ibu_nama"       => $request->ibu_nama,
+                "ibu_usia"       => $request->ibu_usia,
+                "ibu_pekerjaan"  => $request->ibu_pekerjaan,
+
+                // ====== AYAH ======
+                "ayah_nama"       => $request->ayah_nama,
+                "ayah_usia"       => $request->ayah_usia,
+                "ayah_pekerjaan"  => $request->ayah_pekerjaan,
+
+                // ====== KAKAK ======
+                "kakak_nama"            => $request->kakak_nama,
+                "kakak_usia"            => $request->kakak_usia,
+                "kakak_jenis_kelamin"   => $request->kakak_jenis_kelamin,
+                "kakak_pekerjaan"       => $request->kakak_pekerjaan,
+                "kakak_status"          => $request->kakak_status,
+
+                // ====== ADIK ======
+                "adik_nama"            => $request->adik_nama,
+                "adik_usia"            => $request->adik_usia,
+                "adik_jenis_kelamin"   => $request->adik_jenis_kelamin,
+                "adik_pekerjaan"       => $request->adik_pekerjaan,
+                "adik_status"          => $request->adik_status,
+
+                // ====== PENGHASILAN ======
                 "rata_rata_penghasilan_keluarga" => $request->rata_rata_penghasilan_keluarga,
             ]);
 

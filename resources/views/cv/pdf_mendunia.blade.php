@@ -232,9 +232,9 @@
             <table style="width: 837px">
                 @foreach ($cv->pendidikans as $p)
                     <tr class="text-center">
-                        <td style="width:70px">{{ $p->tahun }}</td>
+                        <td style="width:70px">{{ $p->tahun_masuk }}</td>
                         <td style="width:70px">-</td>
-                        <td style="width:69px">20XX年X月</td>
+                        <td style="width:69px">{{$p->tahun_lulus}}</td>
                         <td style="width: 383px">{{ $p->nama }}</td>
                         <td>{{ $p->jurusan }}</td>
                     </tr>
@@ -270,11 +270,11 @@
             <table style="width: 837px">
                 @foreach ($cv->pengalamans as $p)
                     <tr class="text-center">
-                        <td style="width:70px">20XX年X月</td>
+                        <td style="width:70px">{{$p->tanggal_masuk}}</td>
                         <td style="width:70px">-</td>
-                        <td style="width:69px">20XX年X月</td>
+                        <td style="width:69px">{{$p->tanggal_keluar}}</td>
                         <td style="width: 383px">{{ $p->perusahaan }}</td>
-                        <td style="width: 122px"></td>
+                        <td style="width: 122px">{{$p->jabatan}}</td>
                         <td> {{ $p->gaji }}</td>
                     </tr>
                 @endforeach

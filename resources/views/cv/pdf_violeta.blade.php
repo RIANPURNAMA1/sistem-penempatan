@@ -387,7 +387,7 @@
                         @forelse ($cv->pendidikans as $p)
                             <tr>
                                 <td style="height: 30px; text-align:center;">
-                                    {{ $p->tahun }}{{ $p->selesai }}
+                                    {{ $p->tahun_masuk }} - {{ $p->tahun_lulus }}
                                 </td>
                                 <td style="padding-left: 5px;">
                                     {{ $p->nama }}
@@ -440,7 +440,7 @@
                         @forelse ($cv->pengalamans as $k)
                             <tr>
                                 <td style="height: 30px; text-align:center;">
-                                    {{ $k->lama_bekerja }}
+                                    {{ $k->tanggal_masuk }} - {{$k->tanggal_keluar}}
                                 </td>
                                 <td style="padding-left:5px;">
                                     {{ $k->perusahaan }}

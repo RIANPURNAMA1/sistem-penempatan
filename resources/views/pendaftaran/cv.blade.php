@@ -261,8 +261,8 @@
                                     <div class="row g-3">
                                         <div class="col-md-6">
                                             <!-- ======================================================
-                                                         MULTI FILE: pas_foto[]
-                                                    ====================================================== -->
+                                                                                             MULTI FILE: pas_foto[]
+                                                                                        ====================================================== -->
                                             <label class="form-label fw-semibold mb-1">
                                                 Silahkan upload dokumen / foto tambahan 👇
                                             </label>
@@ -280,8 +280,8 @@
                                             <div id="previewPasFoto" class="mt-3 d-flex flex-wrap gap-3"></div>
 
                                             <!-- ======================================================
-                                                         SINGLE FILE: pas_foto_cv
-                                                    ====================================================== -->
+                                                                                             SINGLE FILE: pas_foto_cv
+                                                                                        ====================================================== -->
                                             <label class="form-label fw-semibold mb-1 mt-4">
                                                 Silahkan upload pas foto untuk CV Anda 👇
                                             </label>
@@ -422,14 +422,24 @@
 
                                             {{-- TEMPAT/TANGGAL LAHIR --}}
                                             <label class="form-label fw-semibold mt-3">
-                                                Tempat / Tanggal Lahir <span class="text-danger">*</span><br>
-                                                <small class="text-muted">Contoh: Bandung, 12-10-2004</small>
+                                                Tanggal Lahir <span class="text-danger">*</span><br>
+                                                <small class="text-muted">Contoh: 12-10-2004</small>
                                             </label>
-                                            <input type="text" name="tempat_tanggal_lahir"
-                                                class="form-control @error('tempat_tanggal_lahir') is-invalid @enderror"
-                                                placeholder="Tempat / Tanggal Lahir"
-                                                value="{{ old('tempat_tanggal_lahir') }}" required>
-                                            @error('tempat_tanggal_lahir')
+                                            <input type="date" name="tanggal_lahir"
+                                                class="form-control @error('tanggal_lahir') is-invalid @enderror"
+                                                placeholder="Tanggal Lahir" value="{{ old('tanggal_lahir') }}" required>
+                                            @error('tanggal_lahir')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+                                            {{-- TEMPAT/TANGGAL LAHIR --}}
+                                            <label class="form-label fw-semibold mt-3">
+                                                Tempat Lahir <span class="text-danger">*</span><br>
+                                                <small class="text-muted">Contoh: cianjur</small>
+                                            </label>
+                                            <input type="text" name="tempat_lahir"
+                                                class="form-control @error('tempat_lahir') is-invalid @enderror"
+                                                placeholder="Tempat Lahir" value="{{ old('tempat_lahir') }}" required>
+                                            @error('tempat_lahir')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
 
@@ -457,6 +467,60 @@
                                             @error('alamat_lengkap')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
+
+
+                                            <!-- WILAYAH DOMISILI -->
+                                            <div class="mb-3">
+                                                <label class="form-label">Provinsi</label>
+                                                <select name="provinsi" id="provinsi"
+                                                    class="form-control @error('provinsi') is-invalid @enderror">
+                                                    <option value="">-- Pilih Provinsi --</option>
+                                                </select>
+
+                                                @error('provinsi')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+
+
+                                            <div class="mb-3">
+                                                <label class="form-label">Kabupaten / Kota</label>
+                                                <select name="kabupaten" id="kabupaten"
+                                                    class="form-control @error('kabupaten') is-invalid @enderror">
+                                                    <option value="">-- Pilih Kabupaten / Kota --</option>
+                                                </select>
+
+                                                @error('kabupaten')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+
+
+                                            <div class="mb-3">
+                                                <label class="form-label">Kecamatan</label>
+                                                <select name="kecamatan" id="kecamatan"
+                                                    class="form-control @error('kecamatan') is-invalid @enderror">
+                                                    <option value="">-- Pilih Kecamatan --</option>
+                                                </select>
+
+                                                @error('kecamatan')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+
+
+                                            <div class="mb-3">
+                                                <label class="form-label">Kelurahan</label>
+                                                <select name="kelurahan" id="kelurahan"
+                                                    class="form-control @error('kelurahan') is-invalid @enderror">
+                                                    <option value="">-- Pilih Kelurahan --</option>
+                                                </select>
+
+                                                @error('kelurahan')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+
 
 
                                             {{-- EMAIL AKTIF --}}
@@ -668,7 +732,8 @@
                                                 required>
                                                 <option value="">-- Tangan Dominan --</option>
                                                 <option value="Kanan"
-                                                    {{ old('tangan_dominan') == 'Kanan' ? 'selected' : '' }}>Kanan</option>
+                                                    {{ old('tangan_dominan') == 'Kanan' ? 'selected' : '' }}>Kanan
+                                                </option>
                                                 <option value="Kiri"
                                                     {{ old('tangan_dominan') == 'Kiri' ? 'selected' : '' }}>Kiri</option>
                                             </select>
@@ -804,6 +869,107 @@
                                                     30.000.000 - 40.000.000
                                                 </option>
                                             </select>
+
+
+                                            <!-- Setelah Perkiraan Biaya -->
+                                            <div class="mt-4">
+                                                <label class="fw-bold">Apakah Bersedia Kerja Shift?</label><br>
+                                                <div class="form-check form-check-inline">
+                                                    <input
+                                                        class="form-check-input @error('bersedia_kerja_shift') is-invalid @enderror"
+                                                        type="radio" name="bersedia_kerja_shift" id="shiftYa"
+                                                        value="Ya"
+                                                        {{ old('bersedia_kerja_shift') == 'Ya' ? 'checked' : '' }}
+                                                        required>
+                                                    <label class="form-check-label" for="shiftYa">Ya</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input
+                                                        class="form-check-input @error('bersedia_kerja_shift') is-invalid @enderror"
+                                                        type="radio" name="bersedia_kerja_shift" id="shiftTidak"
+                                                        value="Tidak"
+                                                        {{ old('bersedia_kerja_shift') == 'Tidak' ? 'checked' : '' }}
+                                                        required>
+                                                    <label class="form-check-label" for="shiftTidak">Tidak</label>
+                                                </div>
+                                                @error('bersedia_kerja_shift')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+
+                                            <div class="mt-3">
+                                                <label class="fw-bold">Apakah Bersedia Kerja Lembur?</label><br>
+                                                <div class="form-check form-check-inline">
+                                                    <input
+                                                        class="form-check-input @error('bersedia_lembur') is-invalid @enderror"
+                                                        type="radio" name="bersedia_lembur" id="lemburYa"
+                                                        value="Ya"
+                                                        {{ old('bersedia_lembur') == 'Ya' ? 'checked' : '' }} required>
+                                                    <label class="form-check-label" for="lemburYa">Ya</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input
+                                                        class="form-check-input @error('bersedia_lembur') is-invalid @enderror"
+                                                        type="radio" name="bersedia_lembur" id="lemburTidak"
+                                                        value="Tidak"
+                                                        {{ old('bersedia_lembur') == 'Tidak' ? 'checked' : '' }} required>
+                                                    <label class="form-check-label" for="lemburTidak">Tidak</label>
+                                                </div>
+                                                @error('bersedia_lembur')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+
+                                            <div class="mt-3">
+                                                <label class="fw-bold">Apakah Bersedia Kerja di Hari Libur?</label><br>
+                                                <div class="form-check form-check-inline">
+                                                    <input
+                                                        class="form-check-input @error('bersedia_hari_libur') is-invalid @enderror"
+                                                        type="radio" name="bersedia_hari_libur" id="liburYa"
+                                                        value="Ya"
+                                                        {{ old('bersedia_hari_libur') == 'Ya' ? 'checked' : '' }}
+                                                        required>
+                                                    <label class="form-check-label" for="liburYa">Ya</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input
+                                                        class="form-check-input @error('bersedia_hari_libur') is-invalid @enderror"
+                                                        type="radio" name="bersedia_hari_libur" id="liburTidak"
+                                                        value="Tidak"
+                                                        {{ old('bersedia_hari_libur') == 'Tidak' ? 'checked' : '' }}
+                                                        required>
+                                                    <label class="form-check-label" for="liburTidak">Tidak</label>
+                                                </div>
+                                                @error('bersedia_hari_libur')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+
+                                            <div class="mt-3">
+                                                <label class="fw-bold">Apakah Menggunakan Kacamata?</label><br>
+                                                <div class="form-check form-check-inline">
+                                                    <input
+                                                        class="form-check-input @error('menggunakan_kacamata') is-invalid @enderror"
+                                                        type="radio" name="menggunakan_kacamata" id="kacamataYa"
+                                                        value="Ya"
+                                                        {{ old('menggunakan_kacamata') == 'Ya' ? 'checked' : '' }}
+                                                        required>
+                                                    <label class="form-check-label" for="kacamataYa">Ya</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input
+                                                        class="form-check-input @error('menggunakan_kacamata') is-invalid @enderror"
+                                                        type="radio" name="menggunakan_kacamata" id="kacamataTidak"
+                                                        value="Tidak"
+                                                        {{ old('menggunakan_kacamata') == 'Tidak' ? 'checked' : '' }}
+                                                        required>
+                                                    <label class="form-check-label" for="kacamataTidak">Tidak</label>
+                                                </div>
+                                                @error('menggunakan_kacamata')
+                                                    <div class="invalid-feedback">{{ $message }}</div>
+                                                @enderror
+                                            </div>
+
 
                                         </div>
 
@@ -1306,14 +1472,13 @@
                                 <div class="card-header fw-bold">DATA ANGGOTA KELUARGA</div>
                                 <div class="card-body">
 
-                                    <!-- INFORMASI PENTING -->
+                                    {{-- INFORMASI PENTING --}}
                                     <div class="bg-info text-dark rounded-3 py-3 px-4 mb-3">
                                         <strong class="d-block mb-1">Perhatian:</strong>
                                         <ul class="mb-0 ps-3">
                                             <li>Semua bagian harus diisi menggunakan <strong>bahasa Jepang</strong>.</li>
-                                            <li>Tuliskan format: 「Nama - Umur - Pekerjaan」.</li>
+                                            <li>Tuliskan data sesuai kolom yang tersedia.</li>
                                             <li>Jika tidak ada, isi dengan 「なし」.</li>
-                                            <li>Contoh: 母 - ギタ - 30 歳 - 主婦</li>
                                         </ul>
                                     </div>
 
@@ -1323,32 +1488,35 @@
                                         <div class="col-md-6">
 
                                             {{-- ISTRI --}}
-                                            <label class="form-label">Cantumkan anggota keluarga (Nama Istri - Umur -
-                                                Pekerjaan) <span class="text-danger">*</span></label>
-                                            <input type="text" name="anggota_keluarga_istri" class="form-control"
-                                                placeholder="Contoh: 妻 - アニ - 28 歳 - 会社員"
-                                                value="{{ old('anggota_keluarga_istri') }}" required>
-
-                                            {{-- SUAMI --}}
-                                            <label class="form-label mt-2">Cantumkan anggota keluarga (Nama Suami - Umur -
-                                                Pekerjaan) <span class="text-danger">*</span></label>
-                                            <input type="text" name="anggota_keluarga_suami" class="form-control"
-                                                placeholder="Contoh: 夫 - リアン - 30 歳 - エンジニア"
-                                                value="{{ old('anggota_keluarga_suami') }}" required>
+                                            <label class="form-label fw-bold">Istri</label>
+                                            <input type="text" name="istri_nama" class="form-control mb-2"
+                                                placeholder="Nama Istri (例：妻 - アニ)" value="{{ old('istri_nama') }}">
+                                            <input type="text" name="istri_usia" class="form-control mb-2"
+                                                placeholder="Usia (例：30 歳)" value="{{ old('istri_usia') }}">
+                                            <input type="text" name="istri_pekerjaan" class="form-control mb-3"
+                                                placeholder="Pekerjaan (例：会社員)" value="{{ old('istri_pekerjaan') }}">
 
                                             {{-- ANAK --}}
-                                            <label class="form-label mt-2">Cantumkan anggota keluarga (Nama Anak - Umur -
-                                                Pekerjaan) <span class="text-danger">*</span></label>
-                                            <input type="text" name="anggota_keluarga_anak" class="form-control"
-                                                placeholder="Contoh: 子供 - サラ - 5 歳 - なし"
-                                                value="{{ old('anggota_keluarga_anak') }}" required>
+                                            <label class="form-label fw-bold">Anak</label>
+                                            <input type="text" name="anak_nama" class="form-control mb-2"
+                                                placeholder="Nama Anak" value="{{ old('anak_nama') }}">
+                                            <input type="text" name="anak_jenis_kelamin" class="form-control mb-2"
+                                                placeholder="Jenis Kelamin (例：男/女)"
+                                                value="{{ old('anak_jenis_kelamin') }}">
+                                            <input type="text" name="anak_usia" class="form-control mb-2"
+                                                placeholder="Usia" value="{{ old('anak_usia') }}">
+                                            <input type="text" name="anak_pendidikan" class="form-control mb-3"
+                                                placeholder="Pendidikan" value="{{ old('anak_pendidikan') }}">
 
                                             {{-- IBU --}}
-                                            <label class="form-label mt-2">Cantumkan anggota keluarga (Nama Ibu - Umur -
-                                                Pekerjaan) <span class="text-danger">*</span></label>
-                                            <input type="text" name="anggota_keluarga_ibu" class="form-control"
-                                                placeholder="Contoh: 母 - ギタ - 30 歳 - 主婦"
-                                                value="{{ old('anggota_keluarga_ibu') }}" required>
+                                            <label class="form-label fw-bold">Ibu <span
+                                                    class="text-danger">*</span></label>
+                                            <input type="text" name="ibu_nama" class="form-control mb-2"
+                                                placeholder="Nama Ibu" required value="{{ old('ibu_nama') }}">
+                                            <input type="text" name="ibu_usia" class="form-control mb-2"
+                                                placeholder="Usia" required value="{{ old('ibu_usia') }}">
+                                            <input type="text" name="ibu_pekerjaan" class="form-control mb-3"
+                                                placeholder="Pekerjaan" required value="{{ old('ibu_pekerjaan') }}">
 
                                         </div>
 
@@ -1356,33 +1524,51 @@
                                         <div class="col-md-6">
 
                                             {{-- AYAH --}}
-                                            <label class="form-label">Cantumkan anggota keluarga (Nama Ayah - Umur -
-                                                Pekerjaan) <span class="text-danger">*</span></label>
-                                            <input type="text" name="anggota_keluarga_ayah" class="form-control"
-                                                placeholder="Contoh: 父 - アブディ - 55 歳 - 農家"
-                                                value="{{ old('anggota_keluarga_ayah') }}" required>
+                                            <label class="form-label fw-bold">Ayah <span
+                                                    class="text-danger">*</span></label>
+                                            <input type="text" name="ayah_nama" class="form-control mb-2"
+                                                placeholder="Nama Ayah" required value="{{ old('ayah_nama') }}">
+                                            <input type="text" name="ayah_usia" class="form-control mb-2"
+                                                placeholder="Usia" required value="{{ old('ayah_usia') }}">
+                                            <input type="text" name="ayah_pekerjaan" class="form-control mb-3"
+                                                placeholder="Pekerjaan" required value="{{ old('ayah_pekerjaan') }}">
 
                                             {{-- KAKAK --}}
-                                            <label class="form-label mt-2">Cantumkan anggota keluarga (Nama Kakak - Umur -
-                                                Pekerjaan) <span class="text-danger">*</span></label>
-                                            <input type="text" name="anggota_keluarga_kakak" class="form-control"
-                                                placeholder="Contoh: 姉 - リナ - 25 歳 - 看護師"
-                                                value="{{ old('anggota_keluarga_kakak') }}" required>
+                                            <label class="form-label fw-bold">Kakak</label>
+                                            <input type="text" name="kakak_nama" class="form-control mb-2"
+                                                placeholder="Nama Kakak" value="{{ old('kakak_nama') }}">
+                                            <input type="text" name="kakak_usia" class="form-control mb-2"
+                                                placeholder="Usia" value="{{ old('kakak_usia') }}">
+                                            <input type="text" name="kakak_jenis_kelamin" class="form-control mb-2"
+                                                placeholder="Jenis Kelamin (男/女)"
+                                                value="{{ old('kakak_jenis_kelamin') }}">
+                                            <input type="text" name="kakak_pekerjaan" class="form-control mb-2"
+                                                placeholder="Pekerjaan" value="{{ old('kakak_pekerjaan') }}">
+                                            <input type="text" name="kakak_status" class="form-control mb-3"
+                                                placeholder="Status (例：実兄 / 義兄 / なし)" value="{{ old('kakak_status') }}">
 
                                             {{-- ADIK --}}
-                                            <label class="form-label mt-2">Cantumkan anggota keluarga (Nama Adik - Umur -
-                                                Pekerjaan) <span class="text-danger">*</span></label>
-                                            <input type="text" name="anggota_keluarga_adik" class="form-control"
-                                                placeholder="Contoh: 弟 - ユスフ - 18 歳 - 学生"
-                                                value="{{ old('anggota_keluarga_adik') }}" required>
+                                            <label class="form-label fw-bold">Adik</label>
+                                            <input type="text" name="adik_nama" class="form-control mb-2"
+                                                placeholder="Nama Adik" value="{{ old('adik_nama') }}">
+                                            <input type="text" name="adik_usia" class="form-control mb-2"
+                                                placeholder="Usia" value="{{ old('adik_usia') }}">
+                                            <input type="text" name="adik_jenis_kelamin" class="form-control mb-2"
+                                                placeholder="Jenis Kelamin (男/女)"
+                                                value="{{ old('adik_jenis_kelamin') }}">
+                                            <input type="text" name="adik_pekerjaan" class="form-control mb-2"
+                                                placeholder="Pekerjaan" value="{{ old('adik_pekerjaan') }}">
+                                            <input type="text" name="adik_status" class="form-control mb-3"
+                                                placeholder="Status (例：実弟 / 義弟 / なし)" value="{{ old('adik_status') }}">
 
                                             {{-- PENGHASILAN KELUARGA --}}
-                                            <label class="form-label mt-2">Rata-rata Penghasilan Keluarga per Bulan (円)
-                                                <span class="text-danger">*</span></label>
+                                            <label class="form-label fw-bold">Rata-rata Penghasilan Keluarga per Bulan (円)
+                                                <span class="text-danger">*</span>
+                                            </label>
                                             <input type="text" name="rata_rata_penghasilan_keluarga"
                                                 class="form-control @error('rata_rata_penghasilan_keluarga') is-invalid @enderror"
-                                                placeholder="Contoh: 80000 円"
-                                                value="{{ old('rata_rata_penghasilan_keluarga') }}" required>
+                                                placeholder="Contoh: 80000 円" required
+                                                value="{{ old('rata_rata_penghasilan_keluarga') }}">
                                             @error('rata_rata_penghasilan_keluarga')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -1391,6 +1577,7 @@
                                     </div>
                                 </div>
                             </div>
+
 
                             <button type="submit" class="btn btn-info btn-lg mb-5" id="btnSubmit">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="white"
@@ -1409,11 +1596,143 @@
             </div>
         </div>
     </div>
-
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
+        // wilayah api
+        // ===============================//
+        // API WILAYAH INDONESIA
+        // Menggunakan Vanilla JavaScript (Fetch API)
+        // ===============================//
+
+        // Deklarasi Element Select
+        const provinsiSelect = document.getElementById('provinsi');
+        const kabupatenSelect = document.getElementById('kabupaten');
+        const kecamatanSelect = document.getElementById('kecamatan');
+        const kelurahanSelect = document.getElementById('kelurahan');
+
+        // ===============================//
+        // 1. LOAD PROVINSI
+        // ===============================//
+        fetch('https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json')
+            .then(res => res.json())
+            .then(data => {
+                data.forEach(p => {
+                    provinsiSelect.innerHTML +=
+                        `<option value="${p.name}" data-id="${p.id}">${p.name}</option>`;
+                });
+            })
+            .catch(error => {
+                console.error('Gagal memuat data provinsi:', error);
+                provinsiSelect.innerHTML = '<option value="">Gagal memuat data provinsi</option>';
+            });
+
+        // ===============================//
+        // 2. LOAD KABUPATEN
+        // ===============================//
+        provinsiSelect.addEventListener('change', function() {
+            // Reset kabupaten, kecamatan, kelurahan
+            kabupatenSelect.innerHTML = '<option value="">-- Pilih Kabupaten/Kota --</option>';
+            kecamatanSelect.innerHTML = '<option value="">-- Pilih Kecamatan --</option>';
+            kelurahanSelect.innerHTML = '<option value="">-- Pilih Kelurahan/Desa --</option>';
+
+            // Disable select
+            kabupatenSelect.disabled = true;
+            kecamatanSelect.disabled = true;
+            kelurahanSelect.disabled = true;
+
+            const provId = this.selectedOptions[0].dataset.id;
+            if (!provId) return;
+
+            // Loading state
+            kabupatenSelect.innerHTML = '<option value="">Memuat data...</option>';
+
+            fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${provId}.json`)
+                .then(res => res.json())
+                .then(data => {
+                    kabupatenSelect.innerHTML = '<option value="">-- Pilih Kabupaten/Kota --</option>';
+                    data.forEach(k => {
+                        kabupatenSelect.innerHTML +=
+                            `<option value="${k.name}" data-id="${k.id}">${k.name}</option>`;
+                    });
+                    kabupatenSelect.disabled = false;
+                })
+                .catch(error => {
+                    console.error('Gagal memuat data kabupaten:', error);
+                    kabupatenSelect.innerHTML = '<option value="">Gagal memuat data</option>';
+                });
+        });
+
+        // ===============================//
+        // 3. LOAD KECAMATAN
+        // ===============================//
+        kabupatenSelect.addEventListener('change', function() {
+            // Reset kecamatan & kelurahan
+            kecamatanSelect.innerHTML = '<option value="">-- Pilih Kecamatan --</option>';
+            kelurahanSelect.innerHTML = '<option value="">-- Pilih Kelurahan/Desa --</option>';
+
+            // Disable select
+            kecamatanSelect.disabled = true;
+            kelurahanSelect.disabled = true;
+
+            const kabId = this.selectedOptions[0].dataset.id;
+            if (!kabId) return;
+
+            // Loading state
+            kecamatanSelect.innerHTML = '<option value="">Memuat data...</option>';
+
+            fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/districts/${kabId}.json`)
+                .then(res => res.json())
+                .then(data => {
+                    kecamatanSelect.innerHTML = '<option value="">-- Pilih Kecamatan --</option>';
+                    data.forEach(c => {
+                        kecamatanSelect.innerHTML +=
+                            `<option value="${c.name}" data-id="${c.id}">${c.name}</option>`;
+                    });
+                    kecamatanSelect.disabled = false;
+                })
+                .catch(error => {
+                    console.error('Gagal memuat data kecamatan:', error);
+                    kecamatanSelect.innerHTML = '<option value="">Gagal memuat data</option>';
+                });
+        });
+
+        // ===============================//
+        // 4. LOAD KELURAHAN
+        // ===============================//
+        kecamatanSelect.addEventListener('change', function() {
+            // Reset kelurahan
+            kelurahanSelect.innerHTML = '<option value="">-- Pilih Kelurahan/Desa --</option>';
+
+            // Disable select
+            kelurahanSelect.disabled = true;
+
+            const kecId = this.selectedOptions[0].dataset.id;
+            if (!kecId) return;
+
+            // Loading state
+            kelurahanSelect.innerHTML = '<option value="">Memuat data...</option>';
+
+            fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/villages/${kecId}.json`)
+                .then(res => res.json())
+                .then(data => {
+                    kelurahanSelect.innerHTML = '<option value="">-- Pilih Kelurahan/Desa --</option>';
+                    data.forEach(v => {
+                        kelurahanSelect.innerHTML +=
+                            `<option value="${v.name}">${v.name}</option>`;
+                    });
+                    kelurahanSelect.disabled = false;
+                })
+                .catch(error => {
+                    console.error('Gagal memuat data kelurahan:', error);
+                    kelurahanSelect.innerHTML = '<option value="">Gagal memuat data</option>';
+                });
+        });
+
+
+
+
         document.getElementById('pasFotoInputCv').addEventListener('change', function(event) {
             const file = event.target.files[0]; // ambil hanya file pertama
             const preview = document.getElementById('previewPasFotoCv');
@@ -1757,6 +2076,9 @@
             $('#cvForm').on('submit', function() {
                 formChanged = false;
             });
+
+
+
 
         });
     </script>

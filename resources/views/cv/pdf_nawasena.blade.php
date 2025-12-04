@@ -189,13 +189,13 @@
         </table>
         <table>
             <tr>
-                <td style="width: 20%">年（西暦）</td>
+                <td style="width: 20%" class="text-center">年（西暦）</td>
                 <td>月</td>
-                <td style="text-align: center">学歴（高校卒業以降）</td>
+                <td style="text-align: center" class="">学歴（高校卒業以降）</td>
             </tr>
             @foreach ($cv->pendidikans as $p)
                 <tr>
-                    <td style="width: 20%">{{ $p->tahun }}</td>
+                    <td style="width: 20%" class="text-center">{{ $p->tahun_masuk }} - {{$p->tahun_masuk}}</td>
                     <td>{{ $p->bulan ?? '-' }}</td>
                     <td style="width:70%">{{ $p->nama }}</td>
                 </tr>
@@ -223,13 +223,13 @@
         </table>
         <table>
             <tr>
-                <td style="width: 20%">年（西暦）</td>
+                <td style="width: 20%" class="text-center">年（西暦）</td>
                 <td>月</td>
                 <td style="text-align: center">職歴(なければアルバイト歴)</td>
             </tr>
             @foreach ($cv->pengalamans as $p)
                 <tr>
-                    <td style="width: 20%">{{ $p->lama_bekerja }}</td>
+                    <td style="width: 20%" class="text-center">{{ $p->tanggal_masuk }} - {{$p->tanggal_keluar}}</td>
                     <td>{{ $p->bulan }}</td>
                     <td style="width:70%">{{ $p->perusahaan }}</td>
                 </tr>

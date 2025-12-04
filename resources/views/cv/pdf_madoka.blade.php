@@ -172,7 +172,7 @@
             </tr>
             <tr>
                 <td class="label-col">Ukuran Pinggang</td>
-                <td class="value-col">:</td>
+                <td class="value-col">: {{$cv->ukuran_pinggang}}</td>
             </tr>
             <tr>
                 <td class="label-col">Ukuran Sepatu</td>
@@ -353,7 +353,7 @@
                     </tr>
                     <tr>
                         <td class="label-col">Tahun Bulan</td>
-                        <td class="input-col ">: {{ $p->tahun }}</td>
+                        <td class="input-col ">: {{ $p->tahun_masuk }} - {{$p->tahun_lulus}}</td>
                     </tr>
                     <tr>
                         <td class="label-col">Jurusan</td>
@@ -385,11 +385,11 @@
                     </tr>
                     <tr>
                         <td class="label-col">Bidang Pekerjaan</td>
-                        <td class="input-col">:</td>
+                        <td class="input-col">: {{$p->jabatan}}</td>
                     </tr>
                     <tr>
                         <td class="label-col">Tahun Bulan</td>
-                        <td class="input-col ">: {{ $p->lama_bekerja }}</td>
+                        <td class="input-col ">: {{ $p->tanggal_masuk }} - {{$p->tanggal_keluar}}</td>
                     </tr>
                 @endforeach
                 <tr>
@@ -446,7 +446,7 @@
                 </tr>
                 <tr>
                     <td class="label-col">Nama lengkap</td>
-                    <td class="input-col">:</td>
+                    <td class="input-col">: {{$cv->anggota_keluarga_ayah}}</td>
                 </tr>
                 <tr>
                     <td class="label-col">Usia</td>
@@ -461,7 +461,7 @@
                 </tr>
                 <tr>
                     <td class="label-col">Nama lengkap</td>
-                    <td class="input-col">:</td>
+                    <td class="input-col">: {{$cv->anggota_keluarga_ibu}}</td>
                 </tr>
                 <tr>
                     <td class="label-col">Usia</td>
@@ -480,7 +480,7 @@
                 </tr>
                 <tr>
                     <td class="label-col">Nama lengkap</td>
-                    <td class="input-col">:</td>
+                    <td class="input-col">: {{$cv->anggota_keluarga_suami}} {{$cv->anggota_keluarga_istri}}</td>
                 </tr>
                 <tr>
                     <td class="label-col">Usia</td>
@@ -621,7 +621,7 @@
                 <td class="value-col">Status saudara : Kandung/Tiri</td>
             </tr>
             <tr style="font-size: 11px">
-                <td class="value-col">Nama lengkap:</td>
+                <td class="value-col">Nama lengkap: {{$cv->anggota_keluarga_kakak}}</td>
                 <td class="value-col">Nama lengkap:</td>
                 <td class="value-col">Nama lengkap:</td>
             </tr>
@@ -649,7 +649,7 @@
                 <td class="value-col">Status saudara : Kandung/Tiri</td>
             </tr>
             <tr style="font-size: 11px">
-                <td class="value-col">Nama lengkap:</td>
+                <td class="value-col">Nama lengkap: {{$cv->anggota_keluarga_adik}}</td>
                 <td class="value-col">Nama lengkap:</td>
                 <td class="value-col">Nama lengkap:</td>
             </tr>
@@ -691,8 +691,6 @@
                 <td colspan="2" class="value-col">:</td>
             </tr>
         </table>
-
-
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>

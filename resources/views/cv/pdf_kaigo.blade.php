@@ -384,7 +384,7 @@
     
                     @forelse($cv->pendidikans as $pendidikan)
                         <tr>
-                            <td colspan="2" class=" p-3">{{ $pendidikan->tahun }}</td>
+                            <td colspan="2" class=" p-3  text-center">{{ $pendidikan->tahun_masuk  }} - <span> {{$pendidikan->tahun_lulus}}</span></td>
                             <td colspan="3" class=" p-3">{{ $pendidikan->nama }}　卒業</td>
                             <td colspan="2" class="input-field  p-3">{{ $pendidikan->jurusan ?? '-' }}</td>
                         </tr>
@@ -409,8 +409,8 @@
     
                     @forelse($cv->pengalamans as $pengalaman)
                         <tr>
-                            <td colspan="2" class="p-3">
-                                {{ $pengalaman->lama_bekerja ?? '○○○○年○○月～○○○○年○○月' }}
+                            <td colspan="2" class="p-3 text-center">
+                                {{ $pengalaman->tanggal_masuk ?? '○○○○年○○月～○○○○年○○月' }} - {{$pengalaman->tanggal_keluar}}
                             </td>
                             <td colspan="3" class="p-3">{{ $pengalaman->perusahaan }}　退職</td>
                             <td colspan="2" class="input-field p-3">{{ $pengalaman->jabatan ?? '-' }}</td>

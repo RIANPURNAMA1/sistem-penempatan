@@ -42,9 +42,16 @@ return new class extends Migration
             $table->enum('jenis_kelamin', ['男 (Laki-laki)', '女 (Perempuan)']);
             $table->string('agama');
             $table->string('agama_lainnya')->nullable();
-            $table->string('tempat_tanggal_lahir');
+            $table->string('tanggal_lahir');
+            $table->string('tempat_lahir');
             $table->string('usia');
             $table->text('alamat_lengkap');
+            // Wilayah Domisili (diambil dari API saat input)
+            $table->string('provinsi')->nullable();
+            $table->string('kabupaten')->nullable();
+            $table->string('kecamatan')->nullable();
+            $table->string('kelurahan')->nullable();
+
             $table->string('email_aktif');
             $table->enum('status_perkawinan', ['Sudah Menikah', 'Belum Menikah']);
             $table->string('status_perkawinan_lainnya')->nullable();
@@ -108,6 +115,14 @@ return new class extends Migration
             ]);
             $table->string('kebugaran_jasmani_seminggu_lainnya')->nullable();
 
+
+            // lembur
+            // HALAMAN 2 - Tambahan Pertanyaan Kerja
+            $table->enum('bersedia_kerja_shift', ['Ya', 'Tidak'])->default('Tidak');
+            $table->enum('bersedia_lembur', ['Ya', 'Tidak'])->default('Tidak');
+            $table->enum('bersedia_hari_libur', ['Ya', 'Tidak'])->default('Tidak');
+            $table->enum('menggunakan_kacamata', ['Ya', 'Tidak'])->default('Tidak');
+
             // HALAMAN 5 - Daya Tarik Perusahaan
             $table->enum('ada_keluarga_di_jepang', ['Ya', 'Tidak']);
             $table->enum('hubungan_keluarga_di_jepang', ['Ayah', 'Ibu', 'Paman', 'Kakak', 'Adik', 'Bibi', 'Kakek', 'Nenek', 'Tidak ada'])->nullable();
@@ -125,15 +140,49 @@ return new class extends Migration
             $table->text('point_plus_diri');
             $table->text('keahlian_khusus');
 
+
+            // ===============================
             // HALAMAN 6 - Data Anggota Keluarga
-            $table->string('anggota_keluarga_istri')->nullable();
-            $table->string('anggota_keluarga_suami')->nullable();
-            $table->string('anggota_keluarga_anak')->nullable();
-            $table->string('anggota_keluarga_ibu');
-            $table->string('anggota_keluarga_ayah');
-            $table->string('anggota_keluarga_kakak')->nullable();
-            $table->string('anggota_keluarga_adik')->nullable();
+            // ===============================
+
+            // ISTRI
+            $table->string('istri_nama')->nullable();
+            $table->string('istri_usia')->nullable();
+            $table->string('istri_pekerjaan')->nullable();
+
+            // ANAK
+            $table->string('anak_nama')->nullable();
+            $table->string('anak_jenis_kelamin')->nullable();
+            $table->string('anak_usia')->nullable();
+            $table->string('anak_pendidikan')->nullable();
+
+            // IBU
+            $table->string('ibu_nama');
+            $table->string('ibu_usia');
+            $table->string('ibu_pekerjaan');
+
+            // AYAH
+            $table->string('ayah_nama');
+            $table->string('ayah_usia');
+            $table->string('ayah_pekerjaan');
+
+            // KAKAK
+            $table->string('kakak_nama')->nullable();
+            $table->string('kakak_usia')->nullable();
+            $table->string('kakak_jenis_kelamin')->nullable();
+            $table->string('kakak_pekerjaan')->nullable();
+            $table->string('kakak_status')->nullable(); // kandung / tiri
+
+            // ADIK
+            $table->string('adik_nama')->nullable();
+            $table->string('adik_usia')->nullable();
+            $table->string('adik_jenis_kelamin')->nullable();
+            $table->string('adik_pekerjaan')->nullable();
+            $table->string('adik_status')->nullable(); // kandung / tiri
+
+            // PENGHASILAN KELUARGA
             $table->string('rata_rata_penghasilan_keluarga');
+
 
             $table->timestamps();
             $table->softDeletes();
