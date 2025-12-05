@@ -45,4 +45,12 @@ class Cv extends Model
     {
         return $this->hasMany(Pengalaman::class);
     }
+    public function magangjisshu ()
+    {
+        return $this->hasMany(MagangJisshu::class);
+    }
+    public function riwayatpekerjaanterakhir ()
+    {
+        return $this->hasMany(riwayatpekerjaanterakhir::class);
+    }
 }

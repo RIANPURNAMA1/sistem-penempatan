@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Cabang;
 use App\Models\Cv;
+use App\Models\MagangJisshu;
 use App\Models\Pengalaman;
 use App\Models\Pendidikan;
+use App\Models\RiwayatPekerjaanTerakhir;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -183,6 +185,7 @@ class CvController extends Controller
                 "hobi"                        => $request->hobi,
                 "rencana_sumber_biaya_keberangkatan" => $request->rencana_sumber_biaya_keberangkatan,
                 "perkiraan_biaya"             => $request->perkiraan_biaya,
+                "Biaya_keberangkatan_sebelumnya_jisshu" => $request->Biaya_keberangkatan_sebelumnya_jisshu,
 
                 // ========= HALAMAN 3 =========
                 "lama_belajar_di_mendunia"    => $request->lama_belajar_di_mendunia,
@@ -286,6 +289,90 @@ class CvController extends Controller
                     ]);
                 }
             }
+
+            if ($request->magang_perusahaan) {
+                foreach ($request->magang_perusahaan as $i => $perusahaan) {
+
+                    MagangJisshu::create([
+                        'cv_id'          => $cv->id,
+                        'perusahaan'     => $perusahaan,
+                        'kota_prefektur' => $request->magang_kota_prefektur[$i] ?? null,
+                        'bidang'         => $request->magang_bidang[$i] ?? null,
+                        'tahun_mulai'    => $request->magang_tahun_mulai[$i] ?? null,
+                        'tahun_selesai'  => $request->magang_tahun_selesai[$i] ?? null,
+                    ]);
+                }
+            }
+
+
+
+            if ($request->riwayat_nama_perusahaan) {
+                foreach ($request->riwayat_nama_perusahaan as $i => $perusahaan) {
+
+                    RiwayatPekerjaanTerakhir::create([
+                        'cv_id' => $cv->id,
+
+                        'nama_perusahaan'        => $perusahaan,
+                        'nama_kumiai'            => $request->riwayat_nama_kumiai[$i] ?? null,
+                        'total_karyawan'         => $request->riwayat_total_karyawan[$i] ?? null,
+                        'total_karyawan_asing'   => $request->riwayat_total_karyawan_asing[$i] ?? null,
+                        'bidang_pekerjaan'       => $request->riwayat_bidang_pekerjaan[$i] ?? null,
+                        'klasifikasi_pekerjaan'  => $request->riwayat_klasifikasi_pekerjaan[$i] ?? null,
+
+                        // Masa pelatihan
+                        'masa_pelatihan_mulai_tahun'   => $request->riwayat_mulai_tahun[$i] ?? null,
+                        'masa_pelatihan_mulai_bulan'   => $request->riwayat_mulai_bulan[$i] ?? null,
+                        'masa_pelatihan_selesai_tahun' => $request->riwayat_selesai_tahun[$i] ?? null,
+                        'masa_pelatihan_selesai_bulan' => $request->riwayat_selesai_bulan[$i] ?? null,
+
+                        'penanggung_jawab' => $request->riwayat_penanggung_jawab[$i] ?? null,
+                        'shift_normal'     => $request->riwayat_shift_normal[$i] ?? null,
+
+                        // Jam kerja
+                        'jam_kerja_mulai_1'   => $request->riwayat_jam_mulai_1[$i] ?? null,
+                        'jam_kerja_selesai_1' => $request->riwayat_jam_selesai_1[$i] ?? null,
+
+                        'jam_kerja_mulai_2'   => $request->riwayat_jam_mulai_2[$i] ?? null,
+                        'jam_kerja_selesai_2' => $request->riwayat_jam_selesai_2[$i] ?? null,
+
+                        'jam_kerja_mulai_3'   => $request->riwayat_jam_mulai_3[$i] ?? null,
+                        'jam_kerja_selesai_3' => $request->riwayat_jam_selesai_3[$i] ?? null,
+
+                        'hari_libur'          => $request->riwayat_hari_libur[$i] ?? null,
+                        'detail_pekerjaan'    => $request->riwayat_detail[$i] ?? null,
+                        'barang_cacat_action' => $request->riwayat_barang_cacat[$i] ?? null,
+
+                        'prefektur' => $request->riwayat_prefektur[$i] ?? null,
+                        'kota'      => $request->riwayat_kota[$i] ?? null,
+
+                        'status_visa' => $request->riwayat_status_visa[$i] ?? null,
+
+                        // Masa tinggal Jepang sebelumnya
+                        'masa_tinggal_mulai_tahun'   => $request->riwayat_tinggal_mulai_tahun[$i] ?? null,
+                        'masa_tinggal_mulai_bulan'   => $request->riwayat_tinggal_mulai_bulan[$i] ?? null,
+                        'masa_tinggal_selesai_tahun' => $request->riwayat_tinggal_selesai_tahun[$i] ?? null,
+                        'masa_tinggal_selesai_bulan' => $request->riwayat_tinggal_selesai_bulan[$i] ?? null,
+
+                        'gaji_per_jam'   => $request->riwayat_gaji_per_jam[$i] ?? null,
+                        'gaji_bersih'    => $request->riwayat_gaji_bersih[$i] ?? null,
+
+                        'lembur_bulanan' => $request->riwayat_lembur[$i] ?? null,
+
+                        'asrama_kamar'         => $request->riwayat_asrama_kamar[$i] ?? null,
+                        'asrama_jumlah_orang'  => $request->riwayat_asrama_jumlah_orang[$i] ?? null,
+
+                        'transportasi'        => $request->riwayat_transportasi[$i] ?? null,
+                        'jarak_tempuh_menit'  => $request->riwayat_jarak[$i] ?? null,
+
+                        'punya_hanko'          => $request->riwayat_punya_hanko[$i] ?? null,
+                        'nama_hanko_sama_cv'   => $request->riwayat_nama_hanko_sama_cv[$i] ?? null,
+                        'nama_katakana_hanko'  => $request->riwayat_katakana[$i] ?? null,
+                    ]);
+                }
+            }
+
+
+
 
             DB::commit();
 

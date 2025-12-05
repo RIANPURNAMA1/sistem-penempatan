@@ -94,6 +94,7 @@ return new class extends Migration
                 '20.000.000 - 30.000.000',
                 '30.000.000 - 40.000.000'
             ]);
+            $table->string('Biaya_keberangkatan_sebelumnya_jisshu')->nullable();
 
             // HALAMAN 3 - Pembelajaran di Mendunia
             $table->string('lama_belajar_di_mendunia');

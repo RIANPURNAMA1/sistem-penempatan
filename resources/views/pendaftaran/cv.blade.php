@@ -261,8 +261,8 @@
                                     <div class="row g-3">
                                         <div class="col-md-6">
                                             <!-- ======================================================
-                                                                                             MULTI FILE: pas_foto[]
-                                                                                        ====================================================== -->
+                                                                                                                                             MULTI FILE: pas_foto[]
+                                                                                                                                        ====================================================== -->
                                             <label class="form-label fw-semibold mb-1">
                                                 Silahkan upload dokumen / foto tambahan 👇
                                             </label>
@@ -280,8 +280,8 @@
                                             <div id="previewPasFoto" class="mt-3 d-flex flex-wrap gap-3"></div>
 
                                             <!-- ======================================================
-                                                                                             SINGLE FILE: pas_foto_cv
-                                                                                        ====================================================== -->
+                                                                                                                                             SINGLE FILE: pas_foto_cv
+                                                                                                                                        ====================================================== -->
                                             <label class="form-label fw-semibold mb-1 mt-4">
                                                 Silahkan upload pas foto untuk CV Anda 👇
                                             </label>
@@ -869,6 +869,18 @@
                                                     30.000.000 - 40.000.000
                                                 </option>
                                             </select>
+                                            <div class="">
+                                                <label class="form-label fw-bold">Biaya Keberangkatan Sebelumnya (Jisshu)
+                                                    *</label>
+                                                <p class="text-muted small mb-1">
+
+                                                    <br><b>Contoh: 25.000.000</b>
+                                                    jika tidak ada kosongkan
+                                                </p>
+                                                <input type="text" name="Biaya_keberangkatan_sebelumnya_jisshu"
+                                                    class="form-control" placeholder="Contoh: 25.000.000" required>
+                                            </div>
+
 
 
                                             <!-- Setelah Perkiraan Biaya -->
@@ -1306,6 +1318,103 @@
 
                                 </div>
                             </div>
+                            {{-- pengalaman ex magang --}}
+                            {{-- HALAMAN 4: MAGANG (Eks Jisshu) --}}
+                            <div class="card mb-4">
+                                <div class="card-header fw-bold">Magang (Eks Jisshu)</div>
+                                <div class="card-body">
+
+                                    <div id="magangContainer">
+
+                                        <div class="row g-3 mb-3 magang-item">
+
+                                            <!-- Nama Perusahaan -->
+                                            <div class="col-md-3">
+                                                <label class="form-label fw-bold">Nama Perusahaan *</label>
+                                                <p class="text-muted small mb-1">
+                                                    Isi nama perusahaan tempat Anda menjalani program Magang (Jisshu).
+                                                    <br><b>Contoh: ABC Seisakusho Co., Ltd</b>
+                                                </p>
+                                                <input type="text" name="magang_perusahaan[]" class="form-control"
+                                                    placeholder="Contoh: ABC Seisakusho Co., Ltd" required>
+                                            </div>
+
+                                            <!-- Kota / Prefektur -->
+                                            <div class="col-md-3">
+                                                <label class="form-label fw-bold">Kota / Prefektur *</label>
+                                                <p class="text-muted small mb-1">
+                                                    Masukkan lokasi magang berdasarkan kota dan prefektur.
+                                                    <br><b>Contoh: Nagoya / Aichi</b>
+                                                </p>
+                                                <input type="text" name="magang_kota_prefektur[]" class="form-control"
+                                                    placeholder="Contoh: Nagoya / Aichi" required>
+                                            </div>
+
+                                            <!-- Bidang -->
+                                            <div class="col-md-3">
+                                                <label class="form-label fw-bold">Bidang *</label>
+                                                <p class="text-muted small mb-1">
+                                                    Tulis bidang pekerjaan selama Anda mengikuti magang.
+                                                    <br><b>Contoh: Produksi Komponen, Pertanian, Perikanan</b>
+                                                </p>
+                                                <input type="text" name="magang_bidang[]" class="form-control"
+                                                    placeholder="Contoh: Produksi Komponen" required>
+                                            </div>
+
+                                            <!-- Tahun Mulai -->
+                                            <div class="col-md-2">
+                                                <label class="form-label fw-bold">Tahun Mulai *</label>
+                                                <p class="text-muted small mb-1">
+                                                    Masukkan tahun dan bulan mulai magang.
+                                                    <br><b>Contoh: 2020-04</b>
+                                                </p>
+                                                <input type="month" name="magang_tahun_mulai[]" class="form-control"
+                                                    required>
+                                            </div>
+
+                                            <!-- Tahun Selesai -->
+                                            <div class="col-md-2">
+                                                <label class="form-label fw-bold">Tahun Selesai *</label>
+                                                <p class="text-muted small mb-1">
+                                                    Masukkan tahun dan bulan selesai magang.
+                                                    <br><b>Contoh: 2023-03</b>
+                                                </p>
+                                                <input type="month" name="magang_tahun_selesai[]" class="form-control"
+                                                    required>
+                                            </div>
+
+                                            <!-- Hapus -->
+                                            <div class="col-md-1 d-flex align-items-end">
+                                                <button type="button" class="btn btn-danger btn-sm remove-row">X</button>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                    <button type="button" class="btn btn-secondary mt-2" id="addMagang">
+                                        + Tambah Data Magang
+                                    </button>
+
+                                </div>
+                            </div>
+
+                            <button type="button" class="btn btn-secondary ms-4 mb-3" id="btnRiwayatToggle">
+                                + Riwayat Pekerjaan Terakhir (X Jisshu / TG / Katsudo)
+                            </button>
+
+
+
+                            <div id="riwayatContainer" class="border rounded p-3 mb-4" style="display:none;">
+                                <h5 class="fw-bold mb-3">Riwayat Pekerjaan Terakhir</h5>
+
+                                <div id="riwayatList"></div>
+
+                                <button type="button" class="btn btn-success btn-sm" id="addRiwayat">
+                                    + Tambah Riwayat Pekerjaan
+                                </button>
+                            </div>
+
 
 
 
@@ -1923,12 +2032,330 @@
             });
 
 
+            // ===========================
+            // TAMBAH BARIS MAGANG / JISSHU
+            // ===========================
+            $("#addMagang").click(function() {
+
+                let html = `
+        <div class="row g-3 mb-3 magang-item">
+
+            <!-- Nama Perusahaan -->
+            <div class="col-md-3">
+                <label class="form-label fw-bold">Nama Perusahaan *</label>
+                <p class="text-muted small mb-1">
+                    Isi nama perusahaan tempat Anda menjalani program Magang (Jisshu).
+                    <br><b>Contoh: ABC Seisakusho Co., Ltd</b>
+                </p>
+                <input type="text" name="magang_perusahaan[]" class="form-control"
+                    placeholder="Contoh: ABC Seisakusho Co., Ltd" required>
+            </div>
+
+            <!-- Kota / Prefektur -->
+            <div class="col-md-3">
+                <label class="form-label fw-bold">Kota / Prefektur *</label>
+                <p class="text-muted small mb-1">
+                    Masukkan lokasi magang berdasarkan kota dan prefektur.
+                    <br><b>Contoh: Nagoya / Aichi</b>
+                </p>
+                <input type="text" name="magang_kota_prefektur[]" class="form-control"
+                    placeholder="Contoh: Nagoya / Aichi" required>
+            </div>
+
+            <!-- Bidang -->
+            <div class="col-md-3">
+                <label class="form-label fw-bold">Bidang *</label>
+                <p class="text-muted small mb-1">
+                    Tulis bidang pekerjaan selama Anda mengikuti magang.
+                    <br><b>Contoh: Produksi Komponen, Pertanian, Perikanan</b>
+                </p>
+                <input type="text" name="magang_bidang[]" class="form-control"
+                    placeholder="Contoh: Produksi Komponen" required>
+            </div>
+
+            <!-- Tahun Mulai -->
+            <div class="col-md-2">
+                <label class="form-label fw-bold">Tahun Mulai *</label>
+                <p class="text-muted small mb-1">
+                    Masukkan tahun dan bulan mulai magang.
+                    <br><b>Contoh: 2020-04</b>
+                </p>
+                <input type="month" name="magang_tahun_mulai[]" class="form-control" required>
+            </div>
+
+            <!-- Tahun Selesai -->
+            <div class="col-md-2">
+                <label class="form-label fw-bold">Tahun Selesai *</label>
+                <p class="text-muted small mb-1">
+                    Masukkan tahun dan bulan selesai magang.
+                    <br><b>Contoh: 2023-03</b>
+                </p>
+                <input type="month" name="magang_tahun_selesai[]" class="form-control" required>
+            </div>
+
+            <!-- Hapus -->
+            <div class="col-md-1 d-flex align-items-end">
+                <button type="button" class="btn btn-danger btn-sm remove-row">X</button>
+            </div>
+
+        </div>
+    `;
+
+                $("#magangContainer").append(html);
+            });
 
 
-            // pengalaman kerja 
+            // ===========================
+            // HAPUS BARIS
+            // ===========================
+            $(document).on("click", ".remove-row", function() {
+                $(this).closest(".magang-item").remove();
+            });
 
-            $('#addPengalaman').click(function() {
-                let row = `
+
+
+            // pengalaman ex jitsu
+            // SHOW / HIDE CONTAINER
+    $("#btnRiwayatToggle").click(function() {
+        $("#riwayatContainer").toggle();
+    });
+
+    // TAMBAH BARIS RIWAYAT
+    $("#addRiwayat").click(function() {
+
+        let html = `
+<div class="riwayat-item border rounded p-3 mb-3">
+
+    <h6 class="fw-bold text-primary mb-3">Data Riwayat</h6>
+
+    <div class="row g-3">
+
+        <!-- NAMA PERUSAHAAN -->
+        <div class="col-md-4">
+            <label class="form-label">Nama Perusahaan</label>
+            <input type="text" name="nama_perusahaan[]" class="form-control">
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label">Nama Kumiai</label>
+            <input type="text" name="nama_kumiai[]" class="form-control">
+        </div>
+
+        <div class="col-md-2">
+            <label class="form-label">Total Karyawan</label>
+            <input type="number" name="total_karyawan[]" class="form-control">
+        </div>
+
+        <div class="col-md-2">
+            <label class="form-label">Karyawan Asing</label>
+            <input type="number" name="total_karyawan_asing[]" class="form-control">
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label">Bidang Pekerjaan</label>
+            <input type="text" name="bidang_pekerjaan[]" class="form-control">
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label">Klasifikasi Pekerjaan</label>
+            <input type="text" name="klasifikasi_pekerjaan[]" class="form-control">
+        </div>
+
+        <!-- MASA PELATIHAN -->
+        <div class="col-md-6">
+            <label class="form-label">Masa Pelatihan Mulai (Tahun - Bulan)</label>
+            <div class="input-group">
+                <input type="text" name="masa_pelatihan_mulai_tahun[]" class="form-control" placeholder="Tahun">
+                <input type="text" name="masa_pelatihan_mulai_bulan[]" class="form-control" placeholder="Bulan">
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Masa Pelatihan Selesai (Tahun - Bulan)</label>
+            <div class="input-group">
+                <input type="text" name="masa_pelatihan_selesai_tahun[]" class="form-control" placeholder="Tahun">
+                <input type="text" name="masa_pelatihan_selesai_bulan[]" class="form-control" placeholder="Bulan">
+            </div>
+        </div>
+
+        <!-- PENANGGUNG JAWAB -->
+        <div class="col-md-4">
+            <label class="form-label">Penanggung Jawab</label>
+            <input type="text" name="penanggung_jawab[]" class="form-control">
+        </div>
+
+        <div class="col-md-3">
+            <label class="form-label">Shift/Normal</label>
+            <select name="shift_normal[]" class="form-control">
+                <option value="">Pilih</option>
+                <option>Shift</option>
+                <option>Normal</option>
+            </select>
+        </div>
+
+        <!-- JAM KERJA -->
+        <div class="col-md-3">
+            <label class="form-label">Jam Kerja Shift 1</label>
+            <div class="input-group">
+                <input type="text" name="jam_kerja_mulai_1[]" class="form-control" placeholder="Mulai">
+                <input type="text" name="jam_kerja_selesai_1[]" class="form-control" placeholder="Selesai">
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <label class="form-label">Jam Kerja Shift 2</label>
+            <div class="input-group">
+                <input type="text" name="jam_kerja_mulai_2[]" class="form-control" placeholder="Mulai">
+                <input type="text" name="jam_kerja_selesai_2[]" class="form-control" placeholder="Selesai">
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <label class="form-label">Jam Kerja Shift 3</label>
+            <div class="input-group">
+                <input type="text" name="jam_kerja_mulai_3[]" class="form-control" placeholder="Mulai">
+                <input type="text" name="jam_kerja_selesai_3[]" class="form-control" placeholder="Selesai">
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <label class="form-label">Hari Libur</label>
+            <input type="text" name="hari_libur[]" class="form-control">
+        </div>
+
+        <!-- DETAIL PEKERJAAN -->
+        <div class="col-md-12">
+            <label class="form-label">Detail Pekerjaan</label>
+            <textarea name="detail_pekerjaan[]" class="form-control"></textarea>
+        </div>
+
+        <div class="col-md-12">
+            <label class="form-label">Jika Barang Cacat Apa yang Dilakukan?</label>
+            <textarea name="barang_cacat_action[]" class="form-control"></textarea>
+        </div>
+
+        <!-- TEMPAT TINGGAL -->
+        <div class="col-md-3">
+            <label class="form-label">Prefektur</label>
+            <input type="text" name="prefektur[]" class="form-control">
+        </div>
+
+        <div class="col-md-3">
+            <label class="form-label">Kota</label>
+            <input type="text" name="kota[]" class="form-control">
+        </div>
+
+        <!-- STATUS VISA -->
+        <div class="col-md-3">
+            <label class="form-label">Status Visa</label>
+            <select name="status_visa[]" class="form-control">
+                <option value="">Pilih</option>
+                <option>X Jisshu</option>
+                <option>TG</option>
+                <option>Katsudo</option>
+            </select>
+        </div>
+
+        <!-- MASA TINGGAL -->
+        <div class="col-md-6">
+            <label class="form-label">Masa Tinggal Mulai (Tahun - Bulan)</label>
+            <div class="input-group">
+                <input type="text" name="masa_tinggal_mulai_tahun[]" class="form-control" placeholder="Tahun">
+                <input type="text" name="masa_tinggal_mulai_bulan[]" class="form-control" placeholder="Bulan">
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Masa Tinggal Selesai (Tahun - Bulan)</label>
+            <div class="input-group">
+                <input type="text" name="masa_tinggal_selesai_tahun[]" class="form-control" placeholder="Tahun">
+                <input type="text" name="masa_tinggal_selesai_bulan[]" class="form-control" placeholder="Bulan">
+            </div>
+        </div>
+
+        <!-- GAJI -->
+        <div class="col-md-4">
+            <label class="form-label">Gaji Per Jam (¥)</label>
+            <input type="number" name="gaji_per_jam[]" class="form-control">
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label">Gaji Bersih</label>
+            <input type="number" name="gaji_bersih[]" class="form-control">
+        </div>
+
+        <div class="col-md-4">
+            <label class="form-label">Lembur Bulanan</label>
+            <input type="text" name="lembur_bulanan[]" class="form-control">
+        </div>
+
+        <!-- ASRAMA -->
+        <div class="col-md-3">
+            <label class="form-label">Kamar Asrama</label>
+            <input type="text" name="asrama_kamar[]" class="form-control">
+        </div>
+
+        <div class="col-md-3">
+            <label class="form-label">Jumlah Orang Per Kamar</label>
+            <input type="text" name="asrama_jumlah_orang[]" class="form-control">
+        </div>
+
+        <!-- TRANSPORTASI -->
+        <div class="col-md-3">
+            <label class="form-label">Transportasi</label>
+            <input type="text" name="transportasi[]" class="form-control">
+        </div>
+
+        <div class="col-md-3">
+            <label class="form-label">Jarak Tempuh (menit)</label>
+            <input type="number" name="jarak_tempuh_menit[]" class="form-control">
+        </div>
+
+        <!-- HANKO -->
+        <div class="col-md-3">
+            <label class="form-label">Punya Hanko?</label>
+            <select name="punya_hanko[]" class="form-control">
+                <option value="">Pilih</option>
+                <option>Ada</option>
+                <option>Tidak Ada</option>
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <label class="form-label">Nama Hanko Sama Dengan CV?</label>
+            <select name="nama_hanko_sama_cv[]" class="form-control">
+                <option value="">Pilih</option>
+                <option>Ya</option>
+                <option>Tidak</option>
+            </select>
+        </div>
+
+        <div class="col-md-6">
+            <label class="form-label">Nama Katakana di Hanko</label>
+            <input type="text" name="nama_katakana_hanko[]" class="form-control">
+        </div>
+    </div>
+
+    <button type="button" class="btn btn-danger btn-sm mt-3 removeRiwayat">
+        Hapus Riwayat Ini
+    </button>
+</div>
+        `;
+
+        $("#riwayatList").append(html);
+    });
+
+    // HAPUS BARIS
+    $(document).on("click", ".removeRiwayat", function() {
+        $(this).closest(".riwayat-item").remove();
+    });
+
+
+
+        // pengalaman kerja 
+
+        $('#addPengalaman').click(function() {
+            let row = `
     <div class="row g-3 mb-3 pengalaman-item">
         <div class="col-md-3">
             <label class="form-label fw-bold">Nama Perusahaan *</label>
@@ -1955,127 +2382,127 @@
         </div>
     </div>
     `;
-                $('#pengalamanContainer').append(row);
-            });
+            $('#pengalamanContainer').append(row);
+        });
 
-            // Remove row
-            $(document).on('click', '.remove-row', function() {
-                $(this).closest('.pengalaman-item').remove();
-            });
-
-
-
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
+        // Remove row
+        $(document).on('click', '.remove-row', function() {
+            $(this).closest('.pengalaman-item').remove();
+        });
 
 
-            // =============== CLIENT-SIDE VALIDATION ===============
-            // SUBMIT FORM
-            $('#cvForm').on('submit', function(e) {
-                e.preventDefault(); // Stop reload
 
-                let form = $('#cvForm')[0];
-                let formData = new FormData(form); // support file upload
-
-                $.ajax({
-                    url: $('#cvForm').attr('action'),
-                    method: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-
-                    beforeSend: function() {
-                        $('#btnSubmit')
-                            .prop('disabled', true)
-                            .text('Mengirim...');
-                        $('.invalid-feedback').remove();
-                        $('.is-invalid').removeClass('is-invalid');
-                    },
-
-                    success: function(response) {
-                        if (response.status === 'success') {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Berhasil!',
-                                text: response.message,
-                                timer: 1800,
-                                showConfirmButton: false
-                            });
-
-                            setTimeout(function() {
-                                // Redirect ke dashboard setelah Swal selesai
-                                window.location.href = '/';
-                            }, 1500);
-                        }
-                    },
-
-                    error: function(xhr) {
-                        $('#btnSubmit')
-                            .prop('disabled', false)
-                            .text('Simpan');
-
-                        if (xhr.status === 422) {
-                            let errors = xhr.responseJSON.errors;
-
-                            $.each(errors, function(field, messages) {
-                                let input = $('[name="' + field + '"]');
-
-                                input.addClass('is-invalid');
-
-                                input.after(
-                                    '<div class="invalid-feedback d-block">' +
-                                    messages[0] + '</div>'
-                                );
-                            });
-
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Validasi Gagal',
-                                text: 'Silakan periksa kembali isian Anda.',
-                            });
-
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Terjadi Kesalahan',
-                                text: 'Gagal mengirim data ke server.',
-                            });
-                        }
-                    }
-                });
-
-            });
-
-            // =============== HELPER FUNCTION ===============
-            function validateEmail(email) {
-                let re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                return re.test(email);
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
+        });
 
-            // =============== AUTO DISMISS ALERT ===============
-            setTimeout(function() {
-                $('.alert').fadeOut('slow');
-            }, 5000);
 
-            // =============== KONFIRMASI SEBELUM MENINGGALKAN HALAMAN ===============
-            let formChanged = false;
+        // =============== CLIENT-SIDE VALIDATION ===============
+        // SUBMIT FORM
+        $('#cvForm').on('submit', function(e) {
+            e.preventDefault(); // Stop reload
 
-            $('#cvForm input, #cvForm select, #cvForm textarea').on('change input', function() {
-                formChanged = true;
-            });
+            let form = $('#cvForm')[0];
+            let formData = new FormData(form); // support file upload
 
-            $(window).on('beforeunload', function() {
-                if (formChanged) {
-                    return 'Anda memiliki perubahan yang belum disimpan. Yakin ingin meninggalkan halaman?';
+            $.ajax({
+                url: $('#cvForm').attr('action'),
+                method: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+
+                beforeSend: function() {
+                    $('#btnSubmit')
+                        .prop('disabled', true)
+                        .text('Mengirim...');
+                    $('.invalid-feedback').remove();
+                    $('.is-invalid').removeClass('is-invalid');
+                },
+
+                success: function(response) {
+                    if (response.status === 'success') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: response.message,
+                            timer: 1800,
+                            showConfirmButton: false
+                        });
+
+                        setTimeout(function() {
+                            // Redirect ke dashboard setelah Swal selesai
+                            window.location.href = '/';
+                        }, 1500);
+                    }
+                },
+
+                error: function(xhr) {
+                    $('#btnSubmit')
+                        .prop('disabled', false)
+                        .text('Simpan');
+
+                    if (xhr.status === 422) {
+                        let errors = xhr.responseJSON.errors;
+
+                        $.each(errors, function(field, messages) {
+                            let input = $('[name="' + field + '"]');
+
+                            input.addClass('is-invalid');
+
+                            input.after(
+                                '<div class="invalid-feedback d-block">' +
+                                messages[0] + '</div>'
+                            );
+                        });
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Validasi Gagal',
+                            text: 'Silakan periksa kembali isian Anda.',
+                        });
+
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Terjadi Kesalahan',
+                            text: 'Gagal mengirim data ke server.',
+                        });
+                    }
                 }
             });
 
-            $('#cvForm').on('submit', function() {
-                formChanged = false;
-            });
+        });
+
+        // =============== HELPER FUNCTION ===============
+        function validateEmail(email) {
+            let re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        // =============== AUTO DISMISS ALERT ===============
+        setTimeout(function() {
+            $('.alert').fadeOut('slow');
+        }, 5000);
+
+        // =============== KONFIRMASI SEBELUM MENINGGALKAN HALAMAN ===============
+        let formChanged = false;
+
+        $('#cvForm input, #cvForm select, #cvForm textarea').on('change input', function() {
+            formChanged = true;
+        });
+
+        $(window).on('beforeunload', function() {
+            if (formChanged) {
+                return 'Anda memiliki perubahan yang belum disimpan. Yakin ingin meninggalkan halaman?';
+            }
+        });
+
+        $('#cvForm').on('submit', function() {
+        formChanged = false;
+        });
 
 
 
