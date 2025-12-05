@@ -151,7 +151,7 @@
                 </table>
                 <table style="width: 642px">
                     <tr>
-                        <td class="text-center" style="width: 351px"> {{ $cv->tempat_tanggal_lahir }}</td>
+                        <td class="text-center" style="width: 351px"> {{ $cv->tanggal_lahir }}</td>
                         <td class="bg" style=" width:175px">配偶者 STATUS PERNIKAHAN </td>
                         <td>{{ $cv->status_perkawinan }}</td>
                     </tr>
@@ -310,37 +310,31 @@
                 </tr>
                 <tr>
                     <td>AYAH （父）</td>
-                    <td>{{ $cv->anggota_keluarga_ayah }}</td>
-                    <td>歳</td>
-                    <td>PEGAWAI PERUSAHAAN 会社員</td>
+                    <td>{{ $cv->ayah_nama }}</td>
+                    <td>{{$cv->ayah_usia}}</td>
+                    <td>{{$cv->ayah_pekerjaan}} </td>
                     <td> ¥</td>
                 </tr>
                 <tr>
                     <td>IBU （母）</td>
-                    <td>{{ $cv->anggota_keluarga_ibu }}</td>
-                    <td>歳</td>
-                    <td>PEGAWAI PERUSAHAAN 会社員</td>
+                    <td>{{ $cv->ibu_nama }}</td>
+                    <td>{{$cv->ibu_usia}}</td>
+                    <td>{{$cv->ibu_pekerjaan}}</td>
                     <td> ¥</td>
                 </tr>
                 <tr>
-                    <td>KAKAK LAKI-LAKI （兄）</td>
-                    <td>{{ $cv->anggota_keluarga_kakak }}</td>
-                    <td>歳</td>
-                    <td>PEGAWAI PERUSAHAAN 会社員</td>
+                    <td>KAKAK（兄）</td>
+                    <td>{{ $cv->kakak_nama }}</td>
+                    <td>{{$cv->kakak_usia}}</td>
+                    <td>{{$cv->kakak_pekerjaan}}</td>
                     <td> ¥</td>
                 </tr>
-                <tr>
-                    <td>KAKAK PEREMPUAN （姉）</td>
-                    <td>{{ $cv->anggota_keluarga_kakak }}</td>
-                    <td>歳</td>
-                    <td>PEGAWAI PERUSAHAAN 会社員</td>
-                    <td> ¥</td>
-                </tr>
+                
                 <tr>
                     <td>ADIK LAKI-LAKI （弟）</td>
-                    <td>{{ $cv->anggota_keluarga_adik }}</td>
-                    <td>歳</td>
-                    <td>PEGAWAI PERUSAHAAN 会社員</td>
+                    <td>{{ $cv->adik_nama }}</td>
+                    <td>{{$cv->adik_usia}}</td>
+                    <td>{{$cv->adik_pekerjaan}}</td>
                     <td> ¥</td>
                 </tr>
             </table>

@@ -286,6 +286,7 @@ class CvController extends Controller
                         'tanggal_masuk'  => $request->pengalaman_tanggal_masuk[$i] ?? null,
                         'tanggal_keluar' => $request->pengalaman_tanggal_keluar[$i] ?? null,
                         'gaji'           => $request->pengalaman_gaji[$i] ?? null,
+                        'kota'           => $request->pengalaman_kota[$i] ?? null,
                     ]);
                 }
             }
@@ -305,68 +306,62 @@ class CvController extends Controller
             }
 
 
+            if ($request->nama_perusahaan) {
 
-            if ($request->riwayat_nama_perusahaan) {
-                foreach ($request->riwayat_nama_perusahaan as $i => $perusahaan) {
+                foreach ($request->nama_perusahaan as $i => $perusahaan) {
 
-                    RiwayatPekerjaanTerakhir::create([
+                    \App\Models\RiwayatPekerjaanTerakhir::create([
                         'cv_id' => $cv->id,
 
-                        'nama_perusahaan'        => $perusahaan,
-                        'nama_kumiai'            => $request->riwayat_nama_kumiai[$i] ?? null,
-                        'total_karyawan'         => $request->riwayat_total_karyawan[$i] ?? null,
-                        'total_karyawan_asing'   => $request->riwayat_total_karyawan_asing[$i] ?? null,
-                        'bidang_pekerjaan'       => $request->riwayat_bidang_pekerjaan[$i] ?? null,
-                        'klasifikasi_pekerjaan'  => $request->riwayat_klasifikasi_pekerjaan[$i] ?? null,
+                        'nama_perusahaan'              => $perusahaan,
+                        'nama_kumiai'                  => $request->nama_kumiai[$i] ?? null,
+                        'total_karyawan'               => $request->total_karyawan[$i] ?? null,
+                        'total_karyawan_asing'         => $request->total_karyawan_asing[$i] ?? null,
+                        'bidang_pekerjaan'             => $request->bidang_pekerjaan[$i] ?? null,
+                        'klasifikasi_pekerjaan'        => $request->klasifikasi_pekerjaan[$i] ?? null,
 
-                        // Masa pelatihan
-                        'masa_pelatihan_mulai_tahun'   => $request->riwayat_mulai_tahun[$i] ?? null,
-                        'masa_pelatihan_mulai_bulan'   => $request->riwayat_mulai_bulan[$i] ?? null,
-                        'masa_pelatihan_selesai_tahun' => $request->riwayat_selesai_tahun[$i] ?? null,
-                        'masa_pelatihan_selesai_bulan' => $request->riwayat_selesai_bulan[$i] ?? null,
+                        'masa_pelatihan_mulai_tahun'   => $request->masa_pelatihan_mulai_tahun[$i] ?? null,
+                        'masa_pelatihan_mulai_bulan'   => $request->masa_pelatihan_mulai_bulan[$i] ?? null,
+                        'masa_pelatihan_selesai_tahun' => $request->masa_pelatihan_selesai_tahun[$i] ?? null,
+                        'masa_pelatihan_selesai_bulan' => $request->masa_pelatihan_selesai_bulan[$i] ?? null,
 
-                        'penanggung_jawab' => $request->riwayat_penanggung_jawab[$i] ?? null,
-                        'shift_normal'     => $request->riwayat_shift_normal[$i] ?? null,
+                        'penanggung_jawab'             => $request->penanggung_jawab[$i] ?? null,
+                        'shift_normal'                 => $request->shift_normal[$i] ?? null,
 
-                        // Jam kerja
-                        'jam_kerja_mulai_1'   => $request->riwayat_jam_mulai_1[$i] ?? null,
-                        'jam_kerja_selesai_1' => $request->riwayat_jam_selesai_1[$i] ?? null,
+                        'jam_kerja_mulai_1'            => $request->jam_kerja_mulai_1[$i] ?? null,
+                        'jam_kerja_selesai_1'          => $request->jam_kerja_selesai_1[$i] ?? null,
+                        'jam_kerja_mulai_2'            => $request->jam_kerja_mulai_2[$i] ?? null,
+                        'jam_kerja_selesai_2'          => $request->jam_kerja_selesai_2[$i] ?? null,
+                        'jam_kerja_mulai_3'            => $request->jam_kerja_mulai_3[$i] ?? null,
+                        'jam_kerja_selesai_3'          => $request->jam_kerja_selesai_3[$i] ?? null,
 
-                        'jam_kerja_mulai_2'   => $request->riwayat_jam_mulai_2[$i] ?? null,
-                        'jam_kerja_selesai_2' => $request->riwayat_jam_selesai_2[$i] ?? null,
+                        'hari_libur'                   => $request->hari_libur[$i] ?? null,
+                        'detail_pekerjaan'             => $request->detail_pekerjaan[$i] ?? null,
+                        'barang_cacat_action'          => $request->barang_cacat_action[$i] ?? null,
 
-                        'jam_kerja_mulai_3'   => $request->riwayat_jam_mulai_3[$i] ?? null,
-                        'jam_kerja_selesai_3' => $request->riwayat_jam_selesai_3[$i] ?? null,
+                        'prefektur'                    => $request->prefektur[$i] ?? null,
+                        'kota'                         => $request->kota[$i] ?? null,
 
-                        'hari_libur'          => $request->riwayat_hari_libur[$i] ?? null,
-                        'detail_pekerjaan'    => $request->riwayat_detail[$i] ?? null,
-                        'barang_cacat_action' => $request->riwayat_barang_cacat[$i] ?? null,
+                        'status_visa'                  => $request->status_visa[$i] ?? null,
 
-                        'prefektur' => $request->riwayat_prefektur[$i] ?? null,
-                        'kota'      => $request->riwayat_kota[$i] ?? null,
+                        'masa_tinggal_mulai_tahun'     => $request->masa_tinggal_mulai_tahun[$i] ?? null,
+                        'masa_tinggal_mulai_bulan'     => $request->masa_tinggal_mulai_bulan[$i] ?? null,
+                        'masa_tinggal_selesai_tahun'   => $request->masa_tinggal_selesai_tahun[$i] ?? null,
+                        'masa_tinggal_selesai_bulan'   => $request->masa_tinggal_selesai_bulan[$i] ?? null,
 
-                        'status_visa' => $request->riwayat_status_visa[$i] ?? null,
+                        'gaji_per_jam'                 => $request->gaji_per_jam[$i] ?? null,
+                        'gaji_bersih'                  => $request->gaji_bersih[$i] ?? null,
+                        'lembur_bulanan'               => $request->lembur_bulanan[$i] ?? null,
 
-                        // Masa tinggal Jepang sebelumnya
-                        'masa_tinggal_mulai_tahun'   => $request->riwayat_tinggal_mulai_tahun[$i] ?? null,
-                        'masa_tinggal_mulai_bulan'   => $request->riwayat_tinggal_mulai_bulan[$i] ?? null,
-                        'masa_tinggal_selesai_tahun' => $request->riwayat_tinggal_selesai_tahun[$i] ?? null,
-                        'masa_tinggal_selesai_bulan' => $request->riwayat_tinggal_selesai_bulan[$i] ?? null,
+                        'asrama_kamar'                 => $request->asrama_kamar[$i] ?? null,
+                        'asrama_jumlah_orang'          => $request->asrama_jumlah_orang[$i] ?? null,
 
-                        'gaji_per_jam'   => $request->riwayat_gaji_per_jam[$i] ?? null,
-                        'gaji_bersih'    => $request->riwayat_gaji_bersih[$i] ?? null,
+                        'transportasi'                 => $request->transportasi[$i] ?? null,
+                        'jarak_tempuh_menit'           => $request->jarak_tempuh_menit[$i] ?? null,
 
-                        'lembur_bulanan' => $request->riwayat_lembur[$i] ?? null,
-
-                        'asrama_kamar'         => $request->riwayat_asrama_kamar[$i] ?? null,
-                        'asrama_jumlah_orang'  => $request->riwayat_asrama_jumlah_orang[$i] ?? null,
-
-                        'transportasi'        => $request->riwayat_transportasi[$i] ?? null,
-                        'jarak_tempuh_menit'  => $request->riwayat_jarak[$i] ?? null,
-
-                        'punya_hanko'          => $request->riwayat_punya_hanko[$i] ?? null,
-                        'nama_hanko_sama_cv'   => $request->riwayat_nama_hanko_sama_cv[$i] ?? null,
-                        'nama_katakana_hanko'  => $request->riwayat_katakana[$i] ?? null,
+                        'punya_hanko'                  => $request->punya_hanko[$i] ?? null,
+                        'nama_hanko_sama_cv'           => $request->nama_hanko_sama_cv[$i] ?? null,
+                        'nama_katakana_hanko'          => $request->nama_katakana_hanko[$i] ?? null,
                     ]);
                 }
             }
@@ -464,7 +459,7 @@ class CvController extends Controller
         1. VALIDASI
         ============================================================ */
             $request->validate([
-                // Pas Foto CV (Single)
+                // Pas Foto CV
                 "pas_foto_cv" => "nullable|file|mimes:jpg,jpeg,png|max:2048",
 
                 // Data Diri
@@ -475,8 +470,9 @@ class CvController extends Controller
                 "jenis_kelamin" => "required|in:男 (Laki-laki),女 (Perempuan)",
                 "agama" => "required|string|max:100",
                 "agama_lainnya" => "nullable|string|max:100",
-                "tempat_tanggal_lahir" => "required|string|max:255",
-                "usia" => "required|string|max:10",
+                "tempat_lahir" => "required|string|max:255",
+                "tanggal_lahir" => "required|date",
+                "usia" => "required|numeric",
                 "alamat_lengkap" => "required|string",
                 "email_aktif" => "required|email|max:255",
                 "status_perkawinan" => "required|in:Sudah Menikah,Belum Menikah",
@@ -485,15 +481,20 @@ class CvController extends Controller
                 "surat_izin_mengemudi" => "required|in:Ada,Tidak",
                 "jenis_sim" => "nullable|in:SIM A,SIM B,SIM C,SIM D",
 
+
                 // Pendidikan & Pengalaman (Array)
-                "pendidikan_tingkat.*" => "nullable|string|max:255",
-                "pendidikan_institusi.*" => "nullable|string|max:255",
-                "pendidikan_tahun.*" => "nullable|string|max:50",
+                "nama.*" => "nullable|string|max:255",
+                "jurusan.*" => "nullable|string|max:255",
+                "tahun_masuk.*" => "nullable|numeric|min:1950|max:2100",
+                "tahun_lulus.*" => "nullable|numeric|min:1950|max:2100",
 
                 "kerja_perusahaan.*" => "nullable|string|max:255",
                 "kerja_jabatan.*" => "nullable|string|max:255",
-                "kerja_tahun.*" => "nullable|string|max:50",
+                "kerja_tanggal_masuk.*" => "nullable|date_format:Y-m",
+                "kerja_tanggal_keluar.*" => "nullable|date_format:Y-m",
+                "kerja_gaji.*" => "nullable|string|max:50",
             ]);
+
 
             // Data file lama
             $oldPasFotoCvPath = $cv->pas_foto_cv;
@@ -530,7 +531,8 @@ class CvController extends Controller
                 "jenis_kelamin" => $request->jenis_kelamin,
                 "agama" => $request->agama,
                 "agama_lainnya" => $request->agama_lainnya,
-                "tempat_tanggal_lahir" => $request->tempat_tanggal_lahir,
+                "tempat_lahir" => $request->tempat_lahir,
+                "tanggal_lahir" => $request->tanggal_lahir,
                 "usia" => $request->usia,
                 "alamat_lengkap" => $request->alamat_lengkap,
                 "email_aktif" => $request->email_aktif,
@@ -542,44 +544,40 @@ class CvController extends Controller
             ]);
 
 
-            /* ============================================================
-        4. PERBARUI DATA PENDIDIKAN
-        ============================================================ */
-            // Hapus data Pendidikan lama
+            // Hapus data pendidikan lama
             Pendidikan::where('cv_id', $cv->id)->delete();
 
-            // Simpan data Pendidikan baru
-            if ($request->has('pendidikan_tingkat')) {
-                foreach ($request->pendidikan_tingkat as $i => $tingkat) {
-                    // Hanya simpan jika tingkat tidak kosong
-                    if (!empty($tingkat)) {
+            // Simpan data pendidikan baru
+            if ($request->has('nama')) {
+                foreach ($request->nama as $i => $nama) {
+                    if (!empty($nama)) {
                         Pendidikan::create([
                             'cv_id' => $cv->id,
-                            'nama' => $tingkat,
-                            'jurusan' => $request->pendidikan_institusi[$i] ?? null,
-                            'tahun' => $request->pendidikan_tahun[$i] ?? null,
+                            'nama' => $nama,
+                            'jurusan' => $request->jurusan[$i] ?? null,
+                            'tahun_masuk' => $request->tahun_masuk[$i] ?? null,
+                            'tahun_lulus' => $request->tahun_lulus[$i] ?? null,
                         ]);
                     }
                 }
             }
 
 
-            /* ============================================================
-        5. PERBARUI DATA PENGALAMAN KERJA
-        ============================================================ */
-            // Hapus data Pengalaman lama
+
+            // Hapus data pengalaman lama
             Pengalaman::where('cv_id', $cv->id)->delete();
 
-            // Simpan data Pengalaman baru
+            // Simpan data pengalaman baru
             if ($request->has('kerja_perusahaan')) {
                 foreach ($request->kerja_perusahaan as $i => $perusahaan) {
-                    // Hanya simpan jika perusahaan tidak kosong
                     if (!empty($perusahaan)) {
                         Pengalaman::create([
                             'cv_id' => $cv->id,
                             'perusahaan' => $perusahaan,
                             'jabatan' => $request->kerja_jabatan[$i] ?? null,
-                            'lama_bekerja' => $request->kerja_tahun[$i] ?? null,
+                            'tanggal_masuk' => $request->kerja_tanggal_masuk[$i] ?? null,
+                            'tanggal_keluar' => $request->kerja_tanggal_keluar[$i] ?? null,
+                            'gaji' => $request->kerja_gaji[$i] ?? null,
                         ]);
                     }
                 }

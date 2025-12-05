@@ -35,7 +35,7 @@
 
 <body class="bg-light d-flex justify-content-center align-items-center min-vh-100">
 
-    <div class=" " style="max-width: 300px; width: 100%; border-radius: 20px;">
+    <div class=" " style="max-width: 400px; width: 100%; border-radius: 20px;">
         <div class="text-center mb-4">
             <img src="{{ asset('assets/compiled/png/LOGO/logo4.png') }}" alt="Logo" class="img-fluid rounded"
                 style="width: 120px;">

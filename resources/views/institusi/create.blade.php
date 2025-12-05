@@ -1,121 +1,128 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="mt-5">
-    <!-- Breadcrumb -->
-    <nav aria-label="breadcrumb" class="mb-4">
-        <ol class="breadcrumb  border rounded-3 px-3 py-2 shadow-sm mb-0">
-            <li class="breadcrumb-item">
-                <a href="#" class="text-decoration-none text-secondary">
-                    <i class="bi bi-house-door me-1"></i> Dashboard
-                </a>
-            </li>
-            <li class="breadcrumb-item active  fw-semibold" aria-current="page">
-                <i class="bi bi-person-lines-fill"></i> Create Perusahaan
-            </li>
-        </ol>
-    </nav>
+    <div class="mt-5">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb  border rounded-3 px-3 py-2 shadow-sm mb-0">
+                <li class="breadcrumb-item">
+                    <a href="#" class="text-decoration-none text-secondary">
+                        <i class="bi bi-house-door me-1"></i> Dashboard
+                    </a>
+                </li>
+                <li class="breadcrumb-item active  fw-semibold" aria-current="page">
+                    <i class="bi bi-person-lines-fill"></i> Create Perusahaan
+                </li>
+            </ol>
+        </nav>
 
-    <div class="card shadow-sm rounded-4">
-        <div class="card-header text-white">
-            <h5 class="mb-0 fw-bold">
-                <i class="bi bi-plus-circle me-2"></i> Tambah Perusahaan Baru
-            </h5>
-        </div>
-        <div class="card-body">
-            <form id="formTambahPerusahaan">
-                @csrf
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label for="nama_perusahaan" class="form-label fw-semibold">Nama Perusahaan</label>
-                        <input type="text" name="nama_perusahaan" id="nama_perusahaan" class="form-control"
-                            placeholder="Contoh: PT Sakura Jepang" required>
+        <div class="card shadow-sm rounded-4">
+            <div class="card-header text-white">
+                <h5 class="mb-0 fw-bold">
+                    <i class="bi bi-plus-circle me-2"></i> Tambah Perusahaan Baru
+                </h5>
+            </div>
+            <div class="card-body">
+                <form id="formTambahPerusahaan">
+                    @csrf
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label for="nama_perusahaan" class="form-label fw-semibold">Nama Perusahaan</label>
+                            <input type="text" name="nama_perusahaan" id="nama_perusahaan" class="form-control"
+                                placeholder="Contoh: PT Sakura Jepang" required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="bidang_pekerjaan" class="form-label fw-semibold">Bidang Pekerjaan</label>
+                            <input type="text" name="bidang_pekerjaan" id="bidang_pekerjaan" class="form-control"
+                                placeholder="Contoh: IT, Produksi, Administrasi">
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="perusahaan_penempatan" class="form-label fw-semibold">Perusahaan Penempatan</label>
+                            <input type="text" name="perusahaan_penempatan" id="perusahaan_penempatan"
+                                class="form-control" placeholder="Nama perusahaan penempatan">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="detail_pekerjaan" class="form-label fw-semibold">Detail Pekerjaan</label>
+                            <textarea name="detail_pekerjaan" id="detail_pekerjaan" class="form-control"
+                                placeholder="Tuliskan detail pekerjaan, tanggung jawab, atau deskripsi posisi" rows="3"></textarea>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label for="kuota" class="form-label fw-semibold">Kuota</label>
+                            <input type="number" name="kuota" id="kuota" class="form-control"
+                                placeholder="Jumlah kuota" min="1">
+                        </div>
                     </div>
 
-                    <div class="col-md-6">
-                        <label for="bidang_pekerjaan" class="form-label fw-semibold">Bidang Pekerjaan</label>
-                        <input type="text" name="bidang_pekerjaan" id="bidang_pekerjaan" class="form-control"
-                            placeholder="Contoh: IT, Produksi, Administrasi">
+                    <div class="mt-4 d-flex justify-content-end">
+                        <a href="{{ route('institusi.index') }}" class="btn btn-secondary me-2">Batal</a>
+                        <button type="submit" class="btn btn-success" id="btnSubmit">
+                            <i class="bi bi-save2 me-1"></i> Simpan Data
+                        </button>
                     </div>
-
-                    <div class="col-md-6">
-                        <label for="perusahaan_penempatan" class="form-label fw-semibold">Perusahaan Penempatan</label>
-                        <input type="text" name="perusahaan_penempatan" id="perusahaan_penempatan" class="form-control"
-                            placeholder="Nama perusahaan penempatan">
-                    </div>
-
-                    <div class="col-md-3">
-                        <label for="kuota" class="form-label fw-semibold">Kuota</label>
-                        <input type="number" name="kuota" id="kuota" class="form-control"
-                            placeholder="Jumlah kuota" min="1">
-                    </div>
-                </div>
-
-                <div class="mt-4 d-flex justify-content-end">
-                    <a href="{{ route('institusi.index') }}" class="btn btn-secondary me-2">Batal</a>
-                    <button type="submit" class="btn btn-success" id="btnSubmit">
-                        <i class="bi bi-save2 me-1"></i> Simpan Data
-                    </button>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
-</div>
 
-<!-- jQuery & SweetAlert2 -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- jQuery & SweetAlert2 -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<script>
-$(document).ready(function() {
-    $('#formTambahPerusahaan').submit(function(e) {
-        e.preventDefault();
+    <script>
+        $(document).ready(function() {
+            $('#formTambahPerusahaan').submit(function(e) {
+                e.preventDefault();
 
-        let form = $(this);
-        let btn = $('#btnSubmit');
+                let form = $(this);
+                let btn = $('#btnSubmit');
 
-        // Tambah spinner loading
-        btn.prop('disabled', true);
-        btn.html('<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Menyimpan...');
+                // Tambah spinner loading
+                btn.prop('disabled', true);
+                btn.html(
+                    '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Menyimpan...'
+                    );
 
-        $.ajax({
-            url: "{{ route('institusi.store') }}",
-            method: "POST",
-            data: form.serialize(),
-            success: function(response) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil!',
-                    text: 'Data perusahaan berhasil disimpan.',
-                    confirmButtonColor: '#3085d6',
-                    confirmButtonText: 'OK'
-                }).then(() => {
-                    window.location.href = "{{ route('institusi.index') }}";
+                $.ajax({
+                    url: "{{ route('institusi.store') }}",
+                    method: "POST",
+                    data: form.serialize(),
+                    success: function(response) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: 'Data perusahaan berhasil disimpan.',
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK'
+                        }).then(() => {
+                            window.location.href = "{{ route('institusi.index') }}";
+                        });
+                    },
+                    error: function(xhr) {
+                        let errors = '';
+                        if (xhr.responseJSON?.errors) {
+                            $.each(xhr.responseJSON.errors, function(key, value) {
+                                errors += `• ${value[0]}<br>`;
+                            });
+                        } else {
+                            errors = 'Terjadi kesalahan pada server.';
+                        }
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops!',
+                            html: errors,
+                            confirmButtonText: 'Tutup'
+                        });
+                    },
+                    complete: function() {
+                        btn.prop('disabled', false);
+                        btn.html('<i class="bi bi-save2 me-1"></i> Simpan Data');
+                    }
                 });
-            },
-            error: function(xhr) {
-                let errors = '';
-                if (xhr.responseJSON?.errors) {
-                    $.each(xhr.responseJSON.errors, function(key, value) {
-                        errors += `• ${value[0]}<br>`;
-                    });
-                } else {
-                    errors = 'Terjadi kesalahan pada server.';
-                }
-
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops!',
-                    html: errors,
-                    confirmButtonText: 'Tutup'
-                });
-            },
-            complete: function() {
-                btn.prop('disabled', false);
-                btn.html('<i class="bi bi-save2 me-1"></i> Simpan Data');
-            }
+            });
         });
-    });
-});
-</script>
+    </script>
 @endsection

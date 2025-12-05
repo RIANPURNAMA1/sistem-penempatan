@@ -118,11 +118,20 @@
 
                         {{-- Tempat/Tanggal Lahir --}}
                         <div class="col-md-6 mb-3">
-                            <label class="form-label fw-medium">Tempat/Tanggal Lahir</label>
-                            <input type="text" name="tempat_tanggal_lahir" class="form-control"
+                            <label class="form-label fw-medium">Tanggal Lahir</label>
+                            <input type="date" name="tanggal_lahir" class="form-control"
                                 placeholder="Contoh: Jakarta, 17 Agustus 1995"
-                                value="{{ old('tempat_tanggal_lahir', $cv->tempat_tanggal_lahir) }}" required>
+                                value="{{ old('tanggal_lahir', $cv->tanggal_lahir) }}" required>
                         </div>
+                        {{-- Tempat/Tanggal Lahir --}}
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label fw-medium">Tempat Lahir</label>
+                            <input type="text" name="tempat_lahir" class="form-control"
+                                placeholder="Contoh: Jakarta, 17 Agustus 1995"
+                                value="{{ old('tempat_lahir', $cv->tempat_lahir) }}" required>
+                        </div>
+
+                        
 
                         {{-- Usia --}}
                         <div class="col-md-6 mb-3">
@@ -223,57 +232,67 @@
 
                         @forelse ($cv->pendidikans as $pend)
                             <div class="row mb-3 p-3 rounded pendidikan-item">
+
+                                <!-- NAMA (Tingkat Pendidikan / Nama Sekolah) -->
                                 <div class="col-md-4 mb-2">
-                                    <input type="text" name="pendidikan_tingkat[]" class="form-control"
-                                        value="{{ $pend->nama }}" placeholder="Tingkat (SMA/S1)">
+                                    <input type="text" name="nama[]" class="form-control"
+                                        value="{{ $pend->nama }}" placeholder="Nama Sekolah / Tingkat Pendidikan"
+                                        required>
                                 </div>
 
+                                <!-- JURUSAN -->
                                 <div class="col-md-4 mb-2">
-                                    <input type="text" name="pendidikan_institusi[]" class="form-control"
-                                        value="{{ $pend->jurusan }}" placeholder="Institusi & Jurusan">
+                                    <input type="text" name="jurusan[]" class="form-control"
+                                        value="{{ $pend->jurusan }}" placeholder="Jurusan (opsional)">
                                 </div>
 
+                                <!-- TAHUN MASUK -->
                                 <div class="col-md-2 mb-2">
-                                    <input type="text" name="pendidikan_tahun_masuk[]" class="form-control"
-                                        value="{{ $pend->tahun_masuk }}" placeholder="Tahun Masuk">
+                                    <input type="number" name="tahun_masuk[]" class="form-control"
+                                        value="{{ $pend->tahun_masuk }}" placeholder="Tahun Masuk" min="1950"
+                                        max="2100">
                                 </div>
 
+                                <!-- TAHUN LULUS -->
                                 <div class="col-md-2 mb-2">
-                                    <input type="text" name="pendidikan_tahun_lulus[]" class="form-control"
-                                        value="{{ $pend->tahun_lulus }}" placeholder="Tahun Lulus">
+                                    <input type="number" name="tahun_lulus[]" class="form-control"
+                                        value="{{ $pend->tahun_lulus }}" placeholder="Tahun Lulus" min="1950"
+                                        max="2100">
                                 </div>
 
                                 <div class="col-md-1 d-flex align-items-center justify-content-center">
-                                    <button type="button"
-                                        class="btn btn-danger btn-sm rounded-circle remove-pendidikan">&times;</button>
+                                    <button type="button" class="btn btn-danger btn-sm rounded-circle remove-pendidikan">
+                                        &times;
+                                    </button>
                                 </div>
                             </div>
                         @empty
                             <div class="row mb-3 p-3 rounded pendidikan-item">
 
                                 <div class="col-md-4 mb-2">
-                                    <input type="text" name="pendidikan_tingkat[]" class="form-control"
-                                        placeholder="Tingkat Pendidikan">
+                                    <input type="text" name="nama[]" class="form-control"
+                                        placeholder="Nama Sekolah / Tingkat Pendidikan" required>
                                 </div>
 
                                 <div class="col-md-4 mb-2">
-                                    <input type="text" name="pendidikan_institusi[]" class="form-control"
-                                        placeholder="Institusi & Jurusan">
+                                    <input type="text" name="jurusan[]" class="form-control"
+                                        placeholder="Jurusan (opsional)">
                                 </div>
 
                                 <div class="col-md-2 mb-2">
-                                    <input type="text" name="pendidikan_tahun_masuk[]" class="form-control"
-                                        placeholder="Tahun Masuk">
+                                    <input type="number" name="tahun_masuk[]" class="form-control"
+                                        placeholder="Tahun Masuk" min="1950" max="2100">
                                 </div>
 
                                 <div class="col-md-2 mb-2">
-                                    <input type="text" name="pendidikan_tahun_lulus[]" class="form-control"
-                                        placeholder="Tahun Lulus">
+                                    <input type="number" name="tahun_lulus[]" class="form-control"
+                                        placeholder="Tahun Lulus" min="1950" max="2100">
                                 </div>
 
                                 <div class="col-md-1 d-flex align-items-center justify-content-center">
-                                    <button type="button"
-                                        class="btn btn-danger btn-sm rounded-circle remove-pendidikan">&times;</button>
+                                    <button type="button" class="btn btn-danger btn-sm rounded-circle remove-pendidikan">
+                                        &times;
+                                    </button>
                                 </div>
                             </div>
                         @endforelse
@@ -283,7 +302,9 @@
                     <button type="button" id="add-pendidikan" class="btn btn-outline-success mt-3">
                         <i class="fas fa-plus me-1"></i>Tambah Pendidikan
                     </button>
+
                 </div>
+
             </div>
 
 
@@ -301,33 +322,44 @@
                     <div id="kerja-wrapper">
 
                         @forelse ($cv->pengalamans as $kerja)
-                            <div class="row mb-3 p-3 rounded kerja-item ">
+                            <div class="row mb-3 p-3 rounded kerja-item border">
 
+                                {{-- PERUSAHAAN --}}
                                 <div class="col-md-3 mb-2">
+                                    <label class="form-label">Nama Perusahaan</label>
                                     <input type="text" name="kerja_perusahaan[]" class="form-control"
-                                        value="{{ $kerja->perusahaan }}" placeholder="Nama Perusahaan" required>
+                                        value="{{ $kerja->perusahaan }}" required>
                                 </div>
 
+                                {{-- JABATAN --}}
                                 <div class="col-md-3 mb-2">
+                                    <label class="form-label">Jabatan</label>
                                     <input type="text" name="kerja_jabatan[]" class="form-control"
-                                        value="{{ $kerja->jabatan }}" placeholder="Jabatan" required>
+                                        value="{{ $kerja->jabatan }}">
                                 </div>
 
+                                {{-- TANGGAL MASUK --}}
                                 <div class="col-md-2 mb-2">
+                                    <label class="form-label">Tanggal Masuk</label>
                                     <input type="month" name="kerja_tanggal_masuk[]" class="form-control"
-                                        value="{{ $kerja->tanggal_masuk }}" placeholder="Tanggal Masuk" required>
+                                        value="{{ $kerja->tanggal_masuk }}">
                                 </div>
 
+                                {{-- TANGGAL KELUAR --}}
                                 <div class="col-md-2 mb-2">
+                                    <label class="form-label">Tanggal Keluar</label>
                                     <input type="month" name="kerja_tanggal_keluar[]" class="form-control"
-                                        value="{{ $kerja->tanggal_keluar }}" placeholder="Tanggal Keluar" required>
+                                        value="{{ $kerja->tanggal_keluar }}">
                                 </div>
 
-                                <div class="col-md-2 mb-2">
+                                {{-- GAJI --}}
+                                <div class="col-md-1 mb-2">
+                                    <label class="form-label">Gaji</label>
                                     <input type="text" name="kerja_gaji[]" class="form-control"
-                                        value="{{ $kerja->gaji }}" placeholder="Gaji">
+                                        value="{{ $kerja->gaji }}">
                                 </div>
 
+                                {{-- DELETE BUTTON --}}
                                 <div class="col-md-1 d-flex align-items-center justify-content-center">
                                     <button type="button"
                                         class="btn btn-danger btn-sm rounded-circle remove-kerja">&times;</button>
@@ -335,30 +367,32 @@
 
                             </div>
                         @empty
-                            <div class="row mb-3 p-3 rounded kerja-item ">
+                            {{-- DEFAULT FORM JIKA BELUM ADA DATA --}}
+                            <div class="row mb-3 p-3 rounded kerja-item border">
 
                                 <div class="col-md-3 mb-2">
-                                    <input type="text" name="kerja_perusahaan[]" class="form-control"
-                                        placeholder="Nama Perusahaan" required>
+                                    <label class="form-label">Nama Perusahaan</label>
+                                    <input type="text" name="kerja_perusahaan[]" class="form-control" required>
                                 </div>
 
                                 <div class="col-md-3 mb-2">
-                                    <input type="text" name="kerja_jabatan[]" class="form-control"
-                                        placeholder="Jabatan" required>
+                                    <label class="form-label">Jabatan</label>
+                                    <input type="text" name="kerja_jabatan[]" class="form-control">
                                 </div>
 
                                 <div class="col-md-2 mb-2">
-                                    <input type="month" name="kerja_tanggal_masuk[]" class="form-control"
-                                        placeholder="Tanggal Masuk" required>
+                                    <label class="form-label">Tanggal Masuk</label>
+                                    <input type="month" name="kerja_tanggal_masuk[]" class="form-control">
                                 </div>
 
                                 <div class="col-md-2 mb-2">
-                                    <input type="month" name="kerja_tanggal_keluar[]" class="form-control"
-                                        placeholder="Tanggal Keluar" required>
+                                    <label class="form-label">Tanggal Keluar</label>
+                                    <input type="month" name="kerja_tanggal_keluar[]" class="form-control">
                                 </div>
 
-                                <div class="col-md-2 mb-2">
-                                    <input type="text" name="kerja_gaji[]" class="form-control" placeholder="Gaji">
+                                <div class="col-md-1 mb-2">
+                                    <label class="form-label">Gaji</label>
+                                    <input type="text" name="kerja_gaji[]" class="form-control">
                                 </div>
 
                                 <div class="col-md-1 d-flex align-items-center justify-content-center">
@@ -374,8 +408,8 @@
                     <button type="button" id="add-kerja" class="btn btn-outline-warning mt-3">
                         <i class="fas fa-plus me-1"></i>Tambah Pengalaman
                     </button>
-
                 </div>
+
             </div>
 
 
@@ -394,86 +428,87 @@
             $("#add-pendidikan").click(function() {
 
                 let html = `
-    <div class="row mb-3 p-3 rounded pendidikan-item">
-        <div class="col-md-4 mb-2">
-            <input type="text" name="pendidikan_tingkat[]" class="form-control"
-                   placeholder="Tingkat Pendidikan">
-        </div>
+<div class="row mb-3 p-3 rounded pendidikan-item">
 
-        <div class="col-md-4 mb-2">
-            <input type="text" name="pendidikan_institusi[]" class="form-control"
-                   placeholder="Institusi & Jurusan">
-        </div>
+    <!-- Nama / Tingkat Pendidikan -->
+    <div class="col-md-4 mb-2">
+        <input type="text" name="nama[]" class="form-control"
+               placeholder="Nama Sekolah / Tingkat Pendidikan" required>
+    </div>
 
-        <div class="col-md-2 mb-2">
-            <input type="text" name="pendidikan_tahun_masuk[]" class="form-control"
-                   placeholder="Tahun Masuk">
-        </div>
+    <!-- Jurusan (Opsional) -->
+    <div class="col-md-4 mb-2">
+        <input type="text" name="jurusan[]" class="form-control"
+               placeholder="Jurusan (opsional)">
+    </div>
 
-        <div class="col-md-2 mb-2">
-            <input type="text" name="pendidikan_tahun_lulus[]" class="form-control"
-                   placeholder="Tahun Lulus">
-        </div>
+    <!-- Tahun Masuk -->
+    <div class="col-md-2 mb-2">
+        <input type="number" name="tahun_masuk[]" class="form-control"
+               placeholder="Tahun Masuk" min="1950" max="2100">
+    </div>
 
-        <div class="col-md-1 d-flex align-items-center justify-content-center">
-            <button type="button" class="btn btn-danger btn-sm rounded-circle remove-pendidikan">&times;</button>
-        </div>
-    </div>`;
+    <!-- Tahun Lulus -->
+    <div class="col-md-2 mb-2">
+        <input type="number" name="tahun_lulus[]" class="form-control"
+               placeholder="Tahun Lulus" min="1950" max="2100">
+    </div>
+
+    <!-- Tombol Hapus -->
+    <div class="col-md-1 d-flex align-items-center justify-content-center">
+        <button type="button" class="btn btn-danger btn-sm rounded-circle remove-pendidikan">&times;</button>
+    </div>
+
+</div>`;
 
                 $("#pendidikan-wrapper").append(html);
             });
 
-
+            // ================================
             // HAPUS RIWAYAT PENDIDIKAN
+            // ================================
             $(document).on("click", ".remove-pendidikan", function() {
                 $(this).closest(".pendidikan-item").remove();
             });
 
-
-
-            // ================================
-            // TAMBAH PENGALAMAN KERJA
-            // ================================
+            // Tambah Pengalaman Kerja
             $("#add-kerja").click(function() {
-
                 let html = `
-    <div class="row mb-3 p-3 rounded kerja-item">
+<div class="row mb-3 p-3 rounded kerja-item border">
 
-        <div class="col-md-3 mb-2">
-            <input type="text" name="kerja_perusahaan[]" class="form-control"
-                   placeholder="Nama Perusahaan" required>
-        </div>
+    <div class="col-md-3 mb-2">
+        <label class="form-label">Nama Perusahaan</label>
+        <input type="text" name="kerja_perusahaan[]" class="form-control" required>
+    </div>
 
-        <div class="col-md-3 mb-2">
-            <input type="text" name="kerja_jabatan[]" class="form-control"
-                   placeholder="Jabatan" required>
-        </div>
+    <div class="col-md-3 mb-2">
+        <label class="form-label">Jabatan</label>
+        <input type="text" name="kerja_jabatan[]" class="form-control">
+    </div>
 
-        <div class="col-md-2 mb-2">
-            <input type="month" name="kerja_tanggal_masuk[]" class="form-control"
-                   placeholder="Tanggal Masuk" required>
-        </div>
+    <div class="col-md-2 mb-2">
+        <label class="form-label">Tanggal Masuk</label>
+        <input type="month" name="kerja_tanggal_masuk[]" class="form-control">
+    </div>
 
-        <div class="col-md-2 mb-2">
-            <input type="month" name="kerja_tanggal_keluar[]" class="form-control"
-                   placeholder="Tanggal Keluar" required>
-        </div>
+    <div class="col-md-2 mb-2">
+        <label class="form-label">Tanggal Keluar</label>
+        <input type="month" name="kerja_tanggal_keluar[]" class="form-control">
+    </div>
 
-        <div class="col-md-2 mb-2">
-            <input type="text" name="kerja_gaji[]" class="form-control"
-                   placeholder="Gaji">
-        </div>
+    <div class="col-md-1 mb-2">
+        <label class="form-label">Gaji</label>
+        <input type="text" name="kerja_gaji[]" class="form-control">
+    </div>
 
-        <div class="col-md-1 d-flex align-items-center justify-content-center">
-            <button type="button" class="btn btn-danger btn-sm rounded-circle remove-kerja">&times;</button>
-        </div>
-
-    </div>`;
-
+    <div class="col-md-1 d-flex align-items-center justify-content-center">
+        <button type="button" class="btn btn-danger btn-sm rounded-circle remove-kerja">&times;</button>
+    </div>
+</div>`;
                 $("#kerja-wrapper").append(html);
             });
 
-            // HAPUS PENGALAMAN
+            // Hapus baris pengalaman
             $(document).on("click", ".remove-kerja", function() {
                 $(this).closest(".kerja-item").remove();
             });

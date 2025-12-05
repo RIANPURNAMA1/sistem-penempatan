@@ -192,12 +192,6 @@
                                 </div>
                             </div>
 
-                            <!-- Info -->
-                            <div class="info-item">
-                                <i class="bi bi-cake2 text-secondary me-2"></i>
-                                <span class="info-label">TTL:</span>
-                                <span class="">{{ $cv->tempat_tanggal_lahir ?? '-' }}</span>
-                            </div>
 
                             <div class="info-item">
                                 <i class="bi bi-geo-alt text-secondary me-2"></i>
@@ -216,14 +210,13 @@
                                 <span class="info-label">WhatsApp:</span>
                                 <span class="">{{ $cv->no_telepon ?? '-' }}</span>
                             </div>
-
                             <div class="info-item">
-                                <i class="bi bi-rulers text-secondary me-2"></i>
-                                <span class="info-label">TB / BB:</span>
-                                <span class="">
-                                    {{ $cv->tinggi_badan ?? '-' }} cm / {{ $cv->berat_badan ?? '-' }} kg
-                                </span>
+                                <i class="bi bi-geo-alt text-secondary me-2"></i>
+                                <span class="info-label">Cabang :</span>
+                                <span class="">{{ $cv->cabang->nama_cabang ?? '-' }}</span>
                             </div>
+
+
                         </div>
 
                         <!-- Footer Actions -->

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>面談シート</title>
+    <title>CV {{ $cv->nama_lengkap_romaji }}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 </head>
@@ -16,7 +16,7 @@
     }
 
     body {
-        font-family: "MS Gothic", "Yu Gothic", sans-serif;
+        /* font-family: "MS Gothic", "Yu Gothic", sans-serif; */
         padding: 20px;
         background-color: #ffffff;
     }
@@ -325,7 +325,7 @@
                         <th class="name-cell" style="text-align: center">国籍</th>
                         <td>Indonesia</td>
                         <th style="text-align: center">生年月日</th>
-                        <td>{{ $cv->tempat_tanggal_lahir }}</td>
+                        <td>{{ $cv->tanggal_lahir }}</td>
                         <th style="text-align: center">年齢</th>
                         <td>{{ $cv->usia }}</td>
                         <th style="text-align: center">性別</th>
@@ -552,22 +552,22 @@
                             <td rowspan="7" class="section-content text-center">
                                 <div class="section-item">
                                     <div class="section-title">【やってきた作業】</div>
-                                    <div>{{ $cv->kelincahan_dalam_bekerja ?? '—' }}</div>
+                                    <div></div>
                                 </div>
     
                                 <div class="section-item">
                                     <div class="section-title">【扱ってきた材料】</div>
-                                    <div>{{ $cv->kekuatan_tindakan ?? '—' }}</div>
+                                    <div></div>
                                 </div>
     
                                 <div class="section-item">
                                     <div class="section-title">【やってきた現場】</div>
-                                    <div>{{ $cv->kemampuan_pemahaman_ssw ?? '—' }}</div>
+                                    <div></div>
                                 </div>
     
                                 <div class="section-item">
                                     <div class="section-title">【操作できる重機】</div>
-                                    <div>{{ $cv->kemampuan_berbahasa_inggris ?? '—' }}</div>
+                                    <div></div>
                                 </div>
                             </td>
                             <td colspan="" style="text-align: center;">{{ $cv->bidang_sertifikasi ?? '左・右' }}</td>

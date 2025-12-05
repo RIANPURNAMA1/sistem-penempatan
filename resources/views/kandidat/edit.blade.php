@@ -53,8 +53,6 @@
                                 Pemberkasan</option>
                             <option value="Berangkat" {{ $kandidat->status_kandidat == 'Berangkat' ? 'selected' : '' }}>
                                 Berangkat</option>
-                            <option value="Ditolak" {{ $kandidat->status_kandidat == 'Ditolak' ? 'selected' : '' }}>Ditolak
-                            </option>
                         </select>
                     </div>
 

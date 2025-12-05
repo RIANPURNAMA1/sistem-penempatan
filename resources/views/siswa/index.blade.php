@@ -241,12 +241,12 @@
                                                 </a>
                                             </li>
 
-                                            <!-- Export Data -->
+                                            {{-- <!-- Export Data -->
                                             <li>
                                                 <a href="{{ route('siswa.edit', $kandidat->id) }}" class="dropdown-item">
                                                     <i class="bi bi-file-earmark-excel me-1"></i> Export Data
                                                 </a>
-                                            </li>
+                                            </li> --}}
 
                                             <?php
                                             $nomor_wa_bersih = preg_replace('/^0/', '62', $kandidat->no_wa);

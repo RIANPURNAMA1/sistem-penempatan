@@ -31,7 +31,7 @@
                 <div>
                     <h1 class="h3 fw-bold mb-1">{{ $cv->nama_lengkap_romaji ?? $cv->nama_lengkap_katakana }}</h1>
                     <p class="lead mb-1">{{ $cv->bidang_sertifikasi }}</p>
-                    <p class="text-light mb-0">
+                    <p class=" mb-0">
                         <i class="bi bi-geo-alt-fill me-1"></i> Cabang: {{ $cv->cabang->nama_cabang ?? 'N/A' }} |
                         <i class="bi bi-phone-fill me-1"></i> Telp: {{ $cv->no_telepon }}
                     </p>
@@ -77,7 +77,8 @@
                             <li class="list-group-item"><strong>Nama Panggilan:</strong>
                                 {{ $cv->nama_panggilan_romaji ?? $cv->nama_panggilan_katakana }}</li>
                             <li class="list-group-item"><strong>Jenis Kelamin:</strong> {{ $cv->jenis_kelamin }}</li>
-                            <li class="list-group-item"><strong>TTL / Usia:</strong> {{ $cv->tempat_tanggal_lahir }} /
+                            <li class="list-group-item"><strong>TTL / Usia:</strong> {{ $cv->tanggal_lahir }} /
+                                {{ $cv->tempat_lahir }}
                                 {{ $cv->usia }}</li>
                             <li class="list-group-item"><strong>Status Kawin:</strong> {{ $cv->status_perkawinan }}
                                 @if ($cv->status_perkawinan_lainnya)
@@ -123,15 +124,18 @@
             <!-- CARD 4: Pendidikan -->
             <div class="col-lg-6 col-md-6">
                 <div class="card h-100 shadow-sm border-0 rounded-4">
-                    <div class="card-header  rounded-top-4">
+                    <div class="card-header rounded-top-4">
                         <i class="bi bi-mortarboard-fill me-2"></i> Riwayat Pendidikan
                     </div>
                     <div class="card-body">
                         @forelse($cv->pendidikans ?? [] as $p)
-                            <div class=" border-start border-4 border-info p-2 mb-2">
-                                <h6 class="mb-0 fw-bold">{{ $p->nama }} <span
-                                        class="badge bg-secondary float-end">{{ $p->tahun }}</span></h6>
-                                <small class="">{{ $p->jurusan }}</small>
+                            <div class="border-start border-4 border-info p-2 mb-2">
+                                <h6 class="mb-0 fw-bold">{{ $p->nama }}
+                                    <span class="badge bg-secondary float-end">
+                                        {{ $p->tahun_masuk }} - {{ $p->tahun_lulus ?? 'Sekarang' }}
+                                    </span>
+                                </h6>
+                                <small class="">{{ $p->jurusan ?? '-' }}</small>
                             </div>
                         @empty
                             <p class="text-muted fst-italic">Belum ada data pendidikan.</p>
@@ -140,17 +144,21 @@
                 </div>
             </div>
 
+
             <!-- CARD 5: Pengalaman Kerja -->
             <div class="col-lg-6 col-md-6">
                 <div class="card h-100 shadow-sm border-0 rounded-4">
-                    <div class="card-header  rounded-top-4">
+                    <div class="card-header rounded-top-4">
                         <i class="bi bi-briefcase-fill me-2"></i> Pengalaman Kerja
                     </div>
                     <div class="card-body">
                         @forelse($cv->pengalamans ?? [] as $p)
-                            <div class=" border-start border-4 border-secondary p-2 mb-2">
+                            <div class="border-start border-4 border-secondary p-2 mb-2">
                                 <h6 class="mb-0 fw-bold">{{ $p->perusahaan }}</h6>
-                                <small class="">{{ $p->jabatan }} | {{ $p->lama_bekerja }}</small>
+                                <small class="">
+                                    {{ $p->jabatan ?? '-' }} |
+                                    {{ $p->tanggal_masuk ?? '-' }} - {{ $p->tanggal_keluar ?? 'Sekarang' }}
+                                </small>
                             </div>
                         @empty
                             <p class="text-muted fst-italic">Belum ada pengalaman kerja.</p>
@@ -158,6 +166,7 @@
                     </div>
                 </div>
             </div>
+
 
             <!-- CARD 6: Kemampuan & Pembelajaran -->
             <div class="col-lg-6 col-md-6">
@@ -176,7 +185,8 @@
                                 <p class="mb-1"><strong>Pemahaman SSW:</strong> {{ $cv->kemampuan_pemahaman_ssw }}</p>
                             </div>
                             <div class="col-md-6">
-                                <p class="mb-1"><strong>Kelincahan Kerja:</strong> {{ $cv->kelincahan_dalam_bekerja }}</p>
+                                <p class="mb-1"><strong>Kelincahan Kerja:</strong> {{ $cv->kelincahan_dalam_bekerja }}
+                                </p>
                                 <p class="mb-1"><strong>Kekuatan Tindakan:</strong> {{ $cv->kekuatan_tindakan }}</p>
                             </div>
                             <div class="col-12 mt-3">
@@ -194,36 +204,46 @@
             <!-- CARD 7: Data Keluarga & Keuangan -->
             <div class="col-lg-6 col-md-6">
                 <div class="card h-100 shadow-sm border-0 rounded-4">
-                    <div class="card-header  text-white rounded-top-4">
+                    <div class="card-header text-white rounded-top-4">
                         <i class="bi bi-people-fill me-2"></i> Keluarga & Keuangan
                     </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-12 mb-3">
-                                <strong>Orang Tua:</strong> Ayah ({{ $cv->anggota_keluarga_ayah }}) / Ibu
-                                ({{ $cv->anggota_keluarga_ibu }})
+                                <strong>Orang Tua:</strong> Ayah ({{ $cv->ayah_nama ?? '-' }}, {{ $cv->ayah_usia ?? '-' }}
+                                th, {{ $cv->ayah_pekerjaan ?? '-' }}) /
+                                Ibu ({{ $cv->ibu_nama ?? '-' }}, {{ $cv->ibu_usia ?? '-' }} th,
+                                {{ $cv->ibu_pekerjaan ?? '-' }})
                                 <br>
-                                <strong>Saudara:</strong> Kakak ({{ $cv->anggota_keluarga_kakak ?? '-' }}) / Adik
-                                ({{ $cv->anggota_keluarga_adik ?? '-' }})
+                                <strong>Saudara:</strong>
+                                Kakak ({{ $cv->kakak_nama ?? '-' }}, {{ $cv->kakak_usia ?? '-' }} th,
+                                {{ $cv->kakak_pekerjaan ?? '-' }}, {{ $cv->kakak_status ?? '-' }}) /
+                                Adik ({{ $cv->adik_nama ?? '-' }}, {{ $cv->adik_usia ?? '-' }} th,
+                                {{ $cv->adik_pekerjaan ?? '-' }}, {{ $cv->adik_status ?? '-' }})
                             </div>
+
                             <div class="col-md-6">
                                 <p class="mb-1"><strong>Rata-rata Penghasilan Keluarga:</strong>
-                                    {{ $cv->rata_rata_penghasilan_keluarga }}</p>
+                                    {{ $cv->rata_rata_penghasilan_keluarga ?? '-' }}</p>
                             </div>
                             <div class="col-md-6">
                                 <p class="mb-1"><strong>Rencana Biaya:</strong>
-                                    {{ $cv->rencana_sumber_biaya_keberangkatan }} / {{ $cv->perkiraan_biaya }}</p>
+                                    {{ $cv->rencana_sumber_biaya_keberangkatan ?? '-' }} /
+                                    {{ $cv->perkiraan_biaya ?? '-' }}</p>
                             </div>
                         </div>
+
                         <hr>
-                        <p class="mb-1"><strong>Keluarga di Jepang:</strong> {{ $cv->ada_keluarga_di_jepang }}</p>
+                        <p class="mb-1"><strong>Keluarga di Jepang:</strong> {{ $cv->ada_keluarga_di_jepang ?? '-' }}
+                        </p>
                         @if ($cv->ada_keluarga_di_jepang === 'Ya')
-                            <small class="text-muted">Hubungan: {{ $cv->hubungan_keluarga_di_jepang }}, Status:
-                                {{ $cv->status_kerabat_di_jepang }}</small>
+                            <small class="text-muted">Hubungan: {{ $cv->hubungan_keluarga_di_jepang ?? '-' }}, Status:
+                                {{ $cv->status_kerabat_di_jepang ?? '-' }}</small>
                         @endif
                     </div>
                 </div>
             </div>
+
 
             <!-- CARD 8: Daya Tarik (Komentar Diri/Guru) -->
             <div class="col-12">

@@ -162,6 +162,8 @@ return new class extends Migration
             $table->string('ibu_usia');
             $table->string('ibu_pekerjaan');
 
+            // kontak
+
             // AYAH
             $table->string('ayah_nama');
             $table->string('ayah_usia');

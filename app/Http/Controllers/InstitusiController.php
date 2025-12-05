@@ -28,6 +28,7 @@ class InstitusiController extends Controller
             'kuota' => 'nullable|integer|min:1',
             'bidang_pekerjaan' => 'nullable|string|max:255',
             'perusahaan_penempatan' => 'nullable|string|max:255',
+            'detail_pekerjaan' => 'nullable|string', // Tambahkan ini
         ]);
 
 
@@ -40,7 +41,7 @@ class InstitusiController extends Controller
     public function edit($id)
     {
         $institusi = Institusi::findOrFail($id);
-        return view('institusi.edit',compact('institusi'));
+        return view('institusi.edit', compact('institusi'));
     }
 
     // Update data
@@ -53,6 +54,7 @@ class InstitusiController extends Controller
             'kuota' => 'nullable|integer|min:1',
             'bidang_pekerjaan' => 'nullable|string|max:255',
             'perusahaan_penempatan' => 'nullable|string|max:255',
+            'detail_pekerjaan' => 'nullable|string', // Tambahkan ini
         ]);
 
         $institusi->update($request->all());

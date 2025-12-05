@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title></title>
+    <title>cv {{$cv->nama_lengkap_katakana}}</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -66,12 +66,12 @@
             line-height: 1.4;
         }
 
-          /* Hanya untuk print */
-    @media print {
-        .btn-container {
-            display: none !important;
+        /* Hanya untuk print */
+        @media print {
+            .btn-container {
+                display: none !important;
+            }
         }
-    }
     </style>
 </head>
 
@@ -109,7 +109,7 @@
             </tr>
             <tr>
                 <td class="label-col">Tempat Tanggal Lahir</td>
-                <td class="value-col">: {{ $cv->tempat_tanggal_lahir }}</td>
+                <td class="value-col">: {{$cv->tempat_lahir}} {{ $cv->tanggal_lahir }}</td>
             </tr>
             <tr>
                 <td class="label-col">Usia</td>
@@ -125,19 +125,19 @@
             </tr>
             <tr>
                 <td class="label-col">Apakah Bersedia Kerja Shift?</td>
-                <td class="value-col">: </td>
+                <td class="value-col">: {{ $cv->bersedia_kerja_shift }} </td>
             </tr>
             <tr>
                 <td class="label-col">Apakah Bersedia Kerja Lembur?</td>
-                <td class="value-col">:</td>
+                <td class="value-col">: {{ $cv->bersedia_lembur }}</td>
             </tr>
             <tr>
                 <td class="label-col">Apakah Bersedia Kerja di Hari Libur</td>
-                <td class="value-col">:</td>
+                <td class="value-col">: {{ $cv->bersedia_hari_libur }}</td>
             </tr>
             <tr>
                 <td class="label-col">Apakah Menggunakan Kacamata ?</td>
-                <td class="value-col">:</td>
+                <td class="value-col">: {{ $cv->menggunakan_kacamata }}</td>
             </tr>
             <tr>
                 <td class="label-col">Ketajaman Mata</td>
@@ -172,7 +172,7 @@
             </tr>
             <tr>
                 <td class="label-col">Ukuran Pinggang</td>
-                <td class="value-col">: {{$cv->ukuran_pinggang}}</td>
+                <td class="value-col">: {{ $cv->ukuran_pinggang }}</td>
             </tr>
             <tr>
                 <td class="label-col">Ukuran Sepatu</td>
@@ -353,7 +353,7 @@
                     </tr>
                     <tr>
                         <td class="label-col">Tahun Bulan</td>
-                        <td class="input-col ">: {{ $p->tahun_masuk }} - {{$p->tahun_lulus}}</td>
+                        <td class="input-col ">: {{ $p->tahun_masuk }} - {{ $p->tahun_lulus }}</td>
                     </tr>
                     <tr>
                         <td class="label-col">Jurusan</td>
@@ -381,36 +381,38 @@
                     </tr>
                     <tr>
                         <td class="label-col">Nama Kota</td>
-                        <td class="input-col">:</td>
+                        <td class="input-col">: {{ $p->kota }}</td>
                     </tr>
                     <tr>
                         <td class="label-col">Bidang Pekerjaan</td>
-                        <td class="input-col">: {{$p->jabatan}}</td>
+                        <td class="input-col">: {{ $p->jabatan }}</td>
                     </tr>
                     <tr>
                         <td class="label-col">Tahun Bulan</td>
-                        <td class="input-col ">: {{ $p->tanggal_masuk }} - {{$p->tanggal_keluar}}</td>
+                        <td class="input-col ">: {{ $p->tanggal_masuk }} - {{ $p->tanggal_keluar }}</td>
                     </tr>
                 @endforeach
                 <tr>
                     <td colspan="2" class="subsection-title">Magang ( Eks Jisshu )</td>
                 </tr>
-                <tr>
-                    <td class="label-col">Nama Perusahaan</td>
-                    <td class="input-col">:</td>
-                </tr>
-                <tr>
-                    <td class="label-col">Nama Kota/Prefektur</td>
-                    <td class="input-col">:</td>
-                </tr>
-                <tr>
-                    <td class="label-col">Bidang Pekerjaan</td>
-                    <td class="input-col">:</td>
-                </tr>
-                <tr>
-                    <td class="label-col">Tahun Bulan</td>
-                    <td class="input-col date-cell">: 年 月 〜 年 月</td>
-                </tr>
+                @foreach ($cv->magangjisshu as $p)
+                    <tr>
+                        <td class="label-col">Nama Perusahaan</td>
+                        <td class="input-col">: {{ $p->perusahaan }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label-col">Nama Kota/Prefektur</td>
+                        <td class="input-col">: {{ $p->kota_prefektur }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label-col">Bidang Pekerjaan</td>
+                        <td class="input-col">: {{ $p->bidang }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label-col">Tahun Bulan</td>
+                        <td class="input-col">: {{ $p->tahun_mulai }} - {{ $p->tahun_selesai }}</td>
+                    </tr>
+                @endforeach
                 <tr>
                     <td colspan="2" class="subsection-title">Pekerjaan Saat Ini</td>
                 </tr>
@@ -446,30 +448,30 @@
                 </tr>
                 <tr>
                     <td class="label-col">Nama lengkap</td>
-                    <td class="input-col">: {{$cv->anggota_keluarga_ayah}}</td>
+                    <td class="input-col">: {{ $cv->ayah_nama }}</td>
                 </tr>
                 <tr>
                     <td class="label-col">Usia</td>
-                    <td class="input-col">:</td>
+                    <td class="input-col">: {{$cv->ayah_usia}}</td>
                 </tr>
                 <tr>
                     <td class="label-col">Profesi/Pekerjaan</td>
-                    <td class="input-col">:</td>
+                    <td class="input-col">: {{$cv->ayah_pekerjaan}}</td>
                 </tr>
                 <tr>
                     <td colspan="2" class="subsection-title" style="background-color: #8989c2;">Ibu</td>
                 </tr>
                 <tr>
                     <td class="label-col">Nama lengkap</td>
-                    <td class="input-col">: {{$cv->anggota_keluarga_ibu}}</td>
+                    <td class="input-col">: {{ $cv->ibu_nama}}</td>
                 </tr>
                 <tr>
                     <td class="label-col">Usia</td>
-                    <td class="input-col">:</td>
+                    <td class="input-col">: {{$cv->ibu_usia}}</td>
                 </tr>
                 <tr>
                     <td class="label-col">Profesi/Pekerjaan</td>
-                    <td class="input-col">:</td>
+                    <td class="input-col">: {{$cv->ibu_pekerjaan}}</td>
                 </tr>
                 <tr>
                     <td class="label-col">Kontak orang tua (Ibu/Ayah)</td>
@@ -480,23 +482,15 @@
                 </tr>
                 <tr>
                     <td class="label-col">Nama lengkap</td>
-                    <td class="input-col">: {{$cv->anggota_keluarga_suami}} {{$cv->anggota_keluarga_istri}}</td>
+                    <td class="input-col">: {{ $cv->istri_nama }} </td>
                 </tr>
                 <tr>
                     <td class="label-col">Usia</td>
-                    <td class="input-col">:</td>
+                    <td class="input-col">: {{$cv->istri_usia}}</td>
                 </tr>
                 <tr>
                     <td class="label-col">Profesi/Pekerjaan</td>
-                    <td class="input-col">:</td>
-                </tr>
-                <tr>
-                    <td colspan="" class="label-col" style="width:100px !important;">Usia</td>
-                    <td colspan="4" class="input-col">:</td>
-                </tr>
-                <tr>
-                    <td class="label-col">Profesi/Pekerjaan</td>
-                    <td colspan="4" class="input-col">:</td>
+                    <td class="input-col">: {{$cv->istri_pekerjaan}}</td>
                 </tr>
                 <tr>
                     <td class="label-col">Kontak Suami/Istri</td>
@@ -583,17 +577,17 @@
                 </td>
             </tr>
             <tr style="font-size: 11px">
-                <td style="" class="input-col">Jenis Kelamin :</td>
-                <td class="input-col">Jenis Kelamin :</td>
+                <td style="" class="input-col">Jenis Kelamin : {{$cv->anak_jenis_kelamin}}</td>
+                <td class="input-col">Jenis Kelamin : </td>
                 <td class="input-col">Jenis Kelamin :</td>
             </tr>
             <tr style="font-size: 11px">
-                <td class="input-col">Usia :</td>
+                <td class="input-col">Usia : {{$cv->anak_usia}}</td>
                 <td class="input-col">Usia :</td>
                 <td class="input-col">Usia :</td>
             </tr>
             <tr style="font-size: 11px">
-                <td class="input-col">Pendidikan :</td>
+                <td class="input-col">Pendidikan : {{$cv->anak_pendidikan}}</td>
                 <td class="input-col">Pendidikan :</td>
                 <td class="input-col">Pendidikan :</td>
             </tr>
@@ -601,27 +595,27 @@
                 <td colspan="3" class="subsection-header">Saudara kandung (kakak)</td>
             </tr>
             <tr style="font-size: 11px">
+                <td class="label-col">Jenis Kelamin : {{$cv->kakak_jenis_kelamin}}</td>
                 <td class="label-col">Jenis Kelamin :</td>
                 <td class="label-col">Jenis Kelamin :</td>
-                <td class="label-col">Jenis Kelamin :</td>
             </tr>
             <tr style="font-size: 11px">
+                <td class="value-col">Usia : {{$cv->kakak_usia}}</td>
                 <td class="value-col">Usia :</td>
                 <td class="value-col">Usia :</td>
-                <td class="value-col">Usia :</td>
             </tr>
             <tr style="font-size: 11px">
-                <td class="value-col">Profesi/Pekerjaan</td>
+                <td class="value-col">Profesi/Pekerjaan : {{$cv->kakak_pekerjaan}}</td>
                 <td class="value-col">Profesi/Pekerjaan</td>
                 <td class="value-col">Profesi/Pekerjaan</td>
             </tr>
             <tr style="font-size: 11px">
-                <td class="value-col">Status saudara : Kandung/Tiri</td>
+                <td class="value-col">Status saudara : {{$cv->kakak_status}}</td>
                 <td class="value-col">Status saudara : Kandung/Tiri</td>
                 <td class="value-col">Status saudara : Kandung/Tiri</td>
             </tr>
             <tr style="font-size: 11px">
-                <td class="value-col">Nama lengkap: {{$cv->anggota_keluarga_kakak}}</td>
+                <td class="value-col">Nama lengkap: {{ $cv->anggota_keluarga_kakak }}</td>
                 <td class="value-col">Nama lengkap:</td>
                 <td class="value-col">Nama lengkap:</td>
             </tr>
@@ -629,27 +623,26 @@
                 <td colspan="3" class="subsection-header">Saudara kandung (Adik)</td>
             </tr>
             <tr style="font-size: 11px">
-                <td class="label-col">Jenis Kelamin :</td>
+                <td class="label-col">Jenis Kelamin : {{$cv->adik_jenis_kelamin}}</td>
                 <td class="label-col">Jenis Kelamin :</td>
                 <td class="label-col">Jenis Kelamin :</td>
             </tr>
             <tr style="font-size: 11px">
-                <td class="value-col">Usia :</td>
+                <td class="value-col">Usia : {{$cv->adik_usia}}</td>
                 <td class="value-col">Usia :</td>
                 <td class="value-col">Usia :</td>
             </tr>
             <tr style="font-size: 11px">
-                <td class="value-col">Profesi/Pekerjaan: Pelajar</td>
+                <td class="value-col">Profesi/Pekerjaan: {{$cv->adik_pekerjaan}}</td>
                 <td class="value-col">Profesi/Pekerjaan</td>
                 <td class="value-col">Profesi/Pekerjaan</td>
             </tr>
             <tr style="font-size: 11px">
-                <td class="value-col">Status saudara : Kandung</td>
+                <td class="value-col">Status saudara : {{$cv->adik_status}}</td>
                 <td class="value-col">Status saudara : Kandung/Tiri</td>
                 <td class="value-col">Status saudara : Kandung/Tiri</td>
             </tr>
-            <tr style="font-size: 11px">
-                <td class="value-col">Nama lengkap: {{$cv->anggota_keluarga_adik}}</td>
+            <tr style="font-size: 11px">{{$cv->adik_nama}}</td>
                 <td class="value-col">Nama lengkap:</td>
                 <td class="value-col">Nama lengkap:</td>
             </tr>
@@ -792,7 +785,7 @@
             </tr>
             <tr>
                 <td class="label-col">Level Bahasa</td>
-                <td class="value-col">:</td>
+                <td class="value-col">: {{$cv->kemampuan_bahasa_jepang}}</td>
             </tr>
             <tr>
                 <td class="label-col">Sertifikat Yang Dimiliki</td>
@@ -804,7 +797,7 @@
             </tr>
             <tr>
                 <td class="label-col">Lama ingin tinggal di Jepang</td>
-                <td class="value-col">: </td>
+                <td class="value-col">: {{$cv->ingin_bekerja_berapa_tahun }}</td>
             </tr>
             <tr>
                 <td class="label-col">Lama ingin bekerja di perusahaan ini</td>

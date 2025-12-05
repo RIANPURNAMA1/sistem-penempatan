@@ -261,8 +261,8 @@
                                     <div class="row g-3">
                                         <div class="col-md-6">
                                             <!-- ======================================================
-                                                                                                                                             MULTI FILE: pas_foto[]
-                                                                                                                                        ====================================================== -->
+                                                                                                                                                         MULTI FILE: pas_foto[]
+                                                                                                                                                    ====================================================== -->
                                             <label class="form-label fw-semibold mb-1">
                                                 Silahkan upload dokumen / foto tambahan 👇
                                             </label>
@@ -280,8 +280,8 @@
                                             <div id="previewPasFoto" class="mt-3 d-flex flex-wrap gap-3"></div>
 
                                             <!-- ======================================================
-                                                                                                                                             SINGLE FILE: pas_foto_cv
-                                                                                                                                        ====================================================== -->
+                                                                                                                                                         SINGLE FILE: pas_foto_cv
+                                                                                                                                                    ====================================================== -->
                                             <label class="form-label fw-semibold mb-1 mt-4">
                                                 Silahkan upload pas foto untuk CV Anda 👇
                                             </label>
@@ -1284,6 +1284,12 @@
 
                                             <!-- Tanggal Masuk -->
                                             <div class="col-md-2">
+                                                <label class="form-label fw-bold">alamat kota *</label>
+                                                <input type="text" name="pengalaman_kota[]" class="form-control"
+                                                    required>
+                                            </div>
+                                            <!-- Tanggal Masuk -->
+                                            <div class="col-md-2">
                                                 <label class="form-label fw-bold">Tanggal Masuk *</label>
                                                 <input type="month" name="pengalaman_tanggal_masuk[]"
                                                     class="form-control" required>
@@ -1399,13 +1405,28 @@
                                 </div>
                             </div>
 
-                            <button type="button" class="btn btn-secondary ms-4 mb-3" id="btnRiwayatToggle">
-                                + Riwayat Pekerjaan Terakhir (X Jisshu / TG / Katsudo)
-                            </button>
+                            <div class="">
+
+                                <!-- INFORMASI PENTING -->
+                                <div class="bg-info text-dark rounded-3 py-4 px-4 mx-4">
+                                    <strong class="d-block mb-1">Perhatian:</strong>
+                                    <ul class="mb-0 ps-3">
+
+                                        <li>Jika tidak memiliki pengalaman pekerjaan terakhir (X Jisshu / TG / Katsudo)
+                                            abaikan
+                                            saja / jika ada klik tombol riwayat pekerjaan terakhir (X Jisshu / TG / Katsudo)
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <button type="button" class="btn btn-secondary mx-4 mt-3 mb-3 " id="btnRiwayatToggle">
+                                    + Riwayat Pekerjaan Terakhir (X Jisshu / TG / Katsudo)
+                                </button>
+                            </div>
 
 
 
-                            <div id="riwayatContainer" class="border rounded p-3 mb-4" style="display:none;">
+                            <div id="riwayatContainer" class="border rounded p-3 mx-4 mb-4" style="display:none;">
                                 <h5 class="fw-bold mb-3">Riwayat Pekerjaan Terakhir</h5>
 
                                 <div id="riwayatList"></div>
@@ -1597,7 +1618,7 @@
                                         <div class="col-md-6">
 
                                             {{-- ISTRI --}}
-                                            <label class="form-label fw-bold">Istri</label>
+                                            <label class="form-label fw-bold">Istri/suami</label>
                                             <input type="text" name="istri_nama" class="form-control mb-2"
                                                 placeholder="Nama Istri (例：妻 - アニ)" value="{{ old('istri_nama') }}">
                                             <input type="text" name="istri_usia" class="form-control mb-2"
@@ -2116,15 +2137,15 @@
 
             // pengalaman ex jitsu
             // SHOW / HIDE CONTAINER
-    $("#btnRiwayatToggle").click(function() {
-        $("#riwayatContainer").toggle();
-    });
+            $("#btnRiwayatToggle").click(function() {
+                $("#riwayatContainer").toggle();
+            });
 
-    // TAMBAH BARIS RIWAYAT
-    $("#addRiwayat").click(function() {
+            // TAMBAH BARIS RIWAYAT
+            $("#addRiwayat").click(function() {
 
-        let html = `
-<div class="riwayat-item border rounded p-3 mb-3">
+                let html = `
+<div class="riwayat-item border rounded p-3  mb-3">
 
     <h6 class="fw-bold text-primary mb-3">Data Riwayat</h6>
 
@@ -2342,20 +2363,20 @@
 </div>
         `;
 
-        $("#riwayatList").append(html);
-    });
+                $("#riwayatList").append(html);
+            });
 
-    // HAPUS BARIS
-    $(document).on("click", ".removeRiwayat", function() {
-        $(this).closest(".riwayat-item").remove();
-    });
+            // HAPUS BARIS
+            $(document).on("click", ".removeRiwayat", function() {
+                $(this).closest(".riwayat-item").remove();
+            });
 
 
 
-        // pengalaman kerja 
+            // pengalaman kerja 
 
-        $('#addPengalaman').click(function() {
-            let row = `
+            $('#addPengalaman').click(function() {
+                let row = `
     <div class="row g-3 mb-3 pengalaman-item">
         <div class="col-md-3">
             <label class="form-label fw-bold">Nama Perusahaan *</label>
@@ -2364,6 +2385,10 @@
         <div class="col-md-3">
             <label class="form-label fw-bold">Jabatan *</label>
             <input type="text" name="pengalaman_jabatan[]" class="form-control" placeholder="Jabatan" required>
+        </div>
+        <div class="col-md-2">
+            <label class="form-label fw-bold">alamat kota *</label>
+            <input type="month" name="pengalaman_kota[]" class="form-control" required>
         </div>
         <div class="col-md-2">
             <label class="form-label fw-bold">Tanggal Masuk *</label>
@@ -2382,127 +2407,127 @@
         </div>
     </div>
     `;
-            $('#pengalamanContainer').append(row);
-        });
+                $('#pengalamanContainer').append(row);
+            });
 
-        // Remove row
-        $(document).on('click', '.remove-row', function() {
-            $(this).closest('.pengalaman-item').remove();
-        });
-
-
-
-        $.ajaxSetup({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            }
-        });
+            // Remove row
+            $(document).on('click', '.remove-row', function() {
+                $(this).closest('.pengalaman-item').remove();
+            });
 
 
-        // =============== CLIENT-SIDE VALIDATION ===============
-        // SUBMIT FORM
-        $('#cvForm').on('submit', function(e) {
-            e.preventDefault(); // Stop reload
 
-            let form = $('#cvForm')[0];
-            let formData = new FormData(form); // support file upload
-
-            $.ajax({
-                url: $('#cvForm').attr('action'),
-                method: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-
-                beforeSend: function() {
-                    $('#btnSubmit')
-                        .prop('disabled', true)
-                        .text('Mengirim...');
-                    $('.invalid-feedback').remove();
-                    $('.is-invalid').removeClass('is-invalid');
-                },
-
-                success: function(response) {
-                    if (response.status === 'success') {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Berhasil!',
-                            text: response.message,
-                            timer: 1800,
-                            showConfirmButton: false
-                        });
-
-                        setTimeout(function() {
-                            // Redirect ke dashboard setelah Swal selesai
-                            window.location.href = '/';
-                        }, 1500);
-                    }
-                },
-
-                error: function(xhr) {
-                    $('#btnSubmit')
-                        .prop('disabled', false)
-                        .text('Simpan');
-
-                    if (xhr.status === 422) {
-                        let errors = xhr.responseJSON.errors;
-
-                        $.each(errors, function(field, messages) {
-                            let input = $('[name="' + field + '"]');
-
-                            input.addClass('is-invalid');
-
-                            input.after(
-                                '<div class="invalid-feedback d-block">' +
-                                messages[0] + '</div>'
-                            );
-                        });
-
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Validasi Gagal',
-                            text: 'Silakan periksa kembali isian Anda.',
-                        });
-
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Terjadi Kesalahan',
-                            text: 'Gagal mengirim data ke server.',
-                        });
-                    }
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             });
 
-        });
 
-        // =============== HELPER FUNCTION ===============
-        function validateEmail(email) {
-            let re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return re.test(email);
-        }
+            // =============== CLIENT-SIDE VALIDATION ===============
+            // SUBMIT FORM
+            $('#cvForm').on('submit', function(e) {
+                e.preventDefault(); // Stop reload
 
-        // =============== AUTO DISMISS ALERT ===============
-        setTimeout(function() {
-            $('.alert').fadeOut('slow');
-        }, 5000);
+                let form = $('#cvForm')[0];
+                let formData = new FormData(form); // support file upload
 
-        // =============== KONFIRMASI SEBELUM MENINGGALKAN HALAMAN ===============
-        let formChanged = false;
+                $.ajax({
+                    url: $('#cvForm').attr('action'),
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
 
-        $('#cvForm input, #cvForm select, #cvForm textarea').on('change input', function() {
-            formChanged = true;
-        });
+                    beforeSend: function() {
+                        $('#btnSubmit')
+                            .prop('disabled', true)
+                            .text('Mengirim...');
+                        $('.invalid-feedback').remove();
+                        $('.is-invalid').removeClass('is-invalid');
+                    },
 
-        $(window).on('beforeunload', function() {
-            if (formChanged) {
-                return 'Anda memiliki perubahan yang belum disimpan. Yakin ingin meninggalkan halaman?';
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil!',
+                                text: response.message,
+                                timer: 1800,
+                                showConfirmButton: false
+                            });
+
+                            setTimeout(function() {
+                                // Redirect ke dashboard setelah Swal selesai
+                                window.location.href = '/';
+                            }, 1500);
+                        }
+                    },
+
+                    error: function(xhr) {
+                        $('#btnSubmit')
+                            .prop('disabled', false)
+                            .text('Simpan');
+
+                        if (xhr.status === 422) {
+                            let errors = xhr.responseJSON.errors;
+
+                            $.each(errors, function(field, messages) {
+                                let input = $('[name="' + field + '"]');
+
+                                input.addClass('is-invalid');
+
+                                input.after(
+                                    '<div class="invalid-feedback d-block">' +
+                                    messages[0] + '</div>'
+                                );
+                            });
+
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Validasi Gagal',
+                                text: 'Silakan periksa kembali isian Anda.',
+                            });
+
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Terjadi Kesalahan',
+                                text: 'Gagal mengirim data ke server.',
+                            });
+                        }
+                    }
+                });
+
+            });
+
+            // =============== HELPER FUNCTION ===============
+            function validateEmail(email) {
+                let re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return re.test(email);
             }
-        });
 
-        $('#cvForm').on('submit', function() {
-        formChanged = false;
-        });
+            // =============== AUTO DISMISS ALERT ===============
+            setTimeout(function() {
+                $('.alert').fadeOut('slow');
+            }, 5000);
+
+            // =============== KONFIRMASI SEBELUM MENINGGALKAN HALAMAN ===============
+            let formChanged = false;
+
+            $('#cvForm input, #cvForm select, #cvForm textarea').on('change input', function() {
+                formChanged = true;
+            });
+
+            $(window).on('beforeunload', function() {
+                if (formChanged) {
+                    return 'Anda memiliki perubahan yang belum disimpan. Yakin ingin meninggalkan halaman?';
+                }
+            });
+
+            $('#cvForm').on('submit', function() {
+                formChanged = false;
+            });
 
 
 

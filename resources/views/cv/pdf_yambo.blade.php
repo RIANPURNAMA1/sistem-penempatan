@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Curriculum Vitae Pekerja Asing</title>
+    <title>cv {{ $cv->nama_lengkap_romaji ?? '.............................' }} </title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
@@ -109,7 +109,7 @@
                 <td> {{ $cv->nama_lengkap_romaji ?? '.............................' }}</td>
                 <td style="">③生年月日 <br> Tanggal lahir</td>
                 <td colspan="3">
-                    {{ $cv->tempat_tanggal_lahir ?? '............................................' }}
+                    {{ $cv->tanggal_lahir ?? '............................................' }}
                 </td>
             </tr>
 
@@ -119,11 +119,13 @@
                     ④国籍・地域 <br> Kewarganegaraan, wilayah
                 </td>
                 <td>
-                    インドネシア <br> Indonesia
+                    インドネシア
                 </td>
 
                 <td style="">
-                    ⑨使用できる言語 <br> Bahasa yang mahir dikuasai
+                    ⑤ ⼗分に理解
+                    できる⾔語 <br>
+                    Bahasa yang mahir dikuasai
                 </td>
                 <td>
                     インドネシア語 <br> Bahasa Indonesia <br>
@@ -133,13 +135,15 @@
             <td colspan="2">
                 ⑥本国⼜は居住国
             </td>
-            <td colspan="3"></td>
+            <td colspan="3">インドネシア</td>
             <tr>
             </tr>
             <td colspan="2">
                 における住所
             </td>
-            <td colspan="3">{{ $cv->alamat_lengkap }}</td>
+            <td colspan="3">{{ $cv->alamat_lengkap ?? '-' }}<br>
+                {{ $cv->kelurahan ?? '-' }}, {{ $cv->kecamatan ?? '-' }}
+                {{ $cv->kabupaten ?? '-' }}, {{ $cv->provinsi ?? '-' }}</td>
             <tr>
             </tr>
             <td colspan="2">

@@ -282,8 +282,8 @@
                     <div class="row mt-4">
 
                         <!-- =========================
-                                                            BAGIAN KIRI (CHART)
-                                                        ========================== -->
+                                                                        BAGIAN KIRI (CHART)
+                                                                    ========================== -->
                         <div class="col-12 col-md-8">
                             <div class="card h-100 shadow-lg border-0 rounded-4">
 
@@ -436,43 +436,39 @@
                                     <h4 class="mb-0">Timeline Proses Penempatan</h4>
                                 </div>
                                 <div class="card-body">
+
                                     @php
                                         $timelineSteps = [
                                             [
                                                 'icon' => 'check-circle-fill',
-                                                'color' => 'info',
                                                 'title' => 'Job Matching',
                                                 'status' => 'Job Matching',
                                             ],
                                             [
                                                 'icon' => 'person-video3',
-                                                'color' => 'primary',
                                                 'title' => 'Interview',
                                                 'status' => 'Interview',
                                             ],
+
                                             [
                                                 'icon' => 'check2-circle',
-                                                'color' => 'success',
                                                 'title' => 'Lulus Interview',
                                                 'status' => 'Lulus interview',
                                             ],
                                             [
                                                 'icon' => 'award',
-                                                'color' => 'success',
                                                 'title' => 'Pemberkasan',
                                                 'status' => 'Pemberkasan',
                                             ],
                                             [
                                                 'icon' => 'rocket-takeoff',
-                                                'color' => 'success',
                                                 'title' => 'Berangkat',
                                                 'status' => 'Berangkat',
                                             ],
                                             [
-                                                'icon' => 'x-circle', // ubah dari rocket-takeoff ke x-circle
-                                                'color' => 'danger', // tetap merah
-                                                'title' => 'Ditolak',
-                                                'status' => 'Ditolak',
+                                                'icon' => 'x-circle',
+                                                'title' => 'Gagal Interview',
+                                                'status' => 'Gagal Interview',
                                             ],
                                         ];
                                     @endphp
@@ -480,30 +476,52 @@
                                     @foreach ($dataKandidat as $pendaftaran)
                                         @php
                                             $kandidat = $pendaftaran->kandidat;
+                                            $institusiName = $kandidat->institusi->nama_perusahaan ?? '-';
                                         @endphp
 
                                         @if ($kandidat)
                                             @foreach ($timelineSteps as $step)
                                                 @php
-                                                    // Tentukan warna step
-                                                    if ($step['status'] === $kandidat->status_kandidat) {
-                                                        $stepColor = 'danger'; // status saat ini
-                                                        $stepDate = $kandidat->updated_at;
-                                                    } elseif (
-                                                        array_search(
-                                                            $step['status'],
-                                                            array_column($timelineSteps, 'status'),
-                                                        ) <
-                                                        array_search(
-                                                            $kandidat->status_kandidat,
-                                                            array_column($timelineSteps, 'status'),
-                                                        )
-                                                    ) {
-                                                        $stepColor = 'success'; // step sudah selesai
-                                                        $stepDate = $kandidat->updated_at;
-                                                    } else {
-                                                        $stepColor = 'secondary'; // step selanjutnya
-                                                        $stepDate = null;
+                                                    // Urutan index
+                                                    $currentIndex = array_search(
+                                                        $kandidat->status_kandidat,
+                                                        array_column($timelineSteps, 'status'),
+                                                    );
+                                                    $stepIndex = array_search(
+                                                        $step['status'],
+                                                        array_column($timelineSteps, 'status'),
+                                                    );
+
+                                                    // Default
+                                                    $stepColor = 'secondary';
+                                                    $stepDate = null;
+
+                                                    // ==========================================
+                                                    // KHUSUS GAGAL INTERVIEW
+                                                    // ==========================================
+                                                    if ($kandidat->status_kandidat === 'Gagal Interview') {
+                                                        if ($step['status'] === 'Gagal Interview') {
+                                                            $stepColor = 'danger'; // step gagal
+                                                            $stepDate = $kandidat->updated_at;
+                                                        } else {
+                                                            $stepColor = 'secondary'; // tidak ada step yang dianggap selesai
+                                                        }
+                                                    }
+
+                                                    // ==========================================
+                                                    // STATUS NORMAL SELAIN GAGAL
+                                                    // ==========================================
+                                                    else {
+                                                        // Step saat ini
+                                                        if ($stepIndex === $currentIndex) {
+                                                            $stepColor = 'info';
+                                                            $stepDate = $kandidat->updated_at;
+                                                        }
+                                                        // Step yang sudah dilewati
+                                                        elseif ($stepIndex < $currentIndex) {
+                                                            $stepColor = 'success';
+                                                        }
+                                                        // Step selanjutnya tetap secondary
                                                     }
                                                 @endphp
 
@@ -516,12 +534,20 @@
                                                         </svg>
                                                         <div class="vr h-100 mx-auto d-none d-md-block"></div>
                                                     </div>
+
                                                     <div class="col-12 col-md-10">
                                                         <h6 class="mb-1">{{ $step['title'] }}</h6>
+
                                                         @if ($stepDate)
-                                                            <p class="text-muted small mb-0">Tanggal:
-                                                                {{ $stepDate->format('d M Y H:i') }}</p>
+                                                            <p class="text-muted small mb-1">
+                                                                Tanggal: {{ $stepDate->format('d M Y H:i') }}
+                                                            </p>
                                                         @endif
+
+                                                        <p class="text-muted small mb-1">
+                                                            Perusahaan: <strong>{{ $institusiName }}</strong>
+                                                        </p>
+
                                                         <span
                                                             class="badge bg-{{ $stepColor }}">{{ $step['status'] }}</span>
                                                     </div>
@@ -531,9 +557,12 @@
                                             <p class="text-muted">Belum ada proses kandidat.</p>
                                         @endif
                                     @endforeach
+
                                 </div>
                             </div>
                         </div>
+
+
 
                         @forelse ($dataKandidat as $kandidat)
                             <div class="col-12 col-md-4">

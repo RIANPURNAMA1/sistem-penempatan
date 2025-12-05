@@ -12,7 +12,7 @@
             margin: 0;
             padding: 20px;
             /* Perubahan Font di sini */
-            font-family: "MS Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif;
+            /* font-family: "MS Mincho", "Hiragino Mincho ProN", "Yu Mincho", serif; */
             /* Menambahkan font Times New Roman sebagai fallback jika MS Mincho tidak tersedia */
             /* Pastikan font MS Mincho tersedia di sistem pengguna atau ter-embed (jika ini untuk dokumen cetak/PDF) */
             /* ... pengaturan font-family sebelumnya ... */
@@ -58,21 +58,21 @@
 <body class="">
     <div class="d-flex justify-content-center">
 
-         <div class="btn-container mb-3 d-flex gap-2 flex-wrap">
+        <div class="btn-container mb-3 d-flex gap-2 flex-wrap">
 
-        <!-- Print PDF -->
-        <button class="btn btn-success" onclick="window.print()">印刷 PDF</button>
+            <!-- Print PDF -->
+            <button class="btn btn-success" onclick="window.print()">印刷 PDF</button>
 
-        <!-- Translate to Japanese -->
-        <button class="btn btn-success" onclick="translateToJapanese()">Ubah ke bahasa jepang</button>
+            <!-- Translate to Japanese -->
+            <button class="btn btn-success" onclick="translateToJapanese()">Ubah ke bahasa jepang</button>
 
-        <!-- Capitalize Text -->
-        <button class="btn btn-primary" onclick="capitalizeText()">Huruf Awal Kapital</button>
+            <!-- Capitalize Text -->
+            <button class="btn btn-primary" onclick="capitalizeText()">Huruf Awal Kapital</button>
 
-        <!-- Back Button -->
-        <a href="/data/cv/kandidat" class="btn btn-info" style="font-size: 12px">Kembali</a>
+            <!-- Back Button -->
+            <a href="/data/cv/kandidat" class="btn btn-info" style="font-size: 12px">Kembali</a>
 
-    </div>
+        </div>
     </div>
 
 
@@ -107,7 +107,7 @@
                             生年月日
                         </td>
                         <td style="width: 340px">
-                            {{ $cv->tempat_tanggal_lahir }}
+                            {{ $cv->tanggal_lahir }}
                         </td>
                     </tr>
                     <tr>
@@ -138,7 +138,9 @@
                     現住所
                 </td>
                 <td rowspan="2">
-                    {{ $cv->alamat_lengkap }}
+                    {{ $cv->alamat_lengkap ?? '-' }}<br>
+                    {{ $cv->kelurahan ?? '-' }}, {{ $cv->kecamatan ?? '-' }}
+                    {{ $cv->kabupaten ?? '-' }}, {{ $cv->provinsi ?? '-' }}
                 </td>
                 <td style="width: 30%; text-align:center">
                     携帯電話番号
@@ -169,21 +171,16 @@
             <tr>
 
                 <td>
-                    @if (!empty($cv->anggota_keluarga_istri))
-                        {{ $cv->anggota_keluarga_istri }}
-                    @elseif (!empty($cv->anggota_keluarga_suami))
-                        {{ $cv->anggota_keluarga_suami }}
-                    @else
-                        -
-                    @endif
+
+                    {{ $cv->istri_nama }}
                 </td>
 
                 <td>
-                    {{ $cv->anggota_keluarga_anak ?? '' }}
+                    {{ $cv->anak_nama ?? '' }}
                 </td>
 
                 <td>
-
+                    {{ $cv->email_aktif }}
                 </td>
             </tr>
         </table>
@@ -195,7 +192,7 @@
             </tr>
             @foreach ($cv->pendidikans as $p)
                 <tr>
-                    <td style="width: 20%" class="text-center">{{ $p->tahun_masuk }} - {{$p->tahun_masuk}}</td>
+                    <td style="width: 20%" class="text-center">{{ $p->tahun_masuk }} - {{ $p->tahun_masuk }}</td>
                     <td>{{ $p->bulan ?? '-' }}</td>
                     <td style="width:70%">{{ $p->nama }}</td>
                 </tr>
@@ -229,7 +226,7 @@
             </tr>
             @foreach ($cv->pengalamans as $p)
                 <tr>
-                    <td style="width: 20%" class="text-center">{{ $p->tanggal_masuk }} - {{$p->tanggal_keluar}}</td>
+                    <td style="width: 20%" class="text-center">{{ $p->tanggal_masuk }} - {{ $p->tanggal_keluar }}</td>
                     <td>{{ $p->bulan }}</td>
                     <td style="width:70%">{{ $p->perusahaan }}</td>
                 </tr>
@@ -267,7 +264,7 @@
 
                     {{-- Kemampuan Bahasa Inggris --}}
                     @if (!empty($cv->kemampuan_berbahasa_inggris))
-                      kemampuan bahasa inggris :  {{ $cv->kemampuan_berbahasa_inggris }} <br>
+                        kemampuan bahasa inggris : {{ $cv->kemampuan_berbahasa_inggris }} <br>
                     @endif
 
                     {{-- Bidang Sertifikasi --}}
@@ -303,7 +300,7 @@
             <tr>
 
                 <td>
-                    ------------------
+                    {{ $cv->ketertarikan_terhadap_jepang }}
                 </td>
             </tr>
         </table>
@@ -375,18 +372,20 @@
                 </td>
                 <td>
                     父
-                </td>
-                <td>
 
                 </td>
                 <td>
+                    {{ $cv->ayah_nama }}
+                </td>
+                <td>
+                    {{ $cv->ayah_usia }}
+                </td>
+                <td>
+                    {{ $cv->ayah_pekerjaan }}
 
                 </td>
                 <td>
-
-                </td>
-                <td>
-
+                    -
                 </td>
             </tr>
             <tr style="text-align: center">
@@ -397,58 +396,38 @@
                     母
                 </td>
                 <td>
-
+                    {{ $cv->ibu_nama }}
                 </td>
                 <td>
-
+                    {{ $cv->ibu_usia }}
                 </td>
                 <td>
-
+                    {{ $cv->ibu_pekerjaan }}
                 </td>
                 <td>
-
+                    -
                 </td>
             </tr>
+            <!-- Kakak -->
             <tr style="text-align: center">
-                <td>
-                    3
-                </td>
-                <td>
-
-                </td>
-                <td>
-
-                </td>
-                <td>
-
-                </td>
-                <td>
-
-                </td>
-                <td>
-
-                </td>
+                <td>3</td>
+                <td>兄 / 姉</td> <!-- 兄 (あに, ani) untuk kakak laki-laki, 姉 (あね, ane) untuk kakak perempuan -->
+                <td>{{ $cv->kakak_nama ?? '-' }}</td>
+                <td>{{ $cv->kakak_usia ?? '-' }}</td>
+                <td>{{ $cv->kakak_pekerjaan ?? '-' }}</td>
+                <td>-</td> <!-- status: kandung / tiri -->
             </tr>
+
+            <!-- Adik -->
             <tr style="text-align: center">
-                <td>
-                    4
-                </td>
-                <td>
-
-                </td>
-                <td>
-
-                </td>
-                <td>
-
-                </td>
-                <td>
-
-                </td>
-                <td>
-
-                </td>
+                <td>4</td>
+                <td>弟 / 妹</td> <!-- 弟 (おとうと, otōto) untuk adik laki-laki, 妹 (いもうと, imōto) untuk adik perempuan -->
+                <td>{{ $cv->adik_nama ?? '-' }}</td>
+                <td>{{ $cv->adik_usia ?? '-' }}</td>
+                <td>{{ $cv->adik_pekerjaan ?? '-' }}</td>
+                <td>-</td> <!-- status: kandung / tiri -->
             </tr>
+
             <tr style="text-align: center">
                 <td>
                     5
@@ -505,13 +484,14 @@
                     民族
                 </td>
                 <td style="width:50%;">
-                    --------------------
+                    民族：{{ $cv->suku ?? '-' }}
+
                 </td>
                 <td style="background-color:rgb(213, 228, 197); width:20%;">
                     身長
                 </td>
                 <td>
-                    cm
+                   {{$cv->tinggi_badan}} cm
                 </td>
             </tr>
         </table>
@@ -521,13 +501,13 @@
                     宗教
                 </td>
                 <td style="width:50%;">
-                    イスラム教
+                    {{$cv->agama}}
                 </td>
                 <td style="background-color:rgb(213, 228, 197); width:20%;">
                     体重
                 </td>
                 <td>
-                    kg
+                   {{$cv->berat_badan}} kg
                 </td>
             </tr>
         </table>

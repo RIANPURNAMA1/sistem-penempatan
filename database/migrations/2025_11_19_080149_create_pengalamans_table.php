@@ -19,6 +19,7 @@ return new class extends Migration
             $table->string('tanggal_masuk')->nullable();   // Tanggal masuk kerja
             $table->string('tanggal_keluar')->nullable();  // Tanggal keluar kerja
             $table->string('gaji')->nullable();
+            $table->string('kota')->nullable();            // Nama kota
             $table->timestamps();
 
             $table->foreign('cv_id')->references('id')->on('cvs')->onDelete('cascade');

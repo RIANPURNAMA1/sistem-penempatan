@@ -12,6 +12,7 @@ return new class extends Migration {
             $table->integer('kuota')->default(0)->nullable();
             $table->string('bidang_pekerjaan')->nullable();
             $table->string('perusahaan_penempatan')->nullable();
+            $table->text('detail_pekerjaan');
             $table->timestamps();
         });
     }

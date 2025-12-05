@@ -320,21 +320,14 @@
                     <thead>
                         <tr>
                             <td style="width: 50px; padding: 0.5rem;">生年月日</td>
-                            @php
-                                $tgl = \Carbon\Carbon::hasFormat($cv->tempat_tanggal_lahir, 'Y-m-d')
-                                    ? \Carbon\Carbon::parse($cv->tempat_tanggal_lahir)
-                                    : null;
+                            @php($cv->tanggal_lahir)
+
                             @endphp
 
                             <td style="padding-left: 0.5rem;">
-                                @if ($tgl)
-                                    {{ $tgl->format('Y') }} 年 /
-                                    {{ $tgl->format('m') }} 月 /
-                                    {{ $tgl->format('d') }} 日
-                                    （満 {{ $cv->usia }} 歳）
-                                @else
-                                    {{ $cv->tempat_tanggal_lahir }} （満 {{ $cv->usia }} 歳）
-                                @endif
+
+                                {{ $cv->tempat_lahir }} （満 {{ $cv->usia }} 歳）
+
                             </td>
 
                             {{-- <th style="padding-left: 0.5rem;">
@@ -356,12 +349,15 @@
                     <thead>
                         <tr>
                             <td style="text-align:center; height: 25px;">
-                                フリガナ：{{ $cv->tempat_tanggal_lahir ?? '-' }}
+                              フリガナ
                             </td>
                         </tr>
                         <tr>
                             <td style="height: 60px; padding-left: 5px;">
-                                現 住 所：{{ $cv->alamat_lengkap ?? '-' }}
+                                現住所：{{ $cv->alamat_lengkap ?? '-' }}<br>
+                                {{ $cv->kelurahan ?? '-' }}, {{ $cv->kecamatan ?? '-' }}<br>
+                                {{ $cv->kabupaten ?? '-' }}, {{ $cv->provinsi ?? '-' }}
+
                             </td>
                         </tr>
                     </thead>
@@ -440,7 +436,7 @@
                         @forelse ($cv->pengalamans as $k)
                             <tr>
                                 <td style="height: 30px; text-align:center;">
-                                    {{ $k->tanggal_masuk }} - {{$k->tanggal_keluar}}
+                                    {{ $k->tanggal_masuk }} - {{ $k->tanggal_keluar }}
                                 </td>
                                 <td style="padding-left:5px;">
                                     {{ $k->perusahaan }}
@@ -499,26 +495,26 @@
                         <!-- AYAH -->
                         <tr class="family-row">
                             <td class="narrow-left">父</td>
-                            <td class="main-cell">{{ $cv->anggota_keluarga_ayah }}</td>
-                            <td class="main-cell"></td>
-                            <td class="narrow-right"></td>
+                            <td class="main-cell">{{ $cv->ayah_nama }}</td>
+                            <td class="narrow-right">{{ $cv->ayah_pekerjaan }}</td>
+                            <td class="" style="width: 20px">{{ $cv->ayah_usia }}</td>
                         </tr>
 
                         <!-- IBU -->
                         <tr class="family-row">
                             <td class="narrow-left">母</td>
-                            <td class="main-cell">{{ $cv->anggota_keluarga_ibu }}</td>
-                            <td class="main-cell"></td>
-                            <td class="narrow-right"></td>
+                            <td class="main-cell">{{ $cv->ibu_nama }}</td>
+                            <td class="main-cell">{{ $cv->ibu_pekerjaan }}</td>
+                            <td class="narrow-right">{{ $cv->ibu_usia }}</td>
                         </tr>
 
                         <!-- SUAMI -->
-                        @if ($cv->anggota_keluarga_suami)
+                        @if ($cv->istri_nama)
                             <tr class="family-row">
-                                <td class="narrow-left">夫</td>
-                                <td class="main-cell">{{ $cv->anggota_keluarga_suami }}</td>
-                                <td class="main-cell"></td>
-                                <td class="narrow-right"></td>
+                                <td class="narrow-left">夫/妻</td>
+                                <td class="main-cell">{{ $cv->istri_nama }}</td>
+                                <td class="main-cell">{{ $cv->istri_pekerjaan }}</td>
+                                <td class="narrow-right">{{ $cv->istri_usia }}</td>
                             </tr>
                         @endif
 
@@ -533,32 +529,32 @@
                         @endif
 
                         <!-- ANAK -->
-                        @if ($cv->anggota_keluarga_anak)
+                        @if ($cv->anak_nama)
                             <tr class="family-row">
                                 <td class="narrow-left">子</td>
-                                <td class="main-cell">{{ $cv->anggota_keluarga_anak }}</td>
-                                <td class="main-cell"></td>
-                                <td class="narrow-right"></td>
+                                <td class="main-cell">{{ $cv->anak_nama }}</td>
+                                <td class="main-cell">{{ $cv->anak_pendidikan }}</td>
+                                <td class="narrow-right">{{ $cv->anak_usia }}</td>
                             </tr>
                         @endif
 
                         <!-- KAKAK -->
-                        @if ($cv->anggota_keluarga_kakak)
+                        @if ($cv->kakak_nama)
                             <tr class="family-row">
                                 <td class="narrow-left">兄弟(上)</td>
-                                <td class="main-cell">{{ $cv->anggota_keluarga_kakak }}</td>
-                                <td class="main-cell"></td>
-                                <td class="narrow-right"></td>
+                                <td class="main-cell">{{ $cv->kakak_nama }}</td>
+                                <td class="main-cell">{{ $cv->kakak_pekerjaan }}</td>
+                                <td class="narrow-right">{{ $cv->kakak_usia }}</td>
                             </tr>
                         @endif
 
                         <!-- ADIK -->
-                        @if ($cv->anggota_keluarga_adik)
+                        @if ($cv->adik_nama)
                             <tr class="family-row">
                                 <td class="narrow-left">兄弟(下)</td>
-                                <td class="main-cell">{{ $cv->anggota_keluarga_adik }}</td>
-                                <td class="main-cell"></td>
-                                <td class="narrow-right"></td>
+                                <td class="main-cell">{{ $cv->adik_nama }}</td>
+                                <td class="main-cell">{{ $cv->adik_pekerjaan }}</td>
+                                <td class="narrow-right">{{ $cv->adik_usia }}</td>
                             </tr>
                         @endif
 
@@ -717,7 +713,7 @@
                         </tr>
                         <tr>
                             <td style="height: 30px;">
-                                {{ $cv->tempat_tanggal_lahir ?? '-' }}
+                                {{ $cv->tempat_lahir ?? '-' }}
                             </td>
                             <td>
                                 {{ $cv->agama ?? '-' }}
@@ -742,7 +738,7 @@
                                 {{ $cv->status_perkawinan ?? '-' }}
                             </td>
                             <td>
-                                {{ $cv->anggota_keluarga_anak ?? '-' }}
+                                {{ $cv->anak_nama ?? '-' }}
                             </td>
                         </tr>
                     </table>

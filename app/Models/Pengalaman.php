@@ -17,6 +17,7 @@ class Pengalaman extends Model
         'tanggal_masuk',
         'tanggal_keluar',
         'gaji',
+        'kota'
     ];
 
     public function cv()

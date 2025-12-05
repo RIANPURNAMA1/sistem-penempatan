@@ -87,6 +87,7 @@
                             <th class="">Kuota</th>
                             <th class="">Bidang Pekerjaan</th>
                             <th class="">Perusahaan Penempatan</th>
+                            <th class="">Detail Pekerjaan</th>
                             <th class="">Tanggal Dibuat</th>
                             <th class=" text-center">Aksi</th>
                         </tr>
@@ -99,6 +100,7 @@
                                 <td>{{ $institusi->kuota }}</td>
                                 <td>{{ $institusi->bidang_pekerjaan ?? '-' }}</td>
                                 <td>{{ $institusi->perusahaan_penempatan ?? '-' }}</td>
+                                <td>{{ $institusi->detail_pekerjaan ?? '-' }}</td>
                                 <td>{{ $institusi->created_at->format('Y-m-d') }}</td>
                                 <td class="text-center ">
                                     <div class="btn-group gap-2">

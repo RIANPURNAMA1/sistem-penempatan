@@ -385,14 +385,13 @@
                         Swal.fire({
                             icon: "success",
                             title: "Berhasil",
-                            text: "Pendaftaran berhasil dikirim.",
+                            text: "Pendaftaran berhasil dikirim. Kamu akan diarahkan ke grup WA.",
                             timer: 3000,
                             showConfirmButton: false,
-
-
                         }).then(() => {
-                            // Redirect ke route /
-                            window.location.href = "/";
+                            // Redirect ke grup WhatsApp
+                            window.location.href =
+                                "https://chat.whatsapp.com/FBHNnGiAnme32o9wvPyC8P?mode=hqrt1";
                         });
 
                         // Reset form
@@ -415,8 +414,8 @@
                         btn.find(".spinner-border").addClass("d-none");
                     }
                 });
-
             });
+
 
             // Bootstrap validation
             'use strict';

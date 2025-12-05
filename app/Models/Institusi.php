@@ -14,12 +14,13 @@ class Institusi extends Model
         'kuota',
         'bidang_pekerjaan',
         'perusahaan_penempatan',
+        'detail_pekerjaan',
     ];
 
        // Relasi: Satu cabang bisa punya banyak pendaftaran
     public function pendaftarans()
     {
-        return $this->hasMany(Pendaftaran::class, 'cabang_id');
+        return $this->hasMany(Pendaftaran::class, 'pendaftaran_id');
     }
 
        // Relasi ke history
@@ -27,4 +28,5 @@ class Institusi extends Model
     {
         return $this->hasMany(KandidatHistory::class)->orderBy('created_at', 'desc');
     }
+
 }
