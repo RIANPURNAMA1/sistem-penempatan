@@ -7,18 +7,18 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
         rel="stylesheet">
 
 
     <!-- Init Theme -->
     <script src="{{ asset('assets/static/js/initTheme.js') }}"></script>
-</head>
-<style>
-    body {
-        font-family: 'Poppins', sans-serif;
-    }
-</style>
+    </head>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+    </style>
 
     <div class=" ">
 
@@ -57,21 +57,123 @@
                     </div>
 
                     <div class="d-flex flex-wrap gap-2 align-items-center">
-                        <!-- Import Form -->
-                        <form id="importForm" enctype="multipart/form-data" class="d-flex gap-2 align-items-center">
+                        <form id="importForm" enctype="multipart/form-data" class="import-form">
                             @csrf
-                            <input type="file" name="file" accept=".xlsx,.xls" required
-                                class="form-control form-control-sm">
-                            <button class="btn btn-primary btn-sm">Import</button>
+                            <div class="file-input-wrapper">
+                                <input type="file" name="file" id="fileInput" accept=".xlsx,.xls" required
+                                    class="d-none">
+                                <label for="fileInput" class="file-label">
+                                    <i class="bi bi-cloud-upload-fill me-2"></i>
+                                    <span id="fileText">Pilih File Excel</span>
+                                </label>
+                                <button type="submit" class="btn btn-primary btn-import">
+                                    <i class="bi bi-upload me-1"></i>Import
+                                </button>
+                            </div>
                         </form>
 
+                        <style>
+                            .import-form {
+                                display: inline-block;
+                            }
+
+                            .file-input-wrapper {
+                                display: flex;
+                                gap: 8px;
+                                align-items: center;
+                                background: #fff;
+                                border: 1px solid #dee2e6;
+                                border-radius: 6px;
+                                padding: 4px;
+                                transition: all 0.3s ease;
+                            }
+
+                            .file-input-wrapper:hover {
+                                border-color: #0d6efd;
+                                box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.1);
+                            }
+
+                            .file-label {
+                                cursor: pointer;
+                                padding: 6px 12px;
+                                margin: 0;
+                                color: #495057;
+                                font-size: 14px;
+                                white-space: nowrap;
+                                display: flex;
+                                align-items: center;
+                                transition: color 0.2s;
+                            }
+
+                            .file-label:hover {
+                                color: #0d6efd;
+                            }
+
+                            .file-label i {
+                                font-size: 16px;
+                            }
+
+                            .btn-import {
+                                font-size: 14px;
+                                padding: 6px 16px;
+                                white-space: nowrap;
+                            }
+
+                            #fileText {
+                                max-width: 200px;
+                                overflow: hidden;
+                                text-overflow: ellipsis;
+                            }
+                        </style>
+
+                        <script>
+                            document.getElementById('fileInput').addEventListener('change', function(e) {
+                                const fileName = e.target.files[0]?.name || 'Pilih File Excel';
+                                document.getElementById('fileText').textContent = fileName;
+                            });
+
+                            document.getElementById('importForm').addEventListener('submit', function(e) {
+                                e.preventDefault();
+
+                                const formData = new FormData(this);
+                                const btn = this.querySelector('.btn-import');
+                                const originalHtml = btn.innerHTML;
+
+                                btn.disabled = true;
+                                btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Importing...';
+
+                                fetch('/pendaftaran/import', {
+                                        method: 'POST',
+                                        body: formData,
+                                        headers: {
+                                            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+                                        }
+                                    })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        if (data.status === 'success') {
+                                            alert('✓ Import berhasil!');
+                                            location.reload();
+                                        } else {
+                                            alert('✗ ' + data.message);
+                                        }
+                                    })
+                                    .catch(error => alert('Error: ' + error.message))
+                                    .finally(() => {
+                                        btn.disabled = false;
+                                        btn.innerHTML = originalHtml;
+                                    });
+                            });
+                        </script>
+
                         <!-- Export Excel Button -->
-                        <a href="{{ route('pendaftaran.export') }}" class="btn btn-success btn-sm fw-semibold shadow-sm">
+                        <a href="/pendaftaran/export/exels" class="btn btn-success btn-sm fw-semibold shadow-sm">
                             <i class="bi bi-file-earmark-excel me-1"></i> Export Excel
                         </a>
 
                         <!-- Export PDF Button -->
-                        <a href="{{ route('pendaftaran.export.pdf') }}" target="_blank" class="btn btn-danger btn-sm fw-semibold shadow-sm">
+                        <a href="{{ route('pendaftaran.export.pdf') }}" target="_blank"
+                            class="btn btn-danger btn-sm fw-semibold shadow-sm">
                             <i class="bi bi-file-earmark-pdf me-1"></i> Export PDF
                         </a>
                     </div>
@@ -290,185 +392,199 @@
     </div>
 
 
-     <!-- JS Dependencies -->
-        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-        <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- JS Dependencies -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-        <script>
-            // Inisialisasi DataTables
-            var table = $('#tablependaftar').DataTable({
-                responsive: true,
-                pageLength: 5,
-                lengthMenu: [5, 10, 25, 50],
-                language: {
-                    search: "🔍 Cari:",
-                    lengthMenu: "Tampilkan _MENU_ data",
-                    zeroRecords: "Tidak ada data ditemukan",
-                    info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
-                    paginate: {
-                        previous: "←",
-                        next: "→"
-                    }
+    <script>
+        // Inisialisasi DataTables
+        var table = $('#tablependaftar').DataTable({
+            responsive: true,
+            pageLength: 5,
+            lengthMenu: [5, 10, 25, 50],
+            language: {
+                search: "🔍 Cari:",
+                lengthMenu: "Tampilkan _MENU_ data",
+                zeroRecords: "Tidak ada data ditemukan",
+                info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
+                paginate: {
+                    previous: "←",
+                    next: "→"
+                }
+            }
+        });
+
+        $('.delete-form').on('submit', function(e) {
+            e.preventDefault();
+
+            let form = $(this);
+            let id = form.data('id');
+
+            Swal.fire({
+                title: 'Yakin ingin menghapus?',
+                text: "Data pendaftaran akan terhapus permanen!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                    $.ajax({
+                        url: "/pendaftaran/" + id,
+                        type: "POST",
+                        data: {
+                            _token: form.find('input[name="_token"]').val(),
+                            _method: "DELETE"
+                        },
+                        success: function(response) {
+
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil!',
+                                text: 'Data berhasil dihapus!',
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+
+                            // hapus row dari tabel (opsional)
+                            form.closest('tr').remove();
+                        },
+                        error: function(xhr) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal!',
+                                text: 'Terjadi kesalahan saat menghapus data.'
+                            });
+                        }
+                    });
+
                 }
             });
 
-            $('.delete-form').on('submit', function(e) {
-                e.preventDefault();
+        });
 
-                let form = $(this);
-                let id = form.data('id');
 
-                Swal.fire({
-                    title: 'Yakin ingin menghapus?',
-                    text: "Data pendaftaran akan terhapus permanen!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#6c757d',
-                    confirmButtonText: 'Ya, hapus!',
-                    cancelButtonText: 'Batal'
-                }).then((result) => {
-                    if (result.isConfirmed) {
+        // Import Request
+        $('#importForm').on('submit', function(e) {
+            e.preventDefault();
 
-                        $.ajax({
-                            url: "/pendaftaran/" + id,
-                            type: "POST",
-                            data: {
-                                _token: form.find('input[name="_token"]').val(),
-                                _method: "DELETE"
-                            },
-                            success: function(response) {
+            let formData = new FormData(this);
 
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Berhasil!',
-                                    text: 'Data berhasil dihapus!',
-                                    timer: 1500,
-                                    showConfirmButton: false
-                                });
+            $.ajax({
+                url: "{{ route('pendaftaran.import') }}",
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
 
-                                // hapus row dari tabel (opsional)
-                                form.closest('tr').remove();
-                            },
-                            error: function(xhr) {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Gagal!',
-                                    text: 'Terjadi kesalahan saat menghapus data.'
-                                });
-                            }
-                        });
 
+                beforeSend: function() {
+                    Swal.fire({
+                        title: 'Mengimport...',
+                        text: 'Harap tunggu sebentar.',
+                        allowOutsideClick: false,
+                        didOpen: () => Swal.showLoading()
+                    });
+                },
+
+                success: function(response) {
+                    Swal.close();
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: response.message ?? 'Data berhasil diimport.',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                },
+
+                error: function(xhr) {
+                    Swal.close();
+
+                    let msg = 'Terjadi kesalahan saat mengimport data.';
+
+                    // jika ada pesan error dari server
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        msg = xhr.responseJSON.message;
                     }
-                });
 
+                    // Jika dari laravel Excel biasanya error ada di xhr.responseText → tampilkan juga
+                    if (!xhr.responseJSON && xhr.responseText) {
+                        msg = xhr.responseText;
+                    }
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal Mengimport!',
+                        html: msg, // pakai HTML biar pesan panjang bisa terbaca
+                        showConfirmButton: true
+                    });
+                }
             });
+        });
 
 
-            // import rquesst
-            $('#importForm').on('submit', function(e) {
-                e.preventDefault();
 
-                let formData = new FormData(this);
 
-                $.ajax({
-                    url: "{{ route('pendaftaran.import') }}",
-                    type: "POST",
-                    data: formData,
-                    dataType: 'json',
-                    processData: false,
-                    contentType: false,
+        $(document).on('click', '.delete-btn', function() {
+            let btn = $(this);
+            let id = btn.data('id');
 
-                    beforeSend: function() {
-                        Swal.showLoading();
-                    },
+            Swal.fire({
+                title: 'Yakin ingin menghapus?',
+                text: "Data pendaftaran dan user terkait akan terhapus permanen!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/pendaftaran/' + id,
+                        type: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            _method: 'DELETE'
+                        },
+                        beforeSend: function() {
+                            btn.prop('disabled', true).html('Loading...');
+                        },
+                        success: function(res) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil!',
+                                text: res.message || 'Data berhasil dihapus',
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
 
-                    success: function(response) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Berhasil!',
-                            text: response.message,
-                            timer: 2000,
-                            showConfirmButton: false
-                        });
-                    },
-
-                    error: function(xhr) {
-                        Swal.close();
-
-                        let msg = 'Terjadi kesalahan saat mengimport data.';
-
-                        if (xhr.responseJSON && xhr.responseJSON.message) {
-                            msg = xhr.responseJSON.message;
+                            // Hapus row dari DataTables
+                            table.row(btn.closest('tr')).remove().draw();
+                        },
+                        error: function(xhr) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal!',
+                                text: 'Terjadi kesalahan saat menghapus data.'
+                            });
+                        },
+                        complete: function() {
+                            btn.prop('disabled', false).html(
+                                '<i class="bi bi-trash"></i> Hapus');
                         }
-
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Gagal Mengimport!',
-                            text: msg,
-                            showConfirmButton: true
-                        });
-                    }
-                });
+                    });
+                }
             });
+        });
+    </script>
 
-
-
-            $(document).on('click', '.delete-btn', function() {
-                let btn = $(this);
-                let id = btn.data('id');
-
-                Swal.fire({
-                    title: 'Yakin ingin menghapus?',
-                    text: "Data pendaftaran dan user terkait akan terhapus permanen!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#6c757d',
-                    confirmButtonText: 'Ya, hapus!',
-                    cancelButtonText: 'Batal'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        $.ajax({
-                            url: '/pendaftaran/' + id,
-                            type: 'POST',
-                            data: {
-                                _token: '{{ csrf_token() }}',
-                                _method: 'DELETE'
-                            },
-                            beforeSend: function() {
-                                btn.prop('disabled', true).html('Loading...');
-                            },
-                            success: function(res) {
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Berhasil!',
-                                    text: res.message || 'Data berhasil dihapus',
-                                    timer: 1500,
-                                    showConfirmButton: false
-                                });
-
-                                // Hapus row dari DataTables
-                                table.row(btn.closest('tr')).remove().draw();
-                            },
-                            error: function(xhr) {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Gagal!',
-                                    text: 'Terjadi kesalahan saat menghapus data.'
-                                });
-                            },
-                            complete: function() {
-                                btn.prop('disabled', false).html(
-                                    '<i class="bi bi-trash"></i> Hapus');
-                            }
-                        });
-                    }
-                });
-            });
-        </script>
-
-    @endsection
+@endsection

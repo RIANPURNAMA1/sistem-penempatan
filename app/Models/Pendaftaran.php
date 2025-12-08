@@ -9,7 +9,7 @@ class Pendaftaran extends Model
 {
     use HasFactory;
 
-   protected $guarded = [ ];
+   protected $guarded = [];
 
     // Relasi ke cabang
     public function cabang()

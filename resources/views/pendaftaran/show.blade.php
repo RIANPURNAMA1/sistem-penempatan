@@ -1,148 +1,185 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container-fluid">
+    <div class="container-fluid">
+        {{-- Pastikan blok ini ditempatkan di atas form, atau di lokasi yang strategis di halaman Anda --}}
 
-    <nav aria-label="breadcrumb" class="mb-4">
-        <ol class="breadcrumb border rounded-3 px-3 py-2 shadow-sm mb-0 bg-white">
-            <li class="breadcrumb-item">
-                <a href="#" class="text-decoration-none text-secondary">
-                    <i class="bi bi-house-door me-1"></i> Dashboard
-                </a>
-            </li>
-            <li class="breadcrumb-item active fw-semibold" aria-current="page">
-                <i class="bi bi-people me-1"></i> Detail Kandidat
-            </li>
-        </ol>
-    </nav>
-
-    <div class="row">
-
-        <div class="col-lg-4 mb-4">
-            <div class="card shadow-sm rounded-4 h-100">
-                <div class="card-body text-center p-4">
-                    <div class="mb-4">
-                        <img src="{{ asset($kandidat->foto) }}" alt="Foto Kandidat" class="rounded-circle border border-4 border-primary" width="150" height="150" style="object-fit: cover;">
-                        <h4 class="mt-3 mb-1">{{ $kandidat->nama }}</h4>
-                        <p class="text-muted small">{{ $kandidat->nik }}</p>
-                    </div>
-
-                    <div class="mb-4">
-                        <span class="badge {{ $kandidat->verifikasi == 'Terverifikasi' ? 'bg-success' : ($kandidat->verifikasi == 'Pending' ? 'bg-warning text-dark' : 'bg-danger') }} p-2">
-                            Verifikasi: {{ $kandidat->verifikasi }}
-                        </span>
-                        <p class="text-muted mt-2 mb-0">Cabang: **{{ $kandidat->cabang->nama_cabang ?? '-' }}**</p>
-                    </div>
-
-                    <div class="text-start">
-                        <h6><i class="bi bi-journal-text me-1"></i> Catatan Admin:</h6>
-                        <p class="border-top pt-2 ps-2 small text-muted  p-2 rounded">
-                            {{ $kandidat->catatan_admin ?? 'Tidak ada catatan.' }}
-                        </p>
-                    </div>
-
-                </div>
+        @if (session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle me-2"></i>
+                <strong>Sukses!</strong> {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
-        </div>
+        @endif
 
-        <div class="col-lg-8 mb-4">
-            <div class="card shadow-sm rounded-4 mb-4">
-                <div class="card-header ">
-                    <h5 class="mb-0"><i class="bi bi-person-badge me-2"></i> Identitas Dasar</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <dl class="row mb-0">
-                                <dt class="col-sm-5">Nama Lengkap</dt><dd class="col-sm-7 fw-semibold">{{ $kandidat->nama }}</dd>
-                                <dt class="col-sm-5">NIK</dt><dd class="col-sm-7">{{ $kandidat->nik }}</dd>
-                                <dt class="col-sm-5">TTL</dt><dd class="col-sm-7">{{ $kandidat->tempat_lahir }}, {{ \Carbon\Carbon::parse($kandidat->tempat_tanggal_lahir)->translatedFormat('d F Y') }}</dd>
-                                <dt class="col-sm-5">Usia</dt><dd class="col-sm-7">{{ $kandidat->usia }} tahun</dd>
-                                <dt class="col-sm-5">Jenis Kelamin</dt><dd class="col-sm-7">{{ $kandidat->jenis_kelamin }}</dd>
-                            </dl>
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb border rounded-3 px-3 py-2 shadow-sm mb-0 bg-white">
+                <li class="breadcrumb-item">
+                    <a href="#" class="text-decoration-none text-secondary">
+                        <i class="bi bi-house-door me-1"></i> Dashboard
+                    </a>
+                </li>
+                <li class="breadcrumb-item active fw-semibold" aria-current="page">
+                    <i class="bi bi-people me-1"></i> Detail Kandidat
+                </li>
+            </ol>
+        </nav>
+
+        <div class="row">
+
+            <div class="col-lg-4 mb-4">
+                <div class="card shadow-sm rounded-4 h-100">
+                    <div class="card-body text-center p-4">
+                        <div class="mb-4">
+                            <img src="{{ asset($kandidat->foto) }}" alt="Foto Kandidat"
+                                class="rounded-circle border border-4 border-primary" width="150" height="150"
+                                style="object-fit: cover;">
+                            <h4 class="mt-3 mb-1">{{ $kandidat->nama }}</h4>
+                            <p class="text-muted small">{{ $kandidat->nik }}</p>
                         </div>
-                        <div class="col-md-6">
-                            <dl class="row mb-0">
-                                <dt class="col-sm-5">Agama</dt><dd class="col-sm-7">{{ $kandidat->agama }}</dd>
-                                <dt class="col-sm-5">Status Pernikahan</dt><dd class="col-sm-7">{{ $kandidat->status }}</dd>
-                                <dt class="col-sm-5">Email</dt><dd class="col-sm-7">{{ $kandidat->email }}</dd>
-                                <dt class="col-sm-5">No WA</dt><dd class="col-sm-7">{{ $kandidat->no_wa }}</dd>
-                                <dt class="col-sm-5">Tgl Daftar</dt><dd class="col-sm-7">{{ \Carbon\Carbon::parse($kandidat->tanggal_daftar)->translatedFormat('d F Y') }}</dd>
-                            </dl>
+
+                        <div class="mb-4">
+                            <span
+                                class="badge {{ $kandidat->verifikasi == 'Terverifikasi' ? 'bg-success' : ($kandidat->verifikasi == 'Pending' ? 'bg-warning text-dark' : 'bg-danger') }} p-2">
+                                Verifikasi: {{ $kandidat->verifikasi }}
+                            </span>
+                            <p class="text-muted mt-2 mb-0">Cabang: **{{ $kandidat->cabang->nama_cabang ?? '-' }}**</p>
                         </div>
-                        <div class="col-12 mt-3 pt-3 border-top">
-                            <dl class="row mb-0">
-                                <dt class="col-sm-3">Alamat Lengkap</dt>
-                                <dd class="col-sm-9 text-wrap">{{ $kandidat->alamat }}, Kel. {{ $kandidat->kelurahan }}, Kec. {{ $kandidat->kecamatan }}, {{ $kandidat->kab_kota }}, Prov. {{ $kandidat->provinsi }}</dd>
-                            </dl>
+
+                        <div class="text-start">
+                            <h6><i class="bi bi-journal-text me-1"></i> Catatan Admin:</h6>
+                            <p class="border-top pt-2 ps-2 small text-muted  p-2 rounded">
+                                {{ $kandidat->catatan_admin ?? 'Tidak ada catatan.' }}
+                            </p>
                         </div>
+
                     </div>
                 </div>
             </div>
 
-            <div class="card shadow-sm rounded-4 mb-4">
-                <div class="card-header ">
-                    <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i> Informasi Tambahan</h5>
-                </div>
-                <div class="card-body">
-                    <dl class="row mb-0">
-                        <dt class="col-sm-4">ID Prometric</dt><dd class="col-sm-8">{{ $kandidat->id_prometric ?? '-' }}</dd>
-                        <dt class="col-sm-4">Password Prometric</dt><dd class="col-sm-8">{{ $kandidat->password_prometric ?? '-' }}</dd>
-                        <dt class="col-sm-4">Pernah ke Jepang</dt><dd class="col-sm-8">{{ $kandidat->pernah_ke_jepang }}</dd>
-                        <dt class="col-sm-4">Paspor</dt><dd class="col-sm-8">
-                            @if($kandidat->paspor)
-                                <a href="{{ asset($kandidat->paspor) }}" target="_blank" class="btn btn-sm btn-outline-primary"><i class="bi bi-file-earmark-text me-1"></i> Lihat Paspor</a>
-                            @else
-                                -
-                            @endif
-                        </dd>
-                    </dl>
-                </div>
-            </div>
-
-            <div class="card shadow-sm rounded-4 mb-4">
-                <div class="card-header">
-                    <h5 class="mb-0"><i class="bi bi-folder-fill me-2"></i> Dokumen Upload</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        @php
-                            // Mengelompokkan dokumen ke dalam array untuk loop
-                            $dokumen = [
-                                'Foto' => $kandidat->foto,
-                                'Sertifikat JFT' => $kandidat->sertifikat_jft,
-                                'Sertifikat SSW' => $kandidat->sertifikat_ssw,
-                                'Kartu Keluarga (KK)' => $kandidat->kk,
-                                'KTP' => $kandidat->ktp,
-                                'Bukti Pelunasan' => $kandidat->bukti_pelunasan,
-                                'Akte Kelahiran' => $kandidat->akte,
-                                'Ijazah' => $kandidat->ijasah,
-                            ];
-                        @endphp
-
-                        @foreach($dokumen as $nama => $path)
-                            <div class="col-lg-4 col-md-6 mb-2">
-                                <div class="d-grid">
-                                    @if($path)
-                                        <a href="{{ asset($path) }}" target="_blank" class="btn btn-sm btn-outline-success text-start">
-                                            <i class="bi bi-file-earmark-check me-2"></i> {{ $nama }}
-                                        </a>
-                                    @else
-                                        <button class="btn btn-sm btn-outline-secondary disabled text-start">
-                                            <i class="bi bi-file-earmark-excel me-2"></i> {{ $nama }} (Belum Ada)
-                                        </button>
-                                    @endif
-                                </div>
+            <div class="col-lg-8 mb-4">
+                <div class="card shadow-sm rounded-4 mb-4">
+                    <div class="card-header ">
+                        <h5 class="mb-0"><i class="bi bi-person-badge me-2"></i> Identitas Dasar</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <dl class="row mb-0">
+                                    <dt class="col-sm-5">Nama Lengkap</dt>
+                                    <dd class="col-sm-7 fw-semibold">{{ $kandidat->nama }}</dd>
+                                    <dt class="col-sm-5">NIK</dt>
+                                    <dd class="col-sm-7">{{ $kandidat->nik }}</dd>
+                                    <dt class="col-sm-5">TTL</dt>
+                                    <dd class="col-sm-7">{{ $kandidat->tempat_lahir }},
+                                        {{ \Carbon\Carbon::parse($kandidat->tempat_tanggal_lahir)->translatedFormat('d F Y') }}
+                                    </dd>
+                                    <dt class="col-sm-5">Usia</dt>
+                                    <dd class="col-sm-7">{{ $kandidat->usia }} tahun</dd>
+                                    <dt class="col-sm-5">Jenis Kelamin</dt>
+                                    <dd class="col-sm-7">{{ $kandidat->jenis_kelamin }}</dd>
+                                </dl>
                             </div>
-                        @endforeach
+                            <div class="col-md-6">
+                                <dl class="row mb-0">
+                                    <dt class="col-sm-5">Agama</dt>
+                                    <dd class="col-sm-7">{{ $kandidat->agama }}</dd>
+                                    <dt class="col-sm-5">Status Pernikahan</dt>
+                                    <dd class="col-sm-7">{{ $kandidat->status }}</dd>
+                                    <dt class="col-sm-5">Email</dt>
+                                    <dd class="col-sm-7">{{ $kandidat->email }}</dd>
+                                    <dt class="col-sm-5">No WA</dt>
+                                    <dd class="col-sm-7">{{ $kandidat->no_wa }}</dd>
+                                    <dt class="col-sm-5">Tgl Daftar</dt>
+                                    <dd class="col-sm-7">
+                                        {{ \Carbon\Carbon::parse($kandidat->tanggal_daftar)->translatedFormat('d F Y') }}
+                                    </dd>
+                                </dl>
+                            </div>
+                            <div class="col-12 mt-3 pt-3 border-top">
+                                <dl class="row mb-0">
+                                    <dt class="col-sm-3">Alamat Lengkap</dt>
+                                    <dd class="col-sm-9 text-wrap">{{ $kandidat->alamat }}, Kel.
+                                        {{ $kandidat->kelurahan }}, Kec. {{ $kandidat->kecamatan }},
+                                        {{ $kandidat->kab_kota }}, Prov. {{ $kandidat->provinsi }}</dd>
+                                </dl>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="text-end mt-4">
-                <a href="/kandidat" class="btn btn-secondary px-4"><i class="bi bi-arrow-left me-2"></i> Kembali ke Daftar</a>
+                <div class="card shadow-sm rounded-4 mb-4">
+                    <div class="card-header ">
+                        <h5 class="mb-0"><i class="bi bi-info-circle me-2"></i> Informasi Tambahan</h5>
+                    </div>
+                    <div class="card-body">
+                        <dl class="row mb-0">
+                            <dt class="col-sm-4">ID Prometric</dt>
+                            <dd class="col-sm-8">{{ $kandidat->id_prometric ?? '-' }}</dd>
+                            <dt class="col-sm-4">Password Prometric</dt>
+                            <dd class="col-sm-8">{{ $kandidat->password_prometric ?? '-' }}</dd>
+                            <dt class="col-sm-4">Pernah ke Jepang</dt>
+                            <dd class="col-sm-8">{{ $kandidat->pernah_ke_jepang }}</dd>
+                            <dt class="col-sm-4">Paspor</dt>
+                            <dd class="col-sm-8">
+                                @if ($kandidat->paspor)
+                                    <a href="{{ asset($kandidat->paspor) }}" target="_blank"
+                                        class="btn btn-sm btn-outline-primary"><i class="bi bi-file-earmark-text me-1"></i>
+                                        Lihat Paspor</a>
+                                @else
+                                    -
+                                @endif
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm rounded-4 mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-folder-fill me-2"></i> Dokumen Upload</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            @php
+                                // Mengelompokkan dokumen ke dalam array untuk loop
+                                $dokumen = [
+                                    'Foto' => $kandidat->foto,
+                                    'Sertifikat JFT' => $kandidat->sertifikat_jft,
+                                    'Sertifikat SSW' => $kandidat->sertifikat_ssw,
+                                    'Kartu Keluarga (KK)' => $kandidat->kk,
+                                    'KTP' => $kandidat->ktp,
+                                    'Bukti Pelunasan' => $kandidat->bukti_pelunasan,
+                                    'Akte Kelahiran' => $kandidat->akte,
+                                    'Ijazah' => $kandidat->ijasah,
+                                ];
+                            @endphp
+
+                            @foreach ($dokumen as $nama => $path)
+                                <div class="col-lg-4 col-md-6 mb-2">
+                                    <div class="d-grid">
+                                        @if ($path)
+                                            <a href="{{ asset($path) }}" target="_blank"
+                                                class="btn btn-sm btn-outline-success text-start">
+                                                <i class="bi bi-file-earmark-check me-2"></i> {{ $nama }}
+                                            </a>
+                                        @else
+                                            <button class="btn btn-sm btn-outline-secondary disabled text-start">
+                                                <i class="bi bi-file-earmark-excel me-2"></i> {{ $nama }} (Belum
+                                                Ada)
+                                            </button>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-end mt-4">
+                    <a href="/kandidat" class="btn btn-secondary px-4"><i class="bi bi-arrow-left me-2"></i> Kembali ke
+                        Daftar</a>
+                </div>
             </div>
         </div>
     </div>
-</div>
 @endsection

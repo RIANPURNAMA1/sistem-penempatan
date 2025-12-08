@@ -16,7 +16,7 @@ class UserSeeder extends Seeder
             'name' => 'Super Admin',
             'email' => 'superadmin@example.com',
             'password' => Hash::make('superadmin123'),
-            'role' => 'super admin',
+            'role' => 'super-admin',
         ]);
 
         // Daftar cabang

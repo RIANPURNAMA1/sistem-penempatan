@@ -13,25 +13,31 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('cabang_id');
 
-            // Identitas dasar
+            // Identitas dasar (NIK, Nama, Email, No WA, Tanggal Daftar wajib diisi)
             $table->string('nik', 20)->unique(); // NIK unik dan wajib
             $table->string('nama');
-            $table->string('usia');
-            $table->string('agama');
-            $table->enum('status', ['belum menikah', 'menikah', 'lajang']);
+            
+            // Kolom yang dibuat nullable (opsional)
+            $table->string('usia')->nullable();
+            $table->string('agama')->nullable();
+            
+            $table->enum('status', ['belum menikah', 'menikah', 'lajang'])->nullable(); 
+            
             $table->string('email');
             $table->string('no_wa');
             $table->enum('jenis_kelamin', ['Laki-laki', 'Perempuan']);
             $table->date('tanggal_daftar');
-            $table->date('tempat_tanggal_lahir');
-            $table->string('tempat_lahir');
-            $table->text('alamat');
+            
+            // Kolom Tanggal/Lokasi (dibuat nullable untuk import yang tidak lengkap)
+            $table->date('tempat_tanggal_lahir')->nullable(); // FIX: Menghilangkan ->change()
+            $table->string('tempat_lahir')->nullable(); // FIX: Menghilangkan ->change()
+            $table->text('alamat')->nullable(); // FIX: Menghilangkan ->change()
 
-            // Lokasi lengkap
-            $table->string('provinsi', 100);
-            $table->string('kab_kota', 100);
-            $table->string('kecamatan', 100);
-            $table->string('kelurahan', 100);
+            // Lokasi lengkap (dibuat nullable)
+            $table->string('provinsi', 100)->nullable(); // FIX: Menghilangkan ->change()
+            $table->string('kab_kota', 100)->nullable(); // FIX: Menghilangkan ->change()
+            $table->string('kecamatan', 100)->nullable(); // FIX: Menghilangkan ->change()
+            $table->string('kelurahan', 100)->nullable(); // FIX: Menghilangkan ->change()
 
 
             // Tambahan sesuai permintaan
@@ -40,15 +46,15 @@ return new class extends Migration
             $table->enum('pernah_ke_jepang', ['Ya', 'Tidak'])->default('Tidak');
             $table->string('paspor')->nullable()->comment('Upload paspor jika sudah memiliki');
 
-            // Dokumen upload (semua wajib)
-            $table->string('foto');
-            $table->string('sertifikat_jft');
-            $table->string('sertifikat_ssw');
-            $table->string('kk');
-            $table->string('ktp');
-            $table->string('bukti_pelunasan');
-            $table->string('akte');
-            $table->string('ijasah'); // ejaan sesuai form kamu
+            // Dokumen upload (dibuat nullable)
+            $table->string('foto')->nullable(); // FIX: Menghilangkan ->change()
+            $table->string('sertifikat_jft')->nullable(); // FIX: Menghilangkan ->change()
+            $table->string('sertifikat_ssw')->nullable(); // FIX: Menghilangkan ->change()
+            $table->string('kk')->nullable(); // FIX: Menghilangkan ->change()
+            $table->string('ktp')->nullable(); // FIX: Menghilangkan ->change()
+            $table->string('bukti_pelunasan')->nullable(); // FIX: Menghilangkan ->change()
+            $table->string('akte')->nullable(); // FIX: Menghilangkan ->change()
+            $table->string('ijasah')->nullable(); // FIX: Menghilangkan ->change()
 
             // Status verifikasi admin
             $table->enum('verifikasi', [
@@ -58,7 +64,7 @@ return new class extends Migration
                 'ditolak'
             ])->default('menunggu')->comment('Status verifikasi oleh admin');
 
-            // Catatan admin
+            // Catatan admin sudah nullable
             $table->text('catatan_admin')->nullable()->comment('Catatan atau alasan verifikasi oleh admin');
 
             $table->timestamps();

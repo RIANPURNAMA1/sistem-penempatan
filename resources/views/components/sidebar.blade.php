@@ -125,7 +125,7 @@
                             @endif
 
                             {{-- Menu untuk super admin --}}
-                            @if (auth()->user()->role === 'super admin')
+                            @if (auth()->user()->role === 'super-admin')
                                 <li class="sidebar-item has-sub">
                                     <a href="#" class='sidebar-link'>
                                         <i class="bi bi-people-fill"></i>

@@ -28,7 +28,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 // Mendefinisikan role untuk pengelompokan yang lebih bersih
-$admin_roles = 'super admin,Cabang Cianjur Selatan Mendunia,Cabang Cianjur Pamoyanan Mendunia,Cabang Batam Mendunia,Cabang Banyuwangi Mendunia,Cabang Kendal Mendunia,Cabang Pati Mendunia,Cabang Tulung Agung Mendunia,Cabang Bangkalan Mendunia,Cabang Bojonegoro Mendunia,Cabang Jember Mendunia,Cabang Wonosobo Mendunia,Cabang Eshan Mendunia';
+$admin_roles = 'super-admin,Cabang Cianjur Selatan Mendunia,Cabang Cianjur Pamoyanan Mendunia,Cabang Batam Mendunia,Cabang Banyuwangi Mendunia,Cabang Kendal Mendunia,Cabang Pati Mendunia,Cabang Tulung Agung Mendunia,Cabang Bangkalan Mendunia,Cabang Bojonegoro Mendunia,Cabang Jember Mendunia,Cabang Wonosobo Mendunia,Cabang Eshan Mendunia';
 
 
 Route::get('/generate', function () {
@@ -114,6 +114,7 @@ Route::middleware(['auth', 'role:kandidat'])->group(function () {
     // CV (Curriculum Vitae) - CRUD
     Route::get('/api/cv', [CVController::class, 'index']); // API untuk CV?
     Route::get('/pendaftaran/cv/{id}/edit', [CvController::class, 'edit'])->name('pendaftaran.cv.edit');
+
     Route::post('/pendaftaran/cv', [CvController::class, 'store'])->name('pendaftaran.cv.store');
     Route::put('/pendaftaran/cv/{id}', [CvController::class, 'update'])->name('pendaftaran.cv.update');
     Route::delete('/pendaftaran/cv/{id}', [CvController::class, 'destroy'])->name('pendaftaran.cv.destroy');
@@ -163,7 +164,14 @@ Route::middleware(['auth', "role:$admin_roles"])->group(function () {
 
 
 // Rute Khusus SUPER ADMIN
-Route::middleware(['auth', 'role:super admin'])->group(function () {
+Route::middleware(['auth', 'role:super-admin'])->group(function () {
+
+    // update
+    Route::put('/cv/update-kandidat/{id}', [CvController::class, 'updatecvkandidat'])
+        ->name('cv.updatekandidat');
+
+    // edit all cv
+    Route::get('/edit/cv/kandidat/{id}', [CvController::class, 'editcvkandidat']);
     // Navigasi Halaman Admin
     Route::get('/kandidat', [DashboardController::class, 'DataKandidat'])->name('pendaftar');
     Route::get('/institusi', [PageController::class, 'institusi'])->name('page.institusi');
@@ -217,15 +225,16 @@ Route::get('/cv/export/{id}', [CvController::class, 'export'])->name('cv.export'
 
 
 // Rute Pendaftaran - Import/Export/Edit Full (Untuk Admin)
-Route::post('/pendaftaran/import', [PendaftaranController::class, 'import'])->name('pendaftaran.import');
-Route::get('/pendaftaran/export', [PendaftaranController::class, 'export'])->name('pendaftaran.export');
 Route::get('pendaftaran/{id}/edit-full', [PendaftaranController::class, 'editFull'])->name('pendaftaran.edit.full');
 Route::put('pendaftaran/{id}/update-full', [PendaftaranController::class, 'updateFull'])->name('pendaftaran.update.full');
 Route::delete('/pendaftaran/{id}', [PendaftaranController::class, 'destroy'])->name('pendaftaran.destroy');
 Route::get('/pendaftaran/{id}/pendaftar', [PendaftaranController::class, 'showPendaftar'])->name('show.Pendaftar');
 
-// Export Pendaftaran (Khusus Super Admin)
-Route::middleware(['auth', 'role:super admin'])->group(function () {
+
+Route::middleware(['auth', 'role:super-admin'])->group(function () {
+    // Export Pendaftaran (Khusus Super Admin)
     Route::get('/kandidat/export/{id}', [KandidatController::class, 'export'])->name('kandidat.export');
+    Route::post('/pendaftaran/import', [PendaftaranController::class, 'import'])->name('pendaftaran.import');
+    Route::get('/pendaftaran/export/exels', [PendaftaranController::class, 'export']);
     Route::get('/pendaftaran/export-pdf', [PendaftaranController::class, 'exportPDF'])->name('pendaftaran.export.pdf');
 });

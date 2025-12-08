@@ -30,9 +30,9 @@
 
         table td,
         table th {
-            border: 1px solid #000 !important;
             padding: 3px;
             vertical-align: top;
+            border: 1px solid;
         }
 
         /* Hanya untuk print */
@@ -48,7 +48,7 @@
     </style>
 </head>
 
-<body>
+<body class="container2">
     <div style="display: flex; justify-content:center;">
         <div class="btn-container d-flex gap-2 flex-wrap">
 
@@ -67,7 +67,7 @@
         </div>
 
     </div>
-    <div class="cv-container container2">
+    <div class="cv-container ">
         <img src="{{ asset('assets/compiled/png/LOGO/logo.png') }}" style="width: 200px" alt="">
         <div class="d-flex">
             <div class="p-2 mt-5">
@@ -82,7 +82,7 @@
 
             <div>
 
-                <table style="width: 642px">
+                <table style="width: 642px ; border:1px solid black;">
                     <tr>
                         <td class="bg" rowspan="2"
                             style="width: 200px; text-align:center;vertical-align: middle;">
@@ -139,9 +139,9 @@
                     </tr>
 
                 </table>
-                <table style="width: 642px">
-                    <tr>
-                        <td class="text-center bg" style="width: 380px">生年月日　TANGGAL LAHIR</td>
+                <table style="width: 632p;">
+                    <tr style="border-top: none !important;">
+                        <td class="text-center bg" style="width: 340px">生年月日　TANGGAL LAHIR</td>
                         <td class="bg" style="width: 180px">視力 PENGLIHATAN</td>
                         <td style="width: 30px">右</td>
                         <td style="width: 30px"></td>
@@ -163,7 +163,7 @@
                     <tr>
                         <td class="text-center" style="width: 351px">{{ $cv->tempat_lahir }}</td>
                         <td class="bg" style=" width:175px">訪日経験 PERNAH KE JEPANG</td>
-                        <td> </td>
+                        <td>Tidak</td>
                     </tr>
                 </table>
                 <table style="width: 642px">
@@ -234,7 +234,7 @@
                     <tr class="text-center">
                         <td style="width:70px">{{ $p->tahun_masuk }}</td>
                         <td style="width:70px">-</td>
-                        <td style="width:69px">{{$p->tahun_lulus}}</td>
+                        <td style="width:69px">{{ $p->tahun_lulus }}</td>
                         <td style="width: 383px">{{ $p->nama }}</td>
                         <td>{{ $p->jurusan }}</td>
                     </tr>
@@ -270,11 +270,11 @@
             <table style="width: 837px">
                 @foreach ($cv->pengalamans as $p)
                     <tr class="text-center">
-                        <td style="width:70px">{{$p->tanggal_masuk}}</td>
+                        <td style="width:70px">{{ $p->tanggal_masuk }}</td>
                         <td style="width:70px">-</td>
-                        <td style="width:69px">{{$p->tanggal_keluar}}</td>
+                        <td style="width:69px">{{ $p->tanggal_keluar }}</td>
                         <td style="width: 383px">{{ $p->perusahaan }}</td>
-                        <td style="width: 122px">{{$p->jabatan}}</td>
+                        <td style="width: 122px">{{ $p->jabatan }}</td>
                         <td> {{ $p->gaji }}</td>
                     </tr>
                 @endforeach
@@ -311,30 +311,30 @@
                 <tr>
                     <td>AYAH （父）</td>
                     <td>{{ $cv->ayah_nama }}</td>
-                    <td>{{$cv->ayah_usia}}</td>
-                    <td>{{$cv->ayah_pekerjaan}} </td>
+                    <td>{{ $cv->ayah_usia }}</td>
+                    <td>{{ $cv->ayah_pekerjaan }} </td>
                     <td> ¥</td>
                 </tr>
                 <tr>
                     <td>IBU （母）</td>
                     <td>{{ $cv->ibu_nama }}</td>
-                    <td>{{$cv->ibu_usia}}</td>
-                    <td>{{$cv->ibu_pekerjaan}}</td>
+                    <td>{{ $cv->ibu_usia }}</td>
+                    <td>{{ $cv->ibu_pekerjaan }}</td>
                     <td> ¥</td>
                 </tr>
                 <tr>
                     <td>KAKAK（兄）</td>
                     <td>{{ $cv->kakak_nama }}</td>
-                    <td>{{$cv->kakak_usia}}</td>
-                    <td>{{$cv->kakak_pekerjaan}}</td>
+                    <td>{{ $cv->kakak_usia }}</td>
+                    <td>{{ $cv->kakak_pekerjaan }}</td>
                     <td> ¥</td>
                 </tr>
-                
+
                 <tr>
                     <td>ADIK LAKI-LAKI （弟）</td>
                     <td>{{ $cv->adik_nama }}</td>
-                    <td>{{$cv->adik_usia}}</td>
-                    <td>{{$cv->adik_pekerjaan}}</td>
+                    <td>{{ $cv->adik_usia }}</td>
+                    <td>{{ $cv->adik_pekerjaan }}</td>
                     <td> ¥</td>
                 </tr>
             </table>
@@ -419,20 +419,66 @@
                     <td colspan="" class="text-center bg">付記　CATATAN TAMBAHAN</td>
                 </tr>
                 <tr>
-                    <td style="text-align: center">魚介類アレルギー ALERGI TERHADAP SEAFOOD</td>
+                    <td style="text-align: center; height:30px">魚介類アレルギー ALERGI TERHADAP SEAFOOD</td>
                 </tr>
                 <tr>
-                    <td></td>
+                    <td style="height: 30px"></td>
                 </tr>
                 <tr>
-                    <td></td>
+                    <td style="height: 30px"></td>
                 </tr>
                 <tr>
-                    <td></td>
+                    <td style="height: 30px"></td>
                 </tr>
 
             </table>
 
+        </div>
+        {{-- sertifikat --}}
+        <div class=" mt-4">
+            <div class="">
+                <div class="card-body d-flex justify-content-center">
+                    {{-- SERTIFIKAT --}}
+                    <tr>
+
+                        <td>
+                            @php
+                                $sertifikats = json_decode($cv->sertifikat_files, true) ?? [];
+                            @endphp
+
+                            @if (count($sertifikats) === 0)
+                                <span class="text-muted">Tidak ada file</span>
+                            @else
+                                <div class="d-flex flex-wrap gap-2">
+                                    @foreach ($sertifikats as $file)
+                                        @php
+                                            $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+                                            $url = asset($file);
+                                        @endphp
+
+                                        @if (in_array($ext, ['jpg', 'jpeg', 'png']))
+                                            <a href="{{ $url }}" target="_blank">
+                                                <img src="{{ $url }}"
+                                                    style="width:300px; height:auto; object-fit:cover; border-radius:8px; border:1px solid #ccc;">
+                                            </a>
+                                        @elseif ($ext === 'pdf')
+                                            <a href="{{ $url }}" target="_blank"
+                                                class="btn btn-danger btn-sm">
+                                                <i class="bi bi-file-earmark-pdf"></i> PDF Sertifikat
+                                            </a>
+                                        @else
+                                            <a href="{{ $url }}" target="_blank"
+                                                class="btn btn-secondary btn-sm">
+                                                <i class="bi bi-file-earmark-text"></i> Lihat Dokumen
+                                            </a>
+                                        @endif
+                                    @endforeach
+                                </div>
+                            @endif
+                        </td>
+                    </tr>
+                </div>
+            </div>
         </div>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>

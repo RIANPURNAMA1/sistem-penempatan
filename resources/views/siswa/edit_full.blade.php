@@ -24,6 +24,8 @@
             <form id="edit-cv-form" action="{{ route('pendaftaran.update.full', $kandidat->id) }}" method="POST"
                 enctype="multipart/form-data">
                 @csrf
+                @method('PUT')
+
 
                 <div class="row g-3">
 
@@ -144,9 +146,9 @@
                         @if ($kandidat->foto)
                             <div class="mt-2">
 
-                     
-                                    <img src="{{ asset($kandidat->foto) }}" alt="Foto"
-                                        class="img-thumbnail" width="120">
+
+                                <img src="{{ asset($kandidat->foto) }}" alt="Foto" class="img-thumbnail"
+                                    width="120">
 
                             </div>
                         @endif
@@ -162,10 +164,10 @@
                                 <small class="text-muted d-block">Preview Saat Ini:</small>
 
                                 @if (in_array(pathinfo($kandidat->kk, PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png', 'gif', 'webp']))
-                                    <img src="{{ asset($kandidat->kk) }}" alt="KK"
-                                        class="img-thumbnail" width="120">
+                                    <img src="{{ asset($kandidat->kk) }}" alt="KK" class="img-thumbnail"
+                                        width="120">
                                 @else
-                                    <a href="{{ asset( $kandidat->kk) }}" target="_blank"
+                                    <a href="{{ asset($kandidat->kk) }}" target="_blank"
                                         class="btn btn-sm btn-warning mt-1">
                                         Lihat Dokumen
                                     </a>
@@ -184,10 +186,10 @@
                                 <small class="text-muted d-block">Preview Saat Ini:</small>
 
                                 @if (in_array(pathinfo($kandidat->ktp, PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png', 'gif', 'webp']))
-                                    <img src="{{ asset($kandidat->ktp) }}" alt="KTP"
-                                        class="img-thumbnail" width="120">
+                                    <img src="{{ asset($kandidat->ktp) }}" alt="KTP" class="img-thumbnail"
+                                        width="120">
                                 @else
-                                    <a href="{{ asset( $kandidat->ktp) }}" target="_blank"
+                                    <a href="{{ asset($kandidat->ktp) }}" target="_blank"
                                         class="btn btn-sm btn-warning mt-1">
                                         Lihat Dokumen
                                     </a>
@@ -206,11 +208,11 @@
                                 <small class="text-muted d-block">Preview Saat Ini:</small>
 
                                 @if (in_array(pathinfo($kandidat->bukti_pelunasan, PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png', 'gif', 'webp']))
-                                    <img src="{{ asset($kandidat->bukti_pelunasan) }}"
-                                        alt="Bukti Pelunasan" class="img-thumbnail" width="120">
+                                    <img src="{{ asset($kandidat->bukti_pelunasan) }}" alt="Bukti Pelunasan"
+                                        class="img-thumbnail" width="120">
                                 @else
-                                    <a href="{{ asset($kandidat->bukti_pelunasan) }}"
-                                        target="_blank" class="btn btn-sm btn-warning mt-1">
+                                    <a href="{{ asset($kandidat->bukti_pelunasan) }}" target="_blank"
+                                        class="btn btn-sm btn-warning mt-1">
                                         Lihat Dokumen
                                     </a>
                                 @endif
@@ -228,8 +230,8 @@
                                 <small class="text-muted d-block">Preview Saat Ini:</small>
 
                                 @if (in_array(pathinfo($kandidat->akte, PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png', 'gif', 'webp']))
-                                    <img src="{{ asset( $kandidat->akte) }}" alt="Akte"
-                                        class="img-thumbnail" width="120">
+                                    <img src="{{ asset($kandidat->akte) }}" alt="Akte" class="img-thumbnail"
+                                        width="120">
                                 @else
                                     <a href="{{ asset($kandidat->akte) }}" target="_blank"
                                         class="btn btn-sm btn-warning mt-1">
@@ -250,8 +252,8 @@
                                 <small class="text-muted d-block">Preview Saat Ini:</small>
 
                                 @if (in_array(pathinfo($kandidat->ijasah, PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png', 'gif', 'webp']))
-                                    <img src="{{ asset( $kandidat->ijasah) }}" alt="Ijasah"
-                                        class="img-thumbnail" width="120">
+                                    <img src="{{ asset($kandidat->ijasah) }}" alt="Ijasah" class="img-thumbnail"
+                                        width="120">
                                 @else
                                     <a href="{{ asset($kandidat->ijasah) }}" target="_blank"
                                         class="btn btn-sm btn-warning mt-1">
@@ -272,11 +274,11 @@
                                 <small class="text-muted d-block">Preview Saat Ini:</small>
 
                                 @if (in_array(pathinfo($kandidat->sertifikat_jft, PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png', 'gif', 'webp']))
-                                    <img src="{{ asset($kandidat->sertifikat_jft) }}"
-                                        alt="Sertifikat JFT" class="img-thumbnail" width="120">
+                                    <img src="{{ asset($kandidat->sertifikat_jft) }}" alt="Sertifikat JFT"
+                                        class="img-thumbnail" width="120">
                                 @else
-                                    <a href="{{ asset($kandidat->sertifikat_jft) }}"
-                                        target="_blank" class="btn btn-sm btn-warning mt-1">
+                                    <a href="{{ asset($kandidat->sertifikat_jft) }}" target="_blank"
+                                        class="btn btn-sm btn-warning mt-1">
                                         Lihat Dokumen
                                     </a>
                                 @endif
@@ -294,11 +296,11 @@
                                 <small class="text-muted d-block">Preview Saat Ini:</small>
 
                                 @if (in_array(pathinfo($kandidat->sertifikat_ssw, PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png', 'gif', 'webp']))
-                                    <img src="{{ asset($kandidat->sertifikat_ssw) }}"
-                                        alt="Sertifikat SSW" class="img-thumbnail" width="120">
+                                    <img src="{{ asset($kandidat->sertifikat_ssw) }}" alt="Sertifikat SSW"
+                                        class="img-thumbnail" width="120">
                                 @else
-                                    <a href="{{ asset($kandidat->sertifikat_ssw) }}"
-                                        target="_blank" class="btn btn-sm btn-warning mt-1">
+                                    <a href="{{ asset($kandidat->sertifikat_ssw) }}" target="_blank"
+                                        class="btn btn-sm btn-warning mt-1">
                                         Lihat Dokumen
                                     </a>
                                 @endif

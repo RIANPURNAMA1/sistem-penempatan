@@ -155,147 +155,152 @@
             </div>
         </div>
 
-        <!-- Cards Container -->
-        <div class="row g-4" id="cardsContainer">
-            @forelse ($cvs as $cv)
-                <div class="col-12 col-md-6 col-lg-4 cv-item "
-                    data-name="{{ strtolower($cv->nama_lengkap_romaji ?? ($cv->nama_lengkap_katakana ?? '')) }}"
-                    data-email="{{ strtolower($cv->email_aktif ?? ($cv->email ?? '')) }}"
-                    data-alamat="{{ strtolower($cv->alamat_lengkap ?? '') }}">
+        <!-- Table Container -->
+        <div class="table-responsive">
+            <table class="table table-hover align-middle" id="cvTable">
+                <thead class="table-light">
+                    <tr>
+                        <th scope="col" class="text-center" style="width: 80px;">Foto</th>
+                        <th scope="col">Nama</th>
+                        <th scope="col" class="text-center" style="width: 120px;">Jenis Kelamin</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">No. Telepon</th>
+                        <th scope="col">Alamat</th>
+                        <th scope="col">Cabang</th>
+                        <th scope="col" class="text-center" style="width: 200px;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($cvs as $cv)
+                        <tr class="cv-item"
+                            data-name="{{ strtolower($cv->nama_lengkap_romaji ?? ($cv->nama_lengkap_katakana ?? '')) }}"
+                            data-email="{{ strtolower($cv->email_aktif ?? ($cv->email ?? '')) }}"
+                            data-alamat="{{ strtolower($cv->alamat_lengkap ?? '') }}">
 
-                    <div class="card shadow shadow-md border-0 rounded-4">
-                        <div class="card-body p-4">
-                            <!-- Header with Photo -->
-                            <div class="cv-header">
-                                <!-- Foto Bulat Kecil -->
-                                @if ($cv->pas_foto_cv)
-                                    <img src="{{ asset($cv->pas_foto_cv) }}" class="cv-photo"
-                                        alt="Foto {{ $cv->nama_lengkap_romaji ?? 'Kandidat' }}">
-                                @else
-                                    <div class="cv-photo bg-light d-flex align-items-center justify-content-center">
-                                        <i class="bi bi-person-circle text-secondary" style="font-size: 2.5rem;"></i>
-                                    </div>
-                                @endif
-
-                                <!-- Nama & Badge -->
-                                <div class="flex-grow-1">
-                                    <h5 class="cv-name fw-bold  mb-2">
-                                        {{ $cv->nama_lengkap_romaji ?? ($cv->nama_lengkap_katakana ?? 'Nama Tidak Tersedia') }}
-                                    </h5>
-                                    <span
-                                        class="badge badge-gender 
-                                        {{ $cv->jenis_kelamin == 'Laki-laki' ? 'bg-primary' : 'bg-danger' }}">
-                                        <i
-                                            class="bi bi-{{ $cv->jenis_kelamin == 'Laki-laki' ? 'gender-male' : 'gender-female' }} me-1"></i>
-                                        {{ $cv->jenis_kelamin ?? '-' }}
-                                    </span>
-                                </div>
-                            </div>
+                            <!-- Foto -->
+                            <td class="text-center">
+                                <!-- Detail -->
+                                <a href="{{ route('cv.show', $cv->id) }}" class="">
 
 
-                            <div class="info-item">
-                                <i class="bi bi-geo-alt text-secondary me-2"></i>
-                                <span class="info-label">Alamat:</span>
-                                <span class="">{{ $cv->alamat_lengkap ?? '-' }}</span>
-                            </div>
 
-                            <div class="info-item">
-                                <i class="bi bi-envelope text-secondary me-2"></i>
-                                <span class="info-label">Email:</span>
-                                <span class="">{{ $cv->email_aktif ?? ($cv->email ?? '-') }}</span>
-                            </div>
-
-                            <div class="info-item">
-                                <i class="bi bi-phone text-secondary me-2"></i>
-                                <span class="info-label">WhatsApp:</span>
-                                <span class="">{{ $cv->no_telepon ?? '-' }}</span>
-                            </div>
-                            <div class="info-item">
-                                <i class="bi bi-geo-alt text-secondary me-2"></i>
-                                <span class="info-label">Cabang :</span>
-                                <span class="">{{ $cv->cabang->nama_cabang ?? '-' }}</span>
-                            </div>
-
-
-                        </div>
-
-                        <!-- Footer Actions -->
-                        <div class="card-footer  border-0 p-3">
-                            <div class="d-grid gap-2">
-
-                                <a href="{{ route('cv.show', $cv->id) }}"
-                                    class="btn btn-outline-primary btn-sm action-btn">
-                                    <i class="bi bi-eye me-1"></i> Lihat Detail
+                                    @if ($cv->pas_foto_cv)
+                                        <img src="{{ asset($cv->pas_foto_cv) }}" class="rounded-circle"
+                                            style="width: 50px; height: 50px; object-fit: cover;"
+                                            alt="Foto {{ $cv->nama_lengkap_romaji ?? 'Kandidat' }}">
+                                    @else
+                                        <div class="rounded-circle bg-light d-inline-flex align-items-center justify-content-center"
+                                            style="width: 50px; height: 50px;">
+                                            <i class="bi bi-person-circle text-secondary" style="font-size: 2rem;"></i>
+                                        </div>
+                                    @endif
                                 </a>
+                            </td>
 
-                                <div class="row g-2">
+                            <!-- Nama -->
+                            <td>
+                                <strong>{{ $cv->nama_lengkap_romaji ?? ($cv->nama_lengkap_katakana ?? 'Nama Tidak Tersedia') }}</strong>
+                            </td>
 
-                                    <!-- Kaigo -->
-                                    <div class="col-6">
-                                        <a href="{{ route('cv.show.pdf', $cv->id) }}"
-                                            class="btn btn-outline-primary btn-sm w-100 action-btn">
-                                            <i class="bi bi-file-pdf me-1"></i> CV Kaigo
-                                        </a>
+                            <!-- Jenis Kelamin -->
+                            <td class="text-center">
+                                <span class="badge {{ $cv->jenis_kelamin == 'Laki-laki' ? 'bg-primary' : 'bg-danger' }}">
+                                    <i
+                                        class="bi bi-{{ $cv->jenis_kelamin == 'Laki-laki' ? 'gender-male' : 'gender-female' }} me-1"></i>
+                                    {{ $cv->jenis_kelamin ?? '-' }}
+                                </span>
+                            </td>
+
+                            <!-- Email -->
+                            <td>
+                                <small>{{ $cv->email_aktif ?? ($cv->email ?? '-') }}</small>
+                            </td>
+
+                            <!-- WhatsApp -->
+                            <td>
+                                <small>{{ $cv->no_telepon ?? '-' }}</small>
+                            </td>
+
+                            <!-- Alamat -->
+                            <td>
+                                <small class="text-muted">{{ $cv->alamat_lengkap }}</small>
+                            </td>
+
+                            <!-- Cabang -->
+                            <td>
+                                <span class="badge bg-secondary">{{ $cv->cabang->nama_cabang ?? '-' }}</span>
+                            </td>
+
+                            <!-- Aksi -->
+                            <td>
+                                <div class="btn-group-vertical btn-group-sm w-100" role="group">
+
+                                    <!-- Dropdown untuk CV -->
+                                    <div class="btn-group btn-group-sm" role="group">
+                                        <button type="button" class="btn btn-outline-secondary dropdown-toggle"
+                                            data-bs-toggle="dropdown" aria-expanded="false">
+                                            <i class="bi bi-file-pdf me-1"></i> Download CV
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                                <a class="dropdown-item" href="{{ route('cv.show.pdf', $cv->id) }}">
+                                                    <i class="bi bi-file-pdf me-2"></i>CV Kaigo
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item"
+                                                    href="{{ route('cv.show.pdf.violeta', $cv->id) }}">
+                                                    <i class="bi bi-file-pdf me-2"></i>CV Violeta
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item"
+                                                    href="{{ route('cv.show.pdf.nawasena', $cv->id) }}">
+                                                    <i class="bi bi-file-earmark-pdf me-2"></i>CV Nawasena
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item"
+                                                    href="{{ route('cv.show.pdf.yambo', $cv->id) }}">
+                                                    <i class="bi bi-file-earmark-pdf me-2"></i>CV Yambo
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item"
+                                                    href="{{ route('cv.show.pdf.madoka', $cv->id) }}">
+                                                    <i class="bi bi-file-earmark-pdf me-2"></i>CV Madoka
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item"
+                                                    href="{{ route('cv.show.pdf.mendunia', $cv->id) }}">
+                                                    <i class="bi bi-file-earmark-pdf me-2"></i>CV Mendunia
+                                                </a>
+                                            </li>
+                                        </ul>
                                     </div>
-
-                                    <!-- Violeta -->
-                                    <div class="col-6">
-                                        <a href="{{ route('cv.show.pdf.violeta', $cv->id) }}"
-                                            class="btn  btn-outline-primary btn-sm w-100 action-btn">
-                                            <i class="bi bi-file-pdf me-1"></i> CV Violeta
-                                        </a>
-                                    </div>
-
-                                    <!-- Nawasena -->
-                                    <div class="col-6">
-                                        <a href="{{ route('cv.show.pdf.nawasena', $cv->id) }}"
-                                            class="btn btn-outline-primary btn-sm w-100 action-btn">
-                                            <i class="bi bi-file-earmark-pdf me-1"></i> CV Nawasena
-                                        </a>
-                                    </div>
-
-                                    <!-- Yambo -->
-                                    <div class="col-6">
-                                        <a href="{{ route('cv.show.pdf.yambo', $cv->id) }}"
-                                            class="btn btn-outline-primary btn-sm w-100 action-btn">
-                                            <i class="bi bi-file-earmark-pdf me-1"></i> CV Yambo
-                                        </a>
-                                    </div>
-
-                                    <!-- Madoka -->
-                                    <div class="col-12">
-                                        <a href="{{ route('cv.show.pdf.madoka', $cv->id) }}"
-                                            class="btn btn-outline-primary btn-sm w-100 action-btn">
-                                            <i class="bi bi-file-earmark-pdf me-1"></i> CV Madoka
-                                        </a>
-                                    </div>
-
-                                    <!-- Mendunia (Tambahan Baru) -->
-                                    <div class="col-12">
-                                        <a href="{{ route('cv.show.pdf.mendunia', $cv->id) }}"
-                                            class="btn btn-outline-primary btn-sm w-100 action-btn">
-                                            <i class="bi bi-file-earmark-pdf me-1"></i> CV Mendunia
-                                        </a>
-                                    </div>
-
                                 </div>
-                            </div>
-                        </div>
-
-
-                    </div>
-                </div>
-            @empty
-                <div class="col-12">
-                    <div class="alert alert-info text-center py-5">
-                        <i class="bi bi-info-circle fs-1 d-block mb-3"></i>
-                        <h5>Tidak Ada Data CV</h5>
-                        <p class="mb-0">Belum ada data CV kandidat yang tersedia.</p>
-                    </div>
-                </div>
-            @endforelse
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="8" class="text-center py-5">
+                                <i class="bi bi-info-circle fs-1 d-block mb-3 text-muted"></i>
+                                <h5>Tidak Ada Data CV</h5>
+                                <p class="mb-0 text-muted">Belum ada data CV kandidat yang tersedia.</p>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
 
+        <!-- Pagination (jika ada) -->
+        @if (method_exists($cvs, 'links'))
+            <div class="d-flex justify-content-center mt-4">
+                {{ $cvs->links() }}
+            </div>
+        @endif
         <!-- No Results Message -->
         <div id="noResults" class="alert alert-warning text-center py-5 mt-4" style="display: none;">
             <i class="bi bi-search fs-1 d-block mb-3"></i>

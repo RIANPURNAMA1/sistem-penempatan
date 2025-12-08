@@ -9,10 +9,15 @@
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 </head>
 <style>
-    * {
-        margin: 0;
+    * {}
+
+    .cv-container {
+        width: 100%;
         padding: 0;
-        box-sizing: border-box;
+        margin: 0 auto;
+
+        max-width: 900px;
+        background: #fff;
     }
 
     body {
@@ -255,7 +260,6 @@
             display: none !important;
         }
     }
-    
 </style>
 </head>
 
@@ -264,53 +268,53 @@
 
         <div class="mb-3 d-flex flex-wrap gap-2 btn-container">
             <button class="btn btn-success" onclick="window.print()">印刷 PDF</button>
-    
+
             <button class="btn btn-success" onclick="translateToJapanese()">
                 Ubah Bahasa ke Jepang
             </button>
-    
+
             <button class="btn btn-primary" onclick="capitalizeText()">
                 Huruf Awal Kapital
             </button>
-    
+
             <a href="/data/cv/kandidat" class="btn btn-info">
                 Kembali
             </a>
         </div>
 
-        <div class="container" style="display: flex; margin: 1rem; justify-content: center; gap: 2rem">
+        <div class="container" style="display: flex; margin: 1rem; justify-content: center; gap: 1rem">
             <div class="" style="">
                 <div class="header">
                     <h1>面談シート</h1>
                 </div>
-    
+
                 <div class="date-section" id="date-section"></div>
-    
+
                 <script>
                     document.addEventListener('DOMContentLoaded', function() {
                         const dateDiv = document.getElementById('date-section');
-    
+
                         const today = new Date();
                         const year = today.getFullYear();
                         const month = today.getMonth() + 1; // 0-indexed
                         const day = today.getDate();
-    
+
                         // Format: 2025年 11月 25日現在
                         dateDiv.textContent = `${year}年 ${month}月 ${day}日現在`;
                     });
                 </script>
-    
-    
+
+
                 <div class="" style="position: relative">
                     <div class="photo-guide" style="position: absolute;">
                         <img src="{{ asset($cv->pas_foto_cv) }}" width="100" height="150"
                             style="object-fit: cover; border: 1px solid #000;" alt="Pas Foto">
                     </div>
-    
+
                 </div>
-    
+
                 <!-- Personal Information Section -->
-                <table>
+                <table style="width: 500px">
                     <tr>
                         <th class="name-cell" style="text-align: center">ふりがな</th>
                         <td colspan="5" class="input-field"> {{ $cv->nama_lengkap_romaji }}</td>
@@ -372,8 +376,8 @@
                         <td>{{ $cv->ukuran_sepatu }}</td>
                     </tr>
                 </table>
-    
-    
+
+
                 <!-- Education History -->
                 <table border="1" cellpadding="5" cellspacing="0">
                     <tr>
@@ -381,10 +385,11 @@
                         <th class="section-header" colspan="3">学　歴</th>
                         <th class="section-header" colspan="2">学部・学科</th>
                     </tr>
-    
+
                     @forelse($cv->pendidikans as $pendidikan)
                         <tr>
-                            <td colspan="2" class=" p-3  text-center">{{ $pendidikan->tahun_masuk  }} - <span> {{$pendidikan->tahun_lulus}}</span></td>
+                            <td colspan="2" class=" p-3  text-center">{{ $pendidikan->tahun_masuk }} - <span>
+                                    {{ $pendidikan->tahun_lulus }}</span></td>
                             <td colspan="3" class=" p-3">{{ $pendidikan->nama }}　卒業</td>
                             <td colspan="2" class="input-field  p-3">{{ $pendidikan->jurusan ?? '-' }}</td>
                         </tr>
@@ -400,17 +405,18 @@
                         <td colspan="3" class="input-field  p-3"></td>
                         <td colspan="2" class="input-field  p-3"></td>
                     </tr>
-    
+
                     <tr>
                         <th class="section-header" colspan="2">年・月</th>
                         <th class="section-header" colspan="3">職　歴</th>
                         <th class="section-header" colspan="2">職種</th>
                     </tr>
-    
+
                     @forelse($cv->pengalamans as $pengalaman)
                         <tr>
                             <td colspan="2" class="p-3 text-center">
-                                {{ $pengalaman->tanggal_masuk ?? '○○○○年○○月～○○○○年○○月' }} - {{$pengalaman->tanggal_keluar}}
+                                {{ $pengalaman->tanggal_masuk ?? '○○○○年○○月～○○○○年○○月' }} -
+                                {{ $pengalaman->tanggal_keluar }}
                             </td>
                             <td colspan="3" class="p-3">{{ $pengalaman->perusahaan }}　退職</td>
                             <td colspan="2" class="input-field p-3">{{ $pengalaman->jabatan ?? '-' }}</td>
@@ -457,13 +463,13 @@
                         <td colspan="3" class="input-field  p-3"></td>
                         <td colspan="2" class="input-field  p-3"></td>
                     </tr>
-    
+
                 </table>
             </div>
-    
+
             <div>
                 <!-- Tabel 1: Lisensi dan Kualifikasi -->
-                <table style="width: 700px; margin-top: 4rem">
+                <table style="width: 500px; margin-top: 4rem">
                     <thead>
                         <tr class="header-row ">
                             <th colspan="2" class="p-3" style="text-align:center;">年・月</th>
@@ -471,7 +477,7 @@
                         </tr>
                     </thead>
                     <tbody>
-    
+
                         <!-- BARIS 1: Data SIM -->
                         <tr>
                             <td class="year-col  p-3">{{ now()->format('Y') }}</td>
@@ -484,8 +490,8 @@
                                 @endif
                             </td>
                         </tr>
-    
-    
+
+
                         <!-- BARIS 2 (Contoh kosong atau bisa diisi data lain) -->
                         <tr class="data-row-alt">
                             <td class="year-col  p-3"></td>
@@ -534,10 +540,10 @@
                             <td class="month-col  p-3"></td>
                             <td class="content-col  p-3"></td>
                         </tr>
-    
+
                     </tbody>
                 </table>
-    
+
                 <!-- Tabel 2: Keahlian dan Pengalaman -->
                 <table>
                     <thead>
@@ -554,23 +560,24 @@
                                     <div class="section-title">【やってきた作業】</div>
                                     <div></div>
                                 </div>
-    
+
                                 <div class="section-item">
                                     <div class="section-title">【扱ってきた材料】</div>
                                     <div></div>
                                 </div>
-    
+
                                 <div class="section-item">
                                     <div class="section-title">【やってきた現場】</div>
                                     <div></div>
                                 </div>
-    
+
                                 <div class="section-item">
                                     <div class="section-title">【操作できる重機】</div>
                                     <div></div>
                                 </div>
                             </td>
-                            <td colspan="" style="text-align: center;">{{ $cv->bidang_sertifikasi ?? '左・右' }}</td>
+                            <td colspan="" style="text-align: center;">{{ $cv->bidang_sertifikasi ?? '左・右' }}
+                            </td>
                             <td colspan="2" style="text-align: center;">{{ $cv->tangan_dominan ?? '左・右' }}</td>
                         </tr>
                         <tr style="">
@@ -597,7 +604,7 @@
                         </tr>
                     </tbody>
                 </table>
-    
+
                 <table class="comment-table" style="width: 100%; margin-top: 1rem; border-collapse: collapse;">
                     <tr>
                         <td class="comment-header"
@@ -623,7 +630,52 @@
                         </td>
                     </tr>
                 </table>
-    
+
+            </div>
+        </div>
+    </div>
+    {{-- sertifikat --}}
+    <div class=" mt-4">
+        <div class="">
+            <div class="card-body d-flex justify-content-center">
+                {{-- SERTIFIKAT --}}
+                <tr>
+
+                    <td>
+                        @php
+                            $sertifikats = json_decode($cv->sertifikat_files, true) ?? [];
+                        @endphp
+
+                        @if (count($sertifikats) === 0)
+                            <span class="text-muted">Tidak ada file</span>
+                        @else
+                            <div class="d-flex flex-wrap gap-2">
+                                @foreach ($sertifikats as $file)
+                                    @php
+                                        $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+                                        $url = asset($file);
+                                    @endphp
+
+                                    @if (in_array($ext, ['jpg', 'jpeg', 'png']))
+                                        <a href="{{ $url }}" target="_blank">
+                                            <img src="{{ $url }}"
+                                                style="width:300px; height:auto; object-fit:cover; border-radius:8px; border:1px solid #ccc;">
+                                        </a>
+                                    @elseif ($ext === 'pdf')
+                                        <a href="{{ $url }}" target="_blank" class="btn btn-danger btn-sm">
+                                            <i class="bi bi-file-earmark-pdf"></i> PDF Sertifikat
+                                        </a>
+                                    @else
+                                        <a href="{{ $url }}" target="_blank"
+                                            class="btn btn-secondary btn-sm">
+                                            <i class="bi bi-file-earmark-text"></i> Lihat Dokumen
+                                        </a>
+                                    @endif
+                                @endforeach
+                            </div>
+                        @endif
+                    </td>
+                </tr>
             </div>
         </div>
     </div>

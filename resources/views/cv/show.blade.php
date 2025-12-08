@@ -17,27 +17,41 @@
                 </li>
             </ol>
         </nav>
-
         <!-- Header Profil -->
-        <div class="card shadow-lg border-0 rounded-4 p-4 mb-5 ">
+        <div class="card shadow-lg border-0 rounded-4 p-4 mb-5 position-relative">
+
+            <!-- Tombol Edit -->
+            <a href="/edit/cv/kandidat/{{ $cv->id }}" class=" position-absolute top-0 end-0 m-3 ">
+                <i class="bi bi-pencil-square p-2" style="width: 400px"></i>
+            </a>
+
             <div class="d-flex flex-column flex-md-row align-items-center">
+
                 {{-- Pas Foto --}}
                 <div class="me-md-4 mb-3 mb-md-0">
                     <img src="{{ asset($cv->pas_foto_cv) }}" alt="Pas Foto"
                         class="rounded-circle border border-5 border-white shadow-sm" width="150" height="150"
                         style="object-fit: cover">
                 </div>
+
                 {{-- Nama dan Data Utama --}}
                 <div>
-                    <h1 class="h3 fw-bold mb-1">{{ $cv->nama_lengkap_romaji ?? $cv->nama_lengkap_katakana }}</h1>
+                    <h1 class="h3 fw-bold mb-1">
+                        {{ $cv->nama_lengkap_romaji ?? $cv->nama_lengkap_katakana }}
+                    </h1>
                     <p class="lead mb-1">{{ $cv->bidang_sertifikasi }}</p>
-                    <p class=" mb-0">
-                        <i class="bi bi-geo-alt-fill me-1"></i> Cabang: {{ $cv->cabang->nama_cabang ?? 'N/A' }} |
-                        <i class="bi bi-phone-fill me-1"></i> Telp: {{ $cv->no_telepon }}
+                    <p class="mb-0">
+                        <i class="bi bi-geo-alt-fill me-1"></i>
+                        Cabang: {{ $cv->cabang->nama_cabang ?? 'N/A' }} |
+
+                        <i class="bi bi-phone-fill me-1"></i>
+                        Telp: {{ $cv->no_telepon }}
                     </p>
                 </div>
+
             </div>
         </div>
+
 
         <!-- Grid Cards untuk Detail CV -->
         <div class="row g-4">
@@ -279,6 +293,101 @@
                                 <h6><i class="bi bi-japan me-1 text-info"></i> Ketertarikan Jepang:</h6>
                                 <p class="mb-0">{{ $cv->ketertarikan_terhadap_jepang }}</p>
                             </div>
+                        </div>
+                    </div>
+                </div>
+                {{-- sertifikat --}}
+                <div class="col-12 mt-4">
+                    <div class="card shadow-lg border-0 rounded-4">
+                        <div class="card-header ">
+                            <h5 class="mb-0">📂 Fotolainnya</h5>
+                        </div>
+                        <div class="card-body">
+                              <th>Fotolainnya</th>
+                            <td>
+                                @php
+                                    $pasFotos = json_decode($cv->pas_foto, true) ?? [];
+                                @endphp
+
+                                @if (count($pasFotos) === 0)
+                                    <span class="text-muted">Tidak ada file</span>
+                                @else
+                                    <div class="d-flex flex-wrap gap-2">
+                                        @foreach ($pasFotos as $foto)
+                                            @php
+                                                $ext = strtolower(pathinfo($foto, PATHINFO_EXTENSION));
+                                                $url = asset($foto);
+                                            @endphp
+
+                                            @if (in_array($ext, ['jpg', 'jpeg', 'png']))
+                                                <a href="{{ $url }}" target="_blank">
+                                                    <img src="{{ $url }}"
+                                                        style="width:90px; height:90px; object-fit:cover; border-radius:8px; border:1px solid #ccc;">
+                                                </a>
+                                            @elseif ($ext === 'pdf')
+                                                <a href="{{ $url }}" target="_blank"
+                                                    class="btn btn-danger btn-sm">
+                                                    <i class="bi bi-file-earmark-pdf"></i> PDF
+                                                </a>
+                                            @else
+                                                <a href="{{ $url }}" target="_blank"
+                                                    class="btn btn-secondary btn-sm">
+                                                    <i class="bi bi-file-earmark-text"></i> Dokumen
+                                                </a>
+                                            @endif
+                                        @endforeach
+                                    </div>
+                                @endif
+                            </td>
+                        </div>
+                    </div>
+                </div>
+                {{-- sertifikat --}}
+                <div class="col-12 mt-4">
+                    <div class="card shadow-lg border-0 rounded-4">
+                        <div class="card-header ">
+                            <h5 class="mb-0">📂 Dokumen Sertifikasi dan File Pendukung</h5>
+                        </div>
+                        <div class="card-body">
+                            {{-- SERTIFIKAT --}}
+                            <tr>
+                                <th>Sertifikat</th>
+                                <td>
+                                    @php
+                                        $sertifikats = json_decode($cv->sertifikat_files, true) ?? [];
+                                    @endphp
+
+                                    @if (count($sertifikats) === 0)
+                                        <span class="text-muted">Tidak ada file</span>
+                                    @else
+                                        <div class="d-flex flex-wrap gap-2">
+                                            @foreach ($sertifikats as $file)
+                                                @php
+                                                    $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+                                                    $url = asset($file);
+                                                @endphp
+
+                                                @if (in_array($ext, ['jpg', 'jpeg', 'png']))
+                                                    <a href="{{ $url }}" target="_blank">
+                                                        <img src="{{ $url }}"
+                                                            style="width:90px; height:90px; object-fit:cover; border-radius:8px; border:1px solid #ccc;">
+                                                    </a>
+                                                @elseif ($ext === 'pdf')
+                                                    <a href="{{ $url }}" target="_blank"
+                                                        class="btn btn-danger btn-sm">
+                                                        <i class="bi bi-file-earmark-pdf"></i> PDF Sertifikat
+                                                    </a>
+                                                @else
+                                                    <a href="{{ $url }}" target="_blank"
+                                                        class="btn btn-secondary btn-sm">
+                                                        <i class="bi bi-file-earmark-text"></i> Lihat Dokumen
+                                                    </a>
+                                                @endif
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                </td>
+                            </tr>
                         </div>
                     </div>
                 </div>

@@ -30,7 +30,7 @@ return new class extends Migration
                 'Cabang Jember Mendunia',
                 'Cabang Wonosobo Mendunia',
                 'Cabang Eshan Mendunia',
-                'super admin',
+                'super-admin',
                 'kandidat'
             ])->default('kandidat');
 

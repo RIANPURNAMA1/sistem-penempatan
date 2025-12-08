@@ -88,7 +88,7 @@
                 ]))
                 <h3 class="mb-1">Halo, {{ auth()->user()->name }}</h3>
                 <p class="text-muted mb-0">Menampilkan data kandidat di cabang Anda.</p>
-            @elseif(auth()->user()->role === 'super admin')
+            @elseif(auth()->user()->role === 'super-admin')
                 <h3 class="mb-1">Halo, {{ auth()->user()->name }}</h3>
                 <p class="text-muted mb-0">Dashboard Super Admin: mengakses semua data dan laporan.</p>
             @endif
@@ -99,7 +99,7 @@
     <div class="page-content">
         <section class="row">
             <div class="col-12 col-lg-12">
-                @if (auth()->user()->role === 'super admin')
+                @if (auth()->user()->role === 'super-admin')
                     <div class="row">
                         @foreach ($stats as $stat)
                             <div class="col-6 col-lg-3 col-md-6">
@@ -749,7 +749,7 @@
                 @endif
 
                 @if (in_array(auth()->user()->role, [
-                        'super admin',
+                        'super-admin',
                         'Cabang Cianjur Selatan Mendunia',
                         'Cabang Cianjur Pamoyanan Mendunia',
                         'Cabang Batam Mendunia',

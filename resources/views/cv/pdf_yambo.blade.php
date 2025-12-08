@@ -365,6 +365,52 @@
             </div>
         </div>
 
+            {{-- sertifikat --}}
+    <div class=" mt-4">
+        <div class="">
+            <div class="card-body d-flex justify-content-center" style="display: flex; justify-content: center;">
+                {{-- SERTIFIKAT --}}
+                <tr>
+
+                    <td>
+                        @php
+                            $sertifikats = json_decode($cv->sertifikat_files, true) ?? [];
+                        @endphp
+
+                        @if (count($sertifikats) === 0)
+                            <span class="text-muted">Tidak ada file</span>
+                        @else
+                            <div class="d-flex flex-wrap gap-2">
+                                @foreach ($sertifikats as $file)
+                                    @php
+                                        $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+                                        $url = asset($file);
+                                    @endphp
+
+                                    @if (in_array($ext, ['jpg', 'jpeg', 'png']))
+                                        <a href="{{ $url }}" target="_blank">
+                                            <img src="{{ $url }}"
+                                                style="width:300px; height:auto; object-fit:cover; border-radius:8px; border:1px solid #ccc;">
+                                        </a>
+                                    @elseif ($ext === 'pdf')
+                                        <a href="{{ $url }}" target="_blank" class="btn btn-danger btn-sm">
+                                            <i class="bi bi-file-earmark-pdf"></i> PDF Sertifikat
+                                        </a>
+                                    @else
+                                        <a href="{{ $url }}" target="_blank"
+                                            class="btn btn-secondary btn-sm">
+                                            <i class="bi bi-file-earmark-text"></i> Lihat Dokumen
+                                        </a>
+                                    @endif
+                                @endforeach
+                            </div>
+                        @endif
+                    </td>
+                </tr>
+            </div>
+        </div>
+    </div>
+
         <!-- Optional small CSS tweak -->
         <style>
             .card .card-body {
