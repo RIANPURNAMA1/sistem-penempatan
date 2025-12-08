@@ -50,7 +50,7 @@
                     <input type="password" name="password_confirmation" class="form-control" required>
                 </div>
 
-                <button type="submit" class="btn btn-warning w-100">Reset Password</button>
+                <button type="submit" class="btn w-100" style="background-color: #273044; color:white;">Reset Password</button>
             </form>
 
             <div class="text-center mt-3">

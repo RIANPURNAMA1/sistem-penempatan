@@ -56,28 +56,31 @@ class PendaftaranController extends Controller
 
             // FILE WAJIB — ukuran lebih kecil
             'foto' => 'required|file|mimes:jpg,jpeg,png|max:3072', // 3MB
-            'kk' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
-            'ktp' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
-            'bukti_pelunasan' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
-            'akte' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
-            'ijasah' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
-            'sertifikat_jft' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
-            'sertifikat_ssw' => 'required|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'kk'                => 'nullable|file|mimes:pdf|max:5120',
+            'ktp'               => 'nullable|file|mimes:pdf|max:5120',
+            'bukti_pelunasan'   => 'nullable|file|mimes:pdf|max:5120',
+            'akte'              => 'nullable|file|mimes:pdf|max:5120',
+            'ijasah'            => 'nullable|file|mimes:pdf|max:5120',
+            'sertifikat_jft'    => 'nullable|file|mimes:pdf|max:5120',
+            'sertifikat_ssw'    => 'nullable|file|mimes:pdf|max:5120',
+            'paspor'            => 'nullable|file|mimes:pdf|max:5120',
 
         ], [
-            // Pesan utama
-            'file.max' => 'Ukuran file melebihi batas.',
 
-            // Pesan khusus untuk setiap file
-            'foto.max' => 'Ukuran foto melebihi batas 3MB.',
-            'kk.max' => 'Ukuran KK melebihi batas 5MB.',
-            'ktp.max' => 'Ukuran KTP melebihi batas 5MB.',
-            'bukti_pelunasan.max' => 'Ukuran bukti pelunasan melebihi batas 5MB.',
-            'akte.max' => 'Ukuran akte melebihi batas 5MB.',
-            'ijasah.max' => 'Ukuran ijazah melebihi batas 5MB.',
-            'sertifikat_jft.max' => 'Ukuran sertifikat JFT melebihi batas 5MB.',
-            'sertifikat_ssw.max' => 'Ukuran sertifikat SSW melebihi batas 5MB.',
-            'paspor.max' => 'Ukuran paspor melebihi batas 5MB.',
+            // Pesan error khusus
+            'file.max' => 'Ukuran file melebihi batas 5MB.',
+            'file.mimes' => 'File harus berformat PDF.',
+
+            // Pesan setiap field
+            'foto.mimes' => 'Foto harus berupa file PDF.',
+            'kk.mimes' => 'KK harus berupa file PDF.',
+            'ktp.mimes' => 'KTP harus berupa file PDF.',
+            'bukti_pelunasan.mimes' => 'Bukti pelunasan harus berupa file PDF.',
+            'akte.mimes' => 'Akte harus berupa file PDF.',
+            'ijasah.mimes' => 'Ijazah harus berupa file PDF.',
+            'sertifikat_jft.mimes' => 'Sertifikat JFT harus berupa file PDF.',
+            'sertifikat_ssw.mimes' => 'Sertifikat SSW harus berupa file PDF.',
+            'paspor.mimes' => 'Paspor harus berupa file PDF.',
 
             // Error lain
             'nik.size' => 'NIK harus 16 digit.',
@@ -88,8 +91,6 @@ class PendaftaranController extends Controller
         ]);
 
 
-
-        // Upload file wajib + paspor
         $files = [
             'foto',
             'kk',
@@ -105,6 +106,7 @@ class PendaftaranController extends Controller
         $uploadedPaths = [];
 
         foreach ($files as $fileKey) {
+
             if ($request->hasFile($fileKey)) {
 
                 $file = $request->file($fileKey);
@@ -112,7 +114,7 @@ class PendaftaranController extends Controller
                 // Nama file baru
                 $filename = time() . '_' . $file->getClientOriginalName();
 
-                // Lokasi tujuan tanpa storage link → langsung ke /public/dokumen/{field}/
+                // Tujuan folder (public/dokumen/{field})
                 $destination = public_path("dokumen/{$fileKey}");
 
                 // Pastikan folder ada
@@ -120,10 +122,10 @@ class PendaftaranController extends Controller
                     mkdir($destination, 0777, true);
                 }
 
-                // Pindahkan file
+                // Pindahkan file ke folder public
                 $file->move($destination, $filename);
 
-                // Simpan path untuk database → asset('dokumen/...') bisa langsung dipanggil
+                // Simpan path untuk database → ditampilkan pakai asset()
                 $uploadedPaths[$fileKey] = "dokumen/{$fileKey}/{$filename}";
             }
         }
@@ -191,16 +193,16 @@ class PendaftaranController extends Controller
     }
 
 
-public function DataKandidat()
-{
-    $kandidats = Pendaftaran::with('cabang')
-        ->latest('created_at') // ✅ urutkan berdasarkan waktu update
-        ->paginate(10);
+    public function DataKandidat()
+    {
+        $kandidats = Pendaftaran::with('cabang')
+            ->latest('created_at') // ✅ urutkan berdasarkan waktu update
+            ->paginate(10);
 
-    $cabang = Cabang::all();
+        $cabang = Cabang::all();
 
-    return view('siswa.index', compact('kandidats', 'cabang'));
-}
+        return view('siswa.index', compact('kandidats', 'cabang'));
+    }
 
 
     // 🟠 Form Edit (hanya verifikasi & catatan admin)
@@ -463,6 +465,8 @@ public function DataKandidat()
         $pdf = FacadePdf::loadView('pendaftaran.pdf', compact('pendaftarans'));
         return $pdf->download('pendaftaran.pdf');
     }
+
+    
     public function destroy($id)
     {
         $pendaftaran = Pendaftaran::findOrFail($id);

@@ -55,128 +55,93 @@
                             <i class="bi bi-funnel me-1"></i> Filter Data
                         </h6>
                     </div>
+                    <div class="d-flex flex-wrap gap-3 align-items-center">
 
-                    <div class="d-flex flex-wrap gap-2 align-items-center">
+                        <!-- Import Excel Box -->
                         <form id="importForm" enctype="multipart/form-data" class="import-form">
                             @csrf
-                            <div class="file-input-wrapper">
+                            <div class="import-box d-flex align-items-center gap-2">
+                                <!-- Hidden Input -->
                                 <input type="file" name="file" id="fileInput" accept=".xlsx,.xls" required
                                     class="d-none">
-                                <label for="fileInput" class="file-label">
-                                    <i class="bi bi-cloud-upload-fill me-2"></i>
-                                    <span id="fileText">Pilih File Excel</span>
+
+                                <!-- Label Pilih File -->
+                                <label for="fileInput" class="file-label d-flex align-items-center gap-2">
+                                    <i class="bi bi-cloud-upload-fill fs-5"></i>
+                                    <span id="fileText" class="file-text">Pilih File Excel</span>
                                 </label>
-                                <button type="submit" class="btn btn-primary btn-import">
+
+                                <!-- Import Button -->
+                                <button type="submit" class="btn btn-primary btn-sm fw-semibold px-3">
                                     <i class="bi bi-upload me-1"></i>Import
                                 </button>
+                                <div>
+
+                                    <!-- Export Excel -->
+                                    <a href="/pendaftaran/export/exels" class="btn btn-success btn-sm fw-semibold px-3">
+                                        <i class="bi bi-file-earmark-spreadsheet-fill"></i>
+                                        <span>Export Excel</span>
+                                    </a>
+
+                                    <!-- Export PDF -->
+                                    <a href="/pendaftaran/export/pdf" target="_blank"
+                                        class="btn btn-danger btn-sm fw-semibold px-3">
+                                        <i class="bi bi-file-earmark-pdf-fill"></i>
+                                        <span>Export PDF</span>
+                                    </a>
+                                </div>
+
                             </div>
                         </form>
 
-                        <style>
-                            .import-form {
-                                display: inline-block;
-                            }
+                        <!-- Export Buttons -->
+                        <div class="d-flex flex-wrap gap-2">
 
-                            .file-input-wrapper {
-                                display: flex;
-                                gap: 8px;
-                                align-items: center;
-                                background: #fff;
-                                border: 1px solid #dee2e6;
-                                border-radius: 6px;
-                                padding: 4px;
-                                transition: all 0.3s ease;
-                            }
 
-                            .file-input-wrapper:hover {
-                                border-color: #0d6efd;
-                                box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.1);
-                            }
 
-                            .file-label {
-                                cursor: pointer;
-                                padding: 6px 12px;
-                                margin: 0;
-                                color: #495057;
-                                font-size: 14px;
-                                white-space: nowrap;
-                                display: flex;
-                                align-items: center;
-                                transition: color 0.2s;
-                            }
+                        </div>
 
-                            .file-label:hover {
-                                color: #0d6efd;
-                            }
-
-                            .file-label i {
-                                font-size: 16px;
-                            }
-
-                            .btn-import {
-                                font-size: 14px;
-                                padding: 6px 16px;
-                                white-space: nowrap;
-                            }
-
-                            #fileText {
-                                max-width: 200px;
-                                overflow: hidden;
-                                text-overflow: ellipsis;
-                            }
-                        </style>
-
-                        <script>
-                            document.getElementById('fileInput').addEventListener('change', function(e) {
-                                const fileName = e.target.files[0]?.name || 'Pilih File Excel';
-                                document.getElementById('fileText').textContent = fileName;
-                            });
-
-                            document.getElementById('importForm').addEventListener('submit', function(e) {
-                                e.preventDefault();
-
-                                const formData = new FormData(this);
-                                const btn = this.querySelector('.btn-import');
-                                const originalHtml = btn.innerHTML;
-
-                                btn.disabled = true;
-                                btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Importing...';
-
-                                fetch('/pendaftaran/import', {
-                                        method: 'POST',
-                                        body: formData,
-                                        headers: {
-                                            'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
-                                        }
-                                    })
-                                    .then(response => response.json())
-                                    .then(data => {
-                                        if (data.status === 'success') {
-                                            alert('✓ Import berhasil!');
-                                            location.reload();
-                                        } else {
-                                            alert('✗ ' + data.message);
-                                        }
-                                    })
-                                    .catch(error => alert('Error: ' + error.message))
-                                    .finally(() => {
-                                        btn.disabled = false;
-                                        btn.innerHTML = originalHtml;
-                                    });
-                            });
-                        </script>
-
-                        <!-- Export Excel Button -->
-                        <a href="/pendaftaran/export/exels" class="btn btn-success btn-sm fw-semibold shadow-sm">
-                            <i class="bi bi-file-earmark-excel me-1"></i> Export Excel
-                        </a>
-
-                        <!-- Export PDF Button -->
-                        <a href="{{ route('pendaftaran.export.pdf') }}" target="_blank"
-                            class="btn btn-danger btn-sm fw-semibold shadow-sm">
-                            <i class="bi bi-file-earmark-pdf me-1"></i> Export PDF
-                        </a>
                     </div>
+
+
+                    <style>
+                        /* Import Wrapper */
+                        .import-box {
+                            background: #ffffff;
+                            border: 1px solid #dee2e6;
+                            border-radius: 8px;
+                            padding: 6px 8px;
+                            transition: .25s ease;
+                        }
+
+                        .import-box:hover {
+                            border-color: #0d6efd;
+                            box-shadow: 0 0 0 0.18rem rgba(13, 110, 253, 0.15);
+                        }
+
+                        /* File Label */
+                        .file-label {
+                            cursor: pointer;
+                            padding: 6px 10px;
+                            color: #495057;
+                            font-size: 14px;
+                            border-radius: 6px;
+                            transition: color .2s ease;
+                        }
+
+                        .file-label:hover {
+                            color: #0d6efd;
+                        }
+
+                        .file-text {
+                            display: inline-block;
+                            max-width: 180px;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            white-space: nowrap;
+                        }
+                    </style>
+
 
                 </div>
             </div>
@@ -471,64 +436,82 @@
 
 
         // Import Request
-        $('#importForm').on('submit', function(e) {
-            e.preventDefault();
+$('#importForm').on('submit', function(e) {
+    e.preventDefault();
 
-            let formData = new FormData(this);
+    let formData = new FormData(this);
 
-            $.ajax({
-                url: "{{ route('pendaftaran.import') }}",
-                type: "POST",
-                data: formData,
-                processData: false,
-                contentType: false,
+    $.ajax({
+        url: "{{ route('pendaftaran.import') }}",
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
 
-
-                beforeSend: function() {
-                    Swal.fire({
-                        title: 'Mengimport...',
-                        text: 'Harap tunggu sebentar.',
-                        allowOutsideClick: false,
-                        didOpen: () => Swal.showLoading()
-                    });
-                },
-
-                success: function(response) {
-                    Swal.close();
-
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Berhasil!',
-                        text: response.message ?? 'Data berhasil diimport.',
-                        timer: 2000,
-                        showConfirmButton: false
-                    });
-                },
-
-                error: function(xhr) {
-                    Swal.close();
-
-                    let msg = 'Terjadi kesalahan saat mengimport data.';
-
-                    // jika ada pesan error dari server
-                    if (xhr.responseJSON && xhr.responseJSON.message) {
-                        msg = xhr.responseJSON.message;
-                    }
-
-                    // Jika dari laravel Excel biasanya error ada di xhr.responseText → tampilkan juga
-                    if (!xhr.responseJSON && xhr.responseText) {
-                        msg = xhr.responseText;
-                    }
-
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Gagal Mengimport!',
-                        html: msg, // pakai HTML biar pesan panjang bisa terbaca
-                        showConfirmButton: true
-                    });
-                }
+        beforeSend: function() {
+            Swal.fire({
+                title: 'Mengimport...',
+                text: 'Harap tunggu sebentar.',
+                allowOutsideClick: false,
+                didOpen: () => Swal.showLoading()
             });
-        });
+        },
+
+        success: function(response) {
+            Swal.close();
+
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: response.message ?? 'Data berhasil diimport.',
+                timer: 2000,
+                showConfirmButton: false
+            });
+
+            setTimeout(() => {
+                window.location.reload();
+            }, 2000);
+        },
+
+        error: function(xhr) {
+            Swal.close();
+
+            let msg = 'Terjadi kesalahan saat mengimport data.';
+
+            // --- ERROR MYSQL / SQLSTATE ---
+            if (xhr.responseText && xhr.responseText.includes('SQLSTATE')) {
+                msg = `
+                    Format data Excel tidak sesuai.<br>
+                    Pastikan setiap baris memiliki:
+                    <br><b>- NIK</b><br><b>- Nama</b><br><b>- Status</b><br>
+                    dan kolom wajib lainnya tidak boleh kosong.
+                `;
+            }
+
+            // --- ERROR DARI LARAVEL RESPONSE JSON ---
+            else if (xhr.responseJSON && xhr.responseJSON.message) {
+
+                // Jika error validasi
+                if (xhr.responseJSON.errors) {
+                    msg = "<b>Format Excel salah:</b><br>";
+                    $.each(xhr.responseJSON.errors, function(key, value) {
+                        msg += `- ${value}<br>`;
+                    });
+                } else {
+                    msg = xhr.responseJSON.message;
+                }
+            }
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal Mengimport!',
+                html: msg,
+                showConfirmButton: true
+            });
+        }
+    });
+});
+
 
 
 
@@ -586,5 +569,46 @@
             });
         });
     </script>
+
+    {{-- 
+    <script>
+        document.getElementById('fileInput').addEventListener('change', function(e) {
+            const fileName = e.target.files[0]?.name || 'Pilih File Excel';
+            document.getElementById('fileText').textContent = fileName;
+        });
+
+        document.getElementById('importForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+            const btn = this.querySelector('.btn-import');
+            const originalHtml = btn.innerHTML;
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Importing...';
+
+            fetch('/pendaftaran/import', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        alert('✓ Import berhasil!');
+                        location.reload();
+                    } else {
+                        alert('✗ ' + data.message);
+                    }
+                })
+                .catch(error => alert('Error: ' + error.message))
+                .finally(() => {
+                    btn.disabled = false;
+                    btn.innerHTML = originalHtml;
+                });
+        });
+    </script> --}}
 
 @endsection

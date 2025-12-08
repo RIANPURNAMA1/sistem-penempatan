@@ -350,7 +350,7 @@
                             title: 'Berhasil!',
                             text: res.message,
                         }).then(() => {
-                            window.location.href = "{{ route('siswa.index') }}";
+                            window.location.href = "/kandidat";
                         });
                     },
 

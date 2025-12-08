@@ -1,9 +1,33 @@
 .active-sidebar {
-    background-color: #ffc700;
-    border-radius: 12px;      /* sudut rounded */     /* ruang lebih agar terlihat elegan */
+    background-color: #273044;
+    color: white !important;
+    border-radius: 12px; /* sudut rounded */ /* ruang lebih agar terlihat elegan */
     transition: all 0.3s ease; /* efek halus */
     box-shadow: 0 4px 10px rgba(0, 192, 255, 0.35); /* glow lembut */
 }
-.text-active-side{
-    color: black;
+.text-active-side {
+    color: rgb(255, 255, 255);
+}
+
+/* ============= DARK MODE ============= */
+/* ==============================
+   DEFAULT (LIGHT MODE)
+============================== */
+html[data-bs-theme="light"] .active-sidebar .sidebar-link {
+    background: #273044; /* warna sidebar aslinya */
+    color: #ffffff !important;
+}
+
+/* ==============================
+   DARK MODE
+============================== */
+html[data-bs-theme="dark"] .active-sidebar .sidebar-link {
+    background: #ffffff !important; /* putih */
+    color: #000000 !important; /* teks hitam */
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+html[data-bs-theme="dark"] .active-sidebar .sidebar-link i,
+html[data-bs-theme="dark"] .active-sidebar .sidebar-link span {
+    color: #000000 !important;
 }

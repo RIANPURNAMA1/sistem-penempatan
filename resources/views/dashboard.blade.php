@@ -282,8 +282,8 @@
                     <div class="row mt-4">
 
                         <!-- =========================
-                                                                        BAGIAN KIRI (CHART)
-                                                                    ========================== -->
+                                                                                BAGIAN KIRI (CHART)
+                                                                            ========================== -->
                         <div class="col-12 col-md-8">
                             <div class="card h-100 shadow-lg border-0 rounded-4">
 
@@ -333,17 +333,24 @@
                                 <!-- BODY -->
                                 <div class="card-body p-3 rounded-md">
                                     <!-- Container scrollable -->
-                                    <div class="rounded-md" style="max-height: 400px; overflow-y: auto;">
+                                    <div class="rounded-md shadow-sm border"
+                                        style="max-height: 400px; overflow-y: auto; background: #f8f9fa;">
                                         <ul class="list-group list-group-flush">
 
                                             @foreach ($users as $user)
-                                                <li class="list-group-item d-flex justify-content-between align-items-center py-3"
-                                                    style="border-left: 4px solid transparent; transition: .2s;">
+                                                @php
+                                                    $isOnline = $user->last_activity >= now()->subMinutes(5);
+                                                    $statusColor = $isOnline ? 'success' : 'danger';
+                                                    $statusText = $isOnline ? 'Online' : 'Offline';
+                                                @endphp
+
+                                                <li class="list-group-item d-flex justify-content-between align-items-center py-3 rounded-2 mb-1 shadow-sm"
+                                                    style="border-left: 4px solid {{ $isOnline ? '#28a745' : '#dc3545' }}; transition: all 0.3s; cursor: pointer;">
 
                                                     <div class="d-flex align-items-center">
                                                         <!-- Avatar -->
-                                                        <div class="rounded-circle bg-primary bg-opacity-10 text-primary d-flex align-items-center justify-content-center me-3"
-                                                            style="width: 40px; height: 40px; font-size: 18px;">
+                                                        <div class="rounded-circle bg-{{ $statusColor }} bg-opacity-10 text-{{ $statusColor }} d-flex align-items-center justify-content-center me-3"
+                                                            style="width: 45px; height: 45px; font-size: 18px; transition: transform 0.2s;">
                                                             <i class="bi bi-person-fill"></i>
                                                         </div>
 
@@ -352,24 +359,60 @@
                                                     </div>
 
                                                     <!-- Status Dot -->
-                                                    @php
-                                                        $isOnline = $user->last_activity >= now()->subMinutes(5);
-                                                    @endphp
-
-                                                    <span class="d-flex align-items-center">
+                                                    <div class="d-flex align-items-center gap-2">
                                                         <span
-                                                            class="status-dot {{ $isOnline ? 'bg-success' : 'bg-danger' }}"></span>
+                                                            class="status-dot rounded-circle d-inline-block {{ $isOnline ? 'bg-success' : 'bg-danger' }}"
+                                                            style="width: 12px; height: 12px; animation: {{ $isOnline ? 'pulse 1.5s infinite' : 'none' }};"></span>
                                                         <small
-                                                            class="ms-2 fw-semibold {{ $isOnline ? 'text-success' : 'text-danger' }}">
-                                                            {{ $isOnline ? 'Online' : 'Offline' }}
-                                                        </small>
-                                                    </span>
-
+                                                            class="fw-semibold text-{{ $statusColor }}">{{ $statusText }}</small>
+                                                    </div>
                                                 </li>
                                             @endforeach
 
                                         </ul>
                                     </div>
+
+                                    <style>
+                                        /* Hover efek */
+                                        .list-group-item:hover {
+                                            background: rgba(0, 123, 255, 0.05);
+                                            transform: translateX(2px);
+                                            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+                                        }
+
+                                        /* Pulse animation untuk status online */
+                                        @keyframes pulse {
+                                            0% {
+                                                transform: scale(0.9);
+                                                opacity: 0.7;
+                                            }
+
+                                            50% {
+                                                transform: scale(1.1);
+                                                opacity: 1;
+                                            }
+
+                                            100% {
+                                                transform: scale(0.9);
+                                                opacity: 0.7;
+                                            }
+                                        }
+
+                                        /* Scrollbar custom */
+                                        .rounded-md::-webkit-scrollbar {
+                                            width: 6px;
+                                        }
+
+                                        .rounded-md::-webkit-scrollbar-thumb {
+                                            background-color: rgba(0, 0, 0, 0.2);
+                                            border-radius: 3px;
+                                        }
+
+                                        .rounded-md::-webkit-scrollbar-track {
+                                            background: transparent;
+                                        }
+                                    </style>
+
                                 </div>
 
 
@@ -568,7 +611,7 @@
                             <div class="col-12 col-md-4">
                                 <div class="card shadow shadow-mdborder-0 rounded-4 overflow-hidden">
                                     <!-- Header -->
-                                    <div class="card-header text-white text-center p-3 ">
+                                    <div class="card-header  text-center p-3 ">
                                         <h5 class="mb-0 fw-bold">
                                             <i class="bi bi-person-badge me-2"></i> Profil Kandidat
                                         </h5>
@@ -608,10 +651,11 @@
 
                                         <!-- Tombol -->
                                         <a href="{{ route('dokumen.show', $kandidat->id) }}"
-                                            class="btn btn-outline-info w-100 fw-semibold shadow-sm">
+                                            style="background-color: #01040e; border-color: #01040e;"
+                                            class="btn text-white  w-100 fw-semibold shadow-sm">
                                             <i class="bi bi-folder2-open me-2"></i> Lihat Dokumen
-
                                         </a>
+
                                     </div>
 
                                     <!-- Footer -->
@@ -766,12 +810,14 @@
                     {{-- distribusi status kandidat --}}
                     <!-- Tambahkan script chart -->
 
-
                     @include('kandidat.index')
 
             </div>
             {{-- super admin --}}
             @endif
+
+            @include('components.table_kandidat')
+
         </section>
     </div>
 

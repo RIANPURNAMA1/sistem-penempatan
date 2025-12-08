@@ -26,10 +26,28 @@
         <div class="card shadow-sm border-0 rounded-4">
             <div class="card-body p-4">
                 @if ($alreadyRegistered)
-                    <div class="alert alert-warning">
-                        <i class="bi bi-exclamation-triangle-fill"></i>
-                        Anda sudah melakukan pendaftaran sebelumnya. Form pendaftaran tidak dapat diakses lagi.
-                    </div>
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function() {
+                            Swal.fire({
+                                title: 'Peringatan!',
+                                text: 'Anda sudah melakukan pendaftaran sebelumnya dan tidak dapat mendaftar lagi.',
+                                icon: 'warning',
+                                showCancelButton: false,
+                                allowOutsideClick: false,
+                                allowEscapeKey: false,
+                                confirmButtonText: 'Kembali',
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    window.location = '/';
+                                }
+                            });
+
+                            const form = document.getElementById("cvForm");
+                            if (form) {
+                                [...form.elements].forEach(input => input.disabled = true);
+                            }
+                        });
+                    </script>
                 @else
                     <form action="{{ route('pendaftaran.store') }}" method="POST" enctype="multipart/form-data"
                         class="needs-validation" novalidate>
@@ -234,41 +252,49 @@
                                             'label' => 'Foto Diri',
                                             'name' => 'foto',
                                             'accept' => 'image/jpeg,image/png,application/pdf',
+                                            'format' => 'JPG/PNG',
                                         ],
                                         [
                                             'label' => 'Kartu Keluarga (KK)',
                                             'name' => 'kk',
                                             'accept' => 'image/jpeg,image/png,application/pdf',
+                                            'format' => 'PDF',
                                         ],
                                         [
                                             'label' => 'KTP',
                                             'name' => 'ktp',
                                             'accept' => 'image/jpeg,image/png,application/pdf',
+                                            'format' => 'PDF',
                                         ],
                                         [
                                             'label' => 'Bukti Pelunasan',
                                             'name' => 'bukti_pelunasan',
                                             'accept' => 'image/jpeg,image/png,application/pdf',
+                                            'format' => 'PDF',
                                         ],
                                         [
                                             'label' => 'Akte Kelahiran',
                                             'name' => 'akte',
                                             'accept' => 'image/jpeg,image/png,application/pdf',
+                                            'format' => 'PDF',
                                         ],
                                         [
                                             'label' => 'Ijazah Terakhir',
                                             'name' => 'ijasah',
                                             'accept' => 'image/jpeg,image/png,application/pdf',
+                                            'format' => 'PDF',
                                         ],
                                         [
                                             'label' => 'Sertifikat JFT',
                                             'name' => 'sertifikat_jft',
                                             'accept' => 'image/jpeg,image/png,application/pdf',
+                                            'format' => 'PDF',
                                         ],
                                         [
                                             'label' => 'Sertifikat SSW',
                                             'name' => 'sertifikat_ssw',
                                             'accept' => 'image/jpeg,image/png,application/pdf',
+                                            'format' => 'PDF',
                                         ],
                                     ];
                                 @endphp
@@ -282,7 +308,7 @@
                                             name="{{ $dok['name'] }}" accept="{{ $dok['accept'] }}"
                                             data-preview="{{ $dok['name'] }}-preview" required>
 
-                                        <div class="form-text">Format diperbolehkan: PDF, JPG, PNG.</div>
+                                        <div class="form-text">Format diperbolehkan: {{ $dok['format'] }}</div>
 
                                         <!-- Preview Container -->
                                         <div id="{{ $dok['name'] }}-preview" class="mt-2"></div>

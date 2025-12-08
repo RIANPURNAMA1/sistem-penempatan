@@ -313,7 +313,7 @@
                             </div>
                         </div>
 
-                        <form id="" action="{{ route('cv.updatekandidat', $cv->id) }}" method="POST"
+                        <form id="formUpdateCv"action="{{ route('cv.updatekandidat', $cv->id) }}" method="POST"
                             enctype="multipart/form-data">
                             @method('PUT')
                             @csrf
@@ -2196,6 +2196,79 @@
 
     <script>
         $(document).ready(function() {
+
+
+            // rquest 
+            // SUBMIT FORM DENGAN AJAX + SWEET ALERT
+            $("#formUpdateCv").on("submit", function(e) {
+                e.preventDefault();
+
+                let formData = new FormData(this);
+                let url = $(this).attr("action");
+
+                Swal.fire({
+                    title: "Konfirmasi",
+                    text: "Apakah data sudah benar dan siap diperbarui?",
+                    icon: "question",
+                    showCancelButton: true,
+                    confirmButtonText: "Ya, Update!",
+                    cancelButtonText: "Batal"
+                }).then((result) => {
+
+                    if (result.isConfirmed) {
+
+                        $.ajax({
+                            type: "POST",
+                            url: url,
+                            data: formData,
+                            processData: false,
+                            contentType: false,
+                            beforeSend: function() {
+                                Swal.fire({
+                                    title: "Memproses...",
+                                    text: "Tunggu sebentar",
+                                    allowOutsideClick: false,
+                                    didOpen: () => {
+                                        Swal.showLoading();
+                                    }
+                                });
+                            },
+
+                            success: function(response) {
+
+                                Swal.fire({
+                                    icon: "success",
+                                    title: "Berhasil!",
+                                    text: "Data berhasil diperbarui."
+                                }).then(() => {
+                                    location
+                                .reload(); // atau redirect ke halaman lain
+                                });
+
+                            },
+
+                            error: function(xhr) {
+                                let pesan = "Terjadi kesalahan.";
+
+                                if (xhr.responseJSON && xhr.responseJSON.message) {
+                                    pesan = xhr.responseJSON.message;
+                                }
+
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Gagal!",
+                                    text: pesan
+                                });
+                            }
+                        });
+
+                    }
+
+                });
+
+            });
+
+
             let currentStep = 1;
             const totalSteps = 7;
 

@@ -169,72 +169,81 @@
                 </table>
             </div>
         </div>
+        @if (auth()->check() && auth()->user()->role === 'super-admin')
+            <!-- Back Button -->
+            <div class="mt-3">
+                <a href="{{ route('kandidat.data') }}" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left-circle me-1"></i> Kembali ke Daftar Kandidat
+                </a>
+            </div>
+        @endif
 
-        <!-- Back Button -->
-        <div class="mt-3">
-            <a href="{{ route('kandidat.data') }}" class="btn btn-secondary">
-                <i class="bi bi-arrow-left-circle me-1"></i> Kembali ke Daftar Kandidat
-            </a>
-        </div>
-
+        @if (auth()->check() && auth()->user()->role === 'Cabang Cianjur Selatan Mendunia,Cabang Cianjur Pamoyanan Mendunia,Cabang Batam Mendunia,Cabang Banyuwangi Mendunia,Cabang Kendal Mendunia,Cabang Pati Mendunia,Cabang Tulung Agung Mendunia,Cabang Bangkalan Mendunia,Cabang Bojonegoro Mendunia,Cabang Jember Mendunia,Cabang Wonosobo Mendunia,Cabang Eshan Mendunia')
+            <!-- Back Button -->
+            <div class="mt-3">
+                <a href="/" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left-circle me-1"></i> Kembali ke Dashboard
+                </a>
+            </div>
+        @endif
     </div>
-     <!-- JS Dependencies -->
-        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-        <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-        <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- JS Dependencies -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-        <script>
-            // Inisialisasi DataTables
-            var table = $('#tableKandidatutama').DataTable({
-                responsive: true,
-                pageLength: 5,
-                lengthMenu: [5, 10, 25, 50],
-                language: {
-                    search: "🔍 Cari:",
-                    lengthMenu: "Tampilkan _MENU_ data",
-                    zeroRecords: "Tidak ada data ditemukan",
-                    info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
-                    paginate: {
-                        previous: "←",
-                        next: "→"
-                    }
+    <script>
+        // Inisialisasi DataTables
+        var table = $('#tableKandidatutama').DataTable({
+            responsive: true,
+            pageLength: 5,
+            lengthMenu: [5, 10, 25, 50],
+            language: {
+                search: "🔍 Cari:",
+                lengthMenu: "Tampilkan _MENU_ data",
+                zeroRecords: "Tidak ada data ditemukan",
+                info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
+                paginate: {
+                    previous: "←",
+                    next: "→"
                 }
-            });
+            }
+        });
 
 
-            // Custom filter untuk Cabang dan Status
-            $.fn.dataTable.ext.search.push(
-                function(settings, data, dataIndex) {
-                    var selectedCabang = $('#filterCabang').val();
-                    var selectedStatus = $('#filterStatus').val();
+        // Custom filter untuk Cabang dan Status
+        $.fn.dataTable.ext.search.push(
+            function(settings, data, dataIndex) {
+                var selectedCabang = $('#filterCabang').val();
+                var selectedStatus = $('#filterStatus').val();
 
-                    // Ambil elemen row
-                    var rowNode = table.row(dataIndex).node();
+                // Ambil elemen row
+                var rowNode = table.row(dataIndex).node();
 
-                    // Ambil teks cabang dan status
-                    var cabang = $('td:eq(3)', rowNode).text().trim(); // kolom Cabang
-                    var status = $('td:eq(4)', rowNode).text().trim(); // kolom Status Kandidat
+                // Ambil teks cabang dan status
+                var cabang = $('td:eq(3)', rowNode).text().trim(); // kolom Cabang
+                var status = $('td:eq(4)', rowNode).text().trim(); // kolom Status Kandidat
 
-                    var cabangMatch = selectedCabang === "" || cabang === selectedCabang;
-                    var statusMatch = selectedStatus === "" || status === selectedStatus;
+                var cabangMatch = selectedCabang === "" || cabang === selectedCabang;
+                var statusMatch = selectedStatus === "" || status === selectedStatus;
 
-                    return cabangMatch && statusMatch;
-                }
-            );
+                return cabangMatch && statusMatch;
+            }
+        );
 
-            // Event filter change
-            $('#filterCabang, #filterStatus').on('change', function() {
-                table.draw(); // redraw tabel dengan filter baru
-            });
+        // Event filter change
+        $('#filterCabang, #filterStatus').on('change', function() {
+            table.draw(); // redraw tabel dengan filter baru
+        });
 
-            // Reset filter
-            $('#resetFilter').on('click', function() {
-                $('#filterCabang').val('');
-                $('#filterStatus').val('');
-                table.draw();
-            });
-        </script>
+        // Reset filter
+        $('#resetFilter').on('click', function() {
+            $('#filterCabang').val('');
+            $('#filterStatus').val('');
+            table.draw();
+        });
+    </script>
 
 @endsection

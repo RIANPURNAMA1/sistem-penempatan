@@ -452,12 +452,18 @@
                 </table>
             </div>
 
-            <button class="btn btn-info btn-sm mb-3 toggle-cv p-2" type="button">
-                <i class="bi bi-eye"></i> Lihat Semua
+            <!-- Tombol Lihat -->
+            <button class="btn btn-sm mb-3 toggle-cv text-white" type="button"
+                style="background-color: #01040e; border-color: #01040e;">
+                <i class="bi bi-eye"></i> Lihat
             </button>
-            <a href="{{ route('pendaftaran.cv.edit', $cv->id) }}" class="btn btn-warning fw-semibold mb-3">
-                <i class="bi bi-pencil-square me-1"></i> Edit CV
+
+            <!-- Tombol Edit -->
+            <a href="{{ route('pendaftaran.cv.edit', $cv->id) }}" class="btn btn-sm fw-semibold mb-3 text-white"
+                style="background-color: #01040e; border-color: #01040e;">
+                <i class="bi bi-pencil-square me-1 py-3"></i>Edit
             </a>
+
         @endforeach
     </div>
 </div>

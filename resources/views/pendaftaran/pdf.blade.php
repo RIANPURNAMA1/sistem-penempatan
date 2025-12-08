@@ -44,10 +44,7 @@
             color: white;
         }
 
-        .bg-warning {
-            background-color: #ffc107;
-            color: black;
-        }
+     
 
         .bg-info {
             background-color: #17a2b8;
@@ -77,9 +74,17 @@
 </head>
 
 <body>
-    <h4>Data Pendaftaran Kandidat</h4>
-    <table>
-        <thead>
+
+    <!-- HEADER LAPORAN -->
+    <div style="text-align: center; margin-bottom: 20px;">
+        <h2 style="margin: 0; font-weight: bold;">LAPORAN PENDAFTARAN KANDIDAT</h2>
+        <p style="margin: 0; font-size: 14px;">Data Pendaftaran Kandidat Terbaru</p>
+        <hr style="margin-top: 10px;">
+    </div>
+
+    <!-- TABEL DATA -->
+    <table width="100%" border="1" cellspacing="0" cellpadding="7" style="border-collapse: collapse; font-size: 14px;">
+        <thead style="background: #f0f0f0; font-weight: bold;">
             <tr>
                 <th>NIK</th>
                 <th>Nama</th>
@@ -92,6 +97,7 @@
                 <th>Verifikasi</th>
             </tr>
         </thead>
+
         <tbody>
             @foreach ($pendaftarans as $p)
                 <tr>
@@ -102,25 +108,28 @@
                     <td>{{ $p->no_wa }}</td>
                     <td>{{ $p->jenis_kelamin }}</td>
                     <td>{{ \Carbon\Carbon::parse($p->tanggal_daftar)->translatedFormat('d F Y') }}</td>
-                    </td>
                     <td>{{ $p->alamat }}</td>
                     <td>
                         @php
                             $status = $p->verifikasi;
                             $class = match ($status) {
-                                'menunggu' => 'bg-warning',
-                                'data belum lengkap' => 'bg-info',
-                                'diterima' => 'bg-success',
-                                'ditolak' => 'bg-danger',
-                                default => 'bg-info',
+                                'menunggu' => '',
+                                'data belum lengkap' => '',
+                                'diterima' => '',
+                                'ditolak' => '',
+                                default => '',
                             };
                         @endphp
-                        <span class="badge {{ $class }}">{{ ucfirst($status) }}</span>
+                        <span style="padding: 4px 8px; border-radius: 4px; {{ $class }}">
+                            {{ ucfirst($status) }}
+                        </span>
                     </td>
                 </tr>
             @endforeach
         </tbody>
     </table>
+
 </body>
+
 
 </html>

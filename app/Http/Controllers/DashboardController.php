@@ -98,14 +98,13 @@ class DashboardController extends Controller
         }
 
         // ===============================
-        // 1. AMBIL SEMUA USER BESERTA STATUS ONLINE
+        // 1. AMBIL SEMUA USER DAN STATUS ONLINE
         // ===============================
         $users = User::select('id', 'name', 'last_activity')
-            ->orderBy('name', 'asc')
             ->get()
             ->map(function ($user) {
 
-                // Jika belum ada aktivitas → OFFLINE
+                // Jika belum pernah aktivitas, otomatis OFFLINE
                 if (!$user->last_activity) {
                     $user->status = 'Offline';
                     return $user;
@@ -116,7 +115,7 @@ class DashboardController extends Controller
 
                 if ($diff <= 2) {
                     $user->status = 'Online';
-                } elseif ($diff > 2 && $diff <= 10) {
+                } elseif ($diff <= 10) {
                     $user->status = 'Idle';
                 } else {
                     $user->status = 'Offline';
@@ -124,6 +123,22 @@ class DashboardController extends Controller
 
                 return $user;
             });
+
+        // ===============================
+        // 2. URUTKAN: ONLINE → IDLE → OFFLINE → ALFABET
+        // ===============================
+        $users = $users->sortBy([
+            fn($a, $b) => strcmp($a->status, $b->status), // diprioritaskan dengan mapping manual
+            'name',
+        ]);
+
+        // Lakukan mapping prioritas (Online = 1, Idle = 2, Offline = 3)
+        $users = $users->sortBy(function ($u) {
+            return [
+                $u->status === 'Online' ? 1 : ($u->status === 'Idle' ? 2 : 3),
+                $u->name
+            ];
+        })->values();
 
         // distribusi status kandidat
         // Ambil semua status dan jumlahnya
@@ -184,6 +199,11 @@ class DashboardController extends Controller
             ->withQueryString(); // agar filter tidak hilang saat berpindah halaman
 
 
+             // Ambil data kandidat beserta relasi pendaftaran, cabang, dan institusi
+        $kandidatstableall = Kandidat::with(['pendaftaran', 'cabang', 'institusi'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(15); // pagination, 15 data per halaman
+
 
 
         return view('dashboard', compact(
@@ -195,7 +215,7 @@ class DashboardController extends Controller
             'kandidats',
             'cvs', // <-- data kandidat
             'kandidatsFiltered',
-
+        'kandidatstableall',
             'statusLabels',
             'statusCounts',
             'users'

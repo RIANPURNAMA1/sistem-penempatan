@@ -176,7 +176,7 @@
                 </div>
             </div>
 
-            <button type="submit" id="loginBtn" class="btn btn-warning w-100 mt-3">
+            <button type="submit" id="loginBtn" class="btn w-100 mt-3" style="background-color: #273044; color:white;">
                 <i class="bi bi-box-arrow-in-right me-1"></i> Masuk
             </button>
         </form>

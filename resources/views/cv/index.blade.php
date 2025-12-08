@@ -237,7 +237,7 @@
 
                                     <!-- Dropdown untuk CV -->
                                     <div class="btn-group btn-group-sm" role="group">
-                                        <button type="button" class="btn btn-outline-secondary dropdown-toggle"
+                                        <button type="button" class="btn btn-outline-info dropdown-toggle"
                                             data-bs-toggle="dropdown" aria-expanded="false">
                                             <i class="bi bi-file-pdf me-1"></i> Download CV
                                         </button>

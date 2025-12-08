@@ -16,6 +16,19 @@
         font-size: 10px !important;
     }
 
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 11px;
+    }
+
+    table td,
+    table th {
+        border: 1px solid #000 !important;
+        padding: 2px;
+        vertical-align: top;
+    }
+
     .btn-container {
         margin-bottom: 1rem;
         display: flex;
@@ -257,7 +270,7 @@
     </div>
 
 
-    <div class="container2">
+    <div class="container2 d-flex" style="">
 
         <div class="container" style="display: flex; justify-content:center;  gap: 1rem">
             <div class="" id="cvArea">
@@ -312,34 +325,24 @@
                 </table>
 
 
-                <!-- ========================================= -->
-                <!-- 生年月日（Tanggal Lahir） -->
-                <!-- ========================================= -->
+
                 <table border="1" cellspacing="0"
                     style="width: 450px; border-collapse: collapse; border-top: none;">
-                    <thead>
-                        <tr>
-                            <td style="width: 50px; padding: 0.5rem;">生年月日</td>
-                            @php($cv->tanggal_lahir)
+                    <tr>
+                        <td style="width: 120px; padding: 0.5rem;">生年月日</td>
 
-                            @endphp
+                        <td style="padding-left: 0.5rem;">
+                            {{-- Format tanggal lahir --}}
+                            {{ \Carbon\Carbon::parse($cv->tanggal_lahir)->format('Y') }} 年
+                            {{ \Carbon\Carbon::parse($cv->tanggal_lahir)->format('m') }} 月
+                            {{ \Carbon\Carbon::parse($cv->tanggal_lahir)->format('d') }} 日
 
-                            <td style="padding-left: 0.5rem;">
-
-                                {{ $cv->tempat_lahir }} （満 {{ $cv->usia }} 歳）
-
-                            </td>
-
-                            {{-- <th style="padding-left: 0.5rem;">
-                                {{ \Carbon\Carbon::parse($cv->tempat_tanggal_lahir)->format('Y') }} 年 /
-                                {{ \Carbon\Carbon::parse($cv->tempat_tanggal_lahir)->format('m') }} 月 /
-                                {{ \Carbon\Carbon::parse($cv->tempat_tanggal_lahir)->format('d') }} 日
-                                （満 {{ $cv->usia }} 歳）
-                            </th> --}}
-
-                        </tr>
-                    </thead>
+                            {{-- Tempat lahir dan usia --}}
+                            （{{ $cv->tempat_lahir }} ・ 満 {{ $cv->usia }} 歳）
+                        </td>
+                    </tr>
                 </table>
+
 
                 <!-- ========================= -->
                 <!-- Alamat） -->
@@ -936,7 +939,7 @@
         <div class="">
             <div class="card-body d-flex justify-content-center" style="display: flex; justify-content: center;">
                 {{-- SERTIFIKAT --}}
-                <tr>
+                {{-- <tr>
 
                     <td>
                         @php
@@ -972,7 +975,7 @@
                             </div>
                         @endif
                     </td>
-                </tr>
+                </tr> --}}
             </div>
         </div>
     </div>

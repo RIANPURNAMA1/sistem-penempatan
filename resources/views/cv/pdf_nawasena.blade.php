@@ -186,14 +186,14 @@
         </table>
         <table>
             <tr>
-                <td style="width: 20%" class="text-center">年（西暦）</td>
-                <td>月</td>
+                <td style="width: 20%" class="text-center">入学年</td>
+                <td class="text-center">卒業年</td>
                 <td style="text-align: center" class="">学歴（高校卒業以降）</td>
             </tr>
             @foreach ($cv->pendidikans as $p)
                 <tr>
-                    <td style="width: 20%" class="text-center">{{ $p->tahun_masuk }} - {{ $p->tahun_masuk }}</td>
-                    <td>{{ $p->bulan ?? '-' }}</td>
+                    <td style="width: 20%" class="text-center">{{ $p->tahun_masuk }}</td>
+                    <td class="text-center">{{ $p->tahun_lulus ?? '-' }}</td>
                     <td style="width:70%">{{ $p->nama }}</td>
                 </tr>
             @endforeach
@@ -220,14 +220,14 @@
         </table>
         <table>
             <tr>
-                <td style="width: 20%" class="text-center">年（西暦）</td>
-                <td>月</td>
+                <td style="width: 20%" class="text-center">入社日</td>
+                <td class="text-center"> 退社日</td>
                 <td style="text-align: center">職歴(なければアルバイト歴)</td>
             </tr>
             @foreach ($cv->pengalamans as $p)
                 <tr>
-                    <td style="width: 20%" class="text-center">{{ $p->tanggal_masuk }} - {{ $p->tanggal_keluar }}</td>
-                    <td>{{ $p->bulan }}</td>
+                    <td style="width: 20%" class="text-center">{{ $p->tanggal_masuk }}</td>
+                    <td> {{ $p->tanggal_keluar }}</td>
                     <td style="width:70%">{{ $p->perusahaan }}</td>
                 </tr>
             @endforeach
@@ -491,7 +491,7 @@
                     身長
                 </td>
                 <td>
-                   {{$cv->tinggi_badan}} cm
+                    {{ $cv->tinggi_badan }} cm
                 </td>
             </tr>
         </table>
@@ -501,62 +501,64 @@
                     宗教
                 </td>
                 <td style="width:50%;">
-                    {{$cv->agama}}
+                    {{ $cv->agama }}
                 </td>
                 <td style="background-color:rgb(213, 228, 197); width:20%;">
                     体重
                 </td>
                 <td>
-                   {{$cv->berat_badan}} kg
+                    {{ $cv->berat_badan }} kg
                 </td>
             </tr>
         </table>
 
-            {{-- sertifikat --}}
-    <div class=" mt-4">
-        <div class="">
-            <div class="card-body d-flex justify-content-center">
-                {{-- SERTIFIKAT --}}
-                <tr>
+    
+        <div class=" mt-4">
+            <div class="">
+                <div class="card-body d-flex justify-content-center">
+                    {{-- SERTIFIKAT --}}
+                    <tr>
 
-                    <td>
-                        @php
-                            $sertifikats = json_decode($cv->sertifikat_files, true) ?? [];
-                        @endphp
+                        {{-- <td>
+                            @php
+                                $sertifikats = json_decode($cv->sertifikat_files, true) ?? [];
+                            @endphp
 
-                        @if (count($sertifikats) === 0)
-                            <span class="text-muted">Tidak ada file</span>
-                        @else
-                            <div class="d-flex flex-wrap gap-2">
-                                @foreach ($sertifikats as $file)
-                                    @php
-                                        $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
-                                        $url = asset($file);
-                                    @endphp
+                            @if (count($sertifikats) === 0)
+                                <span class="text-muted">Tidak ada file</span>
+                            @else
+                                <div class="d-flex flex-column gap-3">
+                                    @foreach ($sertifikats as $file)
+                                        @php
+                                            $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+                                            $url = asset($file);
+                                        @endphp
 
-                                    @if (in_array($ext, ['jpg', 'jpeg', 'png']))
-                                        <a href="{{ $url }}" target="_blank">
+                                        {{-- TAMPILKAN GAMBAR --}}
+                                        {{-- @if (in_array($ext, ['jpg', 'jpeg', 'png']))
                                             <img src="{{ $url }}"
-                                                style="width:300px; height:auto; object-fit:cover; border-radius:8px; border:1px solid #ccc;">
-                                        </a>
-                                    @elseif ($ext === 'pdf')
-                                        <a href="{{ $url }}" target="_blank" class="btn btn-danger btn-sm">
-                                            <i class="bi bi-file-earmark-pdf"></i> PDF Sertifikat
-                                        </a>
-                                    @else
-                                        <a href="{{ $url }}" target="_blank"
-                                            class="btn btn-secondary btn-sm">
-                                            <i class="bi bi-file-earmark-text"></i> Lihat Dokumen
-                                        </a>
-                                    @endif
-                                @endforeach
-                            </div>
-                        @endif
-                    </td>
-                </tr>
+                                                style="width:300px; height:auto; object-fit:cover; border-radius:8px; border:1px solid #ccc;"> --}}
+
+                                            {{-- TAMPILKAN PDF LANGSUNG --}}
+                                        {{-- @elseif ($ext === 'pdf')
+                                            <iframe src="{{ $url }}" style="width: 500px; height: 900px; ">
+                                            </iframe> --}}
+
+                                            {{-- TAMPILKAN FILE LAIN SEBAGAI LINK --}}
+                                        {{-- @else
+                                            <a href="{{ $url }}" target="_blank">
+                                                <i class="bi bi-file-earmark-text"></i> Lihat Dokumen
+                                            </a>
+                                        @endif
+                                    @endforeach
+                                </div>
+                            @endif --}}
+                        {{-- </td> --}} 
+
+                    </tr>
+                </div>
             </div>
         </div>
-    </div>
 
     </div>
 

@@ -187,13 +187,13 @@
         /* Responsive */
         @media (max-width: 768px) {
             .step {
-                width: 40px;
+                width: 50px;
                 height: 40px;
                 font-size: 14px;
             }
 
             .step-label {
-                font-size: 10px;
+                font-size: 8px;
                 top: 50px;
             }
 
@@ -305,7 +305,7 @@
                             </div>
                         </div>
 
-                         <form id="cvForm" action="{{ route('pendaftaran.cv.store') }}" method="POST"
+                        <form id="cvForm" action="{{ route('pendaftaran.cv.store') }}" method="POST"
                             enctype="multipart/form-data">
                             @method('POST')
                             @csrf
@@ -452,8 +452,8 @@
                                         <div class="row g-3">
                                             <div class="col-md-6">
                                                 <!-- ======================================================
-                                                                                                                                                                     MULTI FILE: pas_foto[]
-                                                                                                                                                                ====================================================== -->
+                                                                                                                                                                                 MULTI FILE: pas_foto[]
+                                                                                                                                                                            ====================================================== -->
                                                 <label class="form-label fw-semibold mb-1">
                                                     Silahkan upload dokumen / foto tambahan 👇
                                                 </label>
@@ -472,8 +472,8 @@
                                                 <div id="previewPasFoto" class="mt-3 d-flex flex-wrap gap-3"></div>
 
                                                 <!-- ======================================================
-                                                                                                                                                                     SINGLE FILE: pas_foto_cv
-                                                                                                                                                                ====================================================== -->
+                                                                                                                                                                                 SINGLE FILE: pas_foto_cv
+                                                                                                                                                                            ====================================================== -->
                                                 <label class="form-label fw-semibold mb-1 mt-4">
                                                     Silahkan upload pas foto untuk CV Anda 👇
                                                 </label>
@@ -1541,76 +1541,21 @@
 
                                 {{-- HALAMAN 4: MAGANG (Eks Jisshu) --}}
                                 <div class="card mb-4">
+                                    <!-- INFORMASI PENTING -->
+                                    <div class="bg-info text-dark rounded-3 py-4 px-4 mx-4">
+                                        <strong class="d-block mb-1">Perhatian:</strong>
+                                        <ul class="mb-0 ps-3">
+
+                                            <li>Jika tidak memiliki pengalaman pekerjaan Magang (Eks Jisshu)
+                                                abaikan
+                                                saja / jika ada klik tombol Tambah Data Magang
+                                            </li>
+                                        </ul>
+                                    </div>
                                     <div class="card-header fw-bold">Magang (Eks Jisshu)</div>
                                     <div class="card-body">
 
                                         <div id="magangContainer">
-
-                                            <div class="row g-3 mb-3 magang-item">
-
-                                                <!-- Nama Perusahaan -->
-                                                <div class="col-md-3">
-                                                    <label class="form-label fw-bold">Nama Perusahaan *</label>
-                                                    <p class="text-muted small mb-1">
-                                                        Isi nama perusahaan tempat Anda menjalani program Magang (Jisshu).
-                                                        <br><b>Contoh: ABC Seisakusho Co., Ltd</b>
-                                                    </p>
-                                                    <input type="text" name="magang_perusahaan[]" class="form-control"
-                                                        placeholder="Contoh: ABC Seisakusho Co., Ltd" required>
-                                                </div>
-
-                                                <!-- Kota / Prefektur -->
-                                                <div class="col-md-3">
-                                                    <label class="form-label fw-bold">Kota / Prefektur *</label>
-                                                    <p class="text-muted small mb-1">
-                                                        Masukkan lokasi magang berdasarkan kota dan prefektur.
-                                                        <br><b>Contoh: Nagoya / Aichi</b>
-                                                    </p>
-                                                    <input type="text" name="magang_kota_prefektur[]"
-                                                        class="form-control" placeholder="Contoh: Nagoya / Aichi"
-                                                        required>
-                                                </div>
-
-                                                <!-- Bidang -->
-                                                <div class="col-md-3">
-                                                    <label class="form-label fw-bold">Bidang *</label>
-                                                    <p class="text-muted small mb-1">
-                                                        Tulis bidang pekerjaan selama Anda mengikuti magang.
-                                                        <br><b>Contoh: Produksi Komponen, Pertanian, Perikanan</b>
-                                                    </p>
-                                                    <input type="text" name="magang_bidang[]" class="form-control"
-                                                        placeholder="Contoh: Produksi Komponen" required>
-                                                </div>
-
-                                                <!-- Tahun Mulai -->
-                                                <div class="col-md-2">
-                                                    <label class="form-label fw-bold">Tahun Mulai *</label>
-                                                    <p class="text-muted small mb-1">
-                                                        Masukkan tahun dan bulan mulai magang.
-                                                        <br><b>Contoh: 2020-04</b>
-                                                    </p>
-                                                    <input type="month" name="magang_tahun_mulai[]"
-                                                        class="form-control" required>
-                                                </div>
-
-                                                <!-- Tahun Selesai -->
-                                                <div class="col-md-2">
-                                                    <label class="form-label fw-bold">Tahun Selesai *</label>
-                                                    <p class="text-muted small mb-1">
-                                                        Masukkan tahun dan bulan selesai magang.
-                                                        <br><b>Contoh: 2023-03</b>
-                                                    </p>
-                                                    <input type="month" name="magang_tahun_selesai[]"
-                                                        class="form-control" required>
-                                                </div>
-
-                                                <!-- Hapus -->
-                                                <div class="col-md-1 d-flex align-items-end">
-                                                    <button type="button"
-                                                        class="btn btn-danger btn-sm remove-row">X</button>
-                                                </div>
-
-                                            </div>
 
                                         </div>
 
@@ -1933,9 +1878,13 @@
                                 </button>
                                 <button type="submit" class="btn btn-step btn-submit ms-auto" id="submitBtn"
                                     style="display: none;">
-                                    <i class="fas fa-paper-plane me-2"></i>Kirim
+                                    <span id="btnText"><i class="fas fa-paper-plane me-2"></i>Kirim</span>
+                                    <span id="btnLoading" class="d-none">
+                                        <i class="fas fa-spinner fa-spin me-2"></i>Memproses...
+                                    </span>
                                 </button>
-                                
+
+
                             </div>
                         </form>
 
@@ -2861,14 +2810,12 @@
                 }
             });
 
-
-            // =============== CLIENT-SIDE VALIDATION ===============
-            // SUBMIT FORM
+            // =============== CLIENT-SIDE VALIDATION + LOADING BUTTON ===============
             $('#cvForm').on('submit', function(e) {
-                e.preventDefault(); // Stop reload
+                e.preventDefault();
 
                 let form = $('#cvForm')[0];
-                let formData = new FormData(form); // support file upload
+                let formData = new FormData(form);
 
                 $.ajax({
                     url: $('#cvForm').attr('action'),
@@ -2878,41 +2825,41 @@
                     contentType: false,
 
                     beforeSend: function() {
-                        $('#btnSubmit')
-                            .prop('disabled', true)
-                            .text('Mengirim...');
+                        // Tombol berubah menjadi loading
+                        $('#submitBtn').prop('disabled', true);
+                        $('#btnText').addClass('d-none');
+                        $('#btnLoading').removeClass('d-none');
+
+                        // Bersihkan error lama
                         $('.invalid-feedback').remove();
                         $('.is-invalid').removeClass('is-invalid');
                     },
 
                     success: function(response) {
-                        if (response.status === 'success') {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Berhasil!',
-                                text: response.message,
-                                timer: 1800,
-                                showConfirmButton: false
-                            });
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: response.message,
+                            timer: 1800,
+                            showConfirmButton: false
+                        });
 
-                            setTimeout(function() {
-                                // Redirect ke dashboard setelah Swal selesai
-                                window.location.href = '/';
-                            }, 1500);
-                        }
+                        setTimeout(() => {
+                            window.location.href = '/';
+                        }, 1500);
                     },
 
                     error: function(xhr) {
-                        $('#btnSubmit')
-                            .prop('disabled', false)
-                            .text('Simpan');
+                        // Kembalikan tombol ke normal
+                        $('#submitBtn').prop('disabled', false);
+                        $('#btnText').removeClass('d-none');
+                        $('#btnLoading').addClass('d-none');
 
                         if (xhr.status === 422) {
                             let errors = xhr.responseJSON.errors;
 
                             $.each(errors, function(field, messages) {
                                 let input = $('[name="' + field + '"]');
-
                                 input.addClass('is-invalid');
 
                                 input.after(
@@ -2926,7 +2873,6 @@
                                 title: 'Validasi Gagal',
                                 text: 'Silakan periksa kembali isian Anda.',
                             });
-
                         } else {
                             Swal.fire({
                                 icon: 'error',
@@ -2938,6 +2884,7 @@
                 });
 
             });
+
 
             // =============== HELPER FUNCTION ===============
             function validateEmail(email) {

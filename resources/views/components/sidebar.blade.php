@@ -86,7 +86,7 @@
                         <li class="sidebar-item active-sidebar ">
                             <a href="{{ url('/') }}" class='sidebar-link rounded-full'>
                                 <i class="bi bi-grid-fill "></i>
-                                <span class="text-dark">Dashboard</span>
+                                <span class="text-white">Dashboard</span>
                             </a>
                         </li>
 

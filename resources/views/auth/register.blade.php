@@ -94,7 +94,7 @@
             </div>
 
             <!-- Button -->
-            <button id="btnRegister" type="submit" class="btn btn-warning w-100 mt-3 fw-bold">
+            <button id="btnRegister" type="submit" class="btn  w-100 mt-3 fw-bold" style="background-color: #273044; color:white;">
                 <span id="btnText"><i class="bi bi-person-plus me-1"></i> Daftar</span>
                 <span id="btnLoading" class="d-none">
                     <span class="spinner-border spinner-border-sm me-2"></span> Memproses...

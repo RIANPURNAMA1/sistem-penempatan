@@ -370,7 +370,7 @@
         <div class="">
             <div class="card-body d-flex justify-content-center" style="display: flex; justify-content: center;">
                 {{-- SERTIFIKAT --}}
-                <tr>
+                {{-- <tr>
 
                     <td>
                         @php
@@ -406,7 +406,7 @@
                             </div>
                         @endif
                     </td>
-                </tr>
+                </tr> --}}
             </div>
         </div>
     </div>

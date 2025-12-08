@@ -147,8 +147,6 @@ Route::middleware('auth')->group(function () {
 
 // Rute yang dapat diakses oleh SEMUA ROLE ADMIN
 Route::middleware(['auth', "role:$admin_roles"])->group(function () {
-    // Data Kandidat
-    Route::get('/kandidat/data', [KandidatController::class, 'index'])->name('kandidat.data');
 
     // Edit/Update Kandidat
     Route::prefix('kandidat')->group(function () {
@@ -165,6 +163,8 @@ Route::middleware(['auth', "role:$admin_roles"])->group(function () {
 
 // Rute Khusus SUPER ADMIN
 Route::middleware(['auth', 'role:super-admin'])->group(function () {
+        // Data Kandidat
+    Route::get('/kandidat/data', [KandidatController::class, 'index'])->name('kandidat.data');
 
     // update
     Route::put('/cv/update-kandidat/{id}', [CvController::class, 'updatecvkandidat'])
@@ -236,5 +236,5 @@ Route::middleware(['auth', 'role:super-admin'])->group(function () {
     Route::get('/kandidat/export/{id}', [KandidatController::class, 'export'])->name('kandidat.export');
     Route::post('/pendaftaran/import', [PendaftaranController::class, 'import'])->name('pendaftaran.import');
     Route::get('/pendaftaran/export/exels', [PendaftaranController::class, 'export']);
-    Route::get('/pendaftaran/export-pdf', [PendaftaranController::class, 'exportPDF'])->name('pendaftaran.export.pdf');
+    Route::get('/pendaftaran/export/pdf', [PendaftaranController::class, 'exportPDF'])->name('pendaftaran.export.pdf');
 });
