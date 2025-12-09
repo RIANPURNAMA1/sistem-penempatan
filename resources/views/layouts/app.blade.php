@@ -62,17 +62,15 @@
         <div id="main">
 
             @include('components.headers')
-            <header class="d-flex align-items-center mb-2 justify-content-between py-3 px-3">
-                <div class="d-flex align-items-center gap-2">
-                    <a href="#" class="burger-btn d-block d-xl-none  rounded-md  shadow-sm" style="background-color: #273044; padding:10px 20px ; border-radius:10px; color:white;">
-                        <i class="bi bi-list fs-4"></i>
-                    </a>
-                    <h5 class="m-0 fw-semibold"></h5>
+            <header class="d-flex align-items-center  justify-content-between py-3 px-3">
+                <div>
+
                 </div>
 
-                <div class="d-flex align-items-center gap-3">
+                <div class="d-flex align-items-center mt-3 gap-3">
                     <span class="fw-semibold small text-secondary">Welcome {{ auth()->user()->name }}</span>
                 </div>
+                
             </header>
 
 

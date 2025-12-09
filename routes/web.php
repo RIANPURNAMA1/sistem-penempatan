@@ -13,6 +13,7 @@ use App\Http\Controllers\KandidatController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PendaftaranController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
@@ -163,6 +164,8 @@ Route::middleware(['auth', "role:$admin_roles"])->group(function () {
 
 // Rute Khusus SUPER ADMIN
 Route::middleware(['auth', 'role:super-admin'])->group(function () {
+
+    Route::get('/admin/user', [UserController::class, 'index']);
         // Data Kandidat
     Route::get('/kandidat/data', [KandidatController::class, 'index'])->name('kandidat.data');
 

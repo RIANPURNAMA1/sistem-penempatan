@@ -250,8 +250,8 @@
         @endif
 
         <!-- Breadcrumb -->
-        <nav aria-label="breadcrumb" class="mb-4">
-            <ol class="breadcrumb border rounded-3 px-3 py-2 shadow-sm mb-0">
+        <nav aria-label=" breadcrumb" class="mb-4">
+            <ol class="breadcrumb border rounded-3 bg-white px-3 py-2 shadow-sm mb-0">
                 <li class="breadcrumb-item">
                     <a href="#" class="text-decoration-none text-secondary">
                         <i class="bi bi-house-door me-1"></i> Dashboard

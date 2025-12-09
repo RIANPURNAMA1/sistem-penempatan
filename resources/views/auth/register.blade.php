@@ -42,11 +42,10 @@
         </div>
         <h3 class="text-center fw-bold mb-2">Buat Akun Baru</h3>
         <p class="text-center text-muted mb-4">Isi data berikut untuk mendaftar</p>
-
         <form id="registerForm">
             @csrf
 
-            <!-- Name -->
+            <!-- Nama Lengkap -->
             <div class="mb-3">
                 <label class="form-label fw-semibold">Nama Lengkap</label>
                 <div class="input-group shadow-sm">
@@ -69,6 +68,7 @@
                 </div>
             </div>
 
+           
             <!-- Password -->
             <div class="mb-3">
                 <label class="form-label fw-semibold">Password</label>
@@ -81,7 +81,7 @@
                 </div>
             </div>
 
-            <!-- Confirm Password -->
+            <!-- Konfirmasi Password -->
             <div class="mb-3">
                 <label class="form-label fw-semibold">Konfirmasi Password</label>
                 <div class="input-group shadow-sm">
@@ -94,7 +94,8 @@
             </div>
 
             <!-- Button -->
-            <button id="btnRegister" type="submit" class="btn  w-100 mt-3 fw-bold" style="background-color: #273044; color:white;">
+            <button id="btnRegister" type="submit" class="btn w-100 mt-3 fw-bold"
+                style="background-color: #273044; color:white;">
                 <span id="btnText"><i class="bi bi-person-plus me-1"></i> Daftar</span>
                 <span id="btnLoading" class="d-none">
                     <span class="spinner-border spinner-border-sm me-2"></span> Memproses...
@@ -102,6 +103,7 @@
             </button>
 
         </form>
+
 
 
         <div class="text-center mt-3">

@@ -17,14 +17,14 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
-   protected $fillable = [
-    'name',
-    'email',
-    'password',
-    'role_id',
-    'cabang_id',
-     'google_id',
-];
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'role',
+        'cabang_id',
+        'google_id',
+    ];
 
 
     /**
@@ -55,10 +55,14 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class);
     }
 
-    public function pendaftarans()
+    
+  // Relasi ke Pendaftaran
+    public function pendaftaran()
     {
-        return $this->hasMany(Pendaftaran::class, 'user_id');
+        return $this->hasOne(Pendaftaran::class); // 1:1
+        // Jika 1 user bisa punya banyak pendaftaran: return $this->hasMany(Pendaftaran::class);
     }
+
 
     // Relasi ke User
     public function cv()
@@ -66,9 +70,9 @@ class User extends Authenticatable
         return $this->hasMany(Cv::class);
     }
 
-     // User memiliki 1 cabang (opsional)
+    // User memiliki 1 cabang (opsional)
     public function cabang()
     {
         return $this->belongsTo(Cabang::class);
-
-    }}
+    }
+}

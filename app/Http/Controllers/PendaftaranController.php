@@ -169,13 +169,8 @@ class PendaftaranController extends Controller
             'password_prometric' => $request->password_prometric,
             'pernah_ke_jepang' => $request->pernah_ke_jepang,
         ]);
-
-        // Controller Response
-        return response()->json([
-            'success' => true,
-            'message' => 'Pendaftaran berhasil disimpan!',
-            'redirect' => route('dashboard') // optional
-        ]);
+        // Controller Response untuk create pendaftaran biasa
+      return redirect()->back()->with('success', 'Berhasil mendaftar dan akun kandidat otomatis dibuat.');
     }
 
     /**

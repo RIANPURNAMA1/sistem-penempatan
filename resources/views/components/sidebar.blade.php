@@ -181,6 +181,14 @@
                                     <a href="{{ url('/admin') }}"
                                         class="sidebar-link d-flex align-items-center gap-2 py-2">
                                         <i class="bi bi-people-fill"></i>
+                                        <span class="fw-semibold">Manajemen Admin</span>
+                                    </a>
+                                </li>
+
+                                <li class="sidebar-item">
+                                    <a href="{{ url('/admin/user') }}"
+                                        class="sidebar-link d-flex align-items-center gap-2 py-2">
+                                        <i class="bi bi-people-fill"></i>
                                         <span class="fw-semibold">Manajemen User</span>
                                     </a>
                                 </li>

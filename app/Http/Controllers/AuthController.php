@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
+
+use App\Models\Cabang;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Str;
 use App\Models\Role;
@@ -12,10 +14,11 @@ use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
-    // Form register
+
     public function showRegister()
     {
-        return view('auth.register');
+        $cabangs = Cabang::all();
+        return view('auth.register', compact('cabangs'));
     }
 
 
@@ -24,6 +27,7 @@ class AuthController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
+            
             'password' => 'required|string|min:6|confirmed',
         ], [
             'name.required' => 'Ups! Nama harus diisi.',
@@ -133,7 +137,7 @@ class AuthController extends Controller
 
             Auth::login($user, true);
             // ⬅️ Kirim tanda sukses ke halaman login
-        session()->flash('google_success', 'Login Google berhasil!');
+            session()->flash('google_success', 'Login Google berhasil!');
 
             return redirect()->route('login');
         } catch (\Exception $e) {

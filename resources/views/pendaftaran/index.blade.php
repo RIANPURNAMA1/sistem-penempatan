@@ -49,11 +49,10 @@
                         });
                     </script>
                 @else
-                    <form id="formPendaftaran" action="{{ route('pendaftaran.store') }}" method="POST"
-                        enctype="multipart/form-data">
+                    <form action="{{ route('pendaftaran.store') }}" method="POST" enctype="multipart/form-data"
+                        class="needs-validation" novalidate>
                         @csrf
                         @method('POST')
-
 
                         <!-- ==================== Data Pribadi ==================== -->
                         <div class="mb-4">
@@ -325,7 +324,7 @@
                             <button type="reset" class="btn btn-secondary px-4 me-2 mb-2">
                                 <i class="bi bi-arrow-counterclockwise me-1 "></i> Reset
                             </button>
-                            <button type="submit" class="btn btn-warning px-4">
+                            <button id="btnSubmit" type="submit" class="btn btn-warning px-4">
                                 <span class="btn-text"><i class="bi bi-send-check-fill me-1"></i> Daftar Sekarang</span>
                                 <span class="spinner-border spinner-border-sm d-none" role="status"></span>
                             </button>
@@ -381,219 +380,67 @@
 
         $(document).ready(function() {
 
-
-            $(document).ready(function() {
-                // Handle form submission
-                $('#formPendaftaran').on('submit', function(e) {
-                    e.preventDefault();
-
-                    // Create FormData object to handle file uploads
-                    var formData = new FormData(this);
-
-                    // Show loading indicator (optional)
-                    var submitBtn = $(this).find('button[type="submit"]');
-                    var originalText = submitBtn.text();
-                    submitBtn.prop('disabled', true).text('Mengirim...');
-
-                    // Clear previous error messages
-                    $('.invalid-feedback').hide();
-                    $('.form-control, .form-select').removeClass('is-invalid');
-
-                    // AJAX Request
-                    $.ajax({
-                        url: $(this).attr('action'), // URL dari attribute action form
-                        type: 'POST',
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        headers: {
-                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                        },
-                        success: function(response) {
-                            // Handle success
-                            if (response.success) {
-                                // Show success message
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: 'Berhasil!',
-                                    text: response.message ||
-                                        'Pendaftaran berhasil disimpan',
-                                    confirmButtonText: 'OK'
-                                }).then(function() {
-                                    // Redirect atau reset form
-                                    if (response.redirect) {
-                                        window.location.href = response
-                                        .redirect;
-                                    } else {
-                                        $('#formPendaftaran')[0].reset();
-                                    }
-                                });
-                            }
-                        },
-                        error: function(xhr) {
-                            // Handle validation errors
-                            if (xhr.status === 422) {
-                                var errors = xhr.responseJSON.errors;
-
-                                // Display validation errors
-                                $.each(errors, function(field, messages) {
-                                    var input = $('[name="' + field + '"]');
-                                    input.addClass('is-invalid');
-                                    input.siblings('.invalid-feedback').text(
-                                        messages[0]).show();
-                                });
-
-                                // Scroll to first error
-                                var firstError = $('.is-invalid').first();
-                                if (firstError.length) {
-                                    $('html, body').animate({
-                                        scrollTop: firstError.offset().top - 100
-                                    }, 500);
-                                }
-
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Validasi Gagal',
-                                    text: 'Mohon periksa kembali form Anda',
-                                    confirmButtonText: 'OK'
-                                });
-                            } else {
-                                // Handle other errors
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: 'Terjadi Kesalahan',
-                                    text: xhr.responseJSON?.message ||
-                                        'Terjadi kesalahan saat mengirim data',
-                                    confirmButtonText: 'OK'
-                                });
-                            }
-                        },
-                        complete: function() {
-                            // Re-enable submit button
-                            submitBtn.prop('disabled', false).text(originalText);
-                        }
-                    });
-                });
-
-                // Handle reset button
-                $('button[type="reset"]').on('click', function() {
-                    $('.invalid-feedback').hide();
-                    $('.form-control, .form-select').removeClass('is-invalid');
-                });
-
-                // Real-time validation (optional)
-                $('.form-control, .form-select').on('blur', function() {
-                    if ($(this).val()) {
-                        $(this).removeClass('is-invalid');
-                        $(this).siblings('.invalid-feedback').hide();
-                    }
-                });
-
-                // Preview file uploads (optional)
-                $('input[type="file"]').on('change', function() {
-                    var fileName = $(this).val().split('\\').pop();
-                    var label = $(this).siblings('.custom-file-label');
-                    if (label.length) {
-                        label.text(fileName || 'Pilih file...');
-                    }
-
-                    // Remove error state when file is selected
-                    if (fileName) {
-                        $(this).removeClass('is-invalid');
-                        $(this).siblings('.invalid-feedback').hide();
-                    }
-                });
-            });
-
-            // Alternative: Menggunakan vanilla AJAX tanpa jQuery untuk form submission
-            /*
-            document.getElementById('formPendaftaran').addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const formData = new FormData(this);
-                
-                fetch(this.action, {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if(data.success) {
-                        alert('Pendaftaran berhasil!');
-                        // Handle success
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Terjadi kesalahan!');
-                });
-            });
-            */
-
             // FORM SUBMIT AJAX
-            // $("form").on("submit", function(e) {
-            //     e.preventDefault();
+            $("form").on("submit", function(e) {
+                e.preventDefault();
 
-            //     let form = this;
+                let form = this;
 
-            //     // Validasi Bootstrap
-            //     // if (!form.checkValidity()) {
-            //     //     form.classList.add("was-validated");
-            //     //     return;
-            //     // }
+                // Validasi Bootstrap
+                if (!form.checkValidity()) {
+                    form.classList.add("was-validated");
+                    return;
+                }
 
-            //     let btn = $("#btnSubmit");
+                let btn = $("#btnSubmit");
 
-            //     // ANIMASI LOADING
-            //     btn.prop("disabled", true);
-            //     btn.find(".btn-text").addClass("d-none");
-            //     btn.find(".spinner-border").removeClass("d-none");
+                // ANIMASI LOADING
+                btn.prop("disabled", true);
+                btn.find(".btn-text").addClass("d-none");
+                btn.find(".spinner-border").removeClass("d-none");
 
-            //     let formData = new FormData(form);
+                let formData = new FormData(form);
 
-            //     $.ajax({
-            //         url: $(form).attr("action"),
-            //         type: "POST",
-            //         data: formData,
-            //         contentType: false,
-            //         processData: false,
-            //         success: function(res) {
-            //             Swal.fire({
-            //                 icon: "success",
-            //                 title: "Berhasil",
-            //                 text: "Pendaftaran berhasil dikirim. Kamu akan diarahkan ke grup WA.",
-            //                 timer: 3000,
-            //                 showConfirmButton: false,
-            //             }).then(() => {
-            //                 // Redirect ke grup WhatsApp
-            //                 window.location.href =
-            //                     "https://chat.whatsapp.com/FBHNnGiAnme32o9wvPyC8P?mode=hqrt1";
-            //             });
+                $.ajax({
+                    url: $(form).attr("action"),
+                    type: "POST",
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(res) {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Berhasil",
+                            text: "Pendaftaran berhasil dikirim. Kamu akan diarahkan ke grup WA.",
+                            timer: 3000,
+                            showConfirmButton: false,
+                        }).then(() => {
+                            // Redirect ke grup WhatsApp
+                            window.location.href =
+                                "https://chat.whatsapp.com/FBHNnGiAnme32o9wvPyC8P?mode=hqrt1";
+                        });
 
-            //             // Reset form
-            //             form.reset();
-            //             form.classList.remove("was-validated");
-            //         },
+                        // Reset form
+                        form.reset();
+                        form.classList.remove("was-validated");
+                    },
 
-            //         error: function(xhr) {
-            //             Swal.fire({
-            //                 icon: "error",
-            //                 title: "Gagal Mengirim",
-            //                 text: xhr.responseJSON?.message ??
-            //                     "Terjadi kesalahan, coba lagi."
-            //             });
-            //         },
-            //         complete: function() {
-            //             // KEMBALIKAN TOMBOL NORMAL
-            //             btn.prop("disabled", false);
-            //             btn.find(".btn-text").removeClass("d-none");
-            //             btn.find(".spinner-border").addClass("d-none");
-            //         }
-            //     });
-            // });
+                    error: function(xhr) {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Gagal Mengirim",
+                            text: xhr.responseJSON?.message ??
+                                "Terjadi kesalahan, coba lagi."
+                        });
+                    },
+                    complete: function() {
+                        // KEMBALIKAN TOMBOL NORMAL
+                        btn.prop("disabled", false);
+                        btn.find(".btn-text").removeClass("d-none");
+                        btn.find(".spinner-border").addClass("d-none");
+                    }
+                });
+            });
 
 
             // Bootstrap validation

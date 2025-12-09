@@ -1,4 +1,3 @@
-
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
 <!-- SweetAlert2 -->
 <link />
@@ -52,18 +51,29 @@
 </style>
 
 
-<header class="fixed-top mb-3 d-md-none mobile-header shadow-lg dark light" style="z-index: 1040;">
+<header class="fixed-top  mb-3 d-md-none mobile-header shadow-lg dark light " style="z-index: 1040;">
     <nav class="navbar px-3 py-2">
         <div class="container-fluid d-flex justify-content-between align-items-center">
 
-            <!-- BRANDING -->
-            <a class="navbar-brand fw-bold d-flex align-items-center gap-2" href="/">
-                <img src="/assets/compiled/png/LOGO/logo4.png" alt="logo" class="rounded-circle"
-                    style="width:40px; height:40px; object-fit:cover;">
 
-                <span class="text-white fw-bold d-none d-md-inline">Sispenda Kandidat</span>
-                <span class="text-dark fw-bold d-md-none">Matching Job Apps</span>
-            </a>
+            <div class="d-flex ">
+                <div class="d-flex align-items-center gap-2">
+                    <a href="#" class="burger-btn d-block d-xl-none  rounded-md "
+                        style="padding:10px 20px ; border-radius:10px; color:rgb(0, 0, 0);">
+                        <i class="bi bi-list fs-4"></i>
+                    </a>
+                    <h5 class="m-0 fw-semibold"></h5>
+                </div>
+    
+                <!-- BRANDING -->
+                <a class="navbar-brand fw-bold d-flex align-items-center gap-2" href="/">
+                    <img src="/assets/compiled/png/LOGO/logo4.png" alt="logo" class="rounded-circle"
+                        style="width:40px; height:40px; object-fit:cover;">
+    
+                    <span class="text-white fw-bold d-none d-md-inline">Sispenda Kandidat</span>
+                    <span class="text-dark fw-bold d-md-none">Matching Job</span>
+                </a>
+            </div>
 
             <!-- RIGHT ICONS -->
             <div class="d-flex align-items-center gap-3">
