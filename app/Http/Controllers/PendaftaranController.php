@@ -170,8 +170,12 @@ class PendaftaranController extends Controller
             'pernah_ke_jepang' => $request->pernah_ke_jepang,
         ]);
 
-        return redirect()->route('dashboard')
-            ->with('success', 'Pendaftaran berhasil dikirim!');
+        // Controller Response
+        return response()->json([
+            'success' => true,
+            'message' => 'Pendaftaran berhasil disimpan!',
+            'redirect' => route('dashboard') // optional
+        ]);
     }
 
     /**
@@ -466,7 +470,7 @@ class PendaftaranController extends Controller
         return $pdf->download('pendaftaran.pdf');
     }
 
-    
+
     public function destroy($id)
     {
         $pendaftaran = Pendaftaran::findOrFail($id);
