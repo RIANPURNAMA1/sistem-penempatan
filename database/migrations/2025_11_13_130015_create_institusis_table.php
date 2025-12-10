@@ -8,11 +8,7 @@ return new class extends Migration {
     {
         Schema::create('institusis', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_perusahaan');
-            $table->integer('kuota')->default(0)->nullable();
-            $table->string('bidang_pekerjaan')->nullable();
             $table->string('perusahaan_penempatan')->nullable();
-            $table->text('detail_pekerjaan');
             $table->timestamps();
         });
     }

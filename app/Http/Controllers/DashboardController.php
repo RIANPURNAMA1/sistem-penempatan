@@ -199,7 +199,7 @@ class DashboardController extends Controller
             ->withQueryString(); // agar filter tidak hilang saat berpindah halaman
 
 
-             // Ambil data kandidat beserta relasi pendaftaran, cabang, dan institusi
+        // Ambil data kandidat beserta relasi pendaftaran, cabang, dan institusi
         $kandidatstableall = Kandidat::with(['pendaftaran', 'cabang', 'institusi'])
             ->orderBy('created_at', 'desc')
             ->paginate(15); // pagination, 15 data per halaman
@@ -215,7 +215,7 @@ class DashboardController extends Controller
             'kandidats',
             'cvs', // <-- data kandidat
             'kandidatsFiltered',
-        'kandidatstableall',
+            'kandidatstableall',
             'statusLabels',
             'statusCounts',
             'users'
@@ -243,5 +243,158 @@ class DashboardController extends Controller
         $kandidats = $query->get();
 
         return view('siswa.index', compact('kandidats', 'cabang'));
+    }
+
+    public function editProfile($id)
+    {
+        $kandidat = Pendaftaran::findOrFail($id);
+        return view('pendaftaran.edit_profile_pendaftaran', compact('kandidat'));
+    }
+
+    public function updateProfile(Request $request, $id)
+    {
+        $pendaftaran = Pendaftaran::findOrFail($id);
+
+        $validated = $request->validate([
+            'nik' => 'sometimes|required|string|size:16|unique:pendaftarans,nik,' . $pendaftaran->id,
+            'nama' => 'sometimes|required|string|max:255',
+            'usia' => 'sometimes|required|string|max:255',
+            'agama' => 'sometimes|required|string|max:255',
+            'status' => 'sometimes|required|in:belum menikah,menikah,lajang',
+            'email' => 'sometimes|required|email|max:255|unique:pendaftarans,email,' . $pendaftaran->id,
+            'no_wa' => ['sometimes', 'required', 'string', 'max:15', 'regex:/^08\d{8,12}$/'],
+            'jenis_kelamin' => 'sometimes|required|in:Laki-laki,Perempuan',
+            'alamat' => 'sometimes|required|string|max:500',
+            'provinsi' => 'sometimes|required|string|max:100',
+            'kab_kota' => 'sometimes|required|string|max:100',
+            'kecamatan' => 'sometimes|required|string|max:100',
+            'kelurahan' => 'sometimes|required|string|max:100',
+            'cabang_id' => 'sometimes|required|exists:cabangs,id',
+            'tempat_lahir' => 'sometimes|required|string|max:255',
+            'tempat_tanggal_lahir' => 'sometimes|required|date',
+            'tanggal_daftar' => 'sometimes|required|date',
+
+            'id_prometric' => 'nullable|string|max:255',
+            'password_prometric' => 'nullable|string|max:255',
+            'pernah_ke_jepang' => 'sometimes|required|in:Ya,Tidak',
+
+            // FIELD BARU
+            'pendidikan_terakhir' => 'sometimes|string|max:255',
+            'bidang_ssw' => 'sometimes|in:Pengolahan makanan,Restoran,Pertanian,Kaigo (perawat),Building cleaning,Driver,Lainnya',
+
+            // FILE OPSIONAL saat update
+            'paspor' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'foto' => 'nullable|file|mimes:jpg,jpeg,png|max:3072',
+            'kk' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'ktp' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'bukti_pelunasan' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'akte' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'ijasah' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'sertifikat_jft' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'sertifikat_ssw' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+        ], [
+            // Pesan error
+            'file.max' => 'Ukuran file melebihi batas.',
+            'foto.max' => 'Ukuran foto melebihi batas 3MB.',
+            'kk.max' => 'Ukuran KK melebihi batas 5MB.',
+            'ktp.max' => 'Ukuran KTP melebihi batas 5MB.',
+            'bukti_pelunasan.max' => 'Ukuran bukti pelunasan melebihi batas 5MB.',
+            'akte.max' => 'Ukuran akte melebihi batas 5MB.',
+            'ijasah.max' => 'Ukuran ijazah melebihi batas 5MB.',
+            'sertifikat_jft.max' => 'Ukuran sertifikat JFT melebihi batas 5MB.',
+            'sertifikat_ssw.max' => 'Ukuran sertifikat SSW melebihi batas 5MB.',
+            'paspor.max' => 'Ukuran paspor melebihi batas 5MB.',
+            'nik.size' => 'NIK harus 16 digit.',
+            'nik.unique' => 'NIK sudah terdaftar.',
+            'email.unique' => 'Email sudah terdaftar.',
+            'no_wa.regex' => 'Nomor WhatsApp harus diawali 08 dan memiliki 10–13 digit.',
+            'status.in' => 'Status harus: belum menikah, menikah, atau lajang.',
+        ]);
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | 1. Siapkan data text (exclude file fields)
+    |--------------------------------------------------------------------------
+    */
+        $data = $request->except([
+            '_token',
+            '_method',
+            'foto',
+            'kk',
+            'ktp',
+            'paspor',
+            'bukti_pelunasan',
+            'akte',
+            'ijasah',
+            'sertifikat_jft',
+            'sertifikat_ssw'
+        ]);
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | 2. Daftar file yang perlu diproses
+    |--------------------------------------------------------------------------
+    */
+        $files = [
+            'foto',
+            'kk',
+            'ktp',
+            'bukti_pelunasan',
+            'akte',
+            'ijasah',
+            'sertifikat_jft',
+            'sertifikat_ssw',
+            'paspor'
+        ];
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | 3. Upload file baru & hapus file lama
+    |--------------------------------------------------------------------------
+    */
+        foreach ($files as $fileKey) {
+            if ($request->hasFile($fileKey)) {
+
+                // HAPUS FILE LAMA jika ada
+                if (!empty($pendaftaran->$fileKey)) {
+                    $oldFilePath = public_path($pendaftaran->$fileKey);
+                    if (file_exists($oldFilePath)) {
+                        unlink($oldFilePath);
+                    }
+                }
+
+                // UPLOAD FILE BARU
+                $file = $request->file($fileKey);
+                $filename = time() . '_' . $file->getClientOriginalName();
+                $destination = public_path("dokumen/{$fileKey}");
+
+                // Pastikan folder ada
+                if (!file_exists($destination)) {
+                    mkdir($destination, 0777, true);
+                }
+
+                // Pindahkan file
+                $file->move($destination, $filename);
+
+                // Simpan path baru ke array $data
+                $data[$fileKey] = "dokumen/{$fileKey}/{$filename}";
+            }
+        }
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | 4. Update Database
+    |--------------------------------------------------------------------------
+    */
+        $pendaftaran->update($data);
+
+
+        return redirect()
+            ->route('dashboard')
+            ->with('success', 'Pendaftaran berhasil diperbarui!');
     }
 }

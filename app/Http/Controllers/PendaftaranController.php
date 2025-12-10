@@ -43,9 +43,15 @@ class PendaftaranController extends Controller
             'kecamatan' => 'required|string|max:100',
             'kelurahan' => 'required|string|max:100',
             'cabang_id' => 'required|exists:cabangs,id',
+
+            // Ditambahkan
             'tempat_lahir' => 'required|string|max:255',
             'tempat_tanggal_lahir' => 'required|date',
             'tanggal_daftar' => 'required|date',
+
+            // FIELD BARU
+            'pendidikan_terakhir' => 'required|string|max:255',
+            'bidang_ssw' => 'required|in:Pengolahan makanan,Restoran,Pertanian,Kaigo (perawat),Building cleaning,Driver,Lainnya',
 
             'id_prometric' => 'required|string|max:255',
             'password_prometric' => 'required|string|max:255',
@@ -72,7 +78,7 @@ class PendaftaranController extends Controller
             'file.mimes' => 'File harus berformat PDF.',
 
             // Pesan setiap field
-            'foto.mimes' => 'Foto harus berupa file PDF.',
+            'foto.mimes' => 'Foto harus berupa JPG atau PNG.',
             'kk.mimes' => 'KK harus berupa file PDF.',
             'ktp.mimes' => 'KTP harus berupa file PDF.',
             'bukti_pelunasan.mimes' => 'Bukti pelunasan harus berupa file PDF.',
@@ -82,13 +88,18 @@ class PendaftaranController extends Controller
             'sertifikat_ssw.mimes' => 'Sertifikat SSW harus berupa file PDF.',
             'paspor.mimes' => 'Paspor harus berupa file PDF.',
 
-            // Error lain
+            // Error lainnya
             'nik.size' => 'NIK harus 16 digit.',
             'nik.unique' => 'NIK sudah terdaftar.',
             'email.unique' => 'Email sudah terdaftar.',
             'no_wa.regex' => 'Nomor WhatsApp harus diawali 08 dan memiliki 10–13 digit.',
             'status.in' => 'Status harus: belum menikah, menikah, atau lajang.',
+
+            // Field baru
+            'pendidikan_terakhir.required' => 'Pendidikan terakhir wajib dipilih.',
+            'bidang_ssw.required' => 'Bidang SSW wajib dipilih.',
         ]);
+
 
 
         $files = [
@@ -130,8 +141,6 @@ class PendaftaranController extends Controller
             }
         }
 
-
-
         // Simpan data
         Pendaftaran::create([
             'user_id' => Auth::id(),
@@ -144,14 +153,20 @@ class PendaftaranController extends Controller
             'email' => $request->email,
             'no_wa' => $request->no_wa,
             'jenis_kelamin' => $request->jenis_kelamin,
+
             'tanggal_daftar' => $request->tanggal_daftar,
             'tempat_lahir' => $request->tempat_lahir,
             'tempat_tanggal_lahir' => $request->tempat_tanggal_lahir,
+
             'alamat' => $request->alamat,
             'provinsi' => $request->provinsi,
             'kab_kota' => $request->kab_kota,
             'kecamatan' => $request->kecamatan,
             'kelurahan' => $request->kelurahan,
+
+            // Field baru
+            'pendidikan_terakhir' => $request->pendidikan_terakhir,
+            'bidang_ssw' => $request->bidang_ssw,
 
             // File upload
             'foto' => $uploadedPaths['foto'] ?? null,
@@ -164,13 +179,14 @@ class PendaftaranController extends Controller
             'sertifikat_ssw' => $uploadedPaths['sertifikat_ssw'] ?? null,
             'paspor' => $uploadedPaths['paspor'] ?? null,
 
-            // Field tambahan
+            // Field tambahan lainnya
             'id_prometric' => $request->id_prometric,
             'password_prometric' => $request->password_prometric,
             'pernah_ke_jepang' => $request->pernah_ke_jepang,
         ]);
+
         // Controller Response untuk create pendaftaran biasa
-      return redirect()->back()->with('success', 'Berhasil mendaftar dan akun kandidat otomatis dibuat.');
+        return redirect()->back()->with('success', 'Berhasil mendaftar dan akun kandidat otomatis dibuat.');
     }
 
     /**
@@ -308,6 +324,10 @@ class PendaftaranController extends Controller
             'id_prometric' => 'nullable|string|max:255',
             'password_prometric' => 'nullable|string|max:255',
             'pernah_ke_jepang' => 'sometimes|required|in:Ya,Tidak',
+
+            // FIELD BARU
+            'pendidikan_terakhir' => 'sometimes|string|max:255',
+            'bidang_ssw' => 'sometimes|in:Pengolahan makanan,Restoran,Pertanian,Kaigo (perawat),Building cleaning,Driver,Lainnya',
 
             // FILE OPSIONAL saat update
             'paspor' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
@@ -494,7 +514,6 @@ class PendaftaranController extends Controller
     }
 
 
-
     public function import(Request $request)
     {
         try {
@@ -503,34 +522,20 @@ class PendaftaranController extends Controller
                 'file' => 'required|mimetypes:text/plain,text/csv,application/csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet|max:2048'
             ]);
 
+            // Disable heading validation
+            config(['excel.import.heading_error_formatter' => null]);
 
-            // Proses import
             Excel::import(new PendaftaranImport, $request->file('file'));
 
             return response()->json([
                 'status'  => true,
                 'message' => 'Data berhasil diimport!'
             ]);
-        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
-
-            // Jika ada error validasi Excel
-            $failures = $e->failures();
-            $msg = "Kesalahan data pada baris: ";
-
-            foreach ($failures as $failure) {
-                $msg .= "Baris {$failure->row()} ({$failure->attribute()}), ";
-            }
-
-            return response()->json([
-                'status' => false,
-                'message' => rtrim($msg, ', ')
-            ], 422);
         } catch (\Throwable $e) {
 
-            // TAMPILKAN ERROR SEBENARNYA
             return response()->json([
                 'status'  => false,
-                'message' => $e->getMessage()
+                'message' => "Import Error: " . $e->getMessage()
             ], 500);
         }
     }

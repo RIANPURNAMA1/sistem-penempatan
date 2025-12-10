@@ -27,35 +27,14 @@
                     @csrf
                     @method('PUT') <!-- Penting untuk update -->
                     <div class="row g-3">
-                        <div class="col-md-6">
-                            <label for="nama_perusahaan" class="form-label fw-semibold">Nama Perusahaan</label>
-                            <input type="text" name="nama_perusahaan" id="nama_perusahaan" class="form-control"
-                                value="{{ old('nama_perusahaan', $institusi->nama_perusahaan) }}" required>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label for="bidang_pekerjaan" class="form-label fw-semibold">Bidang Pekerjaan</label>
-                            <input type="text" name="bidang_pekerjaan" id="bidang_pekerjaan" class="form-control"
-                                value="{{ old('bidang_pekerjaan', $institusi->bidang_pekerjaan) }}">
-                        </div>
-
+                
                         <div class="col-md-6">
                             <label for="perusahaan_penempatan" class="form-label fw-semibold">Perusahaan Penempatan</label>
                             <input type="text" name="perusahaan_penempatan" id="perusahaan_penempatan"
                                 class="form-control"
                                 value="{{ old('perusahaan_penempatan', $institusi->perusahaan_penempatan) }}">
                         </div>
-                        <div class="col-md-6">
-                            <label for="detail_pekerjaan" class="form-label fw-semibold">Detail Pekerjaan</label>
-                            <textarea name="detail_pekerjaan" id="detail_pekerjaan" class="form-control" rows="3"
-                                placeholder="Tuliskan detail pekerjaan, tanggung jawab, atau deskripsi posisi">{{ old('detail_pekerjaan', $institusi->detail_pekerjaan) }}</textarea>
-                        </div>
-
-                        <div class="col-md-3">
-                            <label for="kuota" class="form-label fw-semibold">Kuota</label>
-                            <input type="number" name="kuota" id="kuota" class="form-control"
-                                value="{{ old('kuota', $institusi->kuota) }}" min="1">
-                        </div>
+                      
                     </div>
 
                     <div class="mt-4 d-flex justify-content-end">

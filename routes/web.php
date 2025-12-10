@@ -103,6 +103,12 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware(['auth', 'role:kandidat'])->group(function () {
     // Form Pendaftaran Kandidat
+    Route::get('/pendaftaran/profile/{id}/edit', [DashboardController::class, 'editProfile'])
+    ->name('pendaftaran.edit.profile');
+    Route::put('/pendaftaran/profile/{id}', [DashboardController::class, 'updateProfile'])
+    ->name('pendaftaran.update.profile');
+
+
     Route::get('/pendaftaran/kandidat', [PendaftaranController::class, 'datacabang'])->name('pendaftaran.create');
     Route::post('/pendaftaran/store', [PendaftaranController::class, 'store'])->name('pendaftaran.store');
 
@@ -231,13 +237,18 @@ Route::get('/cv/export/{id}', [CvController::class, 'export'])->name('cv.export'
 Route::get('pendaftaran/{id}/edit-full', [PendaftaranController::class, 'editFull'])->name('pendaftaran.edit.full');
 Route::put('pendaftaran/{id}/update-full', [PendaftaranController::class, 'updateFull'])->name('pendaftaran.update.full');
 Route::delete('/pendaftaran/{id}', [PendaftaranController::class, 'destroy'])->name('pendaftaran.destroy');
-Route::get('/pendaftaran/{id}/pendaftar', [PendaftaranController::class, 'showPendaftar'])->name('show.Pendaftar');
 
 
 Route::middleware(['auth', 'role:super-admin'])->group(function () {
+    Route::get('/pendaftaran/{id}/pendaftar', [PendaftaranController::class, 'showPendaftar'])->name('show.Pendaftar');
     // Export Pendaftaran (Khusus Super Admin)
     Route::get('/kandidat/export/{id}', [KandidatController::class, 'export'])->name('kandidat.export');
     Route::post('/pendaftaran/import', [PendaftaranController::class, 'import'])->name('pendaftaran.import');
     Route::get('/pendaftaran/export/exels', [PendaftaranController::class, 'export']);
     Route::get('/pendaftaran/export/pdf', [PendaftaranController::class, 'exportPDF'])->name('pendaftaran.export.pdf');
+
+
+    // user export 
+    Route::get('admin/kandidat/export-excel', [UserController::class, 'exportExcel'])
+    ->name('admin.kandidat.export');
 });

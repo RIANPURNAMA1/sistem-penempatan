@@ -48,6 +48,10 @@
         background: #ff453a;
         color: #000;
     }
+    :root[data-bs-theme="dark"] .btn-sidebar {
+      
+        color: #ffffff !important;
+    }
 </style>
 
 
@@ -58,7 +62,7 @@
 
             <div class="d-flex ">
                 <div class="d-flex align-items-center gap-2">
-                    <a href="#" class="burger-btn d-block d-xl-none  rounded-md "
+                    <a href="#" class="burger-btn d-block d-xl-none btn-sidebar   rounded-md "
                         style="padding:10px 20px ; border-radius:10px; color:rgb(0, 0, 0);">
                         <i class="bi bi-list fs-4"></i>
                     </a>

@@ -58,9 +58,9 @@
 
                     <!-- Institusi / Penempatan -->
                     <div class="col-md-6">
-                        <label for="institusi_id" class="form-label fw-bold">Penempatan Perusahaan</label>
+                        <label for="institusi_id" class="form-label fw-bold">Perusahaan Penempatan</label>
                         <select name="institusi_id" id="institusi_id" class="form-select">
-                            <option value="">-- Pilih Institusi --</option>
+                            <option value="">-- Pilih Perusahaan Penempatan --</option>
                             @foreach ($institusis as $institusi)
                                 <option value="{{ $institusi->id }}"
                                     {{ $kandidat->institusi_id == $institusi->id ? 'selected' : '' }}>
@@ -71,49 +71,8 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="bidang_ssw" class="form-label">Bidang SSW</label>
-                        <select name="bidang_ssw" id="bidang_ssw" class="form-select">
-                            <option value="">-- Pilih Bidang SSW --</option>
-
-                            <option value="Pengolahan makanan"
-                                {{ old('bidang_ssw', $kandidat->bidang_ssw) == 'Pengolahan makanan' ? 'selected' : '' }}>
-                                Pengolahan makanan
-                            </option>
-
-                            <option value="Restoran"
-                                {{ old('bidang_ssw', $kandidat->bidang_ssw) == 'Restoran' ? 'selected' : '' }}>
-                                Restoran
-                            </option>
-
-                            <option value="Pertanian"
-                                {{ old('bidang_ssw', $kandidat->bidang_ssw) == 'Pertanian' ? 'selected' : '' }}>
-                                Pertanian
-                            </option>
-
-                            <option value="Kaigo (perawat)"
-                                {{ old('bidang_ssw', $kandidat->bidang_ssw) == 'Kaigo (perawat)' ? 'selected' : '' }}>
-                                Kaigo (perawat)
-                            </option>
-
-                            <option value="Building cleaning"
-                                {{ old('bidang_ssw', $kandidat->bidang_ssw) == 'Building cleaning' ? 'selected' : '' }}>
-                                Building cleaning
-                            </option>
-
-                            <option value="Driver"
-                                {{ old('bidang_ssw', $kandidat->bidang_ssw) == 'Driver' ? 'selected' : '' }}>
-                                Driver
-                            </option>
-
-                            <option value="Lainnya"
-                                {{ old('bidang_ssw', $kandidat->bidang_ssw) == 'Lainnya' ? 'selected' : '' }}>
-                                Lainnya
-                            </option>
-                        </select>
-
-                        @error('bidang_ssw')
-                            <small class="text-danger">{{ $message }}</small>
-                        @enderror
+                        <label for="bidang_ssw" class="form-label">Nama Perusahaan</label>
+                        <input type="text" name="nama_perusahan" class="form-control">
                     </div>
 
 

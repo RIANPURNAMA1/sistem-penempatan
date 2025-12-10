@@ -83,12 +83,7 @@
                     <thead>
                         <tr>
                             <th class=" text-center">No</th>
-                            <th class="">Nama Perusahaan</th>
-                            <th class="">Kuota</th>
-                            <th class="">Bidang Pekerjaan</th>
                             <th class="">Perusahaan Penempatan</th>
-                            <th class="">Detail Pekerjaan</th>
-                            <th class="">Tanggal Dibuat</th>
                             <th class=" text-center">Aksi</th>
                         </tr>
                     </thead>
@@ -96,11 +91,9 @@
                         @foreach ($institusis as $index => $institusi)
                             <tr>
                                 <td class="text-center">{{ $index + 1 }}</td>
-                                <td>{{ $institusi->nama_perusahaan }}</td>
-                                <td>{{ $institusi->kuota }}</td>
-                                <td>{{ $institusi->bidang_pekerjaan ?? '-' }}</td>
+                             
                                 <td>{{ $institusi->perusahaan_penempatan ?? '-' }}</td>
-                                <td>{{ $institusi->detail_pekerjaan ?? '-' }}</td>
+
                                 <td>{{ $institusi->created_at->format('Y-m-d') }}</td>
                                 <td class="text-center ">
                                     <div class="btn-group gap-2">

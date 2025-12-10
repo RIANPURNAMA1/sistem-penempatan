@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('google_id')->nullable();
 
             $table->enum('role', [
+                'Data Kosong',
                 'Cabang Cianjur Selatan Mendunia',
                 'Cabang Cianjur Pamoyanan Mendunia',
                 'Cabang Batam Mendunia',

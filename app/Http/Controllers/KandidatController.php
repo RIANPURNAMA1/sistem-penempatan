@@ -44,12 +44,11 @@ class KandidatController extends Controller
     | Validasi
     ------------------------------------------------------------ */
         $request->validate([
-            'status_kandidat' => 'required|in:Job Matching,Pending,Interview,Jadwalkan Interview Ulang,Lulus interview,Gagal Interview,Pemberkasan,Berangkat,Ditolak',
+            'status_kandidat' => 'required|in:Job Matching,Pending,Interview,Jadwalkan Interview Ulang,Lulus interview,Gagal Interview,Pemberkasan,Berangkat,Ditolak,lamar_ke_perusahaan',
             'institusi_id' => 'nullable|exists:institusis,id',
             'catatan_interview' => 'nullable|string',
             'jadwal_interview' => 'nullable|date',
-            // Validasi bidang SSW
-            'bidang_ssw' => 'nullable|in:Pengolahan makanan,Restoran,Pertanian,Kaigo (perawat),Building cleaning,Driver,Lainnya',
+            'nama_perusahaan' =>'nullable|string',
         ]);
 
         /* ------------------------------------------------------------
@@ -106,8 +105,8 @@ class KandidatController extends Controller
             'institusi_id' => $request->institusi_id,
             'catatan_interview' => $request->catatan_interview,
             'jadwal_interview' => $request->jadwal_interview,
+            'nama_perusahaan'=>$request->nama_perusahaan,
             'jumlah_interview' => $kandidat->jumlah_interview,
-            'bidang_ssw' => $request->bidang_ssw, // ← FIX DI SINI
         ]);
 
 
@@ -124,8 +123,7 @@ class KandidatController extends Controller
         KandidatHistory::create([
             'kandidat_id' => $kandidat->id,
             'status_kandidat' => $kandidat->status_kandidat,
-            'bidang_ssw' => $request->bidang_ssw,
-
+            'nama_perusahaan' => $kandidat->nama_perusahaan,
             'status_interview' => $statusInterview,
             'institusi_id' => $kandidat->institusi_id,
             'catatan_interview' => $kandidat->catatan_interview,

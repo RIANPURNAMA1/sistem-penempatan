@@ -39,12 +39,11 @@
                         <i class="bi bi-funnel me-1"></i> Filter Data
                     </h6>
                     <div class="d-flex gap-2 mt-2 mt-md-0">
-                        <button class="btn btn-success btn-sm fw-semibold shadow-sm">
+                        <!-- Tombol Export Excel dengan route -->
+                        <a href="{{ route('admin.kandidat.export') }}" class="btn btn-success btn-sm fw-semibold shadow-sm"
+                            id="btnExportExcel">
                             <i class="bi bi-file-earmark-excel me-1"></i> Export Excel
-                        </button>
-                        <button class="btn btn-primary btn-sm fw-semibold shadow-sm">
-                            <i class="bi bi-file-earmark-arrow-up me-1"></i> Import Data
-                        </button>
+                        </a>
                         <button class="btn btn-danger btn-sm fw-semibold shadow-sm">
                             <i class="bi bi-file-earmark-pdf me-1"></i> Download PDF
                         </button>
@@ -86,7 +85,10 @@
                     <tbody>
                         @foreach ($kandidats as $index => $kandidat)
                             <tr class="align-middle">
-                                <td class="text-center fw-semibold">{{ $index + 1 }}</td>
+                                <td class="text-center fw-semibold">
+                                    {{ ($kandidats->currentPage() - 1) * $kandidats->perPage() + ($index + 1) }}
+                                </td>
+
 
                                 <td class="fw-semibold">
                                     <i class="bi bi-person-circle text-primary me-2"></i>

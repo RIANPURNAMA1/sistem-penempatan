@@ -14,6 +14,7 @@ return new class extends Migration {
             $table->enum('status_kandidat', [
                 'Job Matching',
                 'Pending',
+                'lamar_ke_perusahaan',
                 'Interview',
                 'Gagal Interview',
                 'Jadwalkan Interview Ulang',
@@ -22,20 +23,11 @@ return new class extends Migration {
                 'Berangkat',
                 'Ditolak',
             ])->default('Job Matching');
-
-            // ENUM Bidang SSW
-            $table->enum('bidang_ssw', [
-                'Pengolahan makanan',
-                'Restoran',
-                'Pertanian',
-                'Kaigo (perawat)',
-                'Building cleaning',
-                'Driver',
-                'Lainnya',
-            ])->nullable(); // jika ingin wajib tinggal hapus nullable()
             $table->unsignedBigInteger('institusi_id')->nullable();
             // Kolom tambahan untuk tracking interview
             $table->unsignedInteger('jumlah_interview')->default(0);
+            $table->string('nama_perusahaan');
+            $table->string('detail_pekerjaan');
             $table->text('catatan_interview')->nullable();
             $table->date('jadwal_interview')->nullable();
             $table->timestamps();

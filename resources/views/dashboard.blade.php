@@ -282,8 +282,8 @@
                     <div class="row mt-4">
 
                         <!-- =========================
-                                                                                BAGIAN KIRI (CHART)
-                                                                            ========================== -->
+                                                                                                BAGIAN KIRI (CHART)
+                                                                                            ========================== -->
                         <div class="col-12 col-md-8">
                             <div class="card h-100 shadow-lg border-0 rounded-4">
 
@@ -463,18 +463,14 @@
                     </script>
                 @endif
                 @if (auth()->user()->role === 'kandidat')
-
                     {{-- @include('components.mobile_menu') --}}
                     <!-- Header Tabel -->
-
-
-
 
                     <div class="row ">
 
                         {{-- Timeline --}}
                         <div class="col-12 col-md-8">
-                            <div class="card shadow shadow-md">
+                            <div class="card shadow shadow-sm">
                                 <div class="card-header">
                                     <h4 class="mb-0">Timeline Proses Penempatan</h4>
                                 </div>
@@ -602,96 +598,68 @@
                                     @endforeach
 
                                 </div>
+
                             </div>
-                        </div>
 
 
-
-                        @forelse ($dataKandidat as $kandidat)
-                            <div class="col-12 col-md-4">
-                                <div class="card shadow shadow-mdborder-0 rounded-4 overflow-hidden">
-                                    <!-- Header -->
-                                    <div class="card-header  text-center p-3 ">
-                                        <h5 class="mb-0 fw-bold">
-                                            <i class="bi bi-person-badge me-2"></i> Profil Kandidat
-                                        </h5>
-                                    </div>
-
-                                    <!-- Foto & Status -->
-                                    <div class="card-body text-center p-4">
-                                        <div class="position-relative mb-3">
-                                            <img src="{{ asset($kandidat->foto) }}" alt="Foto Kandidat"
-                                                class="rounded-circle border border-3 border-white shadow-sm"
-                                                width="120" height="120"
-                                                style="object-fit: cover; object-position: center;">
-
+                            {{-- Profile CV --}}
+                            <div class="table-responsive mt-3">
+                                @if ($cvs->isEmpty())
+                                    {{-- Alert jika belum ada CV --}}
+                                    <div class="card border-0 shadow-sm rounded-4">
+                                        <div class="card-body text-center py-5">
+                                            <i class="bi bi-file-earmark-text text-warning" style="font-size: 4rem;"></i>
+                                            <h5 class="mt-3 mb-2">Belum Mengisi CV</h5>
+                                            <p class="text-muted mb-4">Lengkapi CV kamu untuk melanjutkan proses
+                                                pendaftaran</p>
+                                            <a href="{{ route('pendaftaran.cv.create') }}"
+                                                class="btn btn-warning fw-semibold">
+                                                <i class="bi bi-pencil-square me-1"></i> Isi CV Sekarang
+                                            </a>
                                         </div>
-
-                                        <!-- Nama & Email -->
-                                        <h5 class="fw-bold mb-1">{{ $kandidat->nama }}</h5>
-                                        <p class="text-muted mb-1">
-                                            <i class="bi bi-envelope me-2 text-primary"></i> {{ $kandidat->email }}
-                                        </p>
-
-                                        <!-- Info Tambahan -->
-                                        <ul class="list-unstyled text-start mb-3 small">
-                                            <li class="mb-1">
-                                                <i class="bi bi-building me-2 text-info"></i>
-                                                Cabang: {{ $kandidat->cabang->nama_cabang ?? 'Tidak diketahui' }}
-                                            </li>
-                                            <li class="mb-1">
-                                                <i class="bi bi-gender-ambiguous me-2 text-warning"></i>
-                                                Jenis Kelamin: {{ $kandidat->jenis_kelamin }}
-                                            </li>
-                                            <li class="mb-1">
-                                                <i class="bi bi-telephone me-2 text-success"></i>
-                                                No WA: {{ $kandidat->no_wa }}
-                                            </li>
-                                        </ul>
-
-                                        <!-- Tombol -->
-                                        <a href="{{ route('dokumen.show', $kandidat->id) }}"
-                                            style="background-color: #01040e; border-color: #01040e;"
-                                            class="btn text-white  w-100 fw-semibold shadow-sm">
-                                            <i class="bi bi-folder2-open me-2"></i> Lihat Dokumen
-                                        </a>
-
                                     </div>
-
-                                    <!-- Footer -->
-                                    <div class="card-footer text-center text-muted small">
-                                        Terdaftar sejak:
-                                        {{ \Carbon\Carbon::parse($kandidat->tanggal_daftar)->translatedFormat('d F Y') }}
-                                    </div>
-                                </div>
+                                @else
+                                    @include('components.cv_kandidat')
+                                @endif
                             </div>
-                        @empty
-                            <script>
-                                document.addEventListener('DOMContentLoaded', function() {
-                                    Swal.fire({
-                                        icon: 'info',
-                                        title: 'Belum Melakukan Pendaftaran',
-                                        html: `
-                    <p>Kamu belum melakukan pendaftaran.</p>
-                    <a href="{{ route('pendaftaran.create') }}" 
-                       class="btn btn-warning fw-semibold mt-2">
-                        <i class="bi bi-pencil-square me-1"></i> Klik di sini untuk daftar
+
+                            @if ($cvs->isEmpty())
+                                @push('scripts')
+                                    <script>
+                                        document.addEventListener('DOMContentLoaded', function() {
+                                            Swal.fire({
+                                                icon: 'info',
+                                                title: 'Belum Mengisi CV',
+                                                html: `
+                    <p class="mb-3">Kamu belum mengisi CV.</p>
+                    <a href="{{ route('pendaftaran.cv.create') }}" 
+                       class="btn btn-warning fw-semibold">
+                        <i class="bi bi-pencil-square me-1"></i> Isi CV Sekarang
                     </a>
                 `,
-                                        showConfirmButton: false,
-                                        allowOutsideClick: false,
-                                        allowEscapeKey: false,
-                                        background: '#fffaf0',
-                                        color: '#333',
-                                        didOpen: (popup) => {
-                                            popup.querySelector('a').addEventListener('click', () => {
-                                                Swal.close();
+                                                showConfirmButton: false,
+                                                allowOutsideClick: false,
+                                                allowEscapeKey: false,
+                                                background: '#fffaf0',
+                                                color: '#333',
+                                                didOpen: (popup) => {
+                                                    popup.querySelector('a').addEventListener('click', () => {
+                                                        Swal.close();
+                                                    });
+                                                }
                                             });
-                                        }
-                                    });
-                                });
-                            </script>
-                        @endforelse
+                                        });
+                                    </script>
+                                @endpush
+                            @endif
+
+
+
+
+                        </div>
+
+                        {{-- profile kandidat --}}
+                        @include('components.profile_kandidat')
 
                         {{-- CSS tambahan --}}
                         <style>
@@ -721,75 +689,6 @@
                         </style>
 
                     </div>
-
-
-
-                    <div class="table-responsive mt-3">
-                        @if ($cvs->isEmpty())
-                            <!-- SweetAlert jika belum ada CV -->
-                            <script>
-                                document.addEventListener('DOMContentLoaded', function() {
-                                    Swal.fire({
-                                        icon: 'info',
-                                        title: 'Belum Mengisi CV',
-                                        html: `
-                        <p>Kamu belum mengisi CV.</p>
-                        <a href="/pendaftaran/cv/kandidat" 
-                           class="btn btn-warning fw-semibold mt-2">
-                            <i class="bi bi-pencil-square me-1"></i> Klik di sini untuk mengisi CV
-                        </a>
-                    `,
-                                        showConfirmButton: false,
-                                        allowOutsideClick: false,
-                                        allowEscapeKey: false,
-                                        background: '#fffaf0',
-                                        color: '#333',
-                                        didOpen: (popup) => {
-                                            popup.querySelector('a').addEventListener('click', () => {
-                                                Swal.close();
-                                            });
-                                        }
-                                    });
-                                });
-                            </script>
-                        @else
-                            <div class="card border-0 shadow shadow-md rounded-4">
-                                <div class="card-header py-3 border-0">
-
-                                    @if ($cvs->isEmpty())
-                                        <!-- SweetAlert jika belum ada CV -->
-                                        <script>
-                                            document.addEventListener('DOMContentLoaded', function() {
-                                                Swal.fire({
-                                                    icon: 'info',
-                                                    title: 'Belum Mengisi CV',
-                                                    html: `
-                    <p>Kamu belum mengisi CV.</p>
-                    <a href="{{ route('pendaftaran.cv.create') }}" 
-                       class="btn btn-warning fw-semibold mt-2">
-                        <i class="bi bi-pencil-square me-1"></i> Isi CV Sekarang
-                    </a>
-                `,
-                                                    showConfirmButton: false,
-                                                    allowOutsideClick: false,
-                                                    allowEscapeKey: false,
-                                                    background: '#fffaf0',
-                                                    color: '#333'
-                                                });
-                                            });
-                                        </script>
-                                    @else
-                                        @include('components.cv_kandidat')
-                                    @endif
-
-
-
-                                </div>
-                            </div>
-                        @endif
-                    </div>
-
-
                 @endif
 
                 @if (in_array(auth()->user()->role, [

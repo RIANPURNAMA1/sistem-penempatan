@@ -67,7 +67,7 @@
 
                                 <!-- Label Pilih File -->
                                 <label for="fileInput" class="file-label d-flex align-items-center gap-2">
-                                    <i class="bi bi-cloud-upload-fill fs-5"></i>
+                                    <i class="bi bi-cloud-upload-fill "></i>
                                     <span id="fileText" class="file-text">Pilih File Excel</span>
                                 </label>
 
@@ -148,12 +148,11 @@
 
             <div class="card-body shadow shadow-md">
                 <div class="row g-3 align-items-end">
-                    <!-- Filter Cabang -->
                     <div class="col-12 col-md-6">
-                        <form action="{{ route('pendaftar') }}" method="GET" id="filterForm">
+                        <form id="filterForm">
                             <label for="filterCabang" class="form-label fw-semibold text-secondary">Cabang</label>
-                            <select name="cabang_id" id="filterCabang" class="form-select shadow-sm rounded-3 border-1"
-                                onchange="document.getElementById('filterForm').submit()">
+
+                            <select name="cabang_id" id="filterCabang" class="form-select shadow-sm rounded-3 border-1">
                                 <option value="">Semua Cabang</option>
                                 @foreach ($cabang as $item)
                                     <option value="{{ $item->id }}"
@@ -164,14 +163,8 @@
                             </select>
                         </form>
                     </div>
-
-                    <!-- Tombol Reset -->
-                    <div class="col-12 col-md-6 d-flex justify-content-end">
-                        <button id="resetFilter" class="btn btn-outline-info fw-semibold shadow-sm px-4 py-2 rounded-3">
-                            <i class="bi bi-arrow-clockwise me-1"></i> Reset Filter
-                        </button>
-                    </div>
                 </div>
+
             </div>
         </div>
 
@@ -189,6 +182,10 @@
                             <th class="">Nama</th>
                             <th class="">Email</th>
                             <th class="">Alamat</th>
+                            <th class="">Tempat Lahir</th>
+                            <th class="">Tanggal Lahir</th>
+                            <th class="">Pendidikan Terakhir</th>
+                            <th class="">Bidang SSW</th>
                             <th class="">Jenis Kelamin</th>
                             <th class="">No WA</th>
                             <th class="">Cabang</th>
@@ -205,22 +202,34 @@
                     </thead>
                     <tbody>
                         @foreach ($kandidats as $index => $kandidat)
-                            <tr>
+                            <tr data-cabang="{{ $kandidat->cabang_id }}">
                                 <td>{{ $index + 1 }}</td>
-
                                 <td>
                                     <a href="/pendaftaran/{{ $kandidat->id }}/pendaftar">
-                                        <img src="{{ asset($kandidat->foto) }}" alt="Foto Kandidat"
-                                            class="rounded-circle border" width="50" height="50">
+                                        <img src="{{ $kandidat->foto && file_exists(public_path($kandidat->foto))
+                                            ? asset($kandidat->foto)
+                                            : asset('images/default-user.png') }}"
+                                            alt="Foto Kandidat" class="rounded-circle border" width="50" height="50">
                                     </a>
                                 </td>
 
 
 
                                 <td>{{ $kandidat->nik }}</td>
-                                <td>{{ $kandidat->nama }}</td>
+                                <td>{{ ucwords(strtolower($kandidat->nama)) }}</td>
+
                                 <td>{{ $kandidat->email }}</td>
                                 <td>{{ $kandidat->alamat }}</td>
+                                <td>{{ $kandidat->tempat_lahir }}</td>
+
+                                <td>
+                                    {{ \Carbon\Carbon::parse($kandidat->tempat_tanggal_lahir)->translatedFormat('d F Y') }}
+                                </td>
+
+                                <td>{{ $kandidat->pendidikan_terakhir }}</td>
+
+                                <td>{{ $kandidat->bidang_ssw }}</td>
+
                                 <td>{{ $kandidat->jenis_kelamin }}</td>
                                 <td>{{ $kandidat->no_wa }}</td>
                                 <td>{{ $kandidat->cabang->nama_cabang ?? '-' }}</td>
@@ -365,6 +374,25 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const filterCabang = document.getElementById("filterCabang");
+            const rows = document.querySelectorAll("#tablependaftar tbody tr");
+
+            filterCabang.addEventListener("change", function() {
+                const selectedCabang = this.value;
+
+                rows.forEach(row => {
+                    const rowCabang = row.getAttribute("data-cabang");
+
+                    // Jika tidak memilih cabang = tampilkan semua
+                    if (selectedCabang === "" || selectedCabang === rowCabang) {
+                        row.style.display = "";
+                    } else {
+                        row.style.display = "none";
+                    }
+                });
+            });
+        });
         // Inisialisasi DataTables
         var table = $('#tablependaftar').DataTable({
             responsive: true,
@@ -436,81 +464,81 @@
 
 
         // Import Request
-$('#importForm').on('submit', function(e) {
-    e.preventDefault();
+        $('#importForm').on('submit', function(e) {
+            e.preventDefault();
 
-    let formData = new FormData(this);
+            let formData = new FormData(this);
 
-    $.ajax({
-        url: "{{ route('pendaftaran.import') }}",
-        type: "POST",
-        data: formData,
-        processData: false,
-        contentType: false,
+            $.ajax({
+                url: "{{ route('pendaftaran.import') }}",
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
 
-        beforeSend: function() {
-            Swal.fire({
-                title: 'Mengimport...',
-                text: 'Harap tunggu sebentar.',
-                allowOutsideClick: false,
-                didOpen: () => Swal.showLoading()
-            });
-        },
+                beforeSend: function() {
+                    Swal.fire({
+                        title: 'Mengimport...',
+                        text: 'Harap tunggu sebentar.',
+                        allowOutsideClick: false,
+                        didOpen: () => Swal.showLoading()
+                    });
+                },
 
-        success: function(response) {
-            Swal.close();
+                success: function(response) {
+                    Swal.close();
 
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil!',
-                text: response.message ?? 'Data berhasil diimport.',
-                timer: 2000,
-                showConfirmButton: false
-            });
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: response.message ?? 'Data berhasil diimport.',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
 
-            setTimeout(() => {
-                window.location.reload();
-            }, 2000);
-        },
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 2000);
+                },
 
-        error: function(xhr) {
-            Swal.close();
+                error: function(xhr) {
+                    Swal.close();
 
-            let msg = 'Terjadi kesalahan saat mengimport data.';
+                    let msg = 'Terjadi kesalahan saat mengimport data.';
 
-            // --- ERROR MYSQL / SQLSTATE ---
-            if (xhr.responseText && xhr.responseText.includes('SQLSTATE')) {
-                msg = `
+                    // --- ERROR MYSQL / SQLSTATE ---
+                    if (xhr.responseText && xhr.responseText.includes('SQLSTATE')) {
+                        msg = `
                     Format data Excel tidak sesuai.<br>
                     Pastikan setiap baris memiliki:
                     <br><b>- NIK</b><br><b>- Nama</b><br><b>- Status</b><br>
                     dan kolom wajib lainnya tidak boleh kosong.
                 `;
-            }
+                    }
 
-            // --- ERROR DARI LARAVEL RESPONSE JSON ---
-            else if (xhr.responseJSON && xhr.responseJSON.message) {
+                    // --- ERROR DARI LARAVEL RESPONSE JSON ---
+                    else if (xhr.responseJSON && xhr.responseJSON.message) {
 
-                // Jika error validasi
-                if (xhr.responseJSON.errors) {
-                    msg = "<b>Format Excel salah:</b><br>";
-                    $.each(xhr.responseJSON.errors, function(key, value) {
-                        msg += `- ${value}<br>`;
+                        // Jika error validasi
+                        if (xhr.responseJSON.errors) {
+                            msg = "<b>Format Excel salah:</b><br>";
+                            $.each(xhr.responseJSON.errors, function(key, value) {
+                                msg += `- ${value}<br>`;
+                            });
+                        } else {
+                            msg = xhr.responseJSON.message;
+                        }
+                    }
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal Mengimport!',
+                        html: msg,
+                        showConfirmButton: true
                     });
-                } else {
-                    msg = xhr.responseJSON.message;
                 }
-            }
-
-            Swal.fire({
-                icon: 'error',
-                title: 'Gagal Mengimport!',
-                html: msg,
-                showConfirmButton: true
             });
-        }
-    });
-});
+        });
 
 
 

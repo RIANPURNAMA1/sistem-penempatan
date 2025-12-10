@@ -10,11 +10,8 @@ class Institusi extends Model
     use HasFactory;
 
  protected $fillable = [
-        'nama_perusahaan',
-        'kuota',
-        'bidang_pekerjaan',
+  
         'perusahaan_penempatan',
-        'detail_pekerjaan',
     ];
 
        // Relasi: Satu cabang bisa punya banyak pendaftaran

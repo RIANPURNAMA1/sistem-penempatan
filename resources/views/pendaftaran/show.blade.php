@@ -20,7 +20,7 @@
                     </a>
                 </li>
                 <li class="breadcrumb-item active fw-semibold" aria-current="page">
-                    <i class="bi bi-people me-1"></i> Detail Kandidat
+                    <i class="bi bi-people me-1"></i> Detail Kandidat {{ $kandidat->nama }}
                 </li>
             </ol>
         </nav>
@@ -78,24 +78,37 @@
                                     <dd class="col-sm-7">{{ $kandidat->usia }} tahun</dd>
                                     <dt class="col-sm-5">Jenis Kelamin</dt>
                                     <dd class="col-sm-7">{{ $kandidat->jenis_kelamin }}</dd>
+                                    
+                                    <dt class="col-sm-5">Pendidikan Terakhir</dt>
+                                    <dd class="col-sm-7">{{ $kandidat->pendidikan_terakhir }}</dd>
                                 </dl>
                             </div>
                             <div class="col-md-6">
                                 <dl class="row mb-0">
+
                                     <dt class="col-sm-5">Agama</dt>
                                     <dd class="col-sm-7">{{ $kandidat->agama }}</dd>
+
                                     <dt class="col-sm-5">Status Pernikahan</dt>
                                     <dd class="col-sm-7">{{ $kandidat->status }}</dd>
+
                                     <dt class="col-sm-5">Email</dt>
                                     <dd class="col-sm-7">{{ $kandidat->email }}</dd>
+
                                     <dt class="col-sm-5">No WA</dt>
                                     <dd class="col-sm-7">{{ $kandidat->no_wa }}</dd>
-                                    <dt class="col-sm-5">Tgl Daftar</dt>
+
+                                    <dt class="col-sm-5">Tanggal Daftar</dt>
                                     <dd class="col-sm-7">
                                         {{ \Carbon\Carbon::parse($kandidat->tanggal_daftar)->translatedFormat('d F Y') }}
                                     </dd>
+
+                                    <dt class="col-sm-5">Bidang SSW</dt>
+                                    <dd class="col-sm-7">{{ $kandidat->bidang_ssw }}</dd>
+
                                 </dl>
                             </div>
+
                             <div class="col-12 mt-3 pt-3 border-top">
                                 <dl class="row mb-0">
                                     <dt class="col-sm-3">Alamat Lengkap</dt>

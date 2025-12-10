@@ -180,7 +180,7 @@
                                     <td>{{ $k->institusi->nama_perusahaan ?? '-' }}</td>
 
                                     <!-- Bidang -->
-                                    <td>{{ $k->bidang_ssw ?? '-' }}</td>
+                                    <td>{{ $k->pendaftaran->bidang_ssw ?? '-' }}</td>
 
                                     <!-- Tanggal Daftar -->
                                     <td>

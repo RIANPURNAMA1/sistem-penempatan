@@ -11,7 +11,115 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
     </head>
 
+
     <style>
+        .progress-wrapper {
+            position: relative;
+            width: 100%;
+            padding: 0 20px;
+            margin-top: 30px;
+        }
+
+        .progress-track {
+            position: absolute;
+            top: 22px;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: #e5e7eb;
+            border-radius: 10px;
+            z-index: 1;
+        }
+
+        .progress-fill {
+            height: 4px;
+            width: 0%;
+            background: linear-gradient(90deg, #4f46e5, #22d3ee);
+            border-radius: 10px;
+            transition: 0.4s ease;
+            z-index: 2;
+            position: relative;
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            z-index: 5;
+        }
+
+        .progress-step {
+            text-align: center;
+            width: 14%;
+        }
+
+        .progress-step .circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #d1d5db;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 600;
+            color: #374151;
+            margin: 0 auto;
+            transition: 0.3s ease;
+        }
+
+        .progress-step.active .circle,
+        .progress-step.completed .circle {
+            background: #4f46e5;
+            color: #fff;
+            box-shadow: 0 0 12px rgba(79, 70, 229, 0.7);
+        }
+
+        .progress-step .label {
+            font-size: 0.85rem;
+            margin-top: 8px;
+            font-weight: 600;
+            color: #6b7280;
+        }
+
+        .progress-step.active .label {
+            color: #4f46e5;
+        }
+
+        .progress-step.completed .label {
+            color: #22d3ee;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .progress-step .label {
+                font-size: 0.7rem;
+            }
+
+            .progress-step .circle {
+                width: 32px;
+                height: 32px;
+                font-size: 0.8rem;
+            }
+        }
+
+        /* Sembunyikan label step saat layar kecil (mobile) */
+        @media (max-width: 600px) {
+            .progress-step .label {
+                display: none;
+            }
+
+            /* Jarak antar circle diperlebar sedikit agar rapi */
+            .progress-step {
+                width: auto;
+                flex: 1;
+            }
+
+            /* Track lebih turun sedikit agar tidak menabrak circle */
+            .progress-track {
+                top: 28px;
+            }
+        }
+
         /* Multi-Step Progress Bar */
         .progress-container {
             display: flex;
@@ -271,37 +379,49 @@
                         <p class="mb-0 mt-2 opacity-75">Silakan lengkapi semua informasi dengan benar</p>
                     </div>
                     <div class="card-body p-4">
+                        <!-- PROGRESS STEPS MODERN -->
+                        <div class="progress-wrapper mb-5">
+                            <div class="progress-track">
+                                <div class="progress-fill" id="progressFill"></div>
+                            </div>
 
-                        <!-- Progress Steps -->
-                        <div class="progress-container mb-5" style="padding: 0 30px;">
-                            <div class="progress-line" id="progressLine"></div>
-                            <div class="step active" data-step="1">
-                                <span>1</span>
-                                <span class="step-label">Data Awal</span>
-                            </div>
-                            <div class="step" data-step="2">
-                                <span>2</span>
-                                <span class="step-label">Data Diri</span>
-                            </div>
-                            <div class="step" data-step="3">
-                                <span>3</span>
-                                <span class="step-label">Kemampuan</span>
-                            </div>
-                            <div class="step" data-step="4">
-                                <span>4</span>
-                                <span class="step-label">Pendidikan</span>
-                            </div>
-                            <div class="step" data-step="5">
-                                <span>5</span>
-                                <span class="step-label">Pengalaman</span>
-                            </div>
-                            <div class="step" data-step="6">
-                                <span>6</span>
-                                <span class="step-label">Info Tambahan</span>
-                            </div>
-                            <div class="step" data-step="7">
-                                <span>7</span>
-                                <span class="step-label">Keluarga</span>
+                            <div class="progress-steps">
+
+                                <div class="progress-step active" data-step="1">
+                                    <div class="circle">1</div>
+                                    <span class="label">Data Awal</span>
+                                </div>
+
+                                <div class="progress-step" data-step="2">
+                                    <div class="circle">2</div>
+                                    <span class="label">Data Diri</span>
+                                </div>
+
+                                <div class="progress-step" data-step="3">
+                                    <div class="circle">3</div>
+                                    <span class="label">Kemampuan</span>
+                                </div>
+
+                                <div class="progress-step" data-step="4">
+                                    <div class="circle">4</div>
+                                    <span class="label">Pendidikan</span>
+                                </div>
+
+                                <div class="progress-step" data-step="5">
+                                    <div class="circle">5</div>
+                                    <span class="label">Pengalaman</span>
+                                </div>
+
+                                <div class="progress-step" data-step="6">
+                                    <div class="circle">6</div>
+                                    <span class="label">Info Tambahan</span>
+                                </div>
+
+                                <div class="progress-step" data-step="7">
+                                    <div class="circle">7</div>
+                                    <span class="label">Keluarga</span>
+                                </div>
+
                             </div>
                         </div>
 
@@ -357,7 +477,8 @@
                                             <label class="form-label fw-semibold mt-3">No Telepon</label>
                                             <input type="text" name="no_telepon"
                                                 class="form-control @error('no_telepon') is-invalid @enderror"
-                                                placeholder="Masukkan No Telepon" value="{{ old('no_telepon') }}" required>
+                                                placeholder="Masukkan No Telepon" value="{{ old('no_telepon') }}"
+                                                required>
                                             @error('no_telepon')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -452,8 +573,8 @@
                                         <div class="row g-3">
                                             <div class="col-md-6">
                                                 <!-- ======================================================
-                                                                                                                                                                                 MULTI FILE: pas_foto[]
-                                                                                                                                                                            ====================================================== -->
+                                                                                                                                                                                         MULTI FILE: pas_foto[]
+                                                                                                                                                                                    ====================================================== -->
                                                 <label class="form-label fw-semibold mb-1">
                                                     Silahkan upload dokumen / foto tambahan 👇
                                                 </label>
@@ -472,8 +593,8 @@
                                                 <div id="previewPasFoto" class="mt-3 d-flex flex-wrap gap-3"></div>
 
                                                 <!-- ======================================================
-                                                                                                                                                                                 SINGLE FILE: pas_foto_cv
-                                                                                                                                                                            ====================================================== -->
+                                                                                                                                                                                         SINGLE FILE: pas_foto_cv
+                                                                                                                                                                                    ====================================================== -->
                                                 <label class="form-label fw-semibold mb-1 mt-4">
                                                     Silahkan upload pas foto untuk CV Anda 👇
                                                 </label>
@@ -1869,14 +1990,14 @@
 
                             <!-- Navigation Buttons -->
                             <div class="step-buttons">
-                                <button type="button" class="btn btn-step btn-prev" id="prevBtn"
+                                <button type="button" class="btn btn-secondary  btn-prev" id="prevBtn"
                                     style="display: none;">
                                     <i class="fas fa-arrow-left me-2"></i>Sebelumnya
                                 </button>
-                                <button type="button" class="btn btn-step btn-next ms-auto" id="nextBtn">
+                                <button type="button" class="btn btn-primary  btn-next " id="nextBtn">
                                     Selanjutnya<i class="fas fa-arrow-right ms-2"></i>
                                 </button>
-                                <button type="submit" class="btn btn-step btn-submit ms-auto" id="submitBtn"
+                                <button type="submit" class="btn btn-success btn-submit ms-auto" id="submitBtn"
                                     style="display: none;">
                                     <span id="btnText"><i class="fas fa-paper-plane me-2"></i>Kirim</span>
                                     <span id="btnLoading" class="d-none">
@@ -2918,6 +3039,30 @@
 
 
         });
+
+        function setStep(step) {
+            const steps = document.querySelectorAll(".progress-step");
+            const fill = document.getElementById("progressFill");
+
+            steps.forEach((item, index) => {
+                item.classList.remove("active", "completed");
+
+                if (index + 1 < step) {
+                    item.classList.add("completed");
+                }
+                if (index + 1 === step) {
+                    item.classList.add("active");
+                }
+            });
+
+            // Hitung lebar progress
+            const progressPercent = ((step - 1) / (steps.length - 1)) * 100;
+            fill.style.width = progressPercent + "%";
+        }
+
+        // Contoh penggunaan:
+        // setStep(3);  // pindah ke step 3
     </script>
+
 
 @endsection

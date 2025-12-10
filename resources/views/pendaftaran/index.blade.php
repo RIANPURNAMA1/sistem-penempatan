@@ -158,6 +158,38 @@
                                     <div class="invalid-feedback">Alamat lengkap wajib diisi.</div>
                                 </div>
 
+                                <!-- Pendidikan Terakhir -->
+                                <div class="col-md-6">
+                                    <label class="form-label">Pendidikan Terakhir <span
+                                            class="text-danger">*</span></label>
+                                    <select name="pendidikan_terakhir" class="form-select" required>
+                                        <option value="">-- Pilih Pendidikan --</option>
+                                        <option value="SD">SD</option>
+                                        <option value="SMP">SMP</option>
+                                        <option value="SMA/SMK">SMA / SMK / MA /Sederajat</option>
+                                        <option value="D3">D3</option>
+                                        <option value="S1">S1</option>
+                                        <option value="S2">S2</option>
+                                    </select>
+                                    <div class="invalid-feedback">Pendidikan terakhir wajib dipilih.</div>
+                                </div>
+
+                                <!-- Bidang SSW -->
+                                <div class="col-md-6">
+                                    <label class="form-label">Bidang SSW <span class="text-danger">*</span></label>
+                                    <select name="bidang_ssw" class="form-select" required>
+                                        <option value="">-- Pilih Bidang SSW --</option>
+                                        <option value="Pengolahan makanan">Pengolahan makanan</option>
+                                        <option value="Restoran">Restoran</option>
+                                        <option value="Pertanian">Pertanian</option>
+                                        <option value="Kaigo (perawat)">Kaigo (perawat)</option>
+                                        <option value="Building cleaning">Building cleaning</option>
+                                        <option value="Driver">Driver</option>
+                                        <option value="Lainnya">Lainnya</option>
+                                    </select>
+                                    <div class="invalid-feedback">Bidang SSW wajib dipilih.</div>
+                                </div>
+
                                 <!-- ==================== Data Tambahan ==================== -->
                                 <div class="mb-4">
                                     <h5 class="fw-bold border-bottom pb-2 mb-3">
@@ -321,10 +353,10 @@
 
                         <!-- Submit -->
                         <div class="text-end mt-4">
-                            <button type="reset" class="btn btn-secondary px-4 me-2 mb-2">
+                            <button type="reset" class="btn btn-secondary px-4 me-2 ">
                                 <i class="bi bi-arrow-counterclockwise me-1 "></i> Reset
                             </button>
-                            <button id="btnSubmit" type="submit" class="btn btn-warning px-4">
+                            <button id="btnSubmit" type="submit" class="btn btn-success px-4">
                                 <span class="btn-text"><i class="bi bi-send-check-fill me-1"></i> Daftar Sekarang</span>
                                 <span class="spinner-border spinner-border-sm d-none" role="status"></span>
                             </button>

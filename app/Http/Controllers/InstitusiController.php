@@ -24,11 +24,7 @@ class InstitusiController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama_perusahaan' => 'required|string|max:255',
-            'kuota' => 'nullable|integer|min:1',
-            'bidang_pekerjaan' => 'nullable|string|max:255',
             'perusahaan_penempatan' => 'nullable|string|max:255',
-            'detail_pekerjaan' => 'nullable|string', // Tambahkan ini
         ]);
 
 
@@ -50,11 +46,7 @@ class InstitusiController extends Controller
         $institusi = Institusi::findOrFail($id);
 
         $request->validate([
-            'nama_perusahaan' => 'required|string|max:255',
-            'kuota' => 'nullable|integer|min:1',
-            'bidang_pekerjaan' => 'nullable|string|max:255',
             'perusahaan_penempatan' => 'nullable|string|max:255',
-            'detail_pekerjaan' => 'nullable|string', // Tambahkan ini
         ]);
 
         $institusi->update($request->all());

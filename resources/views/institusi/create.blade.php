@@ -19,40 +19,18 @@
         <div class="card shadow-sm rounded-4">
             <div class="card-header text-white">
                 <h5 class="mb-0 fw-bold">
-                    <i class="bi bi-plus-circle me-2"></i> Tambah Perusahaan Baru
+                    <i class="bi bi-plus-circle me-2"></i> Tambah Perusahaan Penempatan
                 </h5>
             </div>
             <div class="card-body">
                 <form id="formTambahPerusahaan">
                     @csrf
                     <div class="row g-3">
-                        <div class="col-md-6">
-                            <label for="nama_perusahaan" class="form-label fw-semibold">Nama Perusahaan</label>
-                            <input type="text" name="nama_perusahaan" id="nama_perusahaan" class="form-control"
-                                placeholder="Contoh: PT Sakura Jepang" required>
-                        </div>
-
-                        <div class="col-md-6">
-                            <label for="bidang_pekerjaan" class="form-label fw-semibold">Bidang Pekerjaan</label>
-                            <input type="text" name="bidang_pekerjaan" id="bidang_pekerjaan" class="form-control"
-                                placeholder="Contoh: IT, Produksi, Administrasi">
-                        </div>
-
+            
                         <div class="col-md-6">
                             <label for="perusahaan_penempatan" class="form-label fw-semibold">Perusahaan Penempatan</label>
                             <input type="text" name="perusahaan_penempatan" id="perusahaan_penempatan"
                                 class="form-control" placeholder="Nama perusahaan penempatan">
-                        </div>
-                        <div class="col-md-6">
-                            <label for="detail_pekerjaan" class="form-label fw-semibold">Detail Pekerjaan</label>
-                            <textarea name="detail_pekerjaan" id="detail_pekerjaan" class="form-control"
-                                placeholder="Tuliskan detail pekerjaan, tanggung jawab, atau deskripsi posisi" rows="3"></textarea>
-                        </div>
-
-                        <div class="col-md-3">
-                            <label for="kuota" class="form-label fw-semibold">Kuota</label>
-                            <input type="number" name="kuota" id="kuota" class="form-control"
-                                placeholder="Jumlah kuota" min="1">
                         </div>
                     </div>
 

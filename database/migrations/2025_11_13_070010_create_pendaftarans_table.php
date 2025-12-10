@@ -16,22 +16,35 @@ return new class extends Migration
             // Identitas dasar (NIK, Nama, Email, No WA, Tanggal Daftar wajib diisi)
             $table->string('nik', 20)->unique(); // NIK unik dan wajib
             $table->string('nama');
-            
+
             // Kolom yang dibuat nullable (opsional)
             $table->string('usia')->nullable();
             $table->string('agama')->nullable();
-            
-            $table->enum('status', ['belum menikah', 'menikah', 'lajang'])->nullable(); 
-            
+
+
+            $table->enum('status', ['belum menikah', 'menikah', 'lajang'])->nullable();
+
             $table->string('email');
             $table->string('no_wa');
             $table->enum('jenis_kelamin', ['Laki-laki', 'Perempuan']);
             $table->date('tanggal_daftar');
-            
+
             // Kolom Tanggal/Lokasi (dibuat nullable untuk import yang tidak lengkap)
             $table->date('tempat_tanggal_lahir')->nullable(); // FIX: Menghilangkan ->change()
             $table->string('tempat_lahir')->nullable(); // FIX: Menghilangkan ->change()
             $table->text('alamat')->nullable(); // FIX: Menghilangkan ->change()
+            $table->string('pendidikan_terakhir');
+
+            // ENUM Bidang SSW
+            $table->enum('bidang_ssw', [
+                'Pengolahan makanan',
+                'Restoran',
+                'Pertanian',
+                'Kaigo (perawat)',
+                'Building cleaning',
+                'Driver',
+                'Lainnya',
+            ])->nullable(); // jika ingin wajib tinggal hapus nullable()
 
             // Lokasi lengkap (dibuat nullable)
             $table->string('provinsi', 100)->nullable(); // FIX: Menghilangkan ->change()
