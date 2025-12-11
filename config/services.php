@@ -35,9 +35,24 @@ return [
         ],
     ],
     'google' => [
-    'client_id' => env('GOOGLE_CLIENT_ID'),
-    'client_secret' => env('GOOGLE_CLIENT_SECRET'),
-    'redirect' => env('GOOGLE_REDIRECT_URI'),
-],
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect' => env('GOOGLE_REDIRECT_URI'),
+    ],
+    'fonnte' => [
+        'token' => env('FONNTE_TOKEN'),
+    ],
+
+    'wablas' => [
+        'token' => env('WABLAS_TOKEN'),
+        'secret_key' => env('WABLAS_SECRET_KEY', ''),
+        'domain' => env('WABLAS_DOMAIN', 'https://bdg.wablas.com'),
+    ],
+
+    'twilio' => [
+        'sid' => env('TWILIO_SID'),
+        'token' => env('TWILIO_TOKEN'),
+        'from' => env('TWILIO_FROM'),
+    ],
 
 ];

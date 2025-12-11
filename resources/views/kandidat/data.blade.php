@@ -109,7 +109,8 @@
             <!-- 🧾 Data Table -->
             <div class="card shadow shadow-md">
                 <div class="card-body table-responsive">
-                    <table id="tableKandidatutama" class="table table-hover shadow shadow-md p-2 w-100">
+                    <table id="tablependaftar" class="table table-striped shadow shadow-md align-middle nowrap"
+                        style="width:100%">
                         <thead class="">
                             <tr class="text-white text-center">
                                 <th>No</th>

@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Http;
 
 class PendaftaranController extends Controller
 {
@@ -234,6 +235,10 @@ class PendaftaranController extends Controller
         $request->validate([
             'verifikasi' => 'required|string|in:menunggu,data belum lengkap,diterima,ditolak',
             'catatan_admin' => 'nullable|string|max:500',
+            'link_grup_wa' => 'required_if:verifikasi,diterima|nullable|url'
+        ], [
+            'link_grup_wa.required_if' => 'Link Grup WhatsApp wajib diisi untuk kandidat yang diterima',
+            'link_grup_wa.url' => 'Format link WhatsApp tidak valid'
         ]);
 
         // Ambil data pendaftaran
@@ -246,6 +251,7 @@ class PendaftaranController extends Controller
         ]);
 
         $message = 'Data verifikasi berhasil diperbarui!';
+        $waSent = false;
 
         if ($request->verifikasi === 'diterima') {
             $kandidat = Kandidat::firstOrCreate(
@@ -260,37 +266,151 @@ class PendaftaranController extends Controller
             $message = 'Data verifikasi berhasil diperbarui dan kandidat dibuat!';
 
             // -------------------------
-            // Buat link grup WA
+            // Kirim link grup WA
             // -------------------------
-            if ($pendaftaran->no_wa) {
-                $groupLink = "https://chat.whatsapp.com/FBHNnGiAnme32o9wvPyC8P?mode=hqrt1";
-                $phone = preg_replace('/\D/', '', $pendaftaran->no_wa); // bersihkan nomor
-
-                $waMessage = "Selamat! Anda telah diterima. Klik link berikut untuk bergabung ke grup WhatsApp: $groupLink";
-                $waUrl = "https://wa.me/$phone?text=" . urlencode($waMessage);
-
-                // Set field masuk_grup_wa jadi true
-                $kandidat->masuk_grup_wa = true;
-                $kandidat->save();
-
-                // Log atau kirim ke frontend
-                Log::info("Link WA untuk kandidat {$pendaftaran->nama}: $waUrl");
+            if ($request->link_grup_wa && $pendaftaran->no_wa) {
+                // Kirim pesan WhatsApp
+                $waSent = $this->sendWhatsAppMessage($pendaftaran, $kandidat, $request->link_grup_wa);
+                
+                if ($waSent) {
+                    // Set field masuk_grup_wa jadi true
+                    $kandidat->masuk_grup_wa = true;
+                    $kandidat->save();
+                }
             }
         }
-
-
 
         // Jika AJAX request, kembalikan JSON
         if ($request->ajax()) {
             return response()->json([
                 'status' => 'success',
                 'message' => $message,
+                'wa_sent' => $waSent
             ]);
         }
 
         return redirect()->back()->with('success', $message);
     }
 
+    /**
+     * Kirim pesan WhatsApp menggunakan WhatsApp API
+     * Pilih salah satu service yang ingin digunakan
+     */
+    private function sendWhatsAppMessage($pendaftaran, $kandidat, $linkGrup)
+    {
+        try {
+            // Format nomor WA (hapus karakter non-numerik)
+            $noWa = preg_replace('/[^0-9]/', '', $pendaftaran->no_wa);
+            
+            // Pastikan format nomor dimulai dengan 62
+            if (substr($noWa, 0, 1) === '0') {
+                $noWa = '62' . substr($noWa, 1);
+            } elseif (substr($noWa, 0, 2) !== '62') {
+                $noWa = '62' . $noWa;
+            }
+
+            // Pesan yang akan dikirim
+            $message = "🎉 *Selamat!*\n\n";
+            $message .= "Halo *{$pendaftaran->nama}*,\n\n";
+            $message .= "Kami dengan senang hati menginformasikan bahwa pendaftaran Anda telah *DITERIMA*! ✅\n\n";
+            $message .= "Silakan bergabung dengan grup WhatsApp kami untuk informasi lebih lanjut:\n";
+            $message .= "🔗 {$linkGrup}\n\n";
+            $message .= "Terima kasih! 😊";
+
+            // ===== PILIHAN 1: Menggunakan Fonnte (Recommended) =====
+            /*
+            $response = Http::withHeaders([
+                'Authorization' => config('services.fonnte.token')
+            ])->post('https://api.fonnte.com/send', [
+                'target' => $noWa,
+                'message' => $message,
+                'countryCode' => '62'
+            ]);
+
+            if ($response->successful()) {
+                Log::info("WhatsApp berhasil dikirim ke {$pendaftaran->nama} ({$noWa})");
+                return true;
+            }
+            */
+
+            // ===== PILIHAN 2: Menggunakan Wablas API V1 (AKTIF) =====
+            $domain = config('services.wablas.domain', 'https://bdg.wablas.com');
+            $token = config('services.wablas.token');
+            
+            // Metode 1: Menggunakan Authorization Header (Jika punya secret key)
+            $secretKey = config('services.wablas.secret_key', '');
+            
+            if ($secretKey) {
+                // Dengan Secret Key (Lebih Aman)
+                $response = Http::withHeaders([
+                    'Authorization' => $token . '.' . $secretKey,
+                ])->asForm()->post($domain . '/api/send-message', [
+                    'phone' => $noWa,
+                    'message' => $message,
+                ]);
+            } else {
+                // Tanpa Secret Key (Token saja)
+                $response = Http::asForm()->post($domain . '/api/send-message', [
+                    'phone' => $noWa,
+                    'message' => $message,
+                    'token' => $token
+                ]);
+            }
+            
+            if ($response->successful()) {
+                $result = $response->json();
+                
+                // Cek response dari Wablas
+                if (isset($result['status']) && $result['status'] == true) {
+                    Log::info("WhatsApp berhasil dikirim ke {$pendaftaran->nama} ({$noWa})", ['response' => $result]);
+                    return true;
+                } else {
+                    Log::error("Wablas Error Response", ['response' => $result]);
+                    return false;
+                }
+            } else {
+                Log::error("Wablas HTTP Error: " . $response->status() . " - " . $response->body());
+                return false;
+            }
+
+            // ===== PILIHAN 3: Menggunakan Twilio =====
+            /*
+            $response = Http::withBasicAuth(
+                config('services.twilio.sid'),
+                config('services.twilio.token')
+            )->asForm()->post("https://api.twilio.com/2010-04-01/Accounts/" . config('services.twilio.sid') . "/Messages.json", [
+                'From' => 'whatsapp:+' . config('services.twilio.from'),
+                'To' => 'whatsapp:+' . $noWa,
+                'Body' => $message
+            ]);
+            
+            if ($response->successful()) {
+                Log::info("WhatsApp berhasil dikirim ke {$pendaftaran->nama} ({$noWa})");
+                return true;
+            }
+            */
+
+            // ===== PILIHAN 4: Manual Link WhatsApp (Tanpa API) =====
+            /*
+            $waUrl = "https://wa.me/{$noWa}?text=" . urlencode($message);
+            Log::info("Link WA untuk kandidat {$pendaftaran->nama}: {$waUrl}");
+            
+            // Simpan link untuk dibuka manual oleh admin
+            $kandidat->wa_link_manual = $waUrl;
+            $kandidat->save();
+            
+            return true; // Dianggap berhasil karena link sudah tersimpan
+            */
+
+            return false;
+
+        } catch (\Exception $e) {
+            // Log error
+            Log::error('WhatsApp Send Error: ' . $e->getMessage());
+            Log::error('Kandidat: ' . $pendaftaran->nama . ' | No WA: ' . $pendaftaran->no_wa);
+            return false;
+        }
+    }
 
 
     // Tampilkan halaman kandidat

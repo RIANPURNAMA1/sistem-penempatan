@@ -5,7 +5,7 @@
             <!-- Header -->
             <div class="card-header text-center  py-3">
                 <h5 class="fw-bold mb-0">
-                    <i class="bi bi-person-vcard me-2"></i> Pendaftaran Kandidat 
+                    <i class="bi bi-person-vcard me-2"></i> Pendaftaran Kandidat
                 </h5>
             </div>
 
@@ -50,13 +50,15 @@
                     <!-- Lihat Dokumen -->
                     <a href="{{ route('dokumen.show', $kandidat->id) }}"
                         class="btn btn-dark w-100 shadow-sm fw-semibold">
-                        <i class="bi bi-folder2-open me-2"></i> Lihat Dokumen
+                        <i class="bi bi-folder2-open me-2"></i>
+                        <span class="d-none d-sm-inline">Lihat Dokumen</span>
                     </a>
 
                     <!-- Edit Data -->
-                    <a href="{{route('pendaftaran.edit.profile', $kandidat->id)}}"
+                    <a href="{{ route('pendaftaran.edit.profile', $kandidat->id) }}"
                         class="btn btn-outline-dark w-100 shadow-sm fw-semibold">
-                        <i class="bi bi-pencil-square me-2"></i> Edit Data
+                        <i class="bi bi-pencil-square me-2"></i>
+                        <span class="d-none d-sm-inline">Edit Data</span>
                     </a>
 
                 </div>

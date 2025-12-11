@@ -17,6 +17,15 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\WablasTestController;
+
+// Route untuk testing Wablas (hanya untuk development/admin)
+Route::middleware(['auth'])->prefix('test-wablas')->group(function () {
+    Route::get('/', [WablasTestController::class, 'index'])->name('test.wablas.index');
+    Route::get('/device', [WablasTestController::class, 'testDeviceInfo'])->name('test.wablas.device');
+    Route::post('/send', [WablasTestController::class, 'testSendMessage'])->name('test.wablas.send');
+    Route::post('/curl', [WablasTestController::class, 'testWithCurl'])->name('test.wablas.curl');
+});
 
 /*
 |--------------------------------------------------------------------------

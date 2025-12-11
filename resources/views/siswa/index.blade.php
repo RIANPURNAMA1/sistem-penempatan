@@ -73,21 +73,21 @@
 
                                 <!-- Import Button -->
                                 <button type="submit" class="btn btn-primary btn-sm fw-semibold px-3">
-                                    <i class="bi bi-upload me-1"></i>Import
+                                    <i class="bi bi-upload me-1"></i> <span class="d-none d-sm-inline">Import</span>
                                 </button>
                                 <div>
 
                                     <!-- Export Excel -->
                                     <a href="/pendaftaran/export/exels" class="btn btn-success btn-sm fw-semibold px-3">
                                         <i class="bi bi-file-earmark-spreadsheet-fill"></i>
-                                        <span>Export Excel</span>
+                                        <span class="d-none d-sm-inline">Export Excel</span>
                                     </a>
 
                                     <!-- Export PDF -->
                                     <a href="/pendaftaran/export/pdf" target="_blank"
                                         class="btn btn-danger btn-sm fw-semibold px-3">
                                         <i class="bi bi-file-earmark-pdf-fill"></i>
-                                        <span>Export PDF</span>
+                                        <span class="d-none d-sm-inline">Export PDF</span>
                                     </a>
                                 </div>
 

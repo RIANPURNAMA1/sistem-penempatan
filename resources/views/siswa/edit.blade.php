@@ -39,6 +39,12 @@
                 @csrf
                 @method('PUT')
 
+                <!-- Info Kandidat -->
+                <div class="alert alert-info mb-3">
+                    <i class="bi bi-info-circle me-2"></i>
+                    <strong>Nomor WA Kandidat:</strong> {{ $kandidat->no_wa ?? 'Tidak tersedia' }}
+                </div>
+
                 <div class="mb-3">
                     <label for="verifikasi" class="form-label fw-semibold">Status Verifikasi</label>
                     <select name="verifikasi" id="verifikasi" class="form-select">
@@ -52,6 +58,23 @@
                 <div class="mb-3">
                     <label for="catatan_admin" class="form-label fw-semibold">Catatan Admin</label>
                     <textarea name="catatan_admin" id="catatan_admin" class="form-control rounded-3 shadow-sm" rows="4">{{ old('catatan_admin', $kandidat->catatan_admin) }}</textarea>
+                </div>
+
+                <!-- Input Link Grup WhatsApp -->
+                <div class="mb-3" id="linkWaContainer" style="display: none;">
+                    <label for="link_grup_wa" class="form-label fw-semibold">
+                        <i class="bi bi-whatsapp text-success me-1"></i> Link Grup WhatsApp
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-success text-white">
+                            <i class="bi bi-link-45deg"></i>
+                        </span>
+                        <input type="url" name="link_grup_wa" id="link_grup_wa" class="form-control" 
+                               placeholder="https://chat.whatsapp.com/xxxxx">
+                    </div>
+                    <small class="text-muted">
+                        <i class="bi bi-info-circle"></i> Link akan dikirim otomatis ke nomor WA kandidat
+                    </small>
                 </div>
 
                 <div class="d-flex justify-content-end">
@@ -74,11 +97,42 @@
 
 <script>
 $(document).ready(function() {
+    // Toggle tampilan input link WA ketika status verifikasi berubah
+    $('#verifikasi').on('change', function() {
+        if ($(this).val() === 'diterima') {
+            $('#linkWaContainer').slideDown();
+            $('#link_grup_wa').attr('required', true);
+        } else {
+            $('#linkWaContainer').slideUp();
+            $('#link_grup_wa').attr('required', false);
+            $('#link_grup_wa').val('');
+        }
+    });
+
+    // Trigger saat halaman load jika status sudah diterima
+    if ($('#verifikasi').val() === 'diterima') {
+        $('#linkWaContainer').show();
+        $('#link_grup_wa').attr('required', true);
+    }
+
     $('#verifikasiForm').on('submit', function(e) {
         e.preventDefault();
 
         let form = $(this);
         let btn = $('#btnSubmit');
+        let linkWa = $('#link_grup_wa').val();
+        let statusVerifikasi = $('#verifikasi').val();
+
+        // Validasi link WA jika status diterima
+        if (statusVerifikasi === 'diterima' && !linkWa) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Perhatian!',
+                text: 'Link Grup WhatsApp harus diisi untuk kandidat yang diterima!',
+                confirmButtonColor: '#ffc107'
+            });
+            return;
+        }
 
         // Tampilkan loading
         btn.prop('disabled', true);
@@ -89,13 +143,20 @@ $(document).ready(function() {
             method: 'POST',
             data: form.serialize(),
             success: function(response) {
+                let successMsg = response.message ?? 'Data verifikasi berhasil diperbarui!';
+                
+                // Tambahkan info pengiriman WA jika ada
+                if (response.wa_sent) {
+                    successMsg += '<br><small class="text-success"><i class="bi bi-check-circle"></i> Link grup telah dikirim ke WhatsApp kandidat!</small>';
+                }
+
                 Swal.fire({
                     icon: 'success',
                     title: 'Berhasil!',
-                    text: response.message ?? 'Data verifikasi berhasil diperbarui!',
+                    html: successMsg,
                     confirmButtonColor: '#198754'
                 }).then(() => {
-                    if ($('#verifikasi').val() === 'diterima') {
+                    if (statusVerifikasi === 'diterima') {
                         window.location.href = "{{ route('kandidat.data') }}";
                     } else {
                         location.reload();

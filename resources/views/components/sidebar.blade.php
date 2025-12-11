@@ -96,7 +96,7 @@
                                 <li class="sidebar-item has-sub">
                                     <a href="#" class='sidebar-link'>
                                         <i class="bi bi-person-vcard"></i>
-                                        <span>Pendaftaran Kandidat</span>
+                                        <span>Pendaftaran</span>
                                     </a>
                                     <ul class="submenu">
                                         <li class="submenu-item">
