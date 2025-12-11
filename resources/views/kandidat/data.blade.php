@@ -75,6 +75,7 @@
                             @php
                                 $statuses = [
                                     'Job Matching',
+                                    'lamar_ke_perusahaan',
                                     'Pending',
                                     'Interview',
                                     'Gagal Interview',
@@ -109,8 +110,7 @@
             <!-- 🧾 Data Table -->
             <div class="card shadow shadow-md">
                 <div class="card-body table-responsive">
-                    <table id="tableKandidatutama" class="table  shadow shadow-md align-middle nowrap"
-                        style="width:100%">
+                    <table id="tableKandidatutama" class="table  shadow shadow-md align-middle nowrap" style="width:100%">
                         <thead class="">
                             <tr class="text-white text-center">
                                 <th>No</th>
@@ -179,8 +179,8 @@
                                         </span>
                                     </td>
                                     <td>
-                                        <form class="form-mendunia border-none" action="{{ route('kandidat.updateMendunia', $k->id) }}"
-                                            method="POST">
+                                        <form class="form-mendunia border-none"
+                                            action="{{ route('kandidat.updateMendunia', $k->id) }}" method="POST">
                                             @csrf
                                             @method('PUT')
 
@@ -214,7 +214,14 @@
                                     <td>{{ $k->nama_perusahaan ?? '-' }}</td>
 
                                     <!-- Bidang -->
-                                    <td>{{ $k->pendaftaran->bidang_ssw ?? '-' }}</td>
+                                    <td>
+                                        @if ($k->bidang_ssws && $k->bidang_ssws->count() > 0)
+                                            {{ $k->bidang_ssws->pluck('nama_bidang')->join(', ') }}
+                                        @else
+                                            -
+                                        @endif
+                                    </td>
+
 
                                     <!-- Tanggal Daftar -->
                                     <td>

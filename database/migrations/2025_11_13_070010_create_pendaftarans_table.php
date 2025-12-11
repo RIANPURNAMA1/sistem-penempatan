@@ -35,16 +35,6 @@ return new class extends Migration
             $table->text('alamat')->nullable(); // FIX: Menghilangkan ->change()
             $table->string('pendidikan_terakhir');
 
-            // ENUM Bidang SSW
-            $table->enum('bidang_ssw', [
-                'Pengolahan makanan',
-                'Restoran',
-                'Pertanian',
-                'Kaigo (perawat)',
-                'Building cleaning',
-                'Driver',
-                'Lainnya',
-            ])->nullable(); // jika ingin wajib tinggal hapus nullable()
 
             // Lokasi lengkap (dibuat nullable)
             $table->string('provinsi', 100)->nullable(); // FIX: Menghilangkan ->change()

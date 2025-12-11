@@ -33,16 +33,7 @@ return new class extends Migration {
             $table->string('nama_perusahaan')->nullable(); 
             $table->string('detail_pekerjaan')->nullable(); 
 
-            // ENUM Bidang SSW
-            $table->enum('bidang_ssw', [
-                'Pengolahan makanan',
-                'Restoran',
-                'Pertanian',
-                'Kaigo (perawat)',
-                'Building cleaning',
-                'Driver',
-                'Lainnya',
-            ])->nullable(); 
+             $table->text('bidang_ssw')->nullable();
 
             // mapping status interview
             $table->enum('status_interview', [

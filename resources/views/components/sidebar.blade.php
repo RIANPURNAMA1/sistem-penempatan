@@ -172,7 +172,7 @@
                                     <a href="{{ url('/institusi') }}"
                                         class="sidebar-link d-flex align-items-center gap-2 py-2">
                                         <i class="bi bi-building"></i>
-                                        <span class="fw-semibold">Perusahaan</span>
+                                        <span class="fw-semibold">Perusahaan Penempatan</span>
                                     </a>
                                 </li>
 

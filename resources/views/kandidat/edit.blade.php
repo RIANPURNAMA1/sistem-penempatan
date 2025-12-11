@@ -71,6 +71,8 @@
                         </select>
                     </div>
 
+
+
                     <!-- Institusi / Penempatan -->
                     <div class="col-md-6">
                         <label for="institusi_id" class="form-label fw-bold">Perusahaan Penempatan</label>
@@ -84,12 +86,37 @@
                             @endforeach
                         </select>
                     </div>
+                    <!-- Bidang SSW -->
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Bidang SSW</label>
+
+                        @if ($kandidat->pendaftaran && $kandidat->pendaftaran->bidang_ssws->count() > 0)
+                            <div class="d-flex flex-wrap gap-2">
+                                @foreach ($kandidat->pendaftaran->bidang_ssws as $bidang)
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio" name="bidang_ssw"
+                                            value="{{ $bidang->id }}" id="bidang_{{ $bidang->id }}"
+                                            {{-- Cek jika kandidat sudah memilih bidang ini --}}
+                                            {{ old('bidang_ssw', optional($kandidat->bidang_ssws->first())->id) == $bidang->id ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="bidang_{{ $bidang->id }}">
+                                            {{ $bidang->nama_bidang }}
+                                        </label>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @else
+                            <p class="text-muted">- Tidak ada bidang SSW -</p>
+                        @endif
+
+
+                    </div>
+
+
 
                     <div class="mb-3">
                         <label for="nama_perusahaan" class="form-label">Nama Perusahaan</label>
                         <input type="text" name="nama_perusahaan" id="nama_perusahaan" class="form-control"
-                            value=""
-                            placeholder="Masukkan nama perusahaan">
+                            value="" placeholder="Masukkan nama perusahaan">
                     </div>
 
                     <div class="mb-3">

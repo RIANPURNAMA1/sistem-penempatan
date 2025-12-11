@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Exports\KandidatExport;
 use App\Exports\PendaftaranExport;
 use App\Imports\PendaftaranImport;
+use App\Models\BidangSsw;
 use Illuminate\Http\Request;
 use App\Models\Pendaftaran;
 use App\Models\Cabang;
@@ -53,7 +54,10 @@ class PendaftaranController extends Controller
 
             // FIELD BARU
             'pendidikan_terakhir' => 'required|string|max:255',
-            'bidang_ssw' => 'required|in:Pengolahan makanan,Restoran,Pertanian,Kaigo (perawat),Building cleaning,Driver,Lainnya',
+
+            // Validasi bidang SSW (banyak data)
+            'bidang_ssw' => 'required|array|min:1',
+            'bidang_ssw.*' => 'in:Pengolahan makanan,Restoran,Pertanian,Kaigo (perawat),Building cleaning,Driver,Lainnya',
 
             'id_prometric' => 'required|string|max:255',
             'password_prometric' => 'required|string|max:255',
@@ -168,7 +172,6 @@ class PendaftaranController extends Controller
 
             // Field baru
             'pendidikan_terakhir' => $request->pendidikan_terakhir,
-            'bidang_ssw' => $request->bidang_ssw,
 
             // File upload
             'foto' => $uploadedPaths['foto'] ?? null,
@@ -186,6 +189,16 @@ class PendaftaranController extends Controller
             'password_prometric' => $request->password_prometric,
             'pernah_ke_jepang' => $request->pernah_ke_jepang,
         ]);
+
+        // Simpan banyak bidang SSW
+        if ($request->has('bidang_ssw')) {
+            foreach ($request->bidang_ssw as $bidang) {
+                BidangSsw::create([
+                    'pendaftaran_id' => $pendaftaran->id,  // <-- pastikan ini terisi
+                    'nama_bidang' => $bidang
+                ]);
+            }
+        }
         // ----------------------------------------------
         // 🔥 Panggil fungsi kirim WA ke admin
         // ----------------------------------------------
@@ -372,82 +385,81 @@ class PendaftaranController extends Controller
         return redirect()->back()->with('success', $message);
     }
 
-private function sendWhatsAppNotification(Pendaftaran $pendaftaran, string $status, string $catatanAdmin): bool
-{
-    // Ambil ENV
-    $domain = env('WABLAS_DOMAIN', 'https://bdg.wablas.com');
-    $token  = env('WABLAS_TOKEN');
-    $secret = env('WABLAS_SECRET_KEY');
+    private function sendWhatsAppNotification(Pendaftaran $pendaftaran, string $status, string $catatanAdmin): bool
+    {
+        // Ambil ENV
+        $domain = env('WABLAS_DOMAIN', 'https://bdg.wablas.com');
+        $token  = env('WABLAS_TOKEN');
+        $secret = env('WABLAS_SECRET_KEY');
 
-    // Format Authorization (Wablas v4)
-    $authKey = $secret
-        ? "{$token}.{$secret}"
-        : $token;
+        // Format Authorization (Wablas v4)
+        $authKey = $secret
+            ? "{$token}.{$secret}"
+            : $token;
 
-    // Gunakan field no_wa
-    $phoneNumber = $pendaftaran->no_wa;
+        // Gunakan field no_wa
+        $phoneNumber = $pendaftaran->no_wa;
 
-    // Format nomor WA ke internasional
-    $formattedNumber = preg_replace('/\D/', '', $phoneNumber);
-    if (substr($formattedNumber, 0, 1) === '0') {
-        $formattedNumber = '62' . substr($formattedNumber, 1);
-    }
-
-    // Nama pendaftar
-    $namaPendaftar = $pendaftaran->nama ?? 'Calon Kandidat';
-
-    // Susun pesan
-    switch ($status) {
-        case 'diterima':
-            $pesan = "Halo *{$namaPendaftar}* 👋\n\n" .
-                     "Selamat! Pendaftaran Anda telah **DITERIMA** 🎉\n\n" .
-                     "Catatan Admin:\n_{$catatanAdmin}_\n\n" .
-                     "Terima kasih telah mendaftar. Tim Mendunia.id akan segera menghubungi Anda untuk proses selanjutnya.";
-            break;
-
-        case 'data belum lengkap':
-            $pesan = "Halo *{$namaPendaftar}* 👋\n\n" .
-                     "Status pendaftaran Anda  **DATA BELUM LENGKAP** \n\n" .
-                     "Mohon segera lengkapi data Anda agar dapat kami proses lebih lanjut.\n\n" .
-                     "Catatan Admin:\n_{$catatanAdmin}_\n\n" .
-                     "Jika membutuhkan bantuan, jangan ragu menghubungi tim Mendunia.id.";
-            break;
-
-        case 'ditolak':
-            $pesan = "Halo *{$namaPendaftar}* 👋\n\n" .
-                     "Mohon maaf, pendaftaran Anda  **DITOLAK** ❌\n\n" .
-                     "Catatan Admin:\n_{$catatanAdmin}_\n\n" .
-                     "Terima kasih atas ketertarikan Anda mendaftar melalui Mendunia.id.";
-            break;
-
-        case 'menunggu':
-
-        default:
-            return true;
-    }
-
-    try {
-        // Call API Wablas
-        $response = Http::withHeaders([
-            'Authorization' => $authKey,
-        ])->asForm()->post("{$domain}/api/send-message", [
-            'phone'    => $formattedNumber,
-            'message'  => $pesan,
-        ]);
-
-        if ($response->successful()) {
-            Log::info("WA terkirim ke {$formattedNumber}");
-            return true;
+        // Format nomor WA ke internasional
+        $formattedNumber = preg_replace('/\D/', '', $phoneNumber);
+        if (substr($formattedNumber, 0, 1) === '0') {
+            $formattedNumber = '62' . substr($formattedNumber, 1);
         }
 
-        Log::error("WA gagal dikirim. Respon: " . $response->body());
-        return false;
+        // Nama pendaftar
+        $namaPendaftar = $pendaftaran->nama ?? 'Calon Kandidat';
 
-    } catch (\Exception $e) {
-        Log::error("WA EXCEPTION: " . $e->getMessage());
-        return false;
+        // Susun pesan
+        switch ($status) {
+            case 'diterima':
+                $pesan = "Halo *{$namaPendaftar}* 👋\n\n" .
+                    "Selamat! Pendaftaran Anda telah **DITERIMA** 🎉\n\n" .
+                    "Catatan Admin:\n_{$catatanAdmin}_\n\n" .
+                    "Terima kasih telah mendaftar. Tim Mendunia.id akan segera menghubungi Anda untuk proses selanjutnya.";
+                break;
+
+            case 'data belum lengkap':
+                $pesan = "Halo *{$namaPendaftar}* 👋\n\n" .
+                    "Status pendaftaran Anda  **DATA BELUM LENGKAP** \n\n" .
+                    "Mohon segera lengkapi data Anda agar dapat kami proses lebih lanjut.\n\n" .
+                    "Catatan Admin:\n_{$catatanAdmin}_\n\n" .
+                    "Jika membutuhkan bantuan, jangan ragu menghubungi tim Mendunia.id.";
+                break;
+
+            case 'ditolak':
+                $pesan = "Halo *{$namaPendaftar}* 👋\n\n" .
+                    "Mohon maaf, pendaftaran Anda  **DITOLAK** ❌\n\n" .
+                    "Catatan Admin:\n_{$catatanAdmin}_\n\n" .
+                    "Terima kasih atas ketertarikan Anda mendaftar melalui Mendunia.id.";
+                break;
+
+            case 'menunggu':
+
+            default:
+                return true;
+        }
+
+        try {
+            // Call API Wablas
+            $response = Http::withHeaders([
+                'Authorization' => $authKey,
+            ])->asForm()->post("{$domain}/api/send-message", [
+                'phone'    => $formattedNumber,
+                'message'  => $pesan,
+            ]);
+
+            if ($response->successful()) {
+                Log::info("WA terkirim ke {$formattedNumber}");
+                return true;
+            }
+
+            Log::error("WA gagal dikirim. Respon: " . $response->body());
+            return false;
+        } catch (\Exception $e) {
+            Log::error("WA EXCEPTION: " . $e->getMessage());
+            return false;
+        }
     }
-}
 
 
 

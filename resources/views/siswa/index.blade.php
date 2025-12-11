@@ -228,7 +228,14 @@
 
                                 <td>{{ $kandidat->pendidikan_terakhir }}</td>
 
-                                <td>{{ $kandidat->bidang_ssw }}</td>
+                                <td>
+                                    @if ($kandidat->bidang_ssws && $kandidat->bidang_ssws->count() > 0)
+                                        {{ $kandidat->bidang_ssws->pluck('nama_bidang')->join(', ') }}
+                                    @else
+                                        -
+                                    @endif
+                                </td>
+
 
                                 <td>{{ $kandidat->jenis_kelamin }}</td>
                                 <td>{{ $kandidat->no_wa }}</td>

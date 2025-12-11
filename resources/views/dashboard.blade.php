@@ -282,8 +282,8 @@
                     <div class="row mt-4">
 
                         <!-- =========================
-                                                                                                    BAGIAN KIRI (CHART)
-                                                                                                ========================== -->
+                                                                                                            BAGIAN KIRI (CHART)
+                                                                                                        ========================== -->
                         <div class="col-12 col-md-8">
                             <div class="card h-100 shadow-lg border-0 rounded-4">
 
@@ -477,7 +477,7 @@
                                 <div class="card-body">
 
                                     @php
-                                        // ... (Array $timelineSteps yang sama dengan sebelumnya)
+                                        // Array langkah timeline
                                         $timelineSteps = [
                                             [
                                                 'icon' => 'check-circle-fill',
@@ -494,17 +494,12 @@
                                                 'title' => 'Interview',
                                                 'status' => 'Interview',
                                             ],
-
                                             [
                                                 'icon' => 'check2-circle',
                                                 'title' => 'Lulus Interview',
                                                 'status' => 'Lulus interview',
                                             ],
-                                            [
-                                                'icon' => 'award',
-                                                'title' => 'Pemberkasan',
-                                                'status' => 'Pemberkasan',
-                                            ],
+                                            ['icon' => 'award', 'title' => 'Pemberkasan', 'status' => 'Pemberkasan'],
                                             [
                                                 'icon' => 'rocket-takeoff',
                                                 'title' => 'Berangkat',
@@ -521,7 +516,6 @@
                                     @foreach ($dataKandidat as $pendaftaran)
                                         @php
                                             $kandidat = $pendaftaran->kandidat;
-                                            // Ambil nama perusahaan yang saat ini tersimpan di model kandidat
                                             $namaPerusahaanAktif =
                                                 $kandidat->nama_perusahaan ??
                                                 ($kandidat->institusi->nama_perusahaan ?? '-');
@@ -530,7 +524,6 @@
                                         @if ($kandidat)
                                             @foreach ($timelineSteps as $step)
                                                 @php
-                                                    // Logika penentuan warna step (success, info, secondary, danger)
                                                     $statusList = array_column($timelineSteps, 'status');
                                                     $currentIndex = array_search(
                                                         $kandidat->status_kandidat,
@@ -541,7 +534,6 @@
                                                     $stepColor = 'secondary';
                                                     $stepDate = null;
 
-                                                    // Logika pewarnaan (sama seperti sebelumnya)
                                                     if ($kandidat->status_kandidat === 'Gagal Interview') {
                                                         if ($step['status'] === 'Gagal Interview') {
                                                             $stepColor = 'danger';
@@ -555,6 +547,11 @@
                                                             $stepColor = 'success';
                                                         }
                                                     }
+
+                                                    // Ambil Bidang SSW dari relasi kandidat
+                                                    $bidangSswAktif = $kandidat->bidang_ssws
+                                                        ->pluck('nama_bidang')
+                                                        ->join(', ');
                                                 @endphp
 
                                                 <div class="row mb-4 flex-column flex-md-row align-items-start">
@@ -587,6 +584,12 @@
                                                                 <p class="text-muted small mb-1">
                                                                     Detail Pekerjaan:
                                                                     <em>{{ $kandidat->detail_pekerjaan }}</em>
+                                                                </p>
+                                                            @endif
+
+                                                            @if ($bidangSswAktif)
+                                                                <p class="text-muted small mb-1">
+                                                                    Bidang SSW: <strong>{{ $bidangSswAktif }}</strong>
                                                                 </p>
                                                             @endif
                                                         @endif
@@ -662,7 +665,7 @@
 
                         </div>
 
-                        
+
 
                         {{-- profile kandidat --}}
                         @include('components.profile_kandidat')

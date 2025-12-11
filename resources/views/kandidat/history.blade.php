@@ -53,6 +53,7 @@
                             <th class="py-3">Status Kandidat</th>
                             <th class="py-3">Perusahaan Penempatan</th>
                             <th class="py-3">Nama Perusahaan</th>
+                            <th class="py-3">Bidang SSW</th> <!-- Tambah kolom Bidang SSW -->
                             <th class="py-3">Tanggal</th>
                         </tr>
                     </thead>
@@ -97,13 +98,18 @@
                                     </span>
                                 </td>
 
+                                <td>
+                                    {{ $history->bidang_ssw ?? '-' }}
+                                </td>
+
+
                                 <td class="text-center">
                                     {{ $history->created_at->format('d M Y H:i') }}
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="text-center text-muted py-4">
+                                <td colspan="6" class="text-center text-muted py-4">
                                     <i class="bi bi-info-circle me-1"></i> Belum ada history untuk kandidat ini.
                                 </td>
                             </tr>
@@ -135,81 +141,81 @@
             </div>
         </div>
 
+
         <!-- Tabel 2: Summary per Perusahaan -->
         <div class="card shadow-sm border-0 rounded-4 mb-4">
             <div class="card-body table-responsive">
                 <h5 class="mb-3">Summary Interview per Perusahaan</h5>
-                    <table class="table table-striped table-bordered align-middle nowrap" id="tableSummary"
-                        style="width:100%">
-                        <thead class="table-light">
+                <table class="table table-striped table-bordered align-middle nowrap" id="tableSummary" style="width:100%">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="py-3">Perusahaan Penempatan</th>
+                            <th class="py-3">Nama Perusahaan (History)</th>
+                            <th class="py-3">Bidang SSW</th> <!-- Tambah kolom Bidang SSW -->
+                            <th class="py-3 text-center">Jumlah Interview</th>
+                            <th class="py-3 text-center">Status Terakhir</th>
+                            <th class="py-3 text-center">Tanggal Terakhir</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($interviewPerPerusahaan as $index => $data)
                             <tr>
-                                <th class="py-3">Perusahaan Penempatan</th>
-                                <th class="py-3">Nama Perusahaan (History)</th>
-                                <th class="py-3 text-center">Jumlah Interview</th>
-                                <th class="py-3 text-center">Status Terakhir</th>
-                                <th class="py-3 text-center">Tanggal Terakhir</th>
+                                {{-- KOLOM 1: Perusahaan Penempatan (Ambil dari data Institusi) --}}
+                                <td>
+                                    {{ $data['institusi']->nama_perusahaan ?? ($data['institusi']->perusahaan_penempatan ?? '-') }}
+                                </td>
+
+                                {{-- KOLOM 2: Nama Perusahaan (History) --}}
+                                <td>
+                                    {{ $data['nama_perusahaan_history'] ?? ($kandidat->nama_perusahaan ?? '-') }}
+                                </td>
+
+                                {{-- KOLOM 3: Bidang SSW --}}
+                                <td>
+                                    {{ $data['bidang_ssw'] ?? '-' }}
+                                </td>
+
+                                {{-- Kolom 4: Jumlah Interview --}}
+                                <td class="text-center fw-semibold">{{ $data['jumlah_interview'] }}</td>
+
+                                {{-- Kolom 5: Status Terakhir --}}
+                                <td class="text-center">{{ $data['status_terakhir'] }}</td>
+
+                                {{-- Kolom 6: Tanggal Terakhir --}}
+                                <td class="text-center">{{ $data['tanggal_terakhir']->format('d M Y H:i') }}</td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            @forelse ($interviewPerPerusahaan as $index => $data)
-                                <tr>
-                                    {{-- KOLOM 1: Perusahaan Penempatan (Ambil dari data Institusi) --}}
-                                    <td>
-                                        {{ // Prioritas 1: Nama Perusahaan dari Institusi (data master)
-                                            $data['institusi']->nama_perusahaan ??
-                                                // Prioritas 2: Kolom perusahaan_penempatan dari Institusi (sesuai header)
-                                                ($data['institusi']->perusahaan_penempatan ?? '-') }}
-                                    </td>
-
-                                    {{-- KOLOM 2: Nama Perusahaan (History) --}}
-                                    <td>
-                                        {{ // Prioritas 1: Nama perusahaan yang dicatat di history terakhir (Misal: 'pt sukses')
-                                            $data['nama_perusahaan_history'] ??
-                                                // Fallback: Nama perusahaan aktif dari model Kandidat utama
-                                                ($kandidat->nama_perusahaan ?? '-') }}
-                                    </td>
-
-                                    {{-- Kolom 3: Jumlah Interview --}}
-                                    <td class="text-center fw-semibold">{{ $data['jumlah_interview'] }}</td>
-
-                                    {{-- Kolom 4: Status Terakhir --}}
-                                    <td class="text-center">{{ $data['status_terakhir'] }}</td>
-
-                                    {{-- Kolom 5: Tanggal Terakhir --}}
-                                    <td class="text-center">{{ $data['tanggal_terakhir']->format('d M Y H:i') }}</td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="5" class="text-center text-muted py-4">
-                                        <i class="bi bi-info-circle me-1"></i> Belum ada history interview untuk kandidat
-                                        ini.
-                                    </td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
+                        @empty
+                            <tr>
+                                <td colspan="6" class="text-center text-muted py-4">
+                                    <i class="bi bi-info-circle me-1"></i> Belum ada history interview untuk kandidat ini.
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
         </div>
-        @if (auth()->check() && auth()->user()->role === 'super-admin')
-            <!-- Back Button -->
-            <div class="mt-3">
-                <a href="{{ route('kandidat.data') }}" class="btn btn-secondary">
-                    <i class="bi bi-arrow-left-circle me-1"></i> Kembali ke Daftar Kandidat
-                </a>
-            </div>
-        @endif
 
-        @if (auth()->check() &&
-                auth()->user()->role ===
-                    'Cabang Cianjur Selatan Mendunia,Cabang Cianjur Pamoyanan Mendunia,Cabang Batam Mendunia,Cabang Banyuwangi Mendunia,Cabang Kendal Mendunia,Cabang Pati Mendunia,Cabang Tulung Agung Mendunia,Cabang Bangkalan Mendunia,Cabang Bojonegoro Mendunia,Cabang Jember Mendunia,Cabang Wonosobo Mendunia,Cabang Eshan Mendunia')
-            <!-- Back Button -->
-            <div class="mt-3">
-                <a href="/" class="btn btn-secondary">
-                    <i class="bi bi-arrow-left-circle me-1"></i> Kembali ke Dashboard
-                </a>
-            </div>
-        @endif
+    </div>
+    @if (auth()->check() && auth()->user()->role === 'super-admin')
+        <!-- Back Button -->
+        <div class="mt-3">
+            <a href="{{ route('kandidat.data') }}" class="btn btn-secondary">
+                <i class="bi bi-arrow-left-circle me-1"></i> Kembali ke Daftar Kandidat
+            </a>
+        </div>
+    @endif
+
+    @if (auth()->check() &&
+            auth()->user()->role ===
+                'Cabang Cianjur Selatan Mendunia,Cabang Cianjur Pamoyanan Mendunia,Cabang Batam Mendunia,Cabang Banyuwangi Mendunia,Cabang Kendal Mendunia,Cabang Pati Mendunia,Cabang Tulung Agung Mendunia,Cabang Bangkalan Mendunia,Cabang Bojonegoro Mendunia,Cabang Jember Mendunia,Cabang Wonosobo Mendunia,Cabang Eshan Mendunia')
+        <!-- Back Button -->
+        <div class="mt-3">
+            <a href="/" class="btn btn-secondary">
+                <i class="bi bi-arrow-left-circle me-1"></i> Kembali ke Dashboard
+            </a>
+        </div>
+    @endif
     </div>
     <!-- JS Dependencies -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>

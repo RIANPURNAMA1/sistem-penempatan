@@ -20,7 +20,9 @@ class KandidatHistory extends Model
         'nama_perusahaan',
         'detail_pekerjaan',
     ];
-  
+
+
+
     public function kandidat()
     {
         return $this->belongsTo(Kandidat::class);

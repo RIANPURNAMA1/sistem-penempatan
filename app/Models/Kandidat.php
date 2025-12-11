@@ -36,4 +36,10 @@ class Kandidat extends Model
     {
         return $this->hasMany(KandidatHistory::class);
     }
+  
+    // Relasi kandidat ke bidang SSW yang sudah masuk kandidat
+    public function bidang_ssws()
+    {
+        return $this->hasMany(BidangSsw::class, 'kandidat_id');
+    }
 }

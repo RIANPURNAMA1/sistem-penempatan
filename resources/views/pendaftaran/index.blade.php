@@ -176,19 +176,37 @@
 
                                 <!-- Bidang SSW -->
                                 <div class="col-md-6">
-                                    <label class="form-label">Bidang SSW <span class="text-danger">*</span></label>
-                                    <select name="bidang_ssw" class="form-select" required>
-                                        <option value="">-- Pilih Bidang SSW --</option>
-                                        <option value="Pengolahan makanan">Pengolahan makanan</option>
-                                        <option value="Restoran">Restoran</option>
-                                        <option value="Pertanian">Pertanian</option>
-                                        <option value="Kaigo (perawat)">Kaigo (perawat)</option>
-                                        <option value="Building cleaning">Building cleaning</option>
-                                        <option value="Driver">Driver</option>
-                                        <option value="Lainnya">Lainnya</option>
-                                    </select>
-                                    <div class="invalid-feedback">Bidang SSW wajib dipilih.</div>
+                                    <label class="form-label fw-bold">Bidang SSW</label>
+
+                                    <div id="bidang-wrapper">
+
+                                        <!-- Baris Pertama -->
+                                        <div class="row mb-2 bidang-item">
+                                            <div class="col-10">
+                                                <select name="bidang_ssw[]" class="form-select" required>
+                                                    <option value="">-- Pilih Bidang --</option>
+                                                    <option value="Pengolahan makanan">Pengolahan makanan</option>
+                                                    <option value="Restoran">Restoran</option>
+                                                    <option value="Pertanian">Pertanian</option>
+                                                    <option value="Kaigo (perawat)">Kaigo (perawat)</option>
+                                                    <option value="Building cleaning">Building cleaning</option>
+                                                    <option value="Driver">Driver</option>
+                                                    <option value="Lainnya">Lainnya</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-2">
+                                                <button type="button" class="btn btn-danger remove-bidang">
+                                                    <i class="bi bi-trash-fill"></i>
+                                                </button>
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <button type="button" id="add-bidang" class="btn btn-primary mt-2">+</button>
                                 </div>
+
 
                                 <!-- ==================== Data Tambahan ==================== -->
                                 <div class="mb-4">
@@ -370,6 +388,42 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+        // bidang ssw
+        document.getElementById('add-bidang').addEventListener('click', function() {
+
+            let wrapper = document.getElementById('bidang-wrapper');
+
+            // HTML baris baru
+            let row = document.createElement('div');
+            row.classList.add('row', 'mb-2', 'bidang-item');
+
+            row.innerHTML = `
+        <div class="col-10">
+            <select name="bidang_ssw[]" class="form-select" required>
+                <option value="">-- Pilih Bidang --</option>
+                <option value="Pengolahan makanan">Pengolahan makanan</option>
+                <option value="Restoran">Restoran</option>
+                <option value="Pertanian">Pertanian</option>
+                <option value="Kaigo (perawat)">Kaigo (perawat)</option>
+                <option value="Building cleaning">Building cleaning</option>
+                <option value="Driver">Driver</option>
+                <option value="Lainnya">Lainnya</option>
+            </select>
+        </div>
+        <div class="col-2">
+            <button type="button" class="btn btn-danger remove-bidang"><i class="bi bi-trash-fill"></i></button>
+        </div>
+    `;
+
+            wrapper.appendChild(row);
+        });
+
+        // EVENT HAPUS BARIS
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('remove-bidang')) {
+                e.target.closest('.bidang-item').remove();
+            }
+        });
         document.addEventListener("DOMContentLoaded", function() {
             document.querySelectorAll(".preview-input").forEach(input => {
                 input.addEventListener("change", function(e) {
@@ -449,7 +503,7 @@
                         }).then(() => {
                             // Redirect ke grup WhatsApp
                             window.location.href = "/"
-                               
+
                         });
 
                         // Reset form

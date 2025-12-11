@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\StatusKandidatUpdated;
+use App\Models\BidangSsw;
 use App\Models\Cabang;
 use App\Models\Institusi;
 use Illuminate\Http\Request;
@@ -78,6 +79,7 @@ class KandidatController extends Controller
             'catatan_interview' => 'nullable|string',
             'jadwal_interview' => 'nullable|date',
             'nama_perusahaan' => 'nullable|string',
+            'bidang_ssw' => 'required', // hapus |array
         ]);
 
         /* ------------------------------------------------------------
@@ -139,6 +141,22 @@ class KandidatController extends Controller
         ]);
 
 
+        $bidang_id = $request->input('bidang_ssw');
+
+        // Hapus bidang SSW lama untuk kandidat
+        $kandidat->bidang_ssws()->delete();
+
+        // Simpan bidang SSW yang dipilih
+        $bidang = $kandidat->pendaftaran->bidang_ssws()->find($bidang_id);
+        if ($bidang) {
+            BidangSsw::create([
+                'kandidat_id' => $kandidat->id,
+                'pendaftaran_id' => $kandidat->pendaftaran_id,
+                'nama_bidang' => $bidang->nama_bidang,
+            ]);
+        }
+
+
         /* ------------------------------------------------------------
     | Simpan History
     ------------------------------------------------------------ */
@@ -148,7 +166,12 @@ class KandidatController extends Controller
             'Interview', 'Jadwalkan Interview Ulang' => 'Proses',
             default => 'Pending',
         };
+        // Ambil bidang SSW yang dipilih (hanya 1)
+        $bidangId = $request->bidang_ssw; // radio button, pasti 1 value
+        $bidang = BidangSsw::find($bidangId);
+        $bidangNama = $bidang ? $bidang->nama_bidang : null;
 
+        // Simpan ke history
         KandidatHistory::create([
             'kandidat_id' => $kandidat->id,
             'status_kandidat' => $kandidat->status_kandidat,
@@ -157,7 +180,9 @@ class KandidatController extends Controller
             'institusi_id' => $kandidat->institusi_id,
             'catatan_interview' => $kandidat->catatan_interview,
             'jadwal_interview' => $kandidat->jadwal_interview,
+            'bidang_ssw' => $bidangNama, // langsung simpan string
         ]);
+
 
         // Pastikan variabel $kandidat dan $request sudah didefinisikan sebelum blok ini.
 
@@ -413,6 +438,8 @@ class KandidatController extends Controller
 
                     'status_terakhir' => $last->status_kandidat,
                     'tanggal_terakhir' => $last->created_at,
+
+                    'bidang_ssw' => $last->bidang_ssw, // <-- tambahkan ini
                 ];
             });
 

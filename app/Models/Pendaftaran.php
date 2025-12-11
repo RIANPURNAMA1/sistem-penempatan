@@ -9,7 +9,7 @@ class Pendaftaran extends Model
 {
     use HasFactory;
 
-   protected $guarded = [];
+    protected $guarded = [];
 
     // Relasi ke cabang
     public function cabang()
@@ -30,9 +30,12 @@ class Pendaftaran extends Model
 
 
     public function kandidat()
-{
-    // relasi one-to-one: satu pendaftaran punya satu kandidat
-    return $this->hasOne(Kandidat::class, 'pendaftaran_id', 'id');
-}
-
+    {
+        // relasi one-to-one: satu pendaftaran punya satu kandidat
+        return $this->hasOne(Kandidat::class, 'pendaftaran_id', 'id');
+    }
+    public function bidang_ssws()
+    {
+        return $this->hasMany(BidangSsw::class);
+    }
 }
