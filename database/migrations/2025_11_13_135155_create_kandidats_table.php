@@ -23,6 +23,12 @@ return new class extends Migration {
                 'Berangkat',
                 'Ditolak',
             ])->default('Job Matching');
+            $table->enum('status_kandidat_di_mendunia', [
+                'Tetap di Mendunia',
+                'Keluar dari Mendunia',
+                'Sudah Terbang',
+            ])->default('Tetap di Mendunia');
+
             $table->unsignedBigInteger('institusi_id')->nullable();
             // Kolom tambahan untuk tracking interview
             $table->unsignedInteger('jumlah_interview')->default(0);

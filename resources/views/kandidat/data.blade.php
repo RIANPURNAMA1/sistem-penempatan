@@ -109,7 +109,7 @@
             <!-- 🧾 Data Table -->
             <div class="card shadow shadow-md">
                 <div class="card-body table-responsive">
-                    <table id="tablependaftar" class="table table-striped shadow shadow-md align-middle nowrap"
+                    <table id="tableKandidatutama" class="table  shadow shadow-md align-middle nowrap"
                         style="width:100%">
                         <thead class="">
                             <tr class="text-white text-center">
@@ -117,12 +117,12 @@
                                 <th>Gambar</th> <!-- ✅ Kolom baru -->
                                 <th>Nama Siswa</th>
                                 <th>Cabang</th>
-                                <th>Status Kandidat</th>
+                                <th>Progress Kandidat</th>
+                                <th>Status Kndidat di Mendunia</th>
                                 <th>Perusahaan Penempatan</th>
                                 <th>Nama Perusahaan</th>
                                 <th>Bidang Pekerjaan SSW</th>
                                 <th>Tanggal Daftar</th>
-                                <th>Masuk Grup Wa</th>
                                 <th>Jumlah Interview</th>
                                 <th>Catatan Interview</th>
                                 <th>Jadwal Interview</th>
@@ -178,6 +178,37 @@
                                             {{ $k->status_kandidat }}
                                         </span>
                                     </td>
+                                    <td>
+                                        <form class="form-mendunia border-none" action="{{ route('kandidat.updateMendunia', $k->id) }}"
+                                            method="POST">
+                                            @csrf
+                                            @method('PUT')
+
+                                            <select name="status_kandidat_di_mendunia"
+                                                class="form-select form-select-sm status-mendunia">
+
+                                                <option value="">-- Pilih Status --</option>
+
+                                                <option value="Tetap di Mendunia"
+                                                    {{ $k->status_kandidat_di_mendunia == 'Tetap di Mendunia' ? 'selected' : '' }}>
+                                                    Tetap di Mendunia
+                                                </option>
+
+                                                <option value="Keluar dari Mendunia"
+                                                    {{ $k->status_kandidat_di_mendunia == 'Keluar dari Mendunia' ? 'selected' : '' }}>
+                                                    Keluar dari Mendunia
+                                                </option>
+
+                                                <option value="Sudah Terbang"
+                                                    {{ $k->status_kandidat_di_mendunia == 'Sudah Terbang' ? 'selected' : '' }}>
+                                                    Sudah Terbang
+                                                </option>
+
+                                            </select>
+                                        </form>
+                                    </td>
+
+
 
                                     <!-- Penempatan -->
                                     <td>{{ $k->institusi->perusahaan_penempatan ?? '-' }}</td>
@@ -192,9 +223,6 @@
                                         {{ $k->pendaftaran->tanggal_daftar
                                             ? \Carbon\Carbon::parse($k->pendaftaran->tanggal_daftar)->format('d F Y')
                                             : '-' }}
-                                    </td>
-                                    <td>
-                                        {{ $k->masuk_grup_wa }}
                                     </td>
 
                                     <!-- Jumlah Interview -->
@@ -252,6 +280,48 @@
                         next: "→"
                     }
                 }
+            });
+
+            // update status kandidat mendunia 
+            $(document).on('change', '.status-mendunia', function() {
+
+                let form = $(this).closest('form');
+
+                Swal.fire({
+                    title: "Yakin Ubah Status?",
+                    text: "Status kandidat akan diperbarui.",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Ya, ubah!",
+                    cancelButtonText: "Batal",
+                }).then((result) => {
+
+                    if (result.isConfirmed) {
+
+                        // submit via AJAX
+                        $.ajax({
+                            url: form.attr('action'),
+                            type: "POST",
+                            data: form.serialize(),
+                            success: function() {
+                                Swal.fire({
+                                    icon: "success",
+                                    title: "Berhasil!",
+                                    text: "Status kandidat di Mendunia telah diperbarui.",
+                                    timer: 2000,
+                                    showConfirmButton: false
+                                });
+                            },
+                            error: function(xhr) {
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "Gagal!",
+                                    text: xhr.responseJSON?.message ?? "Terjadi kesalahan.",
+                                });
+                            }
+                        });
+                    }
+                });
             });
 
 

@@ -57,6 +57,7 @@
 
                 <div class="mb-3">
                     <label for="catatan_admin" class="form-label fw-semibold">Catatan Admin</label>
+                    <p class="" style="font-style:italic; ">(optional) Jika tidak ada catatan kosongkan </p>
                     <textarea name="catatan_admin" id="catatan_admin" class="form-control rounded-3 shadow-sm" rows="4">{{ old('catatan_admin', $kandidat->catatan_admin) }}</textarea>
                 </div>
 

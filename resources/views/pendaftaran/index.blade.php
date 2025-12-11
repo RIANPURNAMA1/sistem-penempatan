@@ -412,6 +412,7 @@
 
         $(document).ready(function() {
 
+            // FORM SUBMIT AJAX
             $("form").on("submit", function(e) {
                 e.preventDefault();
 
@@ -446,13 +447,9 @@
                             timer: 3000,
                             showConfirmButton: false,
                         }).then(() => {
-                            // Redirect ke WhatsApp dengan pesan
-                            const waNumber = "6285624251657";
-                            const waMessage = encodeURIComponent(
-                                "Saya sudah melakukan pendaftaran, mohon di cek kembali."
-                                );
-                            window.location.href =
-                                `https://wa.me/${waNumber}?text=${waMessage}`;
+                            // Redirect ke grup WhatsApp
+                            window.location.href = "/"
+                               
                         });
 
                         // Reset form

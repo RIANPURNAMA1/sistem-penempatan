@@ -144,7 +144,7 @@ class PendaftaranController extends Controller
         }
 
         // Simpan data
-        Pendaftaran::create([
+        $pendaftaran =   Pendaftaran::create([
             'user_id' => Auth::id(),
             'cabang_id' => $request->cabang_id,
             'nik' => $request->nik,
@@ -186,10 +186,83 @@ class PendaftaranController extends Controller
             'password_prometric' => $request->password_prometric,
             'pernah_ke_jepang' => $request->pernah_ke_jepang,
         ]);
+        // ----------------------------------------------
+        // 🔥 Panggil fungsi kirim WA ke admin
+        // ----------------------------------------------
+        $this->sendMessageToAdmin($pendaftaran);
+        // ----------------------------------------------
+
+
+
 
         // Controller Response untuk create pendaftaran biasa
         return redirect()->back()->with('success', 'Berhasil mendaftar dan akun kandidat otomatis dibuat.');
     }
+
+
+
+    private function sendMessageToAdmin($pendaftaran)
+    {
+        try {
+            // Nomor admin (HARUS format internasional)
+            $adminNumber = "6282118354415";
+
+            // Format no. WA pendaftar
+            $noWa = preg_replace('/[^0-9]/', '', $pendaftaran->no_wa);
+            if (substr($noWa, 0, 1) === '0') {
+                $noWa = '62' . substr($noWa, 1);
+            }
+
+            // Pesan yang dikirim ke admin
+            $message  = "📥 *PENDAFTARAN BARU MASUK*\n\n";
+            $message .= "Halo Admin,\n\n";
+            $message .= "*{$pendaftaran->nama}* telah melakukan pendaftaran.\n";
+            $message .= "Mohon untuk dicek kembali ya. 🙏\n\n";
+            $message .= "📌 Nomor WA: {$pendaftaran->no_wa}\n";
+            $message .= "📌 Email: {$pendaftaran->email}\n";
+            $message .= "📌 Cabang: {$pendaftaran->cabang->nama}\n\n";
+            $message .= "Terima kasih.";
+
+            // Wablas API
+            $domain = config('services.wablas.domain', 'https://bdg.wablas.com');
+            $token = config('services.wablas.token');
+            $secretKey = config('services.wablas.secret_key', '');
+
+            if ($secretKey) {
+                $response = Http::withOptions([
+                    'verify' => false
+                ])->withHeaders([
+                    'Authorization' => $token . '.' . $secretKey,
+                ])->asForm()->post($domain . '/api/send-message', [
+                    'phone' => $adminNumber,
+                    'message' => $message,
+                ]);
+            } else {
+                // Jika hanya token saja
+                $response = Http::withOptions([
+                    'verify' => false
+                ])->asForm()->post($domain . '/api/send-message', [
+                    'phone' => $adminNumber,
+                    'message' => $message,
+                    'token' => $token,
+                ]);
+            }
+
+            if ($response->successful()) {
+                Log::info("Pesan WA ke ADMIN berhasil dikirim oleh {$pendaftaran->nama}", [
+                    'pendaftar' => $pendaftaran->nama
+                ]);
+                return true;
+            }
+
+            Log::error("Gagal kirim WA ke admin", ['response' => $response->body()]);
+            return false;
+        } catch (\Exception $e) {
+            Log::error("Error sendMessageToAdmin: " . $e->getMessage());
+            return false;
+        }
+    }
+
 
     /**
      * Upload file manual tanpa storage:link
@@ -271,7 +344,7 @@ class PendaftaranController extends Controller
             if ($request->link_grup_wa && $pendaftaran->no_wa) {
                 // Kirim pesan WhatsApp
                 $waSent = $this->sendWhatsAppMessage($pendaftaran, $kandidat, $request->link_grup_wa);
-                
+
                 if ($waSent) {
                     // Set field masuk_grup_wa jadi true
                     $kandidat->masuk_grup_wa = true;
@@ -301,7 +374,7 @@ class PendaftaranController extends Controller
         try {
             // Format nomor WA (hapus karakter non-numerik)
             $noWa = preg_replace('/[^0-9]/', '', $pendaftaran->no_wa);
-            
+
             // Pastikan format nomor dimulai dengan 62
             if (substr($noWa, 0, 1) === '0') {
                 $noWa = '62' . substr($noWa, 1);
@@ -336,13 +409,15 @@ class PendaftaranController extends Controller
             // ===== PILIHAN 2: Menggunakan Wablas API V1 (AKTIF) =====
             $domain = config('services.wablas.domain', 'https://bdg.wablas.com');
             $token = config('services.wablas.token');
-            
+
             // Metode 1: Menggunakan Authorization Header (Jika punya secret key)
             $secretKey = config('services.wablas.secret_key', '');
-            
+
             if ($secretKey) {
                 // Dengan Secret Key (Lebih Aman)
-                $response = Http::withHeaders([
+                $response = Http::withOptions([
+                    'verify' => false  // Disable SSL verification (untuk development)
+                ])->withHeaders([
                     'Authorization' => $token . '.' . $secretKey,
                 ])->asForm()->post($domain . '/api/send-message', [
                     'phone' => $noWa,
@@ -350,16 +425,18 @@ class PendaftaranController extends Controller
                 ]);
             } else {
                 // Tanpa Secret Key (Token saja)
-                $response = Http::asForm()->post($domain . '/api/send-message', [
+                $response = Http::withOptions([
+                    'verify' => false  // Disable SSL verification (untuk development)
+                ])->asForm()->post($domain . '/api/send-message', [
                     'phone' => $noWa,
                     'message' => $message,
                     'token' => $token
                 ]);
             }
-            
+
             if ($response->successful()) {
                 $result = $response->json();
-                
+
                 // Cek response dari Wablas
                 if (isset($result['status']) && $result['status'] == true) {
                     Log::info("WhatsApp berhasil dikirim ke {$pendaftaran->nama} ({$noWa})", ['response' => $result]);
@@ -403,7 +480,6 @@ class PendaftaranController extends Controller
             */
 
             return false;
-
         } catch (\Exception $e) {
             // Log error
             Log::error('WhatsApp Send Error: ' . $e->getMessage());
@@ -411,7 +487,6 @@ class PendaftaranController extends Controller
             return false;
         }
     }
-
 
     // Tampilkan halaman kandidat
     public function Kandidat()

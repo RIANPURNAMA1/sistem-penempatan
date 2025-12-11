@@ -37,6 +37,35 @@ class KandidatController extends Controller
     }
 
 
+    // update kandidat di mendunia
+    /**
+     * Tampilkan form edit status_kandidat_di_mendunia
+     */
+    public function editKandidatMendunia(Kandidat $kandidat)
+    {
+        return view('kandidat.edit-mendunia', compact('kandidat'));
+    }
+
+    /**
+     * Update status_kandidat_di_mendunia
+     */
+    public function updateKandidatMendunia(Request $request, Kandidat $kandidat)
+    {
+        $request->validate([
+            'status_kandidat_di_mendunia' =>
+            'required|in:Tetap di Mendunia,Keluar dari Mendunia,Sudah Terbang',
+        ]);
+
+        $kandidat->update([
+            'status_kandidat_di_mendunia' => $request->status_kandidat_di_mendunia,
+        ]);
+
+        return redirect()
+            ->back()
+            ->with('success', 'Status kandidat di Mendunia berhasil diperbarui.');
+    }
+
+
 
     public function update(Request $request, $id)
     {
@@ -48,7 +77,7 @@ class KandidatController extends Controller
             'institusi_id' => 'nullable|exists:institusis,id',
             'catatan_interview' => 'nullable|string',
             'jadwal_interview' => 'nullable|date',
-            'nama_perusahaan' =>'nullable|string',
+            'nama_perusahaan' => 'nullable|string',
         ]);
 
         /* ------------------------------------------------------------
@@ -105,7 +134,7 @@ class KandidatController extends Controller
             'institusi_id' => $request->institusi_id,
             'catatan_interview' => $request->catatan_interview,
             'jadwal_interview' => $request->jadwal_interview,
-            'nama_perusahaan'=>$request->nama_perusahaan,
+            'nama_perusahaan' => $request->nama_perusahaan,
             'jumlah_interview' => $kandidat->jumlah_interview,
         ]);
 
@@ -120,7 +149,7 @@ class KandidatController extends Controller
             default => 'Pending',
         };
 
-     KandidatHistory::create([
+        KandidatHistory::create([
             'kandidat_id' => $kandidat->id,
             'status_kandidat' => $kandidat->status_kandidat,
             'nama_perusahaan' => $kandidat->nama_perusahaan,

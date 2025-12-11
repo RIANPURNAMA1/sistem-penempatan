@@ -114,9 +114,9 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'role:kandidat'])->group(function () {
     // Form Pendaftaran Kandidat
     Route::get('/pendaftaran/profile/{id}/edit', [DashboardController::class, 'editProfile'])
-    ->name('pendaftaran.edit.profile');
+        ->name('pendaftaran.edit.profile');
     Route::put('/pendaftaran/profile/{id}', [DashboardController::class, 'updateProfile'])
-    ->name('pendaftaran.update.profile');
+        ->name('pendaftaran.update.profile');
 
 
     Route::get('/pendaftaran/kandidat', [PendaftaranController::class, 'datacabang'])->name('pendaftaran.create');
@@ -181,8 +181,15 @@ Route::middleware(['auth', "role:$admin_roles"])->group(function () {
 // Rute Khusus SUPER ADMIN
 Route::middleware(['auth', 'role:super-admin'])->group(function () {
 
+
+    Route::put(
+        '/kandidat/{kandidat}/update-mendunia',
+        [KandidatController::class, 'updateKandidatMendunia']
+    )->name('kandidat.updateMendunia');
+
+
     Route::get('/admin/user', [UserController::class, 'index']);
-        // Data Kandidat
+    // Data Kandidat
     Route::get('/kandidat/data', [KandidatController::class, 'index'])->name('kandidat.data');
 
     // update
@@ -260,14 +267,11 @@ Route::middleware(['auth', 'role:super-admin'])->group(function () {
 
     // user export 
     Route::get('admin/kandidat/export-excel', [UserController::class, 'exportExcel'])
-    ->name('admin.kandidat.export');
-
-
-
+        ->name('admin.kandidat.export');
 });
 
 Route::middleware(['auth'])->group(function () {
     // Halaman riwayat kandidat untuk user login
     Route::get('/kandidat/riwayat/proses', [KandidatHistoryController::class, 'showHistory'])
-         ->name('kandidat.history.proses');
+        ->name('kandidat.history.proses');
 });
