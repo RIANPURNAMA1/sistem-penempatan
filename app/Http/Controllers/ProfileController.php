@@ -15,25 +15,41 @@ class ProfileController extends Controller
         return view('profile.index', compact('user'));
     }
 
-    // Update password
-    public function updatePassword(Request $request)
-    {
-        $request->validate([
-            'current_password' => 'required',
-            'new_password' => 'required|min:6|confirmed',
-        ]);
 
-        $user = Auth::user();
+public function updatePassword(Request $request)
+{
+    /** @var \App\Models\User $user */
+    $user = Auth::user();
 
-        // Cek password lama
+    $request->validate([
+        'name'  => 'required|string|max:255',
+        'email' => 'required|email|unique:users,email,' . $user->id,
+        'current_password' => 'nullable',
+        'new_password' => 'nullable|min:6|confirmed',
+    ]);
+
+    $user->name  = $request->name;
+    $user->email = $request->email;
+
+    if ($request->filled('current_password') || $request->filled('new_password')) {
+
         if (!Hash::check($request->current_password, $user->password)) {
             return back()->withErrors(['current_password' => 'Password lama salah.']);
         }
 
-        // Update password
-        $user->password = Hash::make($request->new_password);
-        $user->save();
+        $request->validate([
+            'new_password' => 'required|min:6|confirmed',
+        ]);
 
-        return back()->with('success', 'Password berhasil diperbarui.');
+        $user->password = Hash::make($request->new_password);
     }
+
+    $user->save();
+
+     return response()->json([
+        'status' => 'success',
+        'message' => 'Profil berhasil diperbarui.'
+    ]);
+}
+
 }

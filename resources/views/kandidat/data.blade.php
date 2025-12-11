@@ -187,8 +187,6 @@
                                             <select name="status_kandidat_di_mendunia"
                                                 class="form-select form-select-sm status-mendunia">
 
-                                                <option value="">-- Pilih Status --</option>
-
                                                 <option value="Tetap di Mendunia"
                                                     {{ $k->status_kandidat_di_mendunia == 'Tetap di Mendunia' ? 'selected' : '' }}>
                                                     Tetap di Mendunia

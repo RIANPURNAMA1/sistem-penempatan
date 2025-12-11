@@ -204,30 +204,31 @@ class PendaftaranController extends Controller
     private function sendMessageToAdmin($pendaftaran)
     {
         try {
-            // Nomor admin (HARUS format internasional)
-            $adminNumber = "6282118354415";
+            // ===== Nomor ADMIN penerima pesan =====
+            $adminNumber = "6282118364415";
 
-            // Format no. WA pendaftar
+            // ===== Format NO WA pendaftar =====
             $noWa = preg_replace('/[^0-9]/', '', $pendaftaran->no_wa);
             if (substr($noWa, 0, 1) === '0') {
                 $noWa = '62' . substr($noWa, 1);
             }
 
-            // Pesan yang dikirim ke admin
+            // ===== Pesan yang dikirim =====
             $message  = "📥 *PENDAFTARAN BARU MASUK*\n\n";
-            $message .= "Halo Admin,\n\n";
-            $message .= "*{$pendaftaran->nama}* telah melakukan pendaftaran.\n";
-            $message .= "Mohon untuk dicek kembali ya. 🙏\n\n";
-            $message .= "📌 Nomor WA: {$pendaftaran->no_wa}\n";
-            $message .= "📌 Email: {$pendaftaran->email}\n";
-            $message .= "📌 Cabang: {$pendaftaran->cabang->nama}\n\n";
-            $message .= "Terima kasih.";
+            $message .= "Ada pendaftar baru:\n\n";
+            $message .= "👤 *Nama:* {$pendaftaran->nama}\n";
+            $message .= "📱 *Nomor WA:* {$pendaftaran->no_wa}\n";
+            $message .= "💬 *Chat langsung:* https://wa.me/{$noWa}\n";
+            $message .= "✉️ *Email:* {$pendaftaran->email}\n";
+            $message .= "📍 *Cabang:* {$pendaftaran->cabang->nama_cabang}\n\n";
+            $message .= "Silakan cek dan follow up.";
 
-            // Wablas API
+            // ===== Konfigurasi Wablas =====
             $domain = config('services.wablas.domain', 'https://bdg.wablas.com');
             $token = config('services.wablas.token');
             $secretKey = config('services.wablas.secret_key', '');
 
+            // ===== Kirim pesan =====
             if ($secretKey) {
                 $response = Http::withOptions([
                     'verify' => false
@@ -238,7 +239,6 @@ class PendaftaranController extends Controller
                     'message' => $message,
                 ]);
             } else {
-                // Jika hanya token saja
                 $response = Http::withOptions([
                     'verify' => false
                 ])->asForm()->post($domain . '/api/send-message', [
@@ -248,10 +248,9 @@ class PendaftaranController extends Controller
                 ]);
             }
 
+            // ===== Log =====
             if ($response->successful()) {
-                Log::info("Pesan WA ke ADMIN berhasil dikirim oleh {$pendaftaran->nama}", [
-                    'pendaftar' => $pendaftaran->nama
-                ]);
+                Log::info("Pesan WA ke Admin berhasil dikirim");
                 return true;
             }
 
@@ -302,73 +301,158 @@ class PendaftaranController extends Controller
         return view('siswa.edit', compact('kandidat'));
     }
 
+
+
     public function update(Request $request, $id)
     {
-        // Validasi input
+        // 1. Validasi input
         $request->validate([
-            'verifikasi' => 'required|string|in:menunggu,data belum lengkap,diterima,ditolak',
+            'verifikasi'    => 'required|string|in:menunggu,data belum lengkap,diterima,ditolak',
             'catatan_admin' => 'nullable|string|max:500',
-            'link_grup_wa' => 'required_if:verifikasi,diterima|nullable|url'
-        ], [
-            'link_grup_wa.required_if' => 'Link Grup WhatsApp wajib diisi untuk kandidat yang diterima',
-            'link_grup_wa.url' => 'Format link WhatsApp tidak valid'
         ]);
 
-        // Ambil data pendaftaran
+        // 2. Ambil data pendaftaran
         $pendaftaran = Pendaftaran::findOrFail($id);
 
-        // Update verifikasi dan catatan admin
+        // Simpan status verifikasi lama sebelum diupdate
+        $oldVerifikasiStatus = $pendaftaran->verifikasi;
+
+        // 3. Update verifikasi + catatan admin
         $pendaftaran->update([
-            'verifikasi' => $request->verifikasi,
+            'verifikasi'    => $request->verifikasi,
             'catatan_admin' => $request->catatan_admin,
         ]);
 
         $message = 'Data verifikasi berhasil diperbarui!';
-        $waSent = false;
+        $waSentToUser = false;
 
-        if ($request->verifikasi === 'diterima') {
-            $kandidat = Kandidat::firstOrCreate(
+        // Status verifikasi baru
+        $newVerifikasiStatus = $request->verifikasi;
+
+        // 4. Jika status berubah menjadi 'diterima' → buat kandidat
+        if ($newVerifikasiStatus === 'diterima') {
+            // Logika firstOrCreate harus ditangani dengan benar, termasuk mengisi field yang NOT NULL
+            // Asumsi: 'nama_perusahaan' di tabel 'kandidats' sudah diatasi (seperti yang dibahas sebelumnya)
+            // Jika ada field NOT NULL lain, pastikan dimasukkan di sini, atau set nullable di migration.
+            Kandidat::firstOrCreate(
                 ['pendaftaran_id' => $pendaftaran->id],
                 [
                     'cabang_id'       => $pendaftaran->cabang_id,
                     'status_kandidat' => 'Job Matching',
                     'institusi_id'    => null,
+                    // Tambahkan field NOT NULL lain seperti 'nama_perusahaan' di sini jika diperlukan
                 ]
             );
 
-            $message = 'Data verifikasi berhasil diperbarui dan kandidat dibuat!';
-
-            // -------------------------
-            // Kirim link grup WA
-            // -------------------------
-            if ($request->link_grup_wa && $pendaftaran->no_wa) {
-                // Kirim pesan WhatsApp
-                $waSent = $this->sendWhatsAppMessage($pendaftaran, $kandidat, $request->link_grup_wa);
-
-                if ($waSent) {
-                    // Set field masuk_grup_wa jadi true
-                    $kandidat->masuk_grup_wa = true;
-                    $kandidat->save();
-                }
-            }
+            $message = 'Kandidat berhasil diverifikasi dan dibuat.';
         }
 
-        // Jika AJAX request, kembalikan JSON
+        // 5. Kirim WA ke pendaftar HANYA JIKA status berubah
+        // Pengecekan status lama vs status baru untuk menghindari pengiriman berulang jika data diupdate tanpa perubahan status.
+        if ($oldVerifikasiStatus !== $newVerifikasiStatus) {
+            $waSentToUser = $this->sendWhatsAppNotification(
+                $pendaftaran,
+                $newVerifikasiStatus,
+                $request->catatan_admin ?? 'Tidak ada catatan khusus.'
+            );
+        }
+
+        // 6. Kirim WA ke admin (Anda bisa menghapus ini jika tidak diperlukan, atau biarkan)
+        // $this->sendWhatsAppToAdmin($pendaftaran); 
+
+        // 7. Response
         if ($request->ajax()) {
             return response()->json([
-                'status' => 'success',
-                'message' => $message,
-                'wa_sent' => $waSent
+                'status'          => 'success',
+                'message'         => $message,
+                'wa_sent_to_user' => $waSentToUser,
             ]);
         }
 
         return redirect()->back()->with('success', $message);
     }
 
-    /**
-     * Kirim pesan WhatsApp menggunakan WhatsApp API
-     * Pilih salah satu service yang ingin digunakan
-     */
+private function sendWhatsAppNotification(Pendaftaran $pendaftaran, string $status, string $catatanAdmin): bool
+{
+    // Ambil ENV
+    $domain = env('WABLAS_DOMAIN', 'https://bdg.wablas.com');
+    $token  = env('WABLAS_TOKEN');
+    $secret = env('WABLAS_SECRET_KEY');
+
+    // Format Authorization (Wablas v4)
+    $authKey = $secret
+        ? "{$token}.{$secret}"
+        : $token;
+
+    // Gunakan field no_wa
+    $phoneNumber = $pendaftaran->no_wa;
+
+    // Format nomor WA ke internasional
+    $formattedNumber = preg_replace('/\D/', '', $phoneNumber);
+    if (substr($formattedNumber, 0, 1) === '0') {
+        $formattedNumber = '62' . substr($formattedNumber, 1);
+    }
+
+    // Nama pendaftar
+    $namaPendaftar = $pendaftaran->nama ?? 'Calon Kandidat';
+
+    // Susun pesan
+    switch ($status) {
+        case 'diterima':
+            $pesan = "Halo *{$namaPendaftar}* 👋\n\n" .
+                     "Selamat! Pendaftaran Anda telah **DITERIMA** 🎉\n\n" .
+                     "Catatan Admin:\n_{$catatanAdmin}_\n\n" .
+                     "Terima kasih telah mendaftar. Tim Mendunia.id akan segera menghubungi Anda untuk proses selanjutnya.";
+            break;
+
+        case 'data belum lengkap':
+            $pesan = "Halo *{$namaPendaftar}* 👋\n\n" .
+                     "Status pendaftaran Anda  **DATA BELUM LENGKAP** \n\n" .
+                     "Mohon segera lengkapi data Anda agar dapat kami proses lebih lanjut.\n\n" .
+                     "Catatan Admin:\n_{$catatanAdmin}_\n\n" .
+                     "Jika membutuhkan bantuan, jangan ragu menghubungi tim Mendunia.id.";
+            break;
+
+        case 'ditolak':
+            $pesan = "Halo *{$namaPendaftar}* 👋\n\n" .
+                     "Mohon maaf, pendaftaran Anda  **DITOLAK** ❌\n\n" .
+                     "Catatan Admin:\n_{$catatanAdmin}_\n\n" .
+                     "Terima kasih atas ketertarikan Anda mendaftar melalui Mendunia.id.";
+            break;
+
+        case 'menunggu':
+
+        default:
+            return true;
+    }
+
+    try {
+        // Call API Wablas
+        $response = Http::withHeaders([
+            'Authorization' => $authKey,
+        ])->asForm()->post("{$domain}/api/send-message", [
+            'phone'    => $formattedNumber,
+            'message'  => $pesan,
+        ]);
+
+        if ($response->successful()) {
+            Log::info("WA terkirim ke {$formattedNumber}");
+            return true;
+        }
+
+        Log::error("WA gagal dikirim. Respon: " . $response->body());
+        return false;
+
+    } catch (\Exception $e) {
+        Log::error("WA EXCEPTION: " . $e->getMessage());
+        return false;
+    }
+}
+
+
+
+
+
     private function sendWhatsAppMessage($pendaftaran, $kandidat, $linkGrup)
     {
         try {

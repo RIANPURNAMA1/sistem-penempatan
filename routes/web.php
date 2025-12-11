@@ -99,7 +99,8 @@ Route::middleware(['auth', "role:kandidat,$admin_roles"])->group(function () {
 // Profile Pengguna
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
-    Route::post('/profile/update-password', [ProfileController::class, 'updatePassword'])->name('profile.updatePassword');
+    Route::put('/profile/update-password', [ProfileController::class, 'updatePassword'])
+        ->name('profile.updatePassword');
 });
 
 
