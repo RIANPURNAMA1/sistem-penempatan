@@ -117,9 +117,11 @@
                                 <th>Nama Siswa</th>
                                 <th>Cabang</th>
                                 <th>Status Kandidat</th>
-                                <th>Penempatan</th>
+                                <th>Perusahaan Penempatan</th>
+                                <th>Nama Perusahaan</th>
                                 <th>Bidang Pekerjaan SSW</th>
                                 <th>Tanggal Daftar</th>
+                                <th>Masuk Grup Wa</th>
                                 <th>Jumlah Interview</th>
                                 <th>Catatan Interview</th>
                                 <th>Jadwal Interview</th>
@@ -177,7 +179,9 @@
                                     </td>
 
                                     <!-- Penempatan -->
-                                    <td>{{ $k->institusi->nama_perusahaan ?? '-' }}</td>
+                                    <td>{{ $k->institusi->perusahaan_penempatan ?? '-' }}</td>
+                                    <!-- Penempatan -->
+                                    <td>{{ $k->nama_perusahaan ?? '-' }}</td>
 
                                     <!-- Bidang -->
                                     <td>{{ $k->pendaftaran->bidang_ssw ?? '-' }}</td>
@@ -187,6 +191,9 @@
                                         {{ $k->pendaftaran->tanggal_daftar
                                             ? \Carbon\Carbon::parse($k->pendaftaran->tanggal_daftar)->format('d F Y')
                                             : '-' }}
+                                    </td>
+                                    <td>
+                                        {{ $k->masuk_grup_wa }}
                                     </td>
 
                                     <!-- Jumlah Interview -->

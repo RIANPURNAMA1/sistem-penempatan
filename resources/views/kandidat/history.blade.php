@@ -51,8 +51,8 @@
                         <tr class="text-center">
                             <th class="py-3">No</th>
                             <th class="py-3">Status Kandidat</th>
+                            <th class="py-3">Perusahaan Penempatan</th>
                             <th class="py-3">Nama Perusahaan</th>
-                            <th class="py-3">Bidang Pekerjaan Ssw</th>
                             <th class="py-3">Tanggal</th>
                         </tr>
                     </thead>
@@ -85,15 +85,15 @@
 
                                 <td>
                                     <span class="d-block text-truncate" style="max-width: 200px;"
-                                        title="{{ $history->institusi->nama_perusahaan ?? '-' }}">
-                                        {{ $history->institusi->nama_perusahaan ?? '-' }}
+                                        title="{{ $history->institusi->perusahaan_penempatan ?? '-' }}">
+                                        {{ $history->institusi->perusahaan_penempatan ?? '-' }}
                                     </span>
                                 </td>
 
                                 <td>
                                     <span class="d-block text-truncate" style="max-width: 200px;"
-                                        title="{{ $history->institusi->bidang_pekerjaan ?? '-' }}">
-                                        {{ $history->bidang_ssw ?? '-' }}
+                                        title="{{ $history->kandidat->nama_perusahaan ?? '-' }}">
+                                        {{ $history->kandidat->nama_perusahaan ?? '-' }}
                                     </span>
                                 </td>
 
@@ -139,34 +139,56 @@
         <div class="card shadow-sm border-0 rounded-4 mb-4">
             <div class="card-body table-responsive">
                 <h5 class="mb-3">Summary Interview per Perusahaan</h5>
-                <table class="table table-striped table-bordered align-middle nowrap" id="tableSummary" style="width:100%">
-                    <thead class="table-light">
-                        <tr>
-                            <th class="py-3">Nama Perusahaan</th>
-                            <th class="py-3">Bidang Pekerjaan</th>
-                            <th class="py-3 text-center">Jumlah Interview</th>
-                            <th class="py-3 text-center">Status Terakhir</th>
-                            <th class="py-3 text-center">Tanggal Terakhir</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($interviewPerPerusahaan as $index => $data)
+                    <table class="table table-striped table-bordered align-middle nowrap" id="tableSummary"
+                        style="width:100%">
+                        <thead class="table-light">
                             <tr>
-                                <td>{{ $data['institusi']->nama_perusahaan ?? '-' }}</td>
-                                <td>{{ $data['institusi']->bidang_pekerjaan ?? '-' }}</td>
-                                <td class="text-center fw-semibold">{{ $data['jumlah_interview'] }}</td>
-                                <td class="text-center">{{ $data['status_terakhir'] }}</td>
-                                <td class="text-center">{{ $data['tanggal_terakhir']->format('d M Y H:i') }}</td>
+                                <th class="py-3">Perusahaan Penempatan</th>
+                                <th class="py-3">Nama Perusahaan (History)</th>
+                                <th class="py-3 text-center">Jumlah Interview</th>
+                                <th class="py-3 text-center">Status Terakhir</th>
+                                <th class="py-3 text-center">Tanggal Terakhir</th>
                             </tr>
-                        @empty
-                            <tr>
-                                <td colspan="5" class="text-center text-muted py-4">
-                                    <i class="bi bi-info-circle me-1"></i> Belum ada history interview untuk kandidat ini.
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @forelse ($interviewPerPerusahaan as $index => $data)
+                                <tr>
+                                    {{-- KOLOM 1: Perusahaan Penempatan (Ambil dari data Institusi) --}}
+                                    <td>
+                                        {{ // Prioritas 1: Nama Perusahaan dari Institusi (data master)
+                                            $data['institusi']->nama_perusahaan ??
+                                                // Prioritas 2: Kolom perusahaan_penempatan dari Institusi (sesuai header)
+                                                ($data['institusi']->perusahaan_penempatan ?? '-') }}
+                                    </td>
+
+                                    {{-- KOLOM 2: Nama Perusahaan (History) --}}
+                                    <td>
+                                        {{ // Prioritas 1: Nama perusahaan yang dicatat di history terakhir (Misal: 'pt sukses')
+                                            $data['nama_perusahaan_history'] ??
+                                                // Fallback: Nama perusahaan aktif dari model Kandidat utama
+                                                ($kandidat->nama_perusahaan ?? '-') }}
+                                    </td>
+
+                                    {{-- Kolom 3: Jumlah Interview --}}
+                                    <td class="text-center fw-semibold">{{ $data['jumlah_interview'] }}</td>
+
+                                    {{-- Kolom 4: Status Terakhir --}}
+                                    <td class="text-center">{{ $data['status_terakhir'] }}</td>
+
+                                    {{-- Kolom 5: Tanggal Terakhir --}}
+                                    <td class="text-center">{{ $data['tanggal_terakhir']->format('d M Y H:i') }}</td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted py-4">
+                                        <i class="bi bi-info-circle me-1"></i> Belum ada history interview untuk kandidat
+                                        ini.
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
         @if (auth()->check() && auth()->user()->role === 'super-admin')
@@ -178,7 +200,9 @@
             </div>
         @endif
 
-        @if (auth()->check() && auth()->user()->role === 'Cabang Cianjur Selatan Mendunia,Cabang Cianjur Pamoyanan Mendunia,Cabang Batam Mendunia,Cabang Banyuwangi Mendunia,Cabang Kendal Mendunia,Cabang Pati Mendunia,Cabang Tulung Agung Mendunia,Cabang Bangkalan Mendunia,Cabang Bojonegoro Mendunia,Cabang Jember Mendunia,Cabang Wonosobo Mendunia,Cabang Eshan Mendunia')
+        @if (auth()->check() &&
+                auth()->user()->role ===
+                    'Cabang Cianjur Selatan Mendunia,Cabang Cianjur Pamoyanan Mendunia,Cabang Batam Mendunia,Cabang Banyuwangi Mendunia,Cabang Kendal Mendunia,Cabang Pati Mendunia,Cabang Tulung Agung Mendunia,Cabang Bangkalan Mendunia,Cabang Bojonegoro Mendunia,Cabang Jember Mendunia,Cabang Wonosobo Mendunia,Cabang Eshan Mendunia')
             <!-- Back Button -->
             <div class="mt-3">
                 <a href="/" class="btn btn-secondary">

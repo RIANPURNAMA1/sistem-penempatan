@@ -84,6 +84,7 @@
                         <tr>
                             <th class=" text-center">No</th>
                             <th class="">Perusahaan Penempatan</th>
+                            <th class="">Created</th>
                             <th class=" text-center">Aksi</th>
                         </tr>
                     </thead>

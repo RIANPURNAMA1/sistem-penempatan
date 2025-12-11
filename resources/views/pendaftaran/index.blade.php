@@ -443,13 +443,13 @@
                         Swal.fire({
                             icon: "success",
                             title: "Berhasil",
-                            text: "Pendaftaran berhasil dikirim. Kamu akan diarahkan ke grup WA.",
+                            text: "Pendaftaran berhasil dikirim.",
                             timer: 3000,
                             showConfirmButton: false,
                         }).then(() => {
                             // Redirect ke grup WhatsApp
-                            window.location.href =
-                                "https://chat.whatsapp.com/FBHNnGiAnme32o9wvPyC8P?mode=hqrt1";
+                            window.location.href = "/"
+                               
                         });
 
                         // Reset form

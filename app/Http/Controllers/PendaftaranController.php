@@ -12,6 +12,7 @@ use App\Models\Kandidat;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -246,9 +247,8 @@ class PendaftaranController extends Controller
 
         $message = 'Data verifikasi berhasil diperbarui!';
 
-        // Jika status diterima, buat kandidat jika belum ada
         if ($request->verifikasi === 'diterima') {
-            Kandidat::firstOrCreate(
+            $kandidat = Kandidat::firstOrCreate(
                 ['pendaftaran_id' => $pendaftaran->id],
                 [
                     'cabang_id'       => $pendaftaran->cabang_id,
@@ -258,7 +258,27 @@ class PendaftaranController extends Controller
             );
 
             $message = 'Data verifikasi berhasil diperbarui dan kandidat dibuat!';
+
+            // -------------------------
+            // Buat link grup WA
+            // -------------------------
+            if ($pendaftaran->no_wa) {
+                $groupLink = "https://chat.whatsapp.com/FBHNnGiAnme32o9wvPyC8P?mode=hqrt1";
+                $phone = preg_replace('/\D/', '', $pendaftaran->no_wa); // bersihkan nomor
+
+                $waMessage = "Selamat! Anda telah diterima. Klik link berikut untuk bergabung ke grup WhatsApp: $groupLink";
+                $waUrl = "https://wa.me/$phone?text=" . urlencode($waMessage);
+
+                // Set field masuk_grup_wa jadi true
+                $kandidat->masuk_grup_wa = true;
+                $kandidat->save();
+
+                // Log atau kirim ke frontend
+                Log::info("Link WA untuk kandidat {$pendaftaran->nama}: $waUrl");
+            }
         }
+
+
 
         // Jika AJAX request, kembalikan JSON
         if ($request->ajax()) {
@@ -268,14 +288,8 @@ class PendaftaranController extends Controller
             ]);
         }
 
-        // Jika request biasa, redirect
-        if ($request->verifikasi === 'diterima') {
-            return redirect()->route('kandidat.data')->with('success', $message);
-        }
-
         return redirect()->back()->with('success', $message);
     }
-
 
 
 

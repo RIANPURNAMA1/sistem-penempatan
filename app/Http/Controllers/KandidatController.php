@@ -120,7 +120,7 @@ class KandidatController extends Controller
             default => 'Pending',
         };
 
-        KandidatHistory::create([
+     KandidatHistory::create([
             'kandidat_id' => $kandidat->id,
             'status_kandidat' => $kandidat->status_kandidat,
             'nama_perusahaan' => $kandidat->nama_perusahaan,
@@ -380,6 +380,7 @@ class KandidatController extends Controller
 
                     // Hanya hitung status "Interview" sebagai jumlah interview
                     'jumlah_interview' => $items->where('status_kandidat', 'Interview')->count(),
+                    'nama_perusahaan_history' => $last->nama_perusahaan,
 
                     'status_terakhir' => $last->status_kandidat,
                     'tanggal_terakhir' => $last->created_at,

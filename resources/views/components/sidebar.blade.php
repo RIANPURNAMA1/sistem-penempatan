@@ -114,14 +114,13 @@
 
                                     </ul>
                                 </li>
-                                {{-- <li class="sidebar-item">
-                                    {{-- Ini adalah panggilan yang benar untuk Kandidat yang login --}}
-                                {{-- <a href="{{ route('kandidat.riwayat.saya') }}"
-                                        class="sidebar-link d-flex align-items-center">
-                                        <i class="bi bi-clock-history me-3"></i>
+                                <li class="sidebar-item">
+
+                                    <a href="{{ route('kandidat.history.proses') }}" class="sidebar-link d-flex align-items-center">
+                                        <i class="bi bi-clock-history "></i>
                                         <span>Riwayat Saya</span>
                                     </a>
-                                </li> --}}
+                                </li>
                             @endif
 
                             {{-- Menu untuk super admin --}}
@@ -147,10 +146,10 @@
                                             </a>
                                         </li>
                                         <li class="submenu-item">
-                                            <a href="{{ url('/data/cv/kandidat') }}"
-                                                class="submenu-link " style="text-decoration: none;">
+                                            <a href="{{ url('/data/cv/kandidat') }}" class="submenu-link "
+                                                style="text-decoration: none;">
                                                 <i class="bi bi-person-lines-fill"></i> Cv kandidat
-                                           
+
                                             </a>
                                         </li>
 

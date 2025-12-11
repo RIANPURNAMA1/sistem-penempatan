@@ -206,6 +206,7 @@ class DashboardController extends Controller
 
 
 
+
         return view('dashboard', compact(
             'stats',
             'status_penempatan',

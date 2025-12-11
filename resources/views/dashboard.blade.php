@@ -282,8 +282,8 @@
                     <div class="row mt-4">
 
                         <!-- =========================
-                                                                                                BAGIAN KIRI (CHART)
-                                                                                            ========================== -->
+                                                                                                    BAGIAN KIRI (CHART)
+                                                                                                ========================== -->
                         <div class="col-12 col-md-8">
                             <div class="card h-100 shadow-lg border-0 rounded-4">
 
@@ -477,11 +477,17 @@
                                 <div class="card-body">
 
                                     @php
+                                        // ... (Array $timelineSteps yang sama dengan sebelumnya)
                                         $timelineSteps = [
                                             [
                                                 'icon' => 'check-circle-fill',
                                                 'title' => 'Job Matching',
                                                 'status' => 'Job Matching',
+                                            ],
+                                            [
+                                                'icon' => 'person-badge',
+                                                'title' => 'Lamar ke Perusahaan',
+                                                'status' => 'lamar_ke_perusahaan',
                                             ],
                                             [
                                                 'icon' => 'person-video3',
@@ -515,52 +521,39 @@
                                     @foreach ($dataKandidat as $pendaftaran)
                                         @php
                                             $kandidat = $pendaftaran->kandidat;
-                                            $institusiName = $kandidat->institusi->nama_perusahaan ?? '-';
+                                            // Ambil nama perusahaan yang saat ini tersimpan di model kandidat
+                                            $namaPerusahaanAktif =
+                                                $kandidat->nama_perusahaan ??
+                                                ($kandidat->institusi->nama_perusahaan ?? '-');
                                         @endphp
 
                                         @if ($kandidat)
                                             @foreach ($timelineSteps as $step)
                                                 @php
-                                                    // Urutan index
+                                                    // Logika penentuan warna step (success, info, secondary, danger)
+                                                    $statusList = array_column($timelineSteps, 'status');
                                                     $currentIndex = array_search(
                                                         $kandidat->status_kandidat,
-                                                        array_column($timelineSteps, 'status'),
+                                                        $statusList,
                                                     );
-                                                    $stepIndex = array_search(
-                                                        $step['status'],
-                                                        array_column($timelineSteps, 'status'),
-                                                    );
+                                                    $stepIndex = array_search($step['status'], $statusList);
 
-                                                    // Default
                                                     $stepColor = 'secondary';
                                                     $stepDate = null;
 
-                                                    // ==========================================
-                                                    // KHUSUS GAGAL INTERVIEW
-                                                    // ==========================================
+                                                    // Logika pewarnaan (sama seperti sebelumnya)
                                                     if ($kandidat->status_kandidat === 'Gagal Interview') {
                                                         if ($step['status'] === 'Gagal Interview') {
-                                                            $stepColor = 'danger'; // step gagal
+                                                            $stepColor = 'danger';
                                                             $stepDate = $kandidat->updated_at;
-                                                        } else {
-                                                            $stepColor = 'secondary'; // tidak ada step yang dianggap selesai
                                                         }
-                                                    }
-
-                                                    // ==========================================
-                                                    // STATUS NORMAL SELAIN GAGAL
-                                                    // ==========================================
-                                                    else {
-                                                        // Step saat ini
+                                                    } else {
                                                         if ($stepIndex === $currentIndex) {
                                                             $stepColor = 'info';
                                                             $stepDate = $kandidat->updated_at;
-                                                        }
-                                                        // Step yang sudah dilewati
-                                                        elseif ($stepIndex < $currentIndex) {
+                                                        } elseif ($stepIndex < $currentIndex) {
                                                             $stepColor = 'success';
                                                         }
-                                                        // Step selanjutnya tetap secondary
                                                     }
                                                 @endphp
 
@@ -583,9 +576,20 @@
                                                             </p>
                                                         @endif
 
-                                                        <p class="text-muted small mb-1">
-                                                            Perusahaan: <strong>{{ $institusiName }}</strong>
-                                                        </p>
+                                                        @if ($step['status'] == $kandidat->status_kandidat)
+                                                            @if ($namaPerusahaanAktif && $namaPerusahaanAktif !== '-')
+                                                                <p class="text-muted small mb-1">
+                                                                    Perusahaan: <strong>{{ $namaPerusahaanAktif }}</strong>
+                                                                </p>
+                                                            @endif
+
+                                                            @if ($kandidat->detail_pekerjaan)
+                                                                <p class="text-muted small mb-1">
+                                                                    Detail Pekerjaan:
+                                                                    <em>{{ $kandidat->detail_pekerjaan }}</em>
+                                                                </p>
+                                                            @endif
+                                                        @endif
 
                                                         <span
                                                             class="badge bg-{{ $stepColor }}">{{ $step['status'] }}</span>
@@ -657,6 +661,8 @@
 
 
                         </div>
+
+                        
 
                         {{-- profile kandidat --}}
                         @include('components.profile_kandidat')

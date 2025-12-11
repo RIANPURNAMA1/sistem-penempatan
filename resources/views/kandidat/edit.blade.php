@@ -34,25 +34,40 @@
                                 class="text-danger">*</span></label>
                         <select name="status_kandidat" id="status_kandidat" class="form-select" required>
                             <option value="">-- Pilih Status --</option>
+
                             <option value="Job Matching"
                                 {{ $kandidat->status_kandidat == 'Job Matching' ? 'selected' : '' }}>Job Matching</option>
+
                             <option value="Pending" {{ $kandidat->status_kandidat == 'Pending' ? 'selected' : '' }}>Pending
                             </option>
+
+                            <option value="lamar_ke_perusahaan"
+                                {{ $kandidat->status_kandidat == 'lamar_ke_perusahaan' ? 'selected' : '' }}>Lamar ke
+                                Perusahaan</option>
+
                             <option value="Interview" {{ $kandidat->status_kandidat == 'Interview' ? 'selected' : '' }}>
                                 Interview</option>
+
                             <option value="Jadwalkan Interview Ulang"
                                 {{ $kandidat->status_kandidat == 'Jadwalkan Interview Ulang' ? 'selected' : '' }}>Jadwalkan
                                 Interview Ulang</option>
+
                             <option value="Lulus interview"
                                 {{ $kandidat->status_kandidat == 'Lulus interview' ? 'selected' : '' }}>Lulus Interview
                             </option>
+
                             <option value="Gagal Interview"
                                 {{ $kandidat->status_kandidat == 'Gagal Interview' ? 'selected' : '' }}>Gagal Interview
                             </option>
+
                             <option value="Pemberkasan" {{ $kandidat->status_kandidat == 'Pemberkasan' ? 'selected' : '' }}>
                                 Pemberkasan</option>
+
                             <option value="Berangkat" {{ $kandidat->status_kandidat == 'Berangkat' ? 'selected' : '' }}>
                                 Berangkat</option>
+
+                            <option value="Ditolak" {{ $kandidat->status_kandidat == 'Ditolak' ? 'selected' : '' }}>Ditolak
+                            </option>
                         </select>
                     </div>
 
@@ -64,15 +79,23 @@
                             @foreach ($institusis as $institusi)
                                 <option value="{{ $institusi->id }}"
                                     {{ $kandidat->institusi_id == $institusi->id ? 'selected' : '' }}>
-                                    {{ $institusi->nama_perusahaan }}
+                                    {{ $institusi->perusahaan_penempatan }}
                                 </option>
                             @endforeach
                         </select>
                     </div>
 
                     <div class="mb-3">
-                        <label for="bidang_ssw" class="form-label">Nama Perusahaan</label>
-                        <input type="text" name="nama_perusahan" class="form-control">
+                        <label for="nama_perusahaan" class="form-label">Nama Perusahaan</label>
+                        <input type="text" name="nama_perusahaan" id="nama_perusahaan" class="form-control"
+                            value=""
+                            placeholder="Masukkan nama perusahaan">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="detail_pekerjaan" class="form-label">Detail Pekerjaan</label>
+                        <textarea name="detail_pekerjaan" id="detail_pekerjaan" class="form-control" rows="3"
+                            placeholder="Jelaskan detail pekerjaan, posisi, atau bidang SSW"></textarea>
                     </div>
 
 

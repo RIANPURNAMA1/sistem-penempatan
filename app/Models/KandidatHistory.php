@@ -17,6 +17,8 @@ class KandidatHistory extends Model
         'catatan_interview',
         'jadwal_interview',
         'bidang_ssw',
+        'nama_perusahaan',
+        'detail_pekerjaan',
     ];
   
     public function kandidat()

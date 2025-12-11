@@ -10,6 +10,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DokumenController;
 use App\Http\Controllers\InstitusiController;
 use App\Http\Controllers\KandidatController;
+use App\Http\Controllers\KandidatHistoryController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PendaftaranController;
 use App\Http\Controllers\ProfileController;
@@ -251,4 +252,13 @@ Route::middleware(['auth', 'role:super-admin'])->group(function () {
     // user export 
     Route::get('admin/kandidat/export-excel', [UserController::class, 'exportExcel'])
     ->name('admin.kandidat.export');
+
+
+
+});
+
+Route::middleware(['auth'])->group(function () {
+    // Halaman riwayat kandidat untuk user login
+    Route::get('/kandidat/riwayat/proses', [KandidatHistoryController::class, 'showHistory'])
+         ->name('kandidat.history.proses');
 });

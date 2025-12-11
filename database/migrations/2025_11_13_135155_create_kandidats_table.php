@@ -26,8 +26,8 @@ return new class extends Migration {
             $table->unsignedBigInteger('institusi_id')->nullable();
             // Kolom tambahan untuk tracking interview
             $table->unsignedInteger('jumlah_interview')->default(0);
-            $table->string('nama_perusahaan');
-            $table->string('detail_pekerjaan');
+            $table->string('nama_perusahaan')->nullable();
+            $table->string('detail_pekerjaan')->nullable();
             $table->text('catatan_interview')->nullable();
             $table->date('jadwal_interview')->nullable();
             $table->timestamps();

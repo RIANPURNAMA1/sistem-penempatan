@@ -12,20 +12,27 @@ return new class extends Migration {
 
             // relasi ke kandidat
             $table->unsignedBigInteger('kandidat_id');
-
-            // semua status wajib lengkap agar tidak terjadi error
+            
+            // Status yang wajib ada, DITAMBAHKAN 'lamar_ke_perusahaan'
+            // CATATAN: Status 'Diterima' tidak ada di controller/migration sebelumnya, 
+            // saya hilangkan agar konsisten dengan ENUM di tabel kandidats.
             $table->enum('status_kandidat', [
                 'Job Matching',
                 'Pending',
+                'lamar_ke_perusahaan', // <--- DITAMBAHKAN
                 'Interview',
                 'Jadwalkan Interview Ulang',
                 'Lulus interview',
                 'Gagal Interview',
                 'Pemberkasan',
                 'Berangkat',
-                'Diterima',
                 'Ditolak',
             ]);
+            
+            // KOLOM HILANG YANG MENYEBABKAN ERROR 'nama_perusahaan' di controller
+            $table->string('nama_perusahaan')->nullable(); 
+            $table->string('detail_pekerjaan')->nullable(); 
+
             // ENUM Bidang SSW
             $table->enum('bidang_ssw', [
                 'Pengolahan makanan',
@@ -35,7 +42,7 @@ return new class extends Migration {
                 'Building cleaning',
                 'Driver',
                 'Lainnya',
-            ])->nullable(); // jika ingin wajib tinggal hapus nullable()
+            ])->nullable(); 
 
             // mapping status interview
             $table->enum('status_interview', [
@@ -50,10 +57,17 @@ return new class extends Migration {
             $table->date('jadwal_interview')->nullable();
             $table->timestamps();
 
+            // Foreign Key
             $table->foreign('kandidat_id')
                 ->references('id')
                 ->on('kandidats')
                 ->onDelete('cascade');
+                
+            // Disarankan: Foreign Key untuk institusi_id
+            $table->foreign('institusi_id')
+                ->references('id')
+                ->on('institusis')
+                ->onDelete('set null'); // Menggunakan set null karena kolomnya nullable
         });
     }
 

@@ -62,6 +62,7 @@ class User extends Authenticatable
         return $this->hasOne(Pendaftaran::class); // 1:1
         // Jika 1 user bisa punya banyak pendaftaran: return $this->hasMany(Pendaftaran::class);
     }
+    
 
 
     // Relasi ke User
@@ -74,5 +75,18 @@ class User extends Authenticatable
     public function cabang()
     {
         return $this->belongsTo(Cabang::class);
+    }
+
+    // relasi langsung ke kandidat melalui pendaftaran
+    public function kandidat()
+    {
+        return $this->hasOneThrough(
+            Kandidat::class,      // model akhir
+            Pendaftaran::class,   // model penghubung
+            'user_id',            // FK di pendaftaran
+            'pendaftaran_id',     // FK di kandidat
+            'id',                 // PK user
+            'id'                  // PK pendaftaran
+        );
     }
 }
