@@ -8,12 +8,12 @@ class BidangSsw extends Model
 {
 
 
-    protected $fillable = [ 'kandidat_id','pendaftaran_id','nama_bidang'];
+    protected $fillable = ['kandidat_id', 'pendaftaran_id', 'nama_bidang'];
 
     // BidangSsw.php
     public function pendaftaran()
     {
-        return $this->belongsTo(Pendaftaran::class);
+        return $this->belongsTo(Pendaftaran::class, 'pendaftaran_id');
     }
     public function kandidat()
     {

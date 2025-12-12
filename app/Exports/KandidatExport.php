@@ -6,12 +6,25 @@ use App\Models\Kandidat;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
-use Maatwebsite\Excel\Concerns\WithStyles; // Tambahkan ini
-use Maatwebsite\Excel\Concerns\ShouldAutoSize; // Tambahkan ini
-use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet; // Tambahkan ini
+use Maatwebsite\Excel\Concerns\WithStyles;
+use Maatwebsite\Excel\Concerns\ShouldAutoSize;
+use Maatwebsite\Excel\Concerns\WithColumnFormatting; // Untuk format mata uang
+use Maatwebsite\Excel\Concerns\WithStrictNullComparison; // Opsional, untuk penanganan null
+
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate; // Untuk merging
+
 use Carbon\Carbon;
 
-class KandidatExport implements FromCollection, WithHeadings, WithMapping, WithStyles, ShouldAutoSize // IMPLEMENTASIKAN INI
+class KandidatExport implements
+    FromCollection, 
+    WithHeadings, 
+    WithMapping, 
+    WithStyles, 
+    ShouldAutoSize, 
+    WithColumnFormatting,
+    WithStrictNullComparison
 {
     protected $kandidatId;
 
@@ -21,8 +34,8 @@ class KandidatExport implements FromCollection, WithHeadings, WithMapping, WithS
     }
 
     /**
-    * @return \Illuminate\Support\Collection
-    */
+     * @return \Illuminate\Support\Collection
+     */
     public function collection()
     {
         $query = Kandidat::with(['pendaftaran', 'institusi', 'bidang_ssws']);
@@ -36,99 +49,68 @@ class KandidatExport implements FromCollection, WithHeadings, WithMapping, WithS
     }
     
     /**
-     * Tentukan styling untuk Worksheet (khususnya header)
-     * @param Worksheet $sheet
+     * Tentukan format untuk kolom tertentu (misal: mata uang)
+     * Kolom AK, AL, AM adalah kolom 37, 38, 39
+     * @return array
      */
-    public function styles(Worksheet $sheet)
+    public function columnFormats(): array
     {
-        // 1. Terapkan warna latar belakang ungu gelap dan teks putih pada baris pertama (Header)
-        $sheet->getStyle(1)->applyFromArray([
-            'font' => [
-                'bold' => true,
-                'color' => ['rgb' => 'FFFFFF'], // Teks Putih
-            ],
-            'fill' => [
-                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
-                'color' => ['rgb' => '6F42C1'], // Ungu gelap (contoh warna bootstrap purple)
-            ],
-            'borders' => [
-                'allBorders' => [
-                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
-                ],
-            ],
-        ]);
-        
-        // Catatan: Implementasi ShouldAutoSize (di deklarasi class) akan menangani padding/lebar kolom.
+        return [
+     
+        ];
     }
 
     /**
-     * Tentukan baris header di Excel
-     * (Isi fungsi headings() dan map() tetap sama seperti sebelumnya)
+     * Tentukan dua baris header: Baris 1 (Pengelompokan) dan Baris 2 (Detail)
      * @return array
      */
     public function headings(): array
     {
-         return [
-            // KANDIDAT & STATUS
-            'ID Kandidat',
-            'Status Lokal', // status_kandidat
-            'Status Mendunia', // status_kandidat_di_mendunia
-
-            // PENDAFTARAN (DATA PRIBADI)
-            'NIK',
-            'Nama Lengkap',
-            'Email',
-            'No WA',
-            'Jenis Kelamin',
-            'Tanggal Daftar',
-            'Tempat Lahir',
-            'Tanggal Lahir', 
-            'Usia',
-            'Agama',
-            'Status Nikah',
-            'Pendidikan Terakhir',
-            
-            // PENDAFTARAN (ALAMAT)
-            'Provinsi',
-            'Kab/Kota',
-            'Kecamatan',
-            'Kelurahan',
-            'Alamat Lengkap',
-            
-            // PENDAFTARAN (PROMETRIC & JEPANG)
-            'ID Prometric',
-            'Pass Prometric',
-            'Paspor',
-            'Pernah ke Jepang',
-            'Status Verifikasi Admin',
-            'Catatan Admin',
-            
-            // PENEMPATAN & PEKERJAAN
-            'Perusahaan Penempatan (Institusi)',
-            'Nama Perusahaan Jepang', 
-            'Detail Pekerjaan', 
-            'Bidang SSW', 
-
-            // PROSES INTERVIEW
-            'Tgl Setsumeikai/Ichiji',
-            'Tgl Mensetsu 1',
-            'Tgl Mensetsu 2',
-            'Jadwal Interview Berikutnya',
-            'Catatan Interview',
-
-            // BIAYA ADMINISTRASI
-            'Biaya Pemberkasan',
-            'ADM Tahap 1',
-            'ADM Tahap 2',
-
-            // TRACKING DOKUMEN & VISA
-            'Tgl Terbit Kontrak Kerja',
-            'Tgl Masuk Imigrasi Jepang',
-            'Tgl COE Terbit',
-            'Tgl Pembuatan E-KTKLN',
-            'Tgl Visa Terbit',
-            'Jadwal Penerbangan',
+        // Baris 1: Header Pengelompokan (Gunakan string kosong untuk sel yang akan di-merge)
+        $headerGroup = [
+            'STATUS & ID', '', '',
+            'DATA PRIBADI & PENDIDIKAN', '', '', '', '', '', '', '', '', '', '', '',
+            'ALAMAT', '', '', '', '',
+            'DATA JEPANG & VERIFIKASI', '', '', '', '', '',
+            'PENEMPATAN & PEKERJAAN', '', '', '',
+            'PROSES INTERVIEW', '', '', '', '',
+            'BIAYA ADMINISTRASI', '', '',
+            'TRACKING DOKUMEN & VISA', '', '', '', '', '',
         ];
+
+        // Baris 2: Header Detail
+        $headerDetail = [
+            // KANDIDAT & STATUS (Kolom 1-3)
+            'ID Kandidat', 'Status Lokal', 'Status Mendunia', 
+
+            // DATA PRIBADI (Kolom 4-16)
+            'NIK', 'Nama Lengkap', 'Email', 'No WA', 'Jenis Kelamin', 'Tanggal Daftar', 
+            'Tempat Lahir', 'Tanggal Lahir', 'Usia', 'Agama', 'Status Nikah', 'Pendidikan Terakhir',
+
+            // ALAMAT (Kolom 17-21)
+            'Provinsi', 'Kab/Kota', 'Kecamatan', 'Kelurahan', 'Alamat Lengkap',
+            
+            // PROMETRIC & JEPANG (Kolom 22-27)
+            'ID Prometric', 'Pass Prometric', 'Paspor', 'Pernah ke Jepang', 
+            'Status Verifikasi Admin', 'Catatan Admin',
+            
+            // PENEMPATAN & PEKERJAAN (Kolom 28-31)
+            'Perusahaan Penempatan (Institusi)', 'Nama Perusahaan Jepang', 
+            'Detail Pekerjaan', 'Bidang SSW', 
+
+            // PROSES INTERVIEW (Kolom 32-36)
+            'Tgl Setsumeikai/Ichiji', 'Tgl Mensetsu 1', 'Tgl Mensetsu 2', 
+            'Jadwal Interview Berikutnya', 'Catatan Interview',
+
+            // BIAYA ADMINISTRASI (Kolom 37-39)
+            'Biaya Pemberkasan', 'ADM Tahap 1', 'ADM Tahap 2',
+
+            // TRACKING DOKUMEN & VISA (Kolom 40-45)
+            'Tgl Terbit Kontrak Kerja', 'Tgl Masuk Imigrasi Jepang', 'Tgl COE Terbit', 
+            'Tgl Pembuatan E-KTKLN', 'Tgl Visa Terbit', 'Jadwal Penerbangan',
+        ];
+        
+        return [$headerGroup, $headerDetail];
     }
     
     /**
@@ -145,6 +127,7 @@ class KandidatExport implements FromCollection, WithHeadings, WithMapping, WithS
             return $date ? Carbon::parse($date)->format('d F Y') : '-';
         };
 
+        // Menggabungkan semua Bidang SSW menjadi satu string
         $bidangSsws = $kandidat->bidang_ssws->pluck('nama_bidang')->implode(', ');
 
         return [
@@ -195,10 +178,10 @@ class KandidatExport implements FromCollection, WithHeadings, WithMapping, WithS
             $formatDate($kandidat->jadwal_interview),
             $kandidat->catatan_interview ?? '-',
 
-            // BIAYA ADMINISTRASI
-            $kandidat->biaya_pemberkasan ?? 0,
-            $kandidat->adm_tahap1 ?? 0,
-            $kandidat->adm_tahap2 ?? 0,
+            // BIAYA ADMINISTRASI (CASTING KE FLOAT AGAR FORMAT MATA UANG BEKERJA)
+            (float)($kandidat->biaya_pemberkasan),
+            (float)($kandidat->adm_tahap1),
+            (float)($kandidat->adm_tahap2),
 
             // TRACKING DOKUMEN & VISA
             $formatDate($kandidat->terbit_kontrak_kerja),
@@ -208,5 +191,79 @@ class KandidatExport implements FromCollection, WithHeadings, WithMapping, WithS
             $formatDate($kandidat->visa),
             $formatDate($kandidat->jadwal_penerbangan),
         ];
+    }
+
+    /**
+     * Tentukan styling untuk Worksheet (termasuk merging)
+     * @param Worksheet $sheet
+     */
+    public function styles(Worksheet $sheet)
+    {
+        // Mendapatkan indeks kolom terakhir berdasarkan jumlah detail header
+        $lastColumnIndex = count($this->headings()[1]);
+        $lastColumn = Coordinate::stringFromColumnIndex($lastColumnIndex); 
+        $headerRange = 'A1:' . $lastColumn . '2';
+        
+        // --- 1. MERGING BARIS 1 (HEADER PENGELOMPOKAN) ---
+        $merges = [
+            'A1:C1',     // STATUS & ID (Kolom 1-3)
+            'D1:P1',     // DATA PRIBADI & PENDIDIKAN (Kolom 4-16)
+            'Q1:U1',     // ALAMAT (Kolom 17-21)
+            'V1:AA1',    // DATA JEPANG & VERIFIKASI (Kolom 22-27)
+            'AB1:AE1',   // PENEMPATAN & PEKERJAAN (Kolom 28-31)
+            'AF1:AJ1',   // PROSES INTERVIEW (Kolom 32-36)
+            'AK1:AM1',   // BIAYA ADMINISTRASI (Kolom 37-39)
+            'AN1:' . $lastColumn . '1',   // TRACKING DOKUMEN & VISA (Kolom 40-akhir)
+        ];
+        foreach ($merges as $merge) {
+            $sheet->mergeCells($merge);
+        }
+
+        // --- 2. STYLING BARIS 1 & 2 (HEADER) ---
+        $sheet->getStyle($headerRange)->applyFromArray([
+            'font' => [
+                'bold' => true,
+                'color' => ['rgb' => 'FFFFFF'], // Teks Putih
+                'size' => 10,
+            ],
+            'alignment' => [
+                'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
+                'vertical' => \PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER,
+                'wrapText' => true,
+            ],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ],
+            ],
+        ]);
+        
+        // Warna latar belakang untuk Baris 1 (Header Group) - Ungu Tua
+        $sheet->getStyle('1')->getFill()->applyFromArray([
+            'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+            'color' => ['rgb' => '4A148C'], 
+        ]);
+
+        // Warna latar belakang untuk Baris 2 (Header Detail) - Ungu Sedang
+        $sheet->getStyle('2')->getFill()->applyFromArray([
+            'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+            'color' => ['rgb' => '6F42C1'], 
+        ]);
+
+        // --- 3. ZEBRA STRIPING & BORDER DATA ---
+        $dataRows = $sheet->getHighestRow();
+        for ($i = 3; $i <= $dataRows; $i++) {
+            // Zebra Striping (baris ganjil diberi latar belakang abu-abu muda)
+            if ($i % 2 !== 0) { 
+                $sheet->getStyle('A' . $i . ':' . $lastColumn . $i)->getFill()->applyFromArray([
+                    'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                    'color' => ['rgb' => 'F0F0F0'], 
+                ]);
+            }
+            // Tambahkan border tipis untuk semua baris data
+            $sheet->getStyle('A' . $i . ':' . $lastColumn . $i)->getBorders()->applyFromArray([
+                'allBorders' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_HAIR],
+            ]);
+        }
     }
 }

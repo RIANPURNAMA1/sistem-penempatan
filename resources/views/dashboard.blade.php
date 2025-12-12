@@ -282,8 +282,8 @@
                     <div class="row mt-4">
 
                         <!-- =========================
-                                                                                                            BAGIAN KIRI (CHART)
-                                                                                                        ========================== -->
+                                                                                                                BAGIAN KIRI (CHART)
+                                                                                                            ========================== -->
                         <div class="col-12 col-md-8">
                             <div class="card h-100 shadow-lg border-0 rounded-4">
 
@@ -609,29 +609,34 @@
                             </div>
 
 
-                            {{-- Profile CV --}}
+                            {{-- Pastikan SweetAlert2 sudah di-load, misal di layout utama --}}
+                            <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
                             <div class="table-responsive mt-3">
                                 @if ($cvs->isEmpty())
-                                    {{-- Alert jika belum ada CV --}}
-                                    <div class="card border-0 shadow-sm rounded-4">
-                                        <div class="card-body text-center py-5">
-                                            <i class="bi bi-file-earmark-text text-warning" style="font-size: 4rem;"></i>
-                                            <h5 class="mt-3 mb-2">Belum Mengisi CV</h5>
-                                            <p class="text-muted mb-4">Lengkapi CV kamu untuk melanjutkan proses
-                                                pendaftaran</p>
-                                            <a href="{{ route('pendaftaran.cv.create') }}"
-                                                class="btn btn-warning fw-semibold">
-                                                <i class="bi bi-pencil-square me-1"></i> Isi CV Sekarang
-                                            </a>
-                                        </div>
-                                    </div>
+                                    <script>
+                                        Swal.fire({
+                                            title: 'Belum Mengisi CV',
+                                            text: 'Lengkapi CV kamu untuk melanjutkan proses pendaftaran',
+                                            icon: 'warning',
+                                            confirmButtonText: 'Isi CV Sekarang',
+                                            customClass: {
+                                                confirmButton: 'btn btn-warning fw-semibold',
+                                            },
+                                            buttonsStyling: false
+                                        }).then((result) => {
+                                            if (result.isConfirmed) {
+                                                window.location.href = "{{ route('pendaftaran.cv.create') }}";
+                                            }
+                                        });
+                                    </script>
                                 @else
                                     @include('components.cv_kandidat')
                                 @endif
                             </div>
 
+
                             @if ($cvs->isEmpty())
-                                @push('scripts')
                                     <script>
                                         document.addEventListener('DOMContentLoaded', function() {
                                             Swal.fire({
@@ -657,7 +662,7 @@
                                             });
                                         });
                                     </script>
-                                @endpush
+                    
                             @endif
 
 

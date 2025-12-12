@@ -89,9 +89,9 @@ class KandidatController extends Controller
             'catatan_mensetsu' => 'nullable|string',
 
             // Validasi kolom biaya
-            'biaya_pemberkasan' => 'nullable|numeric|min:0',
-            'adm_tahap1' => 'nullable|numeric|min:0',
-            'adm_tahap2' => 'nullable|numeric|min:0',
+            'biaya_pemberkasan' => 'nullable|string',
+            'adm_tahap1' => 'nullable|string',
+            'adm_tahap2' => 'nullable|string',
 
             // Validasi kolom tracking dokumen dan proses
             'dokumen_dikirim_soft_file' => 'nullable|date',

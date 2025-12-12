@@ -126,7 +126,7 @@
                     </div>
 
                     <!-- Pendidikan Terakhir -->
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <label class="form-label">Pendidikan Terakhir <span class="text-danger">*</span></label>
                         <select name="pendidikan_terakhir" class="form-select" required>
                             <option value="">-- Pilih Pendidikan --</option>
@@ -151,35 +151,7 @@
                         </select>
                     </div>
 
-                    <!-- Bidang SSW -->
-                    <div class="col-md-6">
-                        <label class="form-label">Bidang SSW <span class="text-danger">*</span></label>
-                        <select name="bidang_ssw" class="form-select" required>
-                            <option value="">-- Pilih Bidang SSW --</option>
-                            <option value="Pengolahan makanan"
-                                {{ old('bidang_ssw', $kandidat->bidang_ssw) == 'Pengolahan makanan' ? 'selected' : '' }}>
-                                Pengolahan makanan</option>
-                            <option value="Restoran"
-                                {{ old('bidang_ssw', $kandidat->bidang_ssw) == 'Restoran' ? 'selected' : '' }}>Restoran
-                            </option>
-                            <option value="Pertanian"
-                                {{ old('bidang_ssw', $kandidat->bidang_ssw) == 'Pertanian' ? 'selected' : '' }}>Pertanian
-                            </option>
-                            <option value="Kaigo (perawat)"
-                                {{ old('bidang_ssw', $kandidat->bidang_ssw) == 'Kaigo (perawat)' ? 'selected' : '' }}>Kaigo
-                                (perawat)</option>
-                            <option value="Building cleaning"
-                                {{ old('bidang_ssw', $kandidat->bidang_ssw) == 'Building cleaning' ? 'selected' : '' }}>
-                                Building cleaning</option>
-                            <option value="Driver"
-                                {{ old('bidang_ssw', $kandidat->bidang_ssw) == 'Driver' ? 'selected' : '' }}>Driver
-                            </option>
-                            <option value="Lainnya"
-                                {{ old('bidang_ssw', $kandidat->bidang_ssw) == 'Lainnya' ? 'selected' : '' }}>Lainnya
-                            </option>
-                        </select>
-                    </div>
-
+                   
 
                     <!-- Cabang -->
                     <div class="col-md-12">

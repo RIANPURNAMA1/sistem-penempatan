@@ -230,12 +230,12 @@ class DashboardController extends Controller
         $kandidat = Kandidat::with(['pendaftaran', 'cabang', 'institusi'])->findOrFail($id);
         return view('kandidat.show', compact('kandidat'));
     }
-
     public function DataKandidat(Request $request)
     {
         $cabang = Cabang::all();
 
-        $query = Pendaftaran::with('cabang');
+        $query = Pendaftaran::with(['cabang', 'bidang_ssws'])
+            ->orderBy('created_at', 'desc'); // <--- Urutkan dari terbaru
 
         if ($request->has('cabang_id') && $request->cabang_id != '') {
             $query->where('cabang_id', $request->cabang_id);
@@ -246,14 +246,18 @@ class DashboardController extends Controller
         return view('siswa.index', compact('kandidats', 'cabang'));
     }
 
+
+
     public function editProfile($id)
     {
-        $kandidat = Pendaftaran::findOrFail($id);
+        // Menggunakan eager loading untuk memuat daftar Bidang SSW
+        $kandidat = Pendaftaran::with('bidang_ssws')->findOrFail($id);
         return view('pendaftaran.edit_profile_pendaftaran', compact('kandidat'));
     }
 
     public function updateProfile(Request $request, $id)
     {
+
         $pendaftaran = Pendaftaran::findOrFail($id);
 
         $validated = $request->validate([
@@ -281,7 +285,10 @@ class DashboardController extends Controller
 
             // FIELD BARU
             'pendidikan_terakhir' => 'sometimes|string|max:255',
-            'bidang_ssw' => 'sometimes|in:Pengolahan makanan,Restoran,Pertanian,Kaigo (perawat),Building cleaning,Driver,Lainnya',
+
+            // BIDANG SSW ARRAY (PERBAIKAN)
+            'bidang_ssw' => 'nullable|array',
+            'bidang_ssw.*' => 'nullable|string|max:255',
 
             // FILE OPSIONAL saat update
             'paspor' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
@@ -315,9 +322,14 @@ class DashboardController extends Controller
 
         /*
     |--------------------------------------------------------------------------
-    | 1. Siapkan data text (exclude file fields)
+    | 1. Siapkan data text (exclude file fields & bidang_ssw)
     |--------------------------------------------------------------------------
     */
+        /*
+|--------------------------------------------------------------------------
+| 1. Siapkan data text (exclude file fields & bidang_ssw)
+|--------------------------------------------------------------------------
+*/
         $data = $request->except([
             '_token',
             '_method',
@@ -329,7 +341,9 @@ class DashboardController extends Controller
             'akte',
             'ijasah',
             'sertifikat_jft',
-            'sertifikat_ssw'
+            'sertifikat_ssw',
+            'bidang_ssw',       // exclude
+            'bidang_ssw_id'     // exclude juga
         ]);
 
 
@@ -388,10 +402,51 @@ class DashboardController extends Controller
 
         /*
     |--------------------------------------------------------------------------
-    | 4. Update Database
+    | 4. Update Database (data utama pendaftaran)
     |--------------------------------------------------------------------------
     */
         $pendaftaran->update($data);
+
+        /*
+|--------------------------------------------------------------------------
+| 5. BIDANG SSW: HAPUS SEMUA → INSERT BARU
+|--------------------------------------------------------------------------
+*/
+
+        // Hapus semua bidang SSW lama milik pendaftaran ini
+        \App\Models\BidangSsw::where('pendaftaran_id', $pendaftaran->id)->delete();
+
+        // Insert bidang SSW baru
+        if ($request->has('bidang_ssw') && is_array($request->bidang_ssw)) {
+
+            // Daftar bidang yang valid (opsional untuk validasi tambahan)
+            $validBidang = [
+                'Pengolahan makanan',
+                'Restoran',
+                'Pertanian',
+                'Kaigo (perawat)',
+                'Building cleaning',
+                'Driver',
+                'Lainnya'
+            ];
+
+            foreach ($request->bidang_ssw as $namaBidang) {
+                // Skip jika kosong
+                if (empty($namaBidang)) {
+                    continue;
+                }
+
+                // Opsional: validasi apakah bidang valid
+                // if (!in_array($namaBidang, $validBidang)) {
+                //     continue;
+                // }
+
+                \App\Models\BidangSsw::create([
+                    'pendaftaran_id' => $pendaftaran->id,
+                    'nama_bidang'    => $namaBidang,
+                ]);
+            }
+        }
 
 
         return redirect()

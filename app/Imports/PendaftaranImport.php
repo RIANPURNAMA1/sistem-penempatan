@@ -111,7 +111,8 @@ class PendaftaranImport implements ToModel, WithHeadingRow
             // Alamat & Pendidikan
             'alamat'              => $get('alamat', 'Data Kosong'),
             'pendidikan_terakhir' => $get('pendidikan_terakhir', 'Data Kosong'),
-            'bidang_ssw'          => $get('bidang_ssw', 'Lainnya'),
+          // Simpan bidang SSW tanpa memaksa value (boleh kosong total)
+
 
             // Lokasi administratif
             'provinsi'            => $get('provinsi', 'Data Kosong'),

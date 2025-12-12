@@ -573,8 +573,8 @@
                                         <div class="row g-3">
                                             <div class="col-md-6">
                                                 <!-- ======================================================
-                                                                                                                                                                                         MULTI FILE: pas_foto[]
-                                                                                                                                                                                    ====================================================== -->
+                                                                                                                                                                                                 MULTI FILE: pas_foto[]
+                                                                                                                                                                                            ====================================================== -->
                                                 <label class="form-label fw-semibold mb-1">
                                                     Silahkan upload dokumen / foto tambahan 👇
                                                 </label>
@@ -593,8 +593,8 @@
                                                 <div id="previewPasFoto" class="mt-3 d-flex flex-wrap gap-3"></div>
 
                                                 <!-- ======================================================
-                                                                                                                                                                                         SINGLE FILE: pas_foto_cv
-                                                                                                                                                                                    ====================================================== -->
+                                                                                                                                                                                                 SINGLE FILE: pas_foto_cv
+                                                                                                                                                                                            ====================================================== -->
                                                 <label class="form-label fw-semibold mb-1 mt-4">
                                                     Silahkan upload pas foto untuk CV Anda 👇
                                                 </label>
@@ -1990,6 +1990,7 @@
 
                             <!-- Navigation Buttons -->
                             <div class="step-buttons">
+
                                 <button type="button" class="btn btn-secondary  btn-prev" id="prevBtn"
                                     style="display: none;">
                                     <i class="fas fa-arrow-left me-2"></i>Sebelumnya
@@ -2019,32 +2020,48 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
+        // Pastikan kode ini dijalankan setelah jQuery dimuat
         $(document).ready(function() {
             let currentStep = 1;
             const totalSteps = 7;
 
-            // Update Progress
+            // FUNGSI UNTUK MENGUPDATE PROGRESS BAR & STEPS
             function updateProgress() {
                 const progressPercent = ((currentStep - 1) / (totalSteps - 1)) * 100;
-                $('#progressLine').css('width', progressPercent + '%');
 
-                $('.step').each(function() {
-                    const stepNum = $(this).data('step');
+                // Perbaikan: Ganti #progressLine dengan #progressFill
+                $('#progressFill').css('width', progressPercent + '%');
+
+                // Perbaikan: Ganti .step dengan .progress-step
+                $('.progress-step').each(function() {
+                    // Kita menggunakan data-step dari elemen progress-step
+                    const stepNum = parseInt($(this).data('step'));
+
+                    // Elemen lingkaran adalah div dengan class .circle
+                    const circleElement = $(this).find('.circle');
+
+                    $(this).removeClass('active completed');
+                    circleElement.find('i').remove(); // Hapus icon check sebelumnya
+
                     if (stepNum < currentStep) {
-                        $(this).addClass('completed').removeClass('active');
-                        $(this).find('span:first').html('<i class="fas fa-check"></i>');
+                        $(this).addClass('completed');
+                        // Tambahkan icon check untuk step yang sudah selesai
+                        circleElement.html('<i class="fas fa-check"></i>');
                     } else if (stepNum === currentStep) {
-                        $(this).addClass('active').removeClass('completed');
-                        $(this).find('span:first').text(stepNum);
+                        $(this).addClass('active');
+                        // Pastikan nomor step kembali jika sebelumnya ada icon check
+                        circleElement.text(stepNum);
                     } else {
-                        $(this).removeClass('active completed');
-                        $(this).find('span:first').text(stepNum);
+                        // Pastikan nomor step kembali
+                        circleElement.text(stepNum);
                     }
                 });
             }
 
-            // Show Step
+            // FUNGSI UNTUK MENAMPILKAN FORM STEP TERTENTU
             function showStep(step) {
+                currentStep = step; // Pastikan currentStep selalu sinkron
+
                 $('.form-step').removeClass('active');
                 $(`.form-step[data-step="${step}"]`).addClass('active');
 
@@ -2064,35 +2081,46 @@
                 }
 
                 updateProgress();
+
+                // Scroll ke atas (opsional tapi bagus untuk UX)
                 $('html, body').animate({
                     scrollTop: 0
                 }, 400);
             }
 
-            // Next Button
+            // EVENT LISTENER UNTUK NEXT BUTTON
             $('#nextBtn').click(function() {
+                // Panggil validateStep sebelum maju ke step berikutnya
                 if (validateStep(currentStep)) {
-                    currentStep++;
-                    showStep(currentStep);
+                    if (currentStep < totalSteps) {
+                        showStep(currentStep + 1);
+                    }
                 }
             });
 
-            // Previous Button
+            // EVENT LISTENER UNTUK PREVIOUS BUTTON
             $('#prevBtn').click(function() {
-                currentStep--;
-                showStep(currentStep);
+                if (currentStep > 1) {
+                    showStep(currentStep - 1);
+                }
             });
 
-            // Validate Current Step
+            // FUNGSI VALIDASI
             function validateStep(step) {
                 let isValid = true;
                 const currentStepElement = $(`.form-step[data-step="${step}"]`);
 
+                // Hapus semua error/validasi sebelumnya
+                currentStepElement.find('.is-invalid').removeClass('is-invalid');
+                currentStepElement.find('.invalid-feedback').remove();
+
                 currentStepElement.find('input[required], select[required], textarea[required]').each(function() {
-                    if (!$(this).val()) {
+                    // Cek kondisi val()
+                    if (!$(this).val() || $(this).val().trim() === "") {
                         isValid = false;
                         $(this).addClass('is-invalid');
 
+                        // Tambahkan pesan error jika belum ada
                         if (!$(this).next('.invalid-feedback').length) {
                             $(this).after('<div class="invalid-feedback">Field ini wajib diisi</div>');
                         }
@@ -2103,15 +2131,27 @@
                 });
 
                 if (!isValid) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Perhatian!',
-                        text: 'Mohon lengkapi semua field yang wajib diisi',
-                    });
+                    // Pastikan Swal.fire dimuat
+                    if (typeof Swal !== 'undefined') {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Perhatian!',
+                            text: 'Mohon lengkapi semua field yang wajib diisi',
+                        });
+                    } else {
+                        alert('Mohon lengkapi semua field yang wajib diisi');
+                    }
                 }
 
                 return isValid;
             }
+
+            // INISIALISASI: Panggil showStep saat halaman dimuat
+            showStep(currentStep);
+        });
+
+        $(document).ready(function() {
+
 
             // Remove validation on input
             $(document).on('input change', '.is-invalid', function() {

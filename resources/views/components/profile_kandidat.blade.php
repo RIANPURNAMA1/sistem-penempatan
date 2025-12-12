@@ -56,7 +56,7 @@
 
                     <!-- Edit Data -->
                     <a href="{{ route('pendaftaran.edit.profile', $kandidat->id) }}"
-                        class="btn btn-outline-dark w-100 shadow-sm fw-semibold">
+                        class="btn btn-outline-warning w-100 shadow-sm fw-semibold">
                         <i class="bi bi-pencil-square me-2"></i>
                         <span class="d-none d-sm-inline">Edit Data</span>
                     </a>

@@ -731,12 +731,18 @@ class CvController extends Controller
 
 
 
-
     public function show($id)
     {
-        $cv = Cv::with(['pendidikans', 'pengalamans'])->findOrFail($id);
+        $cv = Cv::with([
+            'pendidikans',
+            'pengalamans',
+            'magangjisshu',
+            'riwayatpekerjaanterakhir' // sesuai relasi
+        ])->findOrFail($id);
+
         return view('cv.show', compact('cv'));
     }
+
     public function showPdf($id)
     {
         $cv = Cv::with(['pendidikans', 'pengalamans'])->findOrFail($id);

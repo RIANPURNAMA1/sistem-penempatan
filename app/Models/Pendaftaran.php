@@ -36,6 +36,6 @@ class Pendaftaran extends Model
     }
     public function bidang_ssws()
     {
-        return $this->hasMany(BidangSsw::class);
+        return $this->hasMany(BidangSsw::class , 'pendaftaran_id');
     }
 }

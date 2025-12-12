@@ -179,6 +179,128 @@
                         @endforelse
                     </div>
                 </div>
+
+            </div>
+
+
+            <div class="col-lg-6">
+                <div class="card shadow-sm border-0">
+
+                    {{-- Card Header --}}
+                    <div class="card-header  fw-bold">
+                        Riwayat Magang (Jisshu)
+                    </div>
+
+                    <div class="card-body">
+
+                        @forelse(($cv->magangJisshu ?? []) as $m)
+                            <div class="card mb-3 border-0 shadow-md">
+                                <div class="card-body border-start border-4 border-warning">
+
+                                    {{-- Nama Perusahaan + Tahun --}}
+                                    <h6 class="fw-bold mb-1">
+                                        {{ $m->perusahaan ?? '-' }}
+
+                                        <span class="badge bg-secondary float-end">
+                                            {{ $m->tahun_mulai ?? '-' }} -
+                                            {{ $m->tahun_selesai ?? 'Sekarang' }}
+                                        </span>
+                                    </h6>
+
+                                    {{-- Kota & Prefektur --}}
+                                    <p class="text-muted small mb-2">
+                                        <i class="bi bi-geo-alt-fill"></i>
+                                        {{ $m->kota_prefektur ?? '-' }}
+                                    </p>
+
+                                    {{-- Bidang --}}
+                                    <p class="mb-0 small">
+                                        <strong>Bidang:</strong>
+                                        <span class="fw-semibold">{{ $m->bidang ?? '-' }}</span>
+                                    </p>
+
+                                </div>
+                            </div>
+
+                        @empty
+
+                            <div class="card p-4 text-center border-0 shadow-sm">
+                                <p class="text-muted fst-italic mb-0">
+                                    Belum ada data magang (Jisshu).
+                                </p>
+                            </div>
+                        @endforelse
+
+                    </div>
+
+                </div>
+            </div>
+
+
+            <!-- CARD: Riwayat Pekerjaan Terakhir -->
+            <div class="col-lg-6 col-md-6">
+                <div class="card h-100 shadow-sm border-0 rounded-4">
+                    <div class="card-header rounded-top-4">
+                        <i class="bi bi-building-fill-check me-2"></i> Riwayat Pekerjaan Terakhir
+                    </div>
+
+                    <div class="card-body">
+                        @forelse ($cv->riwayatpekerjaanterakhir ?? [] as $r)
+                            <div class="border-start border-4 border-primary p-2 mb-3">
+
+                                {{-- Nama Perusahaan --}}
+                                <h6 class="mb-0 fw-bold">
+                                    {{ $r->nama_perusahaan }}
+                                </h6>
+
+                                {{-- Kota + Prefektur + Bidang --}}
+                                <small class="text-muted d-block">
+                                    {{ $r->kota ?? '-' }}, {{ $r->prefektur ?? '-' }} |
+                                    Bidang: {{ $r->bidang_pekerjaan ?? '-' }}
+                                </small>
+
+                                {{-- Masa Pelatihan --}}
+                                <small class="d-block">
+                                    Masa Pelatihan:
+                                    {{ $r->masa_pelatihan_mulai_bulan }}/{{ $r->masa_pelatihan_mulai_tahun }}
+                                    -
+                                    {{ $r->masa_pelatihan_selesai_bulan }}/{{ $r->masa_pelatihan_selesai_tahun }}
+                                </small>
+
+                                {{-- Karyawan --}}
+                                <small class="d-block">
+                                    Karyawan:
+                                    {{ $r->total_karyawan ?? 0 }} (Asing: {{ $r->total_karyawan_asing ?? 0 }})
+                                </small>
+
+                                {{-- Jam Kerja --}}
+                                <small class="d-block">
+                                    Jam Kerja:
+                                    {{ $r->jam_kerja_mulai_1 }} - {{ $r->jam_kerja_selesai_1 }}
+                                    @if ($r->jam_kerja_mulai_2)
+                                        | {{ $r->jam_kerja_mulai_2 }} - {{ $r->jam_kerja_selesai_2 }}
+                                    @endif
+                                    @if ($r->jam_kerja_mulai_3)
+                                        | {{ $r->jam_kerja_mulai_3 }} - {{ $r->jam_kerja_selesai_3 }}
+                                    @endif
+                                </small>
+
+                                {{-- Hari Libur --}}
+                                <small class="d-block">
+                                    Hari Libur: {{ $r->hari_libur ?? '-' }}
+                                </small>
+
+                                {{-- Detail Pekerjaan --}}
+                                <small class="d-block">
+                                    Detail: {{ $r->detail_pekerjaan ?? '-' }}
+                                </small>
+
+                            </div>
+                        @empty
+                            <p class="text-muted fst-italic">Belum ada riwayat pekerjaan terakhir.</p>
+                        @endforelse
+                    </div>
+                </div>
             </div>
 
 
@@ -261,7 +383,7 @@
 
             <!-- CARD 8: Daya Tarik (Komentar Diri/Guru) -->
             <div class="col-12">
-                <div class="card shadow-lg border-0 rounded-4">
+                <div class="card shadow-sm border-0 rounded-4">
                     <div class="card-header  rounded-top-4">
                         <i class="bi bi-stars me-2"></i> Ringkasan Daya Tarik & Motivasi
                     </div>
@@ -298,12 +420,12 @@
                 </div>
                 {{-- sertifikat --}}
                 <div class="col-12 mt-4">
-                    <div class="card shadow-lg border-0 rounded-4">
+                    <div class="card shadow-sm border-0 rounded-4">
                         <div class="card-header ">
                             <h5 class="mb-0">📂 Fotolainnya</h5>
                         </div>
                         <div class="card-body">
-                              <th>Fotolainnya</th>
+                            <th>Fotolainnya</th>
                             <td>
                                 @php
                                     $pasFotos = json_decode($cv->pas_foto, true) ?? [];
@@ -344,7 +466,7 @@
                 </div>
                 {{-- sertifikat --}}
                 <div class="col-12 mt-4">
-                    <div class="card shadow-lg border-0 rounded-4">
+                    <div class="card shadow-sm border-0 rounded-4">
                         <div class="card-header ">
                             <h5 class="mb-0">📂 Dokumen Sertifikasi dan File Pendukung</h5>
                         </div>

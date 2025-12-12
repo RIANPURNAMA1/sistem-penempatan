@@ -172,24 +172,24 @@
                     <!-- Biaya Pemberkasan -->
                     <div class="col-md-4">
                         <label for="biaya_pemberkasan" class="form-label fw-bold">Biaya Pemberkasan</label>
-                        <input type="number" name="biaya_pemberkasan" id="biaya_pemberkasan" class="form-control"
-                            value="{{ old('biaya_pemberkasan', $kandidat->biaya_pemberkasan) }}" step="0.01"
+                        <input type="text" name="biaya_pemberkasan" id="biaya_pemberkasan" class="form-control"
+                            value="{{ old('biaya_pemberkasan', $kandidat->biaya_pemberkasan) }}" 
                             placeholder="Masukkan biaya pemberkasan">
                     </div>
 
                     <!-- ADM Tahap 1 -->
                     <div class="col-md-4">
                         <label for="adm_tahap1" class="form-label fw-bold">ADM Tahap 1</label>
-                        <input type="number" name="adm_tahap1" id="adm_tahap1" class="form-control"
-                            value="{{ old('adm_tahap1', $kandidat->adm_tahap1) }}" step="0.01"
+                        <input type="text" name="adm_tahap1" id="adm_tahap1" class="form-control"
+                            value="{{ old('adm_tahap1', $kandidat->adm_tahap1) }}" 
                             placeholder="Masukkan biaya adm tahap 1">
                     </div>
 
                     <!-- ADM Tahap 2 -->
                     <div class="col-md-4">
                         <label for="adm_tahap2" class="form-label fw-bold">ADM Tahap 2</label>
-                        <input type="number" name="adm_tahap2" id="adm_tahap2" class="form-control"
-                            value="{{ old('adm_tahap2', $kandidat->adm_tahap2) }}" step="0.01"
+                        <input type="text" name="adm_tahap2" id="adm_tahap2" class="form-control"
+                            value="{{ old('adm_tahap2', $kandidat->adm_tahap2) }}" 
                             placeholder="Masukkan biaya adm tahap 2">
                     </div>
                 </div>

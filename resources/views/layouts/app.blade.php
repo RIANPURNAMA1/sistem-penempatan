@@ -70,7 +70,7 @@
                 <div class="d-flex align-items-center mt-3 gap-3">
                     <span class="fw-semibold small text-secondary">Welcome {{ auth()->user()->name }}</span>
                 </div>
-                
+
             </header>
 
 
@@ -80,12 +80,11 @@
             {{-- Footer --}}
             <footer class="mt-5 mb-5 border-top pt-3">
                 <div
-                    class=" d-flex flex-column flex-md-row justify-content-between align-items-center text-muted small px-4 py-2">
-                    <div class="mb-2 mb-md-0">
+                    class=" d-flex flex-column flex-md-row justify-content-center align-items-center text-muted small px-4 py-2">
+               
+                    <div class="text-center">
                         <p class="mb-0 fw-semibold">&copy; {{ date('Y') }} Sistem Penempatan Kandidat. All Rights
                             Reserved.</p>
-                    </div>
-                    <div>
                         <p class="mb-0">
                             Crafted with
                             <span class="text-danger"><i class="bi bi-heart-fill"></i></span>
@@ -98,9 +97,9 @@
 
         </div>
     </div>
- @if(auth()->check() && auth()->user()->role === 'kandidat')
-    @include('components.mobile_menu')
-@endif
+    @if (auth()->check() && auth()->user()->role === 'kandidat')
+        @include('components.mobile_menu')
+    @endif
 
 
     <!-- Scripts -->

@@ -227,7 +227,6 @@
                                 </td>
 
                                 <td>{{ $kandidat->pendidikan_terakhir }}</td>
-
                                 <td>
                                     @if ($kandidat->bidang_ssws && $kandidat->bidang_ssws->count() > 0)
                                         {{ $kandidat->bidang_ssws->pluck('nama_bidang')->join(', ') }}

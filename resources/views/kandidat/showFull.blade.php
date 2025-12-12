@@ -316,7 +316,8 @@
                                 <dl class="row mb-0">
                                     <dt class="col-sm-12">Pemberkasan:</dt>
                                     <dd class="col-sm-12">
-                                        {{ $kandidat->biaya_pemberkasan ? 'Rp ' . number_format($kandidat->biaya_pemberkasan, 0, ',', '.') : '-' }}
+                                      {{ $kandidat->biaya_pemberkasan ? $kandidat->biaya_pemberkasan : '-' }}
+
                                     </dd>
                                 </dl>
                             </div>
@@ -324,7 +325,7 @@
                                 <dl class="row mb-0">
                                     <dt class="col-sm-12">ADM Tahap 1:</dt>
                                     <dd class="col-sm-12">
-                                        {{ $kandidat->adm_tahap1 ? 'Rp ' . number_format($kandidat->adm_tahap1, 0, ',', '.') : '-' }}
+                                        {{ $kandidat->adm_tahap1 ?  $kandidat->adm_tahap1 : '-'}}
                                     </dd>
                                 </dl>
                             </div>
@@ -332,7 +333,7 @@
                                 <dl class="row mb-0">
                                     <dt class="col-sm-12">ADM Tahap 2:</dt>
                                     <dd class="col-sm-12">
-                                        {{ $kandidat->adm_tahap2 ? 'Rp ' . number_format($kandidat->adm_tahap2, 0, ',', '.') : '-' }}
+                                        {{ $kandidat->adm_tahap2 ?   $kandidat->adm_tahap2 :'-'}}
                                     </dd>
                                 </dl>
                             </div>

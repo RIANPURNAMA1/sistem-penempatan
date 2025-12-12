@@ -284,18 +284,13 @@
 
                                     <td>{{ $k->catatan_mensetsu ?? '-' }}</td>
 
-                                    <!-- ========== KOLOM BARU: Biaya ========== -->
-                                    <td>
-                                        {{ $k->biaya_pemberkasan ? 'Rp ' . number_format($k->biaya_pemberkasan, 0, ',', '.') : '-' }}
-                                    </td>
+                                    <!-- Kolom Biaya -->
+                                    <td>{{$k->biaya_pemberkasan }}</td>
 
-                                    <td>
-                                        {{ $k->adm_tahap1 ? 'Rp ' . number_format($k->adm_tahap1, 0, ',', '.') : '-' }}
-                                    </td>
+                                    <td>{{ $k->adm_tahap1 }}</td>
 
-                                    <td>
-                                        {{ $k->adm_tahap2 ? 'Rp ' . number_format($k->adm_tahap2, 0, ',', '.') : '-' }}
-                                    </td>
+                                    <td>{{ $k->adm_tahap2 }}</td>
+
 
                                     <!-- ========== KOLOM BARU: Tracking Dokumen ========== -->
                                     <td>

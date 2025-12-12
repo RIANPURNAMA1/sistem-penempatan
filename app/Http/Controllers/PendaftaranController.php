@@ -632,7 +632,6 @@ class PendaftaranController extends Controller
 
             // FIELD BARU
             'pendidikan_terakhir' => 'sometimes|string|max:255',
-            'bidang_ssw' => 'sometimes|in:Pengolahan makanan,Restoran,Pertanian,Kaigo (perawat),Building cleaning,Driver,Lainnya',
 
             // FILE OPSIONAL saat update
             'paspor' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',

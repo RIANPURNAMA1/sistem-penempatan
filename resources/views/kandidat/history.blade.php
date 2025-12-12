@@ -41,153 +41,146 @@
             </div>
         </div>
 
-        <!-- Tabel 1: Semua History -->
-        <div class="card shadow-sm border-0 rounded-4 mb-4">
-            <div class="card-body table-responsive">
-                <h5 class="mb-3">Semua History</h5>
-                <table class="table table-striped table-bordered align-middle nowrap table-hover" id="tableHistoryAll"
-                    style="width:100%">
-                    <thead class="table-light">
+        @php
+            // --- Pindahkan logic warna status ke sini atau ke helper ---
+            $statusColors = [
+                'Job Matching' => 'secondary',
+                'Pending' => 'warning',
+                'Interview' => 'info',
+                'Gagal Interview' => 'danger',
+                'Jadwalkan Interview Ulang' => 'dark',
+                'Lulus interview' => 'primary',
+                'Pemberkasan' => 'info',
+                'Berangkat' => 'success', // Ganti 'Berangkat' ke success (hijau)
+                'Diterima' => 'success',
+                'Ditolak' => 'danger',
+            ];
+
+            $getStatusBadge = function ($status, $colors) {
+                $color = $colors[$status] ?? 'secondary';
+                return '<span class="badge bg-' . $color . ' px-3 py-2 text-wrap">' . $status . '</span>';
+            };
+        @endphp
+
+        {{-- ================================================================= --}}
+        {{-- 1. Tabel History Lengkap --}}
+        {{-- ================================================================= --}}
+        <div class="card shadow-lg border-0 rounded-4 mb-5">
+            <div class="card-header  rounded-top-4 py-3">
+                <h5 class="mb-0"><i class="bi bi-clock-history me-2"></i> Riwayat Status Kandidat</h5>
+            </div>
+            <div class="card-body table-responsive p-4">
+                <table class="table  align-middle nowrap" id="tableHistoryAll" style="width:100%">
+                    <thead class="">
                         <tr class="text-center">
                             <th class="py-3">No</th>
-                            <th class="py-3">Status Kandidat</th>
-                            <th class="py-3">Perusahaan Penempatan</th>
-                            <th class="py-3">Nama Perusahaan</th>
-                            <th class="py-3">Bidang SSW</th> <!-- Tambah kolom Bidang SSW -->
-                            <th class="py-3">Tanggal</th>
+                            <th class="py-3">Status</th>
+                            <th class="py-3">Perusahaan Penempatan (LPK)</th>
+                            <th class="py-3">Perusahaan Jepang</th>
+                            <th class="py-3">Bidang SSW</th>
+                            <th class="py-3">Tanggal & Waktu</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @php
-                            $statusColors = [
-                                'Job Matching' => 'secondary',
-                                'Pending' => 'warning',
-                                'Interview' => 'info',
-                                'Gagal Interview' => 'danger',
-                                'Jadwalkan Interview Ulang' => 'dark',
-                                'Lulus interview' => 'primary',
-                                'Pemberkasan' => 'info',
-                                'Berangkat' => 'primary',
-                                'Diterima' => 'success',
-                                'Ditolak' => 'danger',
-                            ];
-                        @endphp
-
                         @forelse ($histories as $index => $history)
                             <tr class="align-middle">
                                 <td class="text-center fw-semibold">{{ $index + 1 }}</td>
 
                                 <td>
-                                    <span
-                                        class="badge bg-{{ $statusColors[$history->status_kandidat] ?? 'secondary' }} px-3 py-2">
-                                        {{ $history->status_kandidat }}
+                                    {!! $getStatusBadge($history->status_kandidat, $statusColors) !!}
+                                </td>
+
+                                <td>
+                                    <span class="d-block text-truncate" style="max-width: 250px;"
+                                        title="{{ $history->institusi->perusahaan_penempatan ?? 'Tidak ada data' }}">
+                                        {{ $history->institusi->perusahaan_penempatan ?? '<span class="text-muted fst-italic">-</span>' }}
                                     </span>
                                 </td>
 
                                 <td>
-                                    <span class="d-block text-truncate" style="max-width: 200px;"
-                                        title="{{ $history->institusi->perusahaan_penempatan ?? '-' }}">
-                                        {{ $history->institusi->perusahaan_penempatan ?? '-' }}
+                                    <span class="d-block text-truncate" style="max-width: 250px;"
+                                        title="{{ $history->kandidat->nama_perusahaan ?? 'Tidak ada data' }}">
+                                        {{ $history->kandidat->nama_perusahaan ?? '<span class="text-muted fst-italic">-</span>' }}
                                     </span>
                                 </td>
 
                                 <td>
-                                    <span class="d-block text-truncate" style="max-width: 200px;"
-                                        title="{{ $history->kandidat->nama_perusahaan ?? '-' }}">
-                                        {{ $history->kandidat->nama_perusahaan ?? '-' }}
-                                    </span>
-                                </td>
-
-                                <td>
-                                    {{ $history->bidang_ssw ?? '-' }}
+                                    {{ $history->bidang_ssw ?? '<span class="text-muted fst-italic">-</span>' }}
                                 </td>
 
 
-                                <td class="text-center">
-                                    {{ $history->created_at->format('d M Y H:i') }}
+                                <td class="text-center text-nowrap small text-muted">
+                                    {{ $history->created_at->format('d M Y') }}<br>
+                                    <span class="fw-semibold">{{ $history->created_at->format('H:i') }} WIB</span>
                                 </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="text-center text-muted py-4">
-                                    <i class="bi bi-info-circle me-1"></i> Belum ada history untuk kandidat ini.
+                                <td colspan="6" class="text-center text-muted py-5">
+                                    <i class="bi bi-info-circle me-1"></i> Tidak ada riwayat status yang tercatat.
                                 </td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
-
-                <!-- Inisialisasi DataTables -->
-                <script>
-                    $(document).ready(function() {
-                        $('#tableHistoryAll').DataTable({
-                            responsive: true,
-                            pageLength: 10,
-                            lengthMenu: [5, 10, 25, 50],
-                            language: {
-                                search: "🔍 Cari:",
-                                lengthMenu: "Tampilkan _MENU_ data",
-                                zeroRecords: "Tidak ada data ditemukan",
-                                info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
-                                paginate: {
-                                    previous: "←",
-                                    next: "→"
-                                }
-                            }
-                        });
-                    });
-                </script>
-
             </div>
         </div>
 
 
-        <!-- Tabel 2: Summary per Perusahaan -->
-        <div class="card shadow-sm border-0 rounded-4 mb-4">
-            <div class="card-body table-responsive">
-                <h5 class="mb-3">Summary Interview per Perusahaan</h5>
-                <table class="table table-striped table-bordered align-middle nowrap" id="tableSummary" style="width:100%">
-                    <thead class="table-light">
+        {{-- ================================================================= --}}
+        {{-- 2. Tabel Summary Interview per Perusahaan --}}
+        {{-- ================================================================= --}}
+        <div class="card shadow-lg border-0 rounded-4">
+            <div class="card-header  rounded-top-4 py-3">
+                <h5 class="mb-0"><i class="bi bi-briefcase-fill me-2"></i> Ringkasan Interview Berdasarkan Perusahaan</h5>
+            </div>
+            <div class="card-body table-responsive p-4">
+                <table class="table align-middle nowrap" id="tableSummary" style="width:100%">
+                    <thead class="">
                         <tr>
-                            <th class="py-3">Perusahaan Penempatan</th>
-                            <th class="py-3">Nama Perusahaan (History)</th>
-                            <th class="py-3">Bidang SSW</th> <!-- Tambah kolom Bidang SSW -->
+                            <th class="py-3">Perusahaan Penempatan (LPK)</th>
+                            <th class="py-3">Perusahaan Jepang Terakhir</th>
+                            <th class="py-3">Bidang SSW</th>
                             <th class="py-3 text-center">Jumlah Interview</th>
                             <th class="py-3 text-center">Status Terakhir</th>
-                            <th class="py-3 text-center">Tanggal Terakhir</th>
+                            <th class="py-3 text-center">Tanggal Status Terakhir</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse ($interviewPerPerusahaan as $index => $data)
                             <tr>
-                                {{-- KOLOM 1: Perusahaan Penempatan (Ambil dari data Institusi) --}}
+                                {{-- KOLOM 1: Perusahaan Penempatan --}}
                                 <td>
-                                    {{ $data['institusi']->nama_perusahaan ?? ($data['institusi']->perusahaan_penempatan ?? '-') }}
+                                    {{ $data['institusi']->perusahaan_penempatan ?? '<span class="text-muted fst-italic">-</span>' }}
                                 </td>
 
-                                {{-- KOLOM 2: Nama Perusahaan (History) --}}
+                                {{-- KOLOM 2: Nama Perusahaan Jepang (History) --}}
                                 <td>
-                                    {{ $data['nama_perusahaan_history'] ?? ($kandidat->nama_perusahaan ?? '-') }}
+                                    {{ $data['nama_perusahaan_history'] ?? '<span class="text-muted fst-italic">-</span>' }}
                                 </td>
 
                                 {{-- KOLOM 3: Bidang SSW --}}
                                 <td>
-                                    {{ $data['bidang_ssw'] ?? '-' }}
+                                    {{ $data['bidang_ssw'] ?? '<span class="text-muted fst-italic">-</span>' }}
                                 </td>
 
                                 {{-- Kolom 4: Jumlah Interview --}}
-                                <td class="text-center fw-semibold">{{ $data['jumlah_interview'] }}</td>
+                                <td class="text-center fw-bold">{{ $data['jumlah_interview'] }}x</td>
 
-                                {{-- Kolom 5: Status Terakhir --}}
-                                <td class="text-center">{{ $data['status_terakhir'] }}</td>
+                                {{-- Kolom 5: Status Terakhir (Menggunakan Badge Warna) --}}
+                                <td class="text-center">
+                                    {!! $getStatusBadge($data['status_terakhir'], $statusColors) !!}
+                                </td>
 
                                 {{-- Kolom 6: Tanggal Terakhir --}}
-                                <td class="text-center">{{ $data['tanggal_terakhir']->format('d M Y H:i') }}</td>
+                                <td class="text-center text-nowrap small text-muted">
+                                    {{ $data['tanggal_terakhir']->format('d M Y H:i') }}
+                                </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="text-center text-muted py-4">
-                                    <i class="bi bi-info-circle me-1"></i> Belum ada history interview untuk kandidat ini.
+                                <td colspan="6" class="text-center text-muted py-5">
+                                    <i class="bi bi-info-circle me-1"></i> Tidak ada ringkasan interview yang tercatat.
                                 </td>
                             </tr>
                         @endforelse
@@ -196,6 +189,33 @@
             </div>
         </div>
 
+        <script>
+            $(document).ready(function() {
+                const dataTableConfig = {
+                    responsive: true,
+                    pageLength: 10,
+                    lengthMenu: [5, 10, 25, 50],
+                    language: {
+                        search: "🔍 Cari:",
+                        lengthMenu: "Tampilkan _MENU_ data",
+                        zeroRecords: "Tidak ada data ditemukan",
+                        info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
+                        infoEmpty: "Menampilkan 0 - 0 dari 0 data",
+                        infoFiltered: "(disaring dari _MAX_ total data)",
+                        paginate: {
+                            previous: "←",
+                            next: "→"
+                        }
+                    }
+                };
+
+                // Inisialisasi Tabel 1
+                $('#tableHistoryAll').DataTable(dataTableConfig);
+
+                // Inisialisasi Tabel 2
+                $('#tableSummary').DataTable(dataTableConfig);
+            });
+        </script>
     </div>
     @if (auth()->check() && auth()->user()->role === 'super-admin')
         <!-- Back Button -->
