@@ -269,6 +269,14 @@ Route::middleware(['auth', 'role:super-admin'])->group(function () {
     // user export 
     Route::get('admin/kandidat/export-excel', [UserController::class, 'exportExcel'])
         ->name('admin.kandidat.export');
+
+    // Route untuk EKSPOR satu kandidat
+    Route::get('/kandidat/{kandidat}/export', [KandidatController::class, 'export'])->name('kandidat.export');
+
+    // Opsional: Route untuk EKSPOR SEMUA kandidat
+    Route::get('/kandidat/export/all', [KandidatController::class, 'exportAll'])->name('kandidat.export_all');
+
+    Route::get('/kandidat/{kandidat}', [KandidatController::class, 'show'])->name('kandidat.show');
 });
 
 Route::middleware(['auth'])->group(function () {

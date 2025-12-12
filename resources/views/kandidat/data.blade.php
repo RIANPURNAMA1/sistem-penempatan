@@ -110,15 +110,15 @@
             <!-- 🧾 Data Table -->
             <div class="card shadow shadow-md">
                 <div class="card-body table-responsive">
-                    <table id="tableKandidatutama" class="table  shadow shadow-md align-middle nowrap" style="width:100%">
+                    <table id="tableKandidatutama" class="table shadow shadow-md align-middle nowrap" style="width:100%">
                         <thead class="">
                             <tr class="text-white text-center">
                                 <th>No</th>
-                                <th>Gambar</th> <!-- ✅ Kolom baru -->
-                                <th>Nama Siswa</th>
+                                <th>Gambar</th>
+                                <th>Nama Kandidat</th>
                                 <th>Cabang</th>
                                 <th>Progress Kandidat</th>
-                                <th>Status Kndidat di Mendunia</th>
+                                <th>Status Kandidat di Mendunia</th>
                                 <th>Perusahaan Penempatan</th>
                                 <th>Nama Perusahaan</th>
                                 <th>Bidang Pekerjaan SSW</th>
@@ -126,6 +126,30 @@
                                 <th>Jumlah Interview</th>
                                 <th>Catatan Interview</th>
                                 <th>Jadwal Interview</th>
+
+                                <!-- Kolom Baru: Tanggal Interview/Mensetsu -->
+                                <th>TGL Setsumeikai</th>
+                                <th>TGL Mensetsu 1</th>
+                                <th>TGL Mensetsu 2</th>
+                                <th>Catatan Mensetsu</th>
+
+                                <!-- Kolom Baru: Biaya -->
+                                <th>Biaya Pemberkasan</th>
+                                <th>ADM Tahap 1</th>
+                                <th>ADM Tahap 2</th>
+
+                                <!-- Kolom Baru: Tracking Dokumen -->
+                                <th>Dokumen Soft File</th>
+                                <th>Terbit Kontrak Kerja</th>
+                                <th>Kontrak ke TSK</th>
+                                <th>Terbit Paspor</th>
+                                <th>Masuk Imigrasi Jepang</th>
+                                <th>COE Terbit</th>
+                                <th>Pembuatan E-KTKLN</th>
+                                <th>Dokumen Dikirim</th>
+                                <th>Visa</th>
+                                <th>Jadwal Penerbangan</th>
+
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -134,22 +158,26 @@
                                 <tr class="text-center align-middle">
                                     <td>{{ $loop->iteration }}</td>
 
-                                    <!-- ✅ Foto dari tabel pendaftarans -->
                                     <td>
                                         @php
                                             $foto = $k->pendaftaran->foto ?? null;
+                                            $detailUrl = route('kandidat.show', $k->id); // Route menuju halaman detail
                                         @endphp
 
                                         @if ($foto)
-                                            <img src="{{ asset($foto) }}" alt="Foto Kandidat" class="rounded-circle"
-                                                width="50" height="50" style="object-fit: cover;">
+                                            <a href="{{ $detailUrl }}">
+                                                <img src="{{ asset($foto) }}" alt="Foto Kandidat" class="rounded-circle"
+                                                    width="50" height="50" style="object-fit: cover;">
+                                            </a>
                                         @else
-                                            <!-- Placeholder jika tidak ada foto -->
-                                            <img src="https://ui-avatars.com/api/?name={{ urlencode($k->pendaftaran->nama ?? 'User') }}&background=0D8ABC&color=fff"
-                                                class="rounded-circle" width="50" height="50"
-                                                style="object-fit: cover;">
+                                            <a href="{{ $detailUrl }}">
+                                                <img src="https://ui-avatars.com/api/?name={{ urlencode($k->pendaftaran->nama ?? 'User') }}&background=0D8ABC&color=fff"
+                                                    class="rounded-circle" width="50" height="50"
+                                                    style="object-fit: cover;">
+                                            </a>
                                         @endif
                                     </td>
+
 
                                     <!-- Nama -->
                                     <td>{{ $k->pendaftaran->nama ?? '-' }}</td>
@@ -178,6 +206,8 @@
                                             {{ $k->status_kandidat }}
                                         </span>
                                     </td>
+
+                                    <!-- Status di Mendunia -->
                                     <td>
                                         <form class="form-mendunia border-none"
                                             action="{{ route('kandidat.updateMendunia', $k->id) }}" method="POST">
@@ -206,11 +236,10 @@
                                         </form>
                                     </td>
 
-
-
                                     <!-- Penempatan -->
                                     <td>{{ $k->institusi->perusahaan_penempatan ?? '-' }}</td>
-                                    <!-- Penempatan -->
+
+                                    <!-- Nama Perusahaan -->
                                     <td>{{ $k->nama_perusahaan ?? '-' }}</td>
 
                                     <!-- Bidang -->
@@ -221,7 +250,6 @@
                                             -
                                         @endif
                                     </td>
-
 
                                     <!-- Tanggal Daftar -->
                                     <td>
@@ -239,6 +267,75 @@
                                     <!-- Jadwal Interview -->
                                     <td>
                                         {{ $k->jadwal_interview ? \Carbon\Carbon::parse($k->jadwal_interview)->format('d F Y') : '-' }}
+                                    </td>
+
+                                    <!-- ========== KOLOM BARU: Tanggal Interview/Mensetsu ========== -->
+                                    <td>
+                                        {{ $k->tgl_setsumeikai_ichijimensetsu ? \Carbon\Carbon::parse($k->tgl_setsumeikai_ichijimensetsu)->format('d F Y') : '-' }}
+                                    </td>
+
+                                    <td>
+                                        {{ $k->tgl_mensetsu ? \Carbon\Carbon::parse($k->tgl_mensetsu)->format('d F Y') : '-' }}
+                                    </td>
+
+                                    <td>
+                                        {{ $k->tgl_mensetsu2 ? \Carbon\Carbon::parse($k->tgl_mensetsu2)->format('d F Y') : '-' }}
+                                    </td>
+
+                                    <td>{{ $k->catatan_mensetsu ?? '-' }}</td>
+
+                                    <!-- ========== KOLOM BARU: Biaya ========== -->
+                                    <td>
+                                        {{ $k->biaya_pemberkasan ? 'Rp ' . number_format($k->biaya_pemberkasan, 0, ',', '.') : '-' }}
+                                    </td>
+
+                                    <td>
+                                        {{ $k->adm_tahap1 ? 'Rp ' . number_format($k->adm_tahap1, 0, ',', '.') : '-' }}
+                                    </td>
+
+                                    <td>
+                                        {{ $k->adm_tahap2 ? 'Rp ' . number_format($k->adm_tahap2, 0, ',', '.') : '-' }}
+                                    </td>
+
+                                    <!-- ========== KOLOM BARU: Tracking Dokumen ========== -->
+                                    <td>
+                                        {{ $k->dokumen_dikirim_soft_file ? \Carbon\Carbon::parse($k->dokumen_dikirim_soft_file)->format('d F Y') : '-' }}
+                                    </td>
+
+                                    <td>
+                                        {{ $k->terbit_kontrak_kerja ? \Carbon\Carbon::parse($k->terbit_kontrak_kerja)->format('d F Y') : '-' }}
+                                    </td>
+
+                                    <td>
+                                        {{ $k->kontrak_dikirim_ke_tsk ? \Carbon\Carbon::parse($k->kontrak_dikirim_ke_tsk)->format('d F Y') : '-' }}
+                                    </td>
+
+                                    <td>
+                                        {{ $k->terbit_paspor ? \Carbon\Carbon::parse($k->terbit_paspor)->format('d F Y') : '-' }}
+                                    </td>
+
+                                    <td>
+                                        {{ $k->masuk_imigrasi_jepang ? \Carbon\Carbon::parse($k->masuk_imigrasi_jepang)->format('d F Y') : '-' }}
+                                    </td>
+
+                                    <td>
+                                        {{ $k->coe_terbit ? \Carbon\Carbon::parse($k->coe_terbit)->format('d F Y') : '-' }}
+                                    </td>
+
+                                    <td>
+                                        {{ $k->pembuatan_ektkln ? \Carbon\Carbon::parse($k->pembuatan_ektkln)->format('d F Y') : '-' }}
+                                    </td>
+
+                                    <td>
+                                        {{ $k->dokumen_dikirim ? \Carbon\Carbon::parse($k->dokumen_dikirim)->format('d F Y') : '-' }}
+                                    </td>
+
+                                    <td>
+                                        {{ $k->visa ? \Carbon\Carbon::parse($k->visa)->format('d F Y') : '-' }}
+                                    </td>
+
+                                    <td>
+                                        {{ $k->jadwal_penerbangan ? \Carbon\Carbon::parse($k->jadwal_penerbangan)->format('d F Y') : '-' }}
                                     </td>
 
                                     <!-- Tombol Aksi -->

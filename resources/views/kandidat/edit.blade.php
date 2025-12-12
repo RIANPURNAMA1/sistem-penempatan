@@ -4,26 +4,26 @@
     <div class="">
         <!-- Breadcrumb -->
         <nav aria-label="breadcrumb" class="mb-4 shadow shadow-md border-none">
-            <ol class="breadcrumb  border rounded-3 px-3 py-2 shadow-sm mb-0">
+            <ol class="breadcrumb border rounded-3 px-3 py-2 shadow-sm mb-0">
                 <li class="breadcrumb-item">
                     <a href="{{ url('/') }}" class="text-decoration-none text-secondary">
                         <i class="bi bi-house-door me-1"></i> Dashboard
                     </a>
                 </li>
-                <li class="breadcrumb-item active  fw-semibold" aria-current="page">
+                <li class="breadcrumb-item active fw-semibold" aria-current="page">
                     Kandidat
                 </li>
-                <li class="breadcrumb-item active  fw-semibold" aria-current="page">
+                <li class="breadcrumb-item active fw-semibold" aria-current="page">
                     Edit
                 </li>
             </ol>
         </nav>
 
-
         <form id="updateKandidatForm" method="POST">
             @csrf
             @method('PUT')
 
+            <!-- Card 1: Status & Penempatan -->
             <div class="card shadow shadow-md rounded-4 p-3 mb-4">
                 <h5 class="mb-3 text-primary"><i class="bi bi-pencil-square me-2"></i>Update Status Kandidat</h5>
 
@@ -34,44 +34,32 @@
                                 class="text-danger">*</span></label>
                         <select name="status_kandidat" id="status_kandidat" class="form-select" required>
                             <option value="">-- Pilih Status --</option>
-
                             <option value="Job Matching"
                                 {{ $kandidat->status_kandidat == 'Job Matching' ? 'selected' : '' }}>Job Matching</option>
-
                             <option value="Pending" {{ $kandidat->status_kandidat == 'Pending' ? 'selected' : '' }}>Pending
                             </option>
-
                             <option value="lamar_ke_perusahaan"
                                 {{ $kandidat->status_kandidat == 'lamar_ke_perusahaan' ? 'selected' : '' }}>Lamar ke
                                 Perusahaan</option>
-
                             <option value="Interview" {{ $kandidat->status_kandidat == 'Interview' ? 'selected' : '' }}>
                                 Interview</option>
-
                             <option value="Jadwalkan Interview Ulang"
                                 {{ $kandidat->status_kandidat == 'Jadwalkan Interview Ulang' ? 'selected' : '' }}>Jadwalkan
                                 Interview Ulang</option>
-
                             <option value="Lulus interview"
                                 {{ $kandidat->status_kandidat == 'Lulus interview' ? 'selected' : '' }}>Lulus Interview
                             </option>
-
                             <option value="Gagal Interview"
                                 {{ $kandidat->status_kandidat == 'Gagal Interview' ? 'selected' : '' }}>Gagal Interview
                             </option>
-
                             <option value="Pemberkasan" {{ $kandidat->status_kandidat == 'Pemberkasan' ? 'selected' : '' }}>
                                 Pemberkasan</option>
-
                             <option value="Berangkat" {{ $kandidat->status_kandidat == 'Berangkat' ? 'selected' : '' }}>
                                 Berangkat</option>
-
                             <option value="Ditolak" {{ $kandidat->status_kandidat == 'Ditolak' ? 'selected' : '' }}>Ditolak
                             </option>
                         </select>
                     </div>
-
-
 
                     <!-- Institusi / Penempatan -->
                     <div class="col-md-6">
@@ -86,17 +74,16 @@
                             @endforeach
                         </select>
                     </div>
-                    <!-- Bidang SSW -->
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Bidang SSW</label>
 
+                    <!-- Bidang SSW -->
+                    <div class="col-12">
+                        <label class="form-label fw-bold">Bidang SSW</label>
                         @if ($kandidat->pendaftaran && $kandidat->pendaftaran->bidang_ssws->count() > 0)
                             <div class="d-flex flex-wrap gap-2">
                                 @foreach ($kandidat->pendaftaran->bidang_ssws as $bidang)
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="bidang_ssw"
                                             value="{{ $bidang->id }}" id="bidang_{{ $bidang->id }}"
-                                            {{-- Cek jika kandidat sudah memilih bidang ini --}}
                                             {{ old('bidang_ssw', optional($kandidat->bidang_ssws->first())->id) == $bidang->id ? 'checked' : '' }}>
                                         <label class="form-check-label" for="bidang_{{ $bidang->id }}">
                                             {{ $bidang->nama_bidang }}
@@ -107,24 +94,22 @@
                         @else
                             <p class="text-muted">- Tidak ada bidang SSW -</p>
                         @endif
-
-
                     </div>
 
-
-
-                    <div class="mb-3">
-                        <label for="nama_perusahaan" class="form-label">Nama Perusahaan</label>
+                    <!-- Nama Perusahaan -->
+                    <div class="col-md-6">
+                        <label for="nama_perusahaan" class="form-label fw-bold">Nama Perusahaan</label>
                         <input type="text" name="nama_perusahaan" id="nama_perusahaan" class="form-control"
-                            value="" placeholder="Masukkan nama perusahaan">
+                            value="{{ old('nama_perusahaan', $kandidat->nama_perusahaan) }}"
+                            placeholder="Masukkan nama perusahaan">
                     </div>
 
-                    <div class="mb-3">
-                        <label for="detail_pekerjaan" class="form-label">Detail Pekerjaan</label>
+                    <!-- Detail Pekerjaan -->
+                    <div class="col-md-6">
+                        <label for="detail_pekerjaan" class="form-label fw-bold">Detail Pekerjaan</label>
                         <textarea name="detail_pekerjaan" id="detail_pekerjaan" class="form-control" rows="3"
-                            placeholder="Jelaskan detail pekerjaan, posisi, atau bidang SSW"></textarea>
+                            placeholder="Jelaskan detail pekerjaan, posisi, atau bidang SSW">{{ old('detail_pekerjaan', $kandidat->detail_pekerjaan) }}</textarea>
                     </div>
-
 
                     <!-- Jadwal Interview -->
                     <div class="col-md-6">
@@ -140,10 +125,160 @@
                             placeholder="Masukkan catatan interview...">{{ old('catatan_interview', $kandidat->catatan_interview) }}</textarea>
                     </div>
                 </div>
+            </div>
 
-                <div class="d-flex justify-content-end gap-2 mt-4">
+            <!-- Card 2: Data Interview & Mensetsu -->
+            <div class="card shadow shadow-md rounded-4 p-3 mb-4">
+                <h5 class="mb-3 text-primary"><i class="bi bi-calendar-check me-2"></i>Data Interview & Mensetsu</h5>
+
+                <div class="row g-3">
+                    <!-- TGL Setsumeikai / Ichijimensetsu -->
+                    <div class="col-md-6">
+                        <label for="tgl_setsumeikai_ichijimensetsu" class="form-label fw-bold">TGL Setsumeikai /
+                            Ichijimensetsu</label>
+                        <input type="date" name="tgl_setsumeikai_ichijimensetsu" id="tgl_setsumeikai_ichijimensetsu"
+                            class="form-control"
+                            value="{{ old('tgl_setsumeikai_ichijimensetsu', $kandidat->tgl_setsumeikai_ichijimensetsu ? \Carbon\Carbon::parse($kandidat->tgl_setsumeikai_ichijimensetsu)->format('Y-m-d') : '') }}">
+                    </div>
+
+                    <!-- TGL Mensetsu 1 -->
+                    <div class="col-md-6">
+                        <label for="tgl_mensetsu" class="form-label fw-bold">TGL Mensetsu 1</label>
+                        <input type="date" name="tgl_mensetsu" id="tgl_mensetsu" class="form-control"
+                            value="{{ old('tgl_mensetsu', $kandidat->tgl_mensetsu ? \Carbon\Carbon::parse($kandidat->tgl_mensetsu)->format('Y-m-d') : '') }}">
+                    </div>
+
+                    <!-- TGL Mensetsu 2 -->
+                    <div class="col-md-6">
+                        <label for="tgl_mensetsu2" class="form-label fw-bold">TGL Mensetsu 2</label>
+                        <input type="date" name="tgl_mensetsu2" id="tgl_mensetsu2" class="form-control"
+                            value="{{ old('tgl_mensetsu2', $kandidat->tgl_mensetsu2 ? \Carbon\Carbon::parse($kandidat->tgl_mensetsu2)->format('Y-m-d') : '') }}">
+                    </div>
+
+                    <!-- Catatan Mensetsu -->
+                    <div class="col-md-6">
+                        <label for="catatan_mensetsu" class="form-label fw-bold">Catatan Mensetsu</label>
+                        <textarea name="catatan_mensetsu" id="catatan_mensetsu" class="form-control" rows="3"
+                            placeholder="Masukkan catatan mensetsu...">{{ old('catatan_mensetsu', $kandidat->catatan_mensetsu) }}</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3: Biaya & Administrasi -->
+            <div class="card shadow shadow-md rounded-4 p-3 mb-4">
+                <h5 class="mb-3 text-primary"><i class="bi bi-cash-stack me-2"></i>Biaya & Administrasi</h5>
+
+                <div class="row g-3">
+                    <!-- Biaya Pemberkasan -->
+                    <div class="col-md-4">
+                        <label for="biaya_pemberkasan" class="form-label fw-bold">Biaya Pemberkasan</label>
+                        <input type="number" name="biaya_pemberkasan" id="biaya_pemberkasan" class="form-control"
+                            value="{{ old('biaya_pemberkasan', $kandidat->biaya_pemberkasan) }}" step="0.01"
+                            placeholder="Masukkan biaya pemberkasan">
+                    </div>
+
+                    <!-- ADM Tahap 1 -->
+                    <div class="col-md-4">
+                        <label for="adm_tahap1" class="form-label fw-bold">ADM Tahap 1</label>
+                        <input type="number" name="adm_tahap1" id="adm_tahap1" class="form-control"
+                            value="{{ old('adm_tahap1', $kandidat->adm_tahap1) }}" step="0.01"
+                            placeholder="Masukkan biaya adm tahap 1">
+                    </div>
+
+                    <!-- ADM Tahap 2 -->
+                    <div class="col-md-4">
+                        <label for="adm_tahap2" class="form-label fw-bold">ADM Tahap 2</label>
+                        <input type="number" name="adm_tahap2" id="adm_tahap2" class="form-control"
+                            value="{{ old('adm_tahap2', $kandidat->adm_tahap2) }}" step="0.01"
+                            placeholder="Masukkan biaya adm tahap 2">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 4: Tracking Dokumen & Proses -->
+            <div class="card shadow shadow-md rounded-4 p-3 mb-4">
+                <h5 class="mb-3 text-primary"><i class="bi bi-file-earmark-text me-2"></i>Tracking Dokumen & Proses</h5>
+
+                <div class="row g-3">
+                    <!-- Dokumen Dikirim (Soft File) -->
+                    <div class="col-md-6">
+                        <label for="dokumen_dikirim_soft_file" class="form-label fw-bold">Dokumen Dikirim (Soft
+                            File)</label>
+                        <input type="date" name="dokumen_dikirim_soft_file" id="dokumen_dikirim_soft_file"
+                            class="form-control"
+                            value="{{ old('dokumen_dikirim_soft_file', $kandidat->dokumen_dikirim_soft_file ? \Carbon\Carbon::parse($kandidat->dokumen_dikirim_soft_file)->format('Y-m-d') : '') }}">
+                    </div>
+
+                    <!-- Terbit Kontrak Kerja -->
+                    <div class="col-md-6">
+                        <label for="terbit_kontrak_kerja" class="form-label fw-bold">Terbit Kontrak Kerja</label>
+                        <input type="date" name="terbit_kontrak_kerja" id="terbit_kontrak_kerja" class="form-control"
+                            value="{{ old('terbit_kontrak_kerja', $kandidat->terbit_kontrak_kerja ? \Carbon\Carbon::parse($kandidat->terbit_kontrak_kerja)->format('Y-m-d') : '') }}">
+                    </div>
+
+                    <!-- Kontrak Dikirim ke TSK -->
+                    <div class="col-md-6">
+                        <label for="kontrak_dikirim_ke_tsk" class="form-label fw-bold">Kontrak Dikirim ke TSK</label>
+                        <input type="date" name="kontrak_dikirim_ke_tsk" id="kontrak_dikirim_ke_tsk" class="form-control"
+                            value="{{ old('kontrak_dikirim_ke_tsk', $kandidat->kontrak_dikirim_ke_tsk ? \Carbon\Carbon::parse($kandidat->kontrak_dikirim_ke_tsk)->format('Y-m-d') : '') }}">
+                    </div>
+
+                    <!-- Terbit Paspor -->
+                    <div class="col-md-6">
+                        <label for="terbit_paspor" class="form-label fw-bold">Terbit Paspor</label>
+                        <input type="date" name="terbit_paspor" id="terbit_paspor" class="form-control"
+                            value="{{ old('terbit_paspor', $kandidat->terbit_paspor ? \Carbon\Carbon::parse($kandidat->terbit_paspor)->format('Y-m-d') : '') }}">
+                    </div>
+
+                    <!-- Masuk Imigrasi Jepang -->
+                    <div class="col-md-6">
+                        <label for="masuk_imigrasi_jepang" class="form-label fw-bold">Masuk Imigrasi Jepang</label>
+                        <input type="date" name="masuk_imigrasi_jepang" id="masuk_imigrasi_jepang" class="form-control"
+                            value="{{ old('masuk_imigrasi_jepang', $kandidat->masuk_imigrasi_jepang ? \Carbon\Carbon::parse($kandidat->masuk_imigrasi_jepang)->format('Y-m-d') : '') }}">
+                    </div>
+
+                    <!-- COE Terbit -->
+                    <div class="col-md-6">
+                        <label for="coe_terbit" class="form-label fw-bold">COE Terbit</label>
+                        <input type="date" name="coe_terbit" id="coe_terbit" class="form-control"
+                            value="{{ old('coe_terbit', $kandidat->coe_terbit ? \Carbon\Carbon::parse($kandidat->coe_terbit)->format('Y-m-d') : '') }}">
+                    </div>
+
+                    <!-- Pembuatan E-KTKLN -->
+                    <div class="col-md-6">
+                        <label for="pembuatan_ektkln" class="form-label fw-bold">Pembuatan E-KTKLN</label>
+                        <input type="date" name="pembuatan_ektkln" id="pembuatan_ektkln" class="form-control"
+                            value="{{ old('pembuatan_ektkln', $kandidat->pembuatan_ektkln ? \Carbon\Carbon::parse($kandidat->pembuatan_ektkln)->format('Y-m-d') : '') }}">
+                    </div>
+
+                    <!-- Dokumen Dikirim -->
+                    <div class="col-md-6">
+                        <label for="dokumen_dikirim" class="form-label fw-bold">Dokumen Dikirim</label>
+                        <input type="date" name="dokumen_dikirim" id="dokumen_dikirim" class="form-control"
+                            value="{{ old('dokumen_dikirim', $kandidat->dokumen_dikirim ? \Carbon\Carbon::parse($kandidat->dokumen_dikirim)->format('Y-m-d') : '') }}">
+                    </div>
+
+                    <!-- Visa -->
+                    <div class="col-md-6">
+                        <label for="visa" class="form-label fw-bold">Visa</label>
+                        <input type="date" name="visa" id="visa" class="form-control"
+                            value="{{ old('visa', $kandidat->visa ? \Carbon\Carbon::parse($kandidat->visa)->format('Y-m-d') : '') }}">
+                    </div>
+
+                    <!-- Jadwal Penerbangan -->
+                    <div class="col-md-6">
+                        <label for="jadwal_penerbangan" class="form-label fw-bold">Jadwal Penerbangan</label>
+                        <input type="date" name="jadwal_penerbangan" id="jadwal_penerbangan" class="form-control"
+                            value="{{ old('jadwal_penerbangan', $kandidat->jadwal_penerbangan ? \Carbon\Carbon::parse($kandidat->jadwal_penerbangan)->format('Y-m-d') : '') }}">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tombol Aksi -->
+            <div class="card shadow shadow-md rounded-4 p-3 mb-4">
+                <div class="d-flex justify-content-end gap-2">
                     <button type="submit" id="updateBtn" class="btn btn-success">
-                        <i class="bi bi-save me-1"></i> Update Status & Penempatan
+                        <i class="bi bi-save me-1"></i> Update Data Kandidat
                     </button>
                     <a href="{{ route('kandidat.data') }}" class="btn btn-secondary">
                         <i class="bi bi-arrow-left me-1"></i> Kembali
