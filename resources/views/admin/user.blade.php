@@ -9,13 +9,13 @@
 
         <!-- Breadcrumb -->
         <nav aria-label="breadcrumb" class="mb-4">
-            <ol class="breadcrumb bg-white border rounded-3 px-3 py-2 shadow-sm mb-0">
+            <ol class="breadcrumb border rounded-3 px-3 py-2 shadow-sm mb-0">
                 <li class="breadcrumb-item">
                     <a href="{{ url('admin') }}" class="text-decoration-none text-secondary">
                         <i class="bi bi-house-door me-1"></i> Dashboard
                     </a>
                 </li>
-                <li class="breadcrumb-item active text-dark fw-semibold" aria-current="page">
+                <li class="breadcrumb-item active  fw-semibold" aria-current="page">
                     <i class="bi bi-person-badge me-1"></i> Daftar Kandidat
                 </li>
             </ol>
@@ -33,7 +33,7 @@
 
         <!-- Filter -->
         <div class="card shadow-sm border-0 rounded-3 mb-4">
-            <div class="card-header py-3 px-4 bg-white border-bottom-0">
+            <div class="card-header py-3 px-4  border-bottom-0">
                 <div class="d-flex flex-wrap justify-content-between align-items-center">
                     <h6 class="fw-semibold mb-0 text-secondary">
                         <i class="bi bi-funnel me-1"></i> Filter Data
@@ -44,9 +44,17 @@
                             id="btnExportExcel">
                             <i class="bi bi-file-earmark-excel me-1"></i> Export Excel
                         </a>
-                        <button class="btn btn-danger btn-sm fw-semibold shadow-sm">
+                        <!-- Tombol Download PDF -->
+                        <a href="{{ route('admin.kandidat.downloadPdf') }}"
+                            class="btn btn-danger btn-sm fw-semibold shadow-sm" target="_blank">
                             <i class="bi bi-file-earmark-pdf me-1"></i> Download PDF
-                        </button>
+                        </a>
+
+                        <!-- Tombol Preview PDF (Opsional) -->
+                        <a href="{{ route('admin.kandidat.previewPdf') }}"
+                            class="btn btn-outline-danger btn-sm fw-semibold shadow-sm" target="_blank">
+                            <i class="bi bi-eye me-1"></i> Preview PDF
+                        </a>
                     </div>
                 </div>
             </div>
@@ -59,7 +67,7 @@
                             placeholder="Masukkan nama kandidat...">
                     </div>
                     <div class="col-12 col-md-6 d-flex justify-content-end">
-                        <button id="resetFilter" class="btn btn-outline-dark fw-semibold shadow-sm px-4 py-2 rounded-3">
+                        <button id="resetFilter" class="btn btn-outline-info fw-semibold shadow-sm px-4 py-2 rounded-3">
                             <i class="bi bi-arrow-clockwise me-1"></i> Reset Filter
                         </button>
                     </div>
@@ -70,7 +78,6 @@
         <!-- Data Table -->
         <div class="card shadow border-0 rounded-4">
             <div class="card-body table-responsive">
-
                 <table class="table table-hover align-middle nowrap w-100" id="tableKandidatuser">
                     <thead class="text-center text-white" style="">
                         <tr>
@@ -81,58 +88,110 @@
                             <th>Aksi</th>
                         </tr>
                     </thead>
-
                     <tbody>
                         @foreach ($kandidats as $index => $kandidat)
                             <tr class="align-middle">
                                 <td class="text-center fw-semibold">
                                     {{ ($kandidats->currentPage() - 1) * $kandidats->perPage() + ($index + 1) }}
                                 </td>
-
-
                                 <td class="fw-semibold">
                                     <i class="bi bi-person-circle text-primary me-2"></i>
                                     {{ $kandidat->name }}
                                 </td>
-
                                 <td>
                                     <span class="text-secondary">{{ $kandidat->email }}</span>
                                 </td>
-
                                 <td>
                                     <i class="bi bi-clock-history text-warning me-1"></i>
                                     {{ $kandidat->created_at->format('d M Y, H:i') }}
                                 </td>
-
                                 <td class="text-center">
-                                    <div class="btn-group shadow-sm">
-
-                                        <a href="#" class="btn btn-sm btn-outline-info" title="Lihat Detail">
-                                            <i class="bi bi-eye-fill"></i>
-                                        </a>
-
-                                        <a href="#" class="btn btn-sm btn-outline-warning" title="Edit">
-                                            <i class="bi bi-pencil-square"></i>
-                                        </a>
-
-                                        <button class="btn btn-sm btn-outline-danger" title="Hapus">
-                                            <i class="bi bi-trash3-fill"></i>
-                                        </button>
-
-                                    </div>
+                                    <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal"
+                                        data-bs-target="#deleteModal{{ $kandidat->id }}" title="Hapus">
+                                        <i class="bi bi-trash3-fill"></i> Hapus
+                                    </button>
                                 </td>
                             </tr>
+
+                            <!-- Modal Delete untuk setiap kandidat -->
+                            <div class="modal fade" id="deleteModal{{ $kandidat->id }}" tabindex="-1"
+                                aria-labelledby="deleteModalLabel{{ $kandidat->id }}" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content border-0 shadow-lg">
+                                        <div class="modal-header bg-danger text-white">
+                                            <h5 class="modal-title" id="deleteModalLabel{{ $kandidat->id }}">
+                                                <i class="bi bi-exclamation-triangle-fill me-2"></i>Konfirmasi Hapus
+                                            </h5>
+                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body text-center py-4">
+                                            <i class="bi bi-person-x-fill text-danger" style="font-size: 4rem;"></i>
+                                            <h5 class="mt-3 mb-2">Apakah Anda yakin?</h5>
+                                            <p class="text-muted mb-0">Anda akan menghapus kandidat:</p>
+                                            <p class="fw-bold text-dark mb-0">{{ $kandidat->name }}</p>
+                                            <p class="text-muted small">{{ $kandidat->email }}</p>
+                                            <div class="alert alert-warning mt-3 mb-0" role="alert">
+                                                <i class="bi bi-info-circle-fill me-1"></i>
+                                                <small>Data yang dihapus tidak dapat dikembalikan!</small>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer justify-content-center border-0">
+                                            <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">
+                                                <i class="bi bi-x-circle me-1"></i>Batal
+                                            </button>
+                                            <form action="{{ route('kandidats.user.destroy', $kandidat->id) }}"
+                                                method="POST" style="display: inline;">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger px-4">
+                                                    <i class="bi bi-trash3-fill me-1"></i>Ya, Hapus!
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         @endforeach
                     </tbody>
-
                 </table>
                 <div class="mt-3 px-2">
                     {{ $kandidats->links('pagination::bootstrap-5') }}
                 </div>
-
-
             </div>
         </div>
+
+        <!-- Alert untuk notifikasi -->
+        @if (session('success'))
+            <div class="position-fixed top-0 end-0 p-3" style="z-index: 9999;">
+                <div class="toast show align-items-center text-white bg-success border-0" role="alert"
+                    aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            <i class="bi bi-check-circle-fill me-2"></i>{{ session('success') }}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                            aria-label="Close"></button>
+                    </div>
+                </div>
+            </div>
+        @endif
+
+        @if (session('error'))
+            <div class="position-fixed top-0 end-0 p-3" style="z-index: 9999;">
+                <div class="toast show align-items-center text-white bg-danger border-0" role="alert"
+                    aria-live="assertive" aria-atomic="true">
+                    <div class="d-flex">
+                        <div class="toast-body">
+                            <i class="bi bi-exclamation-circle-fill me-2"></i>{{ session('error') }}
+                        </div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                            aria-label="Close"></button>
+                    </div>
+                </div>
+            </div>
+        @endif
+
 
 
 
@@ -167,6 +226,19 @@
             resetBtn.addEventListener('click', function() {
                 filterInput.value = '';
                 rows.forEach(row => row.style.display = '');
+            });
+        });
+    </script>
+
+    <script>
+        // Auto hide toast after 3 seconds
+        document.addEventListener('DOMContentLoaded', function() {
+            var toastElList = [].slice.call(document.querySelectorAll('.toast'));
+            var toastList = toastElList.map(function(toastEl) {
+                return new bootstrap.Toast(toastEl, {
+                    autohide: true,
+                    delay: 3000
+                });
             });
         });
     </script>

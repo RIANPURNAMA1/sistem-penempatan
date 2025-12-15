@@ -28,30 +28,64 @@ class UserController extends Controller
         return Excel::download(new userExport, $fileName);
     }
 
-    // Method untuk download PDF
-public function downloadPdf()
+
+public function destroy($id)
 {
-    // Ambil semua data kandidat
-    // Sesuaikan query dengan kebutuhan Anda
-    $kandidats = User::where('role', 'kandidat')
-        ->orderBy('created_at', 'desc')
-        ->get();
-    
-    // Load view dan passing data
-    $pdf = Pdf::loadView('admin.kandidat.kandidat-pdf', [
-        'kandidats' => $kandidats
-    ]);
-    
-    // Set paper size dan orientation
-    $pdf->setPaper('A4', 'landscape');
-    
-    // Generate nama file dengan timestamp
-    $fileName = 'Data_Kandidat_' . date('Y-m-d_His') . '.pdf';
-    
-    // Download PDF
-    return $pdf->download($fileName);
-    
-    // Atau jika ingin tampilkan di browser (inline):
-    // return $pdf->stream($fileName);
+    try {
+        $kandidat = User::findOrFail($id); // atau model yang sesuai
+        
+        // Hapus kandidat
+        $kandidat->delete();
+        
+        return redirect()->back()->with('success', 'Kandidat berhasil dihapus!');
+    } catch (\Exception $e) {
+        return redirect()->back()->with('error', 'Gagal menghapus kandidat: ' . $e->getMessage());
+    }
 }
+
+ public function downloadPdf()
+    {
+        try {
+            // Ambil semua kandidat dengan role 'kandidat'
+            $kandidats = User::where('role', 'kandidat')
+                            ->orderBy('created_at', 'desc')
+                            ->get();
+
+            // Load view untuk PDF
+            $pdf = Pdf::loadView('admin.kandidat.pdf', compact('kandidats'));
+            
+            // Set paper size dan orientation
+            $pdf->setPaper('A4', 'landscape');
+            
+            // Generate nama file dengan timestamp
+            $filename = 'Daftar_Kandidat_' . date('Y-m-d_His') . '.pdf';
+            
+            // Download PDF
+            return $pdf->download($filename);
+            
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal membuat PDF: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Stream/Preview PDF di browser (opsional)
+     */
+    public function previewPdf()
+    {
+        try {
+            $kandidats = User::where('role', 'kandidat')
+                            ->orderBy('created_at', 'desc')
+                            ->get();
+
+            $pdf = Pdf::loadView('admin.kandidat.pdf', compact('kandidats'));
+            $pdf->setPaper('A4', 'landscape');
+            
+            // Stream ke browser (preview)
+            return $pdf->stream('Daftar_Kandidat.pdf');
+            
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Gagal membuat PDF: ' . $e->getMessage());
+        }
+    }
 }

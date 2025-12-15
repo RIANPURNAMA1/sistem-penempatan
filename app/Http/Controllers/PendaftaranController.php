@@ -214,67 +214,59 @@ class PendaftaranController extends Controller
 
 
 
-    private function sendMessageToAdmin($pendaftaran)
+    private function sendMessageToAdmin($pendaftaran): bool
     {
         try {
-            // ===== Nomor ADMIN penerima pesan =====
-            $adminNumber = "6282118364415";
+            // ===== Token Fonnte =====
+            $token = env('FONNTE_TOKEN');
+            if (!$token) {
+                Log::error('FONNTE_TOKEN belum diset');
+                return false;
+            }
 
-            // ===== Format NO WA pendaftar =====
-            $noWa = preg_replace('/[^0-9]/', '', $pendaftaran->no_wa);
-            if (substr($noWa, 0, 1) === '0') {
+            // ===== Nomor ADMIN =====
+            $adminNumber = env('ADMIN_WA', '6282118364415');
+
+            // ===== Format nomor WA pendaftar =====
+            $noWa = preg_replace('/\D/', '', $pendaftaran->no_wa);
+            if (str_starts_with($noWa, '0')) {
                 $noWa = '62' . substr($noWa, 1);
             }
 
-            // ===== Pesan yang dikirim =====
-            $message  = "📥 *PENDAFTARAN BARU MASUK*\n\n";
-            $message .= "Ada pendaftar baru:\n\n";
-            $message .= "👤 *Nama:* {$pendaftaran->nama}\n";
-            $message .= "📱 *Nomor WA:* {$pendaftaran->no_wa}\n";
-            $message .= "💬 *Chat langsung:* https://wa.me/{$noWa}\n";
-            $message .= "✉️ *Email:* {$pendaftaran->email}\n";
-            $message .= "📍 *Cabang:* {$pendaftaran->cabang->nama_cabang}\n\n";
-            $message .= "Silakan cek dan follow up.";
+            // ===== Susun pesan =====
+            $message =
+                "📥 *PENDAFTARAN BARU MASUK*\n\n" .
+                "👤 *Nama:* {$pendaftaran->nama}\n" .
+                "📱 *Nomor WA:* {$pendaftaran->no_wa}\n" .
+                "💬 *Chat langsung:* https://wa.me/{$noWa}\n" .
+                "✉️ *Email:* {$pendaftaran->email}\n" .
+                "📍 *Cabang:* {$pendaftaran->cabang->nama_cabang}\n\n" .
+                "Silakan cek dan lakukan follow up.";
 
-            // ===== Konfigurasi Wablas =====
-            $domain = config('services.wablas.domain', 'https://bdg.wablas.com');
-            $token = config('services.wablas.token');
-            $secretKey = config('services.wablas.secret_key', '');
+            // ===== Kirim via Fonnte =====
+            $response = Http::withHeaders([
+                'Authorization' => $token,
+            ])->asForm()->post('https://api.fonnte.com/send', [
+                'target'  => $adminNumber,
+                'message' => $message,
+                'delay'   => 2,
+            ]);
 
-            // ===== Kirim pesan =====
-            if ($secretKey) {
-                $response = Http::withOptions([
-                    'verify' => false
-                ])->withHeaders([
-                    'Authorization' => $token . '.' . $secretKey,
-                ])->asForm()->post($domain . '/api/send-message', [
-                    'phone' => $adminNumber,
-                    'message' => $message,
-                ]);
-            } else {
-                $response = Http::withOptions([
-                    'verify' => false
-                ])->asForm()->post($domain . '/api/send-message', [
-                    'phone' => $adminNumber,
-                    'message' => $message,
-                    'token' => $token,
-                ]);
-            }
-
-            // ===== Log =====
             if ($response->successful()) {
-                Log::info("Pesan WA ke Admin berhasil dikirim");
+                Log::info("WA (Fonnte) ke Admin berhasil dikirim");
                 return true;
             }
 
-            Log::error("Gagal kirim WA ke admin", ['response' => $response->body()]);
+            Log::error("WA Fonnte ke Admin gagal", [
+                'response' => $response->body()
+            ]);
+
             return false;
         } catch (\Exception $e) {
-            Log::error("Error sendMessageToAdmin: " . $e->getMessage());
+            Log::error("Error sendMessageToAdmin (Fonnte): " . $e->getMessage());
             return false;
         }
     }
-
 
     /**
      * Upload file manual tanpa storage:link
@@ -385,82 +377,85 @@ class PendaftaranController extends Controller
         return redirect()->back()->with('success', $message);
     }
 
-    private function sendWhatsAppNotification(Pendaftaran $pendaftaran, string $status, string $catatanAdmin): bool
-    {
-        // Ambil ENV
-        $domain = env('WABLAS_DOMAIN', 'https://bdg.wablas.com');
-        $token  = env('WABLAS_TOKEN');
-        $secret = env('WABLAS_SECRET_KEY');
+    private function sendWhatsAppNotification(
+        Pendaftaran $pendaftaran,
+        string $status,
+        string $catatanAdmin
+    ): bool {
 
-        // Format Authorization (Wablas v4)
-        $authKey = $secret
-            ? "{$token}.{$secret}"
-            : $token;
+        // Token Fonnte
+        $token = env('FONNTE_TOKEN');
 
-        // Gunakan field no_wa
+        if (!$token) {
+            Log::error('FONNTE_TOKEN belum diset di .env');
+            return false;
+        }
+
+        // Ambil nomor WA pendaftar
         $phoneNumber = $pendaftaran->no_wa;
 
-        // Format nomor WA ke internasional
+        // Format nomor ke internasional (62)
         $formattedNumber = preg_replace('/\D/', '', $phoneNumber);
-        if (substr($formattedNumber, 0, 1) === '0') {
+        if (str_starts_with($formattedNumber, '0')) {
             $formattedNumber = '62' . substr($formattedNumber, 1);
         }
 
         // Nama pendaftar
         $namaPendaftar = $pendaftaran->nama ?? 'Calon Kandidat';
 
-        // Susun pesan
+        // Susun pesan berdasarkan status
         switch ($status) {
             case 'diterima':
-                $pesan = "Halo *{$namaPendaftar}* 👋\n\n" .
-                    "Selamat! Pendaftaran Anda telah **DITERIMA** 🎉\n\n" .
-                    "Catatan Admin:\n_{$catatanAdmin}_\n\n" .
-                    "Terima kasih telah mendaftar. Tim Mendunia.id akan segera menghubungi Anda untuk proses selanjutnya.";
+                $pesan =
+                    "Halo *{$namaPendaftar}* 👋\n\n" .
+                    "Selamat! Pendaftaran Anda telah *DITERIMA* 🎉\n\n" .
+                    "*Catatan Admin:*\n{$catatanAdmin}\n\n" .
+                    "Tim Mendunia.id akan segera menghubungi Anda untuk proses selanjutnya.";
                 break;
 
             case 'data belum lengkap':
-                $pesan = "Halo *{$namaPendaftar}* 👋\n\n" .
-                    "Status pendaftaran Anda  **DATA BELUM LENGKAP** \n\n" .
-                    "Mohon segera lengkapi data Anda agar dapat kami proses lebih lanjut.\n\n" .
-                    "Catatan Admin:\n_{$catatanAdmin}_\n\n" .
-                    "Jika membutuhkan bantuan, jangan ragu menghubungi tim Mendunia.id.";
+                $pesan =
+                    "Halo *{$namaPendaftar}* 👋\n\n" .
+                    "Status pendaftaran Anda: *DATA BELUM LENGKAP*\n\n" .
+                    "Mohon segera melengkapi data Anda.\n\n" .
+                    "*Catatan Admin:*\n{$catatanAdmin}\n\n" .
+                    "Jika membutuhkan bantuan, silakan hubungi tim Mendunia.id.";
                 break;
 
             case 'ditolak':
-                $pesan = "Halo *{$namaPendaftar}* 👋\n\n" .
-                    "Mohon maaf, pendaftaran Anda  **DITOLAK** ❌\n\n" .
-                    "Catatan Admin:\n_{$catatanAdmin}_\n\n" .
-                    "Terima kasih atas ketertarikan Anda mendaftar melalui Mendunia.id.";
+                $pesan =
+                    "Halo *{$namaPendaftar}* 👋\n\n" .
+                    "Mohon maaf, pendaftaran Anda *DITOLAK* ❌\n\n" .
+                    "*Catatan Admin:*\n{$catatanAdmin}\n\n" .
+                    "Terima kasih atas ketertarikan Anda melalui Mendunia.id.";
                 break;
 
             case 'menunggu':
-
             default:
-                return true;
+                return true; // tidak kirim WA
         }
 
         try {
-            // Call API Wablas
             $response = Http::withHeaders([
-                'Authorization' => $authKey,
-            ])->asForm()->post("{$domain}/api/send-message", [
-                'phone'    => $formattedNumber,
-                'message'  => $pesan,
+                'Authorization' => $token,
+            ])->asForm()->post('https://api.fonnte.com/send', [
+                'target'  => $formattedNumber,
+                'message' => $pesan,
+                'delay'   => 2, // optional (detik)
             ]);
 
             if ($response->successful()) {
-                Log::info("WA terkirim ke {$formattedNumber}");
+                Log::info("WA (Fonnte) terkirim ke {$formattedNumber}");
                 return true;
             }
 
-            Log::error("WA gagal dikirim. Respon: " . $response->body());
+            Log::error("WA Fonnte gagal: " . $response->body());
             return false;
         } catch (\Exception $e) {
-            Log::error("WA EXCEPTION: " . $e->getMessage());
+            Log::error("WA Fonnte EXCEPTION: " . $e->getMessage());
             return false;
         }
     }
-
 
 
 
@@ -821,6 +816,8 @@ class PendaftaranController extends Controller
     public function import(Request $request)
     {
         try {
+            // 🚨 SOLUSI: Menaikkan batas waktu eksekusi hanya untuk fungsi ini
+            set_time_limit(300); // 300 detik = 5 menit. Harusnya cukup.
 
             $request->validate([
                 'file' => 'required|mimetypes:text/plain,text/csv,application/csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet|max:2048'

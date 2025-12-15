@@ -371,10 +371,10 @@
 
                         <!-- Submit -->
                         <div class="text-end mt-4">
-                            <button type="reset" class="btn btn-secondary px-4 me-2 ">
+                            <button type="reset" class="btn btn-secondary px-4 me-2 my-2">
                                 <i class="bi bi-arrow-counterclockwise me-1 "></i> Reset
                             </button>
-                            <button id="btnSubmit" type="submit" class="btn btn-success px-4">
+                            <button id="btnSubmit" type="submit" class="btn btn-success px-4 my-2">
                                 <span class="btn-text"><i class="bi bi-send-check-fill me-1"></i> Daftar Sekarang</span>
                                 <span class="spinner-border spinner-border-sm d-none" role="status"></span>
                             </button>
@@ -512,13 +512,29 @@
                     },
 
                     error: function(xhr) {
+                        let message = "Terjadi kesalahan. Silakan coba lagi.";
+
+                        // Validasi Laravel (422)
+                        if (xhr.status === 422 && xhr.responseJSON?.errors?.file) {
+                            message = xhr.responseJSON.errors.file[0];
+                        }
+                        // Error custom dari backend
+                        else if (xhr.responseJSON?.message) {
+                            message = xhr.responseJSON.message;
+                        }
+                        // File dari cloud / tidak terbaca
+                        else if (xhr.status === 400 || xhr.status === 0) {
+                            message =
+                                "Upload gagal. Pastikan file PDF, JPG, atau PNG berasal dari perangkat lokal (bukan Google Drive, OneDrive, atau link cloud).";
+                        }
+
                         Swal.fire({
                             icon: "error",
                             title: "Gagal Mengirim",
-                            text: xhr.responseJSON?.message ??
-                                "Terjadi kesalahan, coba lagi."
+                            text: message
                         });
                     },
+
                     complete: function() {
                         // KEMBALIKAN TOMBOL NORMAL
                         btn.prop("disabled", false);

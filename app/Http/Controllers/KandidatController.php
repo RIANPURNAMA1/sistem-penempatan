@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Log;
 
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 use Maatwebsite\Excel\Facades\Excel;
 
 class KandidatController extends Controller
@@ -68,300 +69,277 @@ class KandidatController extends Controller
             ->with('success', 'Status kandidat di Mendunia berhasil diperbarui.');
     }
 
-
-
-    public function update(Request $request, $id)
-    {
-        /* ------------------------------------------------------------
+public function update(Request $request, $id)
+{
+    /* ------------------------------------------------------------
     | Validasi
     ------------------------------------------------------------ */
-        $request->validate([
-            'status_kandidat' => 'required|in:Job Matching,Pending,Interview,Jadwalkan Interview Ulang,Lulus interview,Gagal Interview,Pemberkasan,Berangkat,Ditolak,lamar_ke_perusahaan',
-            'institusi_id' => 'nullable|exists:institusis,id',
-            'catatan_interview' => 'nullable|string',
-            'jadwal_interview' => 'nullable|date',
-            'nama_perusahaan' => 'nullable|string',
-            'bidang_ssw' => 'required', // hapus |array
-            // Validasi kolom tanggal interview/mensetsu
-            'tgl_setsumeikai_ichijimensetsu' => 'nullable|date',
-            'tgl_mensetsu' => 'nullable|date',
-            'tgl_mensetsu2' => 'nullable|date',
-            'catatan_mensetsu' => 'nullable|string',
+    $request->validate([
+        'status_kandidat' => 'required|in:Job Matching,Pending,Interview,Jadwalkan Interview Ulang,Lulus interview,Gagal Interview,Pemberkasan,Berangkat,Ditolak,lamar_ke_perusahaan',
+        'institusi_id' => 'nullable|exists:institusis,id',
+        'catatan_interview' => 'nullable|string',
+        'jadwal_interview' => 'nullable|date',
+        'nama_perusahaan' => 'nullable|string',
+        'bidang_ssw' => 'required',
+        'tgl_setsumeikai_ichijimensetsu' => 'nullable|date',
+        'tgl_mensetsu' => 'nullable|date',
+        'tgl_mensetsu2' => 'nullable|date',
+        'catatan_mensetsu' => 'nullable|string',
+        'biaya_pemberkasan' => 'nullable|string',
+        'adm_tahap1' => 'nullable|string',
+        'adm_tahap2' => 'nullable|string',
+        'dokumen_dikirim_soft_file' => 'nullable|date',
+        'terbit_kontrak_kerja' => 'nullable|date',
+        'kontrak_dikirim_ke_tsk' => 'nullable|date',
+        'terbit_paspor' => 'nullable|date',
+        'masuk_imigrasi_jepang' => 'nullable|date',
+        'coe_terbit' => 'nullable|date',
+        'pembuatan_ektkln' => 'nullable|date',
+        'dokumen_dikirim' => 'nullable|date',
+        'visa' => 'nullable|date',
+        'jadwal_penerbangan' => 'nullable|date',
+    ]);
 
-            // Validasi kolom biaya
-            'biaya_pemberkasan' => 'nullable|string',
-            'adm_tahap1' => 'nullable|string',
-            'adm_tahap2' => 'nullable|string',
-
-            // Validasi kolom tracking dokumen dan proses
-            'dokumen_dikirim_soft_file' => 'nullable|date',
-            'terbit_kontrak_kerja' => 'nullable|date',
-            'kontrak_dikirim_ke_tsk' => 'nullable|date',
-            'terbit_paspor' => 'nullable|date',
-            'masuk_imigrasi_jepang' => 'nullable|date',
-            'coe_terbit' => 'nullable|date',
-            'pembuatan_ektkln' => 'nullable|date',
-            'dokumen_dikirim' => 'nullable|date',
-            'visa' => 'nullable|date',
-            'jadwal_penerbangan' => 'nullable|date',
-        ]);
-
-        /* ------------------------------------------------------------
+    /* ------------------------------------------------------------
     | Ambil data kandidat + pendaftaran
     ------------------------------------------------------------ */
-        $kandidat = Kandidat::with('pendaftaran')->findOrFail($id);
-        $status_lama = $kandidat->status_kandidat;
+    $kandidat = Kandidat::with('pendaftaran')->findOrFail($id);
+    $status_lama = $kandidat->status_kandidat;
 
-        /* ------------------------------------------------------------
+    /* ------------------------------------------------------------
     | Validasi interview wajib tanggal
     ------------------------------------------------------------ */
-        if (in_array($request->status_kandidat, ['Interview', 'Jadwalkan Interview Ulang']) && empty($request->jadwal_interview)) {
-            return response()->json([
-                'success' => false,
-                'status' => 'Validasi Gagal',
-                'message' => 'Tanggal interview wajib diisi.'
-            ], 422);
-        }
+    if (in_array($request->status_kandidat, ['Interview', 'Jadwalkan Interview Ulang']) && empty($request->jadwal_interview)) {
+        return response()->json([
+            'success' => false,
+            'status' => 'Validasi Gagal',
+            'message' => 'Tanggal interview wajib diisi.'
+        ], 422);
+    }
 
-        /* ------------------------------------------------------------
+    /* ------------------------------------------------------------
     | Larangan update tertentu
     ------------------------------------------------------------ */
-        if ($status_lama === 'Lulus interview' && in_array($request->status_kandidat, ['Interview', 'Jadwalkan Interview Ulang', 'Gagal Interview'])) {
+    if ($status_lama === 'Lulus interview' && in_array($request->status_kandidat, ['Interview', 'Jadwalkan Interview Ulang', 'Gagal Interview'])) {
+        return response()->json([
+            'success' => false,
+            'status' => 'Larangan Update',
+            'message' => 'Tidak boleh mengubah status setelah kandidat lulus.'
+        ], 422);
+    }
+
+    if (in_array($status_lama, ['Pemberkasan', 'Berangkat'])) {
+        $dilarangSetelahAkhir = ['Interview', 'Jadwalkan Interview Ulang', 'Gagal Interview', 'Lulus interview', 'Job Matching', 'Pending', 'Ditolak'];
+        if (in_array($request->status_kandidat, $dilarangSetelahAkhir)) {
             return response()->json([
                 'success' => false,
                 'status' => 'Larangan Update',
-                'message' => 'Tidak boleh mengubah status setelah kandidat lulus.'
+                'message' => 'Tidak boleh mengubah status setelah kandidat masuk tahap Pemberkasan atau Berangkat.'
             ], 422);
         }
+    }
 
-        if (in_array($status_lama, ['Pemberkasan', 'Berangkat'])) {
-            $dilarangSetelahAkhir = ['Interview', 'Jadwalkan Interview Ulang', 'Gagal Interview', 'Lulus interview', 'Job Matching', 'Pending', 'Ditolak'];
-            if (in_array($request->status_kandidat, $dilarangSetelahAkhir)) {
-                return response()->json([
-                    'success' => false,
-                    'status' => 'Larangan Update',
-                    'message' => 'Tidak boleh mengubah status setelah kandidat masuk tahap Pemberkasan atau Berangkat.'
-                ], 422);
-            }
-        }
-
-        /* ------------------------------------------------------------
+    /* ------------------------------------------------------------
     | Hitung jumlah interview
     ------------------------------------------------------------ */
-        if ($request->status_kandidat === 'Interview' && $status_lama !== 'Interview') {
-            $kandidat->jumlah_interview += 1;
-        }
+    if ($request->status_kandidat === 'Interview' && $status_lama !== 'Interview') {
+        $kandidat->jumlah_interview += 1;
+    }
 
-        /* ------------------------------------------------------------
+    /* ------------------------------------------------------------
     | Update kandidat
     ------------------------------------------------------------ */
-        $kandidat->update([
-            'status_kandidat' => $request->status_kandidat,
-            'institusi_id' => $request->institusi_id,
-            'catatan_interview' => $request->catatan_interview,
-            'jadwal_interview' => $request->jadwal_interview,
-            'nama_perusahaan' => $request->nama_perusahaan,
-            'jumlah_interview' => $kandidat->jumlah_interview,
+    $kandidat->update([
+        'status_kandidat' => $request->status_kandidat,
+        'institusi_id' => $request->institusi_id,
+        'catatan_interview' => $request->catatan_interview,
+        'jadwal_interview' => $request->jadwal_interview,
+        'nama_perusahaan' => $request->nama_perusahaan,
+        'jumlah_interview' => $kandidat->jumlah_interview,
+        'tgl_setsumeikai_ichijimensetsu' => $request->tgl_setsumeikai_ichijimensetsu,
+        'tgl_mensetsu' => $request->tgl_mensetsu,
+        'tgl_mensetsu2' => $request->tgl_mensetsu2,
+        'catatan_mensetsu' => $request->catatan_mensetsu,
+        'biaya_pemberkasan' => $request->biaya_pemberkasan,
+        'adm_tahap1' => $request->adm_tahap1,
+        'adm_tahap2' => $request->adm_tahap2,
+        'dokumen_dikirim_soft_file' => $request->dokumen_dikirim_soft_file,
+        'terbit_kontrak_kerja' => $request->terbit_kontrak_kerja,
+        'kontrak_dikirim_ke_tsk' => $request->kontrak_dikirim_ke_tsk,
+        'terbit_paspor' => $request->terbit_paspor,
+        'masuk_imigrasi_jepang' => $request->masuk_imigrasi_jepang,
+        'coe_terbit' => $request->coe_terbit,
+        'pembuatan_ektkln' => $request->pembuatan_ektkln,
+        'dokumen_dikirim' => $request->dokumen_dikirim,
+        'visa' => $request->visa,
+        'jadwal_penerbangan' => $request->jadwal_penerbangan,
+    ]);
 
+    $bidang_id = $request->input('bidang_ssw');
 
-            'tgl_setsumeikai_ichijimensetsu' => $request->tgl_setsumeikai_ichijimensetsu,
-            'tgl_mensetsu' => $request->tgl_mensetsu,
-            'tgl_mensetsu2' => $request->tgl_mensetsu2,
-            'catatan_mensetsu' => $request->catatan_mensetsu,
+    // Hapus bidang SSW lama untuk kandidat
+    $kandidat->bidang_ssws()->delete();
 
-            // Update kolom biaya
-            'biaya_pemberkasan' => $request->biaya_pemberkasan,
-            'adm_tahap1' => $request->adm_tahap1,
-            'adm_tahap2' => $request->adm_tahap2,
-
-            // Update kolom tracking dokumen dan proses
-            'dokumen_dikirim_soft_file' => $request->dokumen_dikirim_soft_file,
-            'terbit_kontrak_kerja' => $request->terbit_kontrak_kerja,
-            'kontrak_dikirim_ke_tsk' => $request->kontrak_dikirim_ke_tsk,
-            'terbit_paspor' => $request->terbit_paspor,
-            'masuk_imigrasi_jepang' => $request->masuk_imigrasi_jepang,
-            'coe_terbit' => $request->coe_terbit,
-            'pembuatan_ektkln' => $request->pembuatan_ektkln,
-            'dokumen_dikirim' => $request->dokumen_dikirim,
-            'visa' => $request->visa,
-            'jadwal_penerbangan' => $request->jadwal_penerbangan,
+    // Simpan bidang SSW yang dipilih
+    $bidang = $kandidat->pendaftaran->bidang_ssws()->find($bidang_id);
+    if ($bidang) {
+        BidangSsw::create([
+            'kandidat_id' => $kandidat->id,
+            'pendaftaran_id' => $kandidat->pendaftaran_id,
+            'nama_bidang' => $bidang->nama_bidang,
         ]);
+    }
 
-
-        $bidang_id = $request->input('bidang_ssw');
-
-        // Hapus bidang SSW lama untuk kandidat
-        $kandidat->bidang_ssws()->delete();
-
-        // Simpan bidang SSW yang dipilih
-        $bidang = $kandidat->pendaftaran->bidang_ssws()->find($bidang_id);
-        if ($bidang) {
-            BidangSsw::create([
-                'kandidat_id' => $kandidat->id,
-                'pendaftaran_id' => $kandidat->pendaftaran_id,
-                'nama_bidang' => $bidang->nama_bidang,
-            ]);
-        }
-
-
-        /* ------------------------------------------------------------
+    /* ------------------------------------------------------------
     | Simpan History
     ------------------------------------------------------------ */
-        $statusInterview = match ($request->status_kandidat) {
-            'Lulus interview' => 'Selesai',
-            'Gagal Interview' => 'Gagal',
-            'Interview', 'Jadwalkan Interview Ulang' => 'Proses',
-            default => 'Pending',
-        };
-        // Ambil bidang SSW yang dipilih (hanya 1)
-        $bidangId = $request->bidang_ssw; // radio button, pasti 1 value
-        $bidang = BidangSsw::find($bidangId);
-        $bidangNama = $bidang ? $bidang->nama_bidang : null;
+    $statusInterview = match ($request->status_kandidat) {
+        'Lulus interview' => 'Selesai',
+        'Gagal Interview' => 'Gagal',
+        'Interview', 'Jadwalkan Interview Ulang' => 'Proses',
+        default => 'Pending',
+    };
 
-        // Simpan ke history
-        KandidatHistory::create([
-            'kandidat_id' => $kandidat->id,
-            'status_kandidat' => $kandidat->status_kandidat,
-            'nama_perusahaan' => $kandidat->nama_perusahaan,
-            'status_interview' => $statusInterview,
-            'institusi_id' => $kandidat->institusi_id,
-            'catatan_interview' => $kandidat->catatan_interview,
-            'jadwal_interview' => $kandidat->jadwal_interview,
-            'bidang_ssw' => $bidangNama, // langsung simpan string
-        ]);
+    $bidangId = $request->bidang_ssw;
+    $bidang = BidangSsw::find($bidangId);
+    $bidangNama = $bidang ? $bidang->nama_bidang : null;
 
-        // Pastikan variabel $kandidat dan $request sudah didefinisikan sebelum blok ini.
+    KandidatHistory::create([
+        'kandidat_id' => $kandidat->id,
+        'status_kandidat' => $kandidat->status_kandidat,
+        'nama_perusahaan' => $kandidat->nama_perusahaan,
+        'status_interview' => $statusInterview,
+        'institusi_id' => $kandidat->institusi_id,
+        'catatan_interview' => $kandidat->catatan_interview,
+        'jadwal_interview' => $kandidat->jadwal_interview,
+        'bidang_ssw' => $bidangNama,
+    ]);
 
-        /* ------------------------------------------------------------
-| 📞 Persiapan Data Umum
------------------------------------------------------------- */
-        $noWa = $kandidat->pendaftaran->no_wa ?? null;
-        $nama = $kandidat->pendaftaran->nama ?? $kandidat->nama;
-        $email = $kandidat->pendaftaran->email ?? null;
-
-        /* ------------------------------------------------------------
-| ✅ CEK APAKAH STATUS KANDIDAT BERUBAH
------------------------------------------------------------- */
-        $statusBerubah = ($kandidat->status_kandidat !== $request->status_kandidat);
-
-        // Hanya kirim notifikasi jika status benar-benar berubah
-        if ($statusBerubah) {
-
-            // Teks pesan yang akan digunakan untuk WA dan (opsional) Email
-            $pesanWa =
-                "Halo *{$nama}*,\n\n" .
-                "Kami dari *Mendunia Jepang* ingin menginformasikan bahwa terdapat pembaruan terbaru terkait proses administrasi dan penempatan Anda. Kami terus berupaya memastikan setiap tahapan berjalan dengan transparan, akurat, dan sesuai prosedur yang berlaku.\n\n" .
-
-                "📌 *Status Terbaru Anda*: {$request->status_kandidat}\n" .
-                "🕒 *Tanggal Pembaruan*: " . now()->format('d M Y H:i') . "\n" .
-
-                (!empty($request->catatan_interview)
-                    ? "📝 *Catatan Tambahan*:\n{$request->catatan_interview}\n\n"
-                    : "\n"
-                ) .
-
-                "Kami berharap informasi ini dapat membantu Anda mengikuti alur proses dengan lebih nyaman.\n\n" .
-                "Apabila Anda membutuhkan penjelasan lebih lanjut atau memiliki pertanyaan seputar tahapan berikutnya, silakan menghubungi kami kapan saja. Tim kami siap membantu.\n\n" .
-                "Terima kasih atas kepercayaan Anda kepada *Mendunia Jepang*. Semoga setiap langkah Anda menuju Jepang semakin lancar dan diberi kemudahan.\n\n" .
-                "Salam hangat,\n" .
-                "*Tim Sukses Mendunia*";
-
-            /* ------------------------------------------------------------
-    | 🔔 Kirim WhatsApp langsung via API (Wablas)
+    /* ------------------------------------------------------------
+    | 📞 Persiapan Data Umum
     ------------------------------------------------------------ */
-            if (!empty($noWa)) {
-                // Ubah nomor WA 08xx menjadi 628xx (Format internasional)
-                $noWaFormatted = preg_replace('/^08/', '628', $noWa);
+    $noWa = $kandidat->pendaftaran->no_wa ?? null;
+    $nama = $kandidat->pendaftaran->nama ?? $kandidat->nama;
+    $email = $kandidat->pendaftaran->email ?? null;
 
-                try {
-                    // Ambil konfigurasi Wablas dari .env
-                    $wablasToken = env('WABLAS_TOKEN');
-                    $wablasDomain = env('WABLAS_DOMAIN');
+    /* ------------------------------------------------------------
+    | ✅ CEK APAKAH STATUS KANDIDAT BERUBAH
+    ------------------------------------------------------------ */
+    $statusBerubah = ($status_lama !== $request->status_kandidat);
 
-                    // Endpoint Wablas untuk mengirim pesan teks
-                    $url = $wablasDomain . "/api/send-message";
+    // Hanya kirim notifikasi jika status benar-benar berubah
+    if ($statusBerubah) {
 
-                    // Payload yang disiapkan untuk Wablas
-                    $payload = [
-                        'phone' => $noWaFormatted,
-                        'message' => $pesanWa,
-                        'secret' => false, // Set true jika ingin pesan rahasia (hilang setelah dibaca)
-                        'retry' => false,  // Set true jika ingin retry otomatis
-                        'isGroup' => false // Set true jika mengirim ke group
-                    ];
+        // Teks pesan WA
+        $pesanWa =
+            "Halo *{$nama}*,\n\n" .
+            "Kami dari *Mendunia Jepang* ingin menginformasikan bahwa terdapat pembaruan terbaru terkait proses administrasi dan penempatan Anda. Kami terus berupaya memastikan setiap tahapan berjalan dengan transparan, akurat, dan sesuai prosedur yang berlaku.\n\n" .
+            "📌 *Status Terbaru Anda*: {$request->status_kandidat}\n" .
+            "🕒 *Tanggal Pembaruan*: " . now()->format('d M Y H:i') . "\n" .
+            (!empty($request->catatan_interview)
+                ? "📝 *Catatan Tambahan*:\n{$request->catatan_interview}\n\n"
+                : "\n"
+            ) .
+            "Kami berharap informasi ini dapat membantu Anda mengikuti alur proses dengan lebih nyaman.\n\n" .
+            "Apabila Anda membutuhkan penjelasan lebih lanjut atau memiliki pertanyaan seputar tahapan berikutnya, silakan menghubungi kami kapan saja. Tim kami siap membantu.\n\n" .
+            "Terima kasih atas kepercayaan Anda kepada *Mendunia Jepang*. Semoga setiap langkah Anda menuju Jepang semakin lancar dan diberi kemudahan.\n\n" .
+            "Salam hangat,\n" .
+            "*Tim Sukses Mendunia*";
 
-                    $ch = curl_init();
-
-                    // Mengatur opsi cURL
-                    curl_setopt($ch, CURLOPT_URL, $url);
-                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                    curl_setopt($ch, CURLOPT_TIMEOUT, 15); // timeout 15 detik
-                    curl_setopt($ch, CURLOPT_POST, true);
-                    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($payload)); // Kirim sebagai JSON
-                    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-                        "Authorization: {$wablasToken}", // Token diletakkan di header Authorization
-                        "Content-Type: application/json" // Jenis konten JSON
-                    ]);
-
-                    $response = curl_exec($ch);
-                    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-                    if ($response === false) {
-                        $error = curl_error($ch);
-                        Log::error("Gagal mengirim WA via Wablas ke {$noWaFormatted}: {$error}");
-                    } else {
-                        $responseData = json_decode($response, true);
-
-                        // Cek response dari Wablas
-                        if ($httpCode == 200 && isset($responseData['status']) && $responseData['status'] == true) {
-                            Log::info("WA via Wablas ke {$noWaFormatted} berhasil dikirim. Response: {$response}");
-                        } else {
-                            $errorMsg = $responseData['message'] ?? 'Unknown error';
-                            Log::error("Gagal mengirim WA via Wablas ke {$noWaFormatted}. HTTP Code: {$httpCode}, Error: {$errorMsg}");
-                        }
-                    }
-
-                    curl_close($ch);
-                } catch (\Exception $e) {
-                    Log::error("Exception saat mengirim WA via Wablas ke {$noWaFormatted}: " . $e->getMessage());
+        /* ------------------------------------------------------------
+        | 🔔 Kirim WhatsApp via Fonnte (FIXED dengan HTTP Client)
+        ------------------------------------------------------------ */
+        if (!empty($noWa)) {
+            try {
+                // ===== Token Fonnte =====
+                $token = env('FONNTE_TOKEN');
+                if (!$token) {
+                    Log::error('FONNTE_TOKEN belum diset');
+                    throw new \Exception('FONNTE_TOKEN tidak valid');
                 }
+
+                // ===== Format nomor WA kandidat =====
+                $noWaFormatted = preg_replace('/\D/', '', $noWa);
+                if (str_starts_with($noWaFormatted, '0')) {
+                    $noWaFormatted = '62' . substr($noWaFormatted, 1);
+                }
+
+                Log::info("Mencoba mengirim WA ke kandidat: {$noWaFormatted}");
+
+                // ===== Kirim via Fonnte menggunakan Laravel HTTP Client =====
+                $response = Http::withHeaders([
+                    'Authorization' => $token,
+                ])->asForm()->post('https://api.fonnte.com/send', [
+                    'target'  => $noWaFormatted,
+                    'message' => $pesanWa,
+                    'delay'   => 2,
+                ]);
+
+                // ===== Cek response =====
+                if ($response->successful()) {
+                    $responseData = $response->json();
+                    
+                    if (isset($responseData['status']) && $responseData['status'] == true) {
+                        Log::info("✅ WA ke kandidat {$noWaFormatted} berhasil dikirim");
+                    } else {
+                        $errorMsg = $responseData['reason'] ?? $responseData['message'] ?? 'Unknown error';
+                        Log::error("❌ Fonnte Error: {$errorMsg}", [
+                            'response' => $response->body()
+                        ]);
+                    }
+                } else {
+                    Log::error("❌ WA ke kandidat {$noWaFormatted} gagal dikirim", [
+                        'status' => $response->status(),
+                        'response' => $response->body()
+                    ]);
+                }
+
+            } catch (\Exception $e) {
+                Log::error("❌ Exception kirim WA ke kandidat: " . $e->getMessage());
+                Log::error("Stack trace: " . $e->getTraceAsString());
             }
+        }
 
-
-
-            /* ------------------------------------------------------------
-    | 📧 Kirim Email Notifikasi
-    ------------------------------------------------------------ */
-            if (!empty($email)) {
-                // Anda perlu memastikan class Mail tersedia (misalnya, di Laravel)
+        /* ------------------------------------------------------------
+        | 📧 Kirim Email Notifikasi
+        ------------------------------------------------------------ */
+        if (!empty($email)) {
+            try {
                 Mail::to($email)->send(new StatusKandidatUpdated(
                     $nama,
                     $request->status_kandidat,
                     now()->format('d M Y H:i'),
                     $request->catatan_interview
                 ));
-                Log::info("Email notifikasi berhasil dikirim ke {$email}.");
+                Log::info("✅ Email notifikasi berhasil dikirim ke {$email}");
+            } catch (\Exception $e) {
+                Log::error("❌ Gagal kirim email ke {$email}: " . $e->getMessage());
             }
-
-            /* ------------------------------------------------------------
-    | JSON Response sukses dengan notifikasi
-    ------------------------------------------------------------ */
-            return response()->json([
-                'success' => true,
-                'message' => 'Status kandidat berhasil diperbarui. Notifikasi WA & Email telah dikirim ke kandidat.',
-                'redirect' => route('kandidat.data')
-            ]);
-        } else {
-            /* ------------------------------------------------------------
-    | JSON Response sukses tanpa notifikasi
-    ------------------------------------------------------------ */
-            return response()->json([
-                'success' => true,
-                'message' => 'Data kandidat berhasil diperbarui (tanpa perubahan status, notifikasi tidak dikirim).',
-                'redirect' => route('kandidat.data')
-            ]);
         }
+
+        /* ------------------------------------------------------------
+        | JSON Response sukses dengan notifikasi
+        ------------------------------------------------------------ */
+        return response()->json([
+            'success' => true,
+            'message' => 'Status kandidat berhasil diperbarui. Notifikasi WA & Email telah dikirim ke kandidat.',
+            'redirect' => route('kandidat.data')
+        ]);
+    } else {
+        /* ------------------------------------------------------------
+        | JSON Response sukses tanpa notifikasi
+        ------------------------------------------------------------ */
+        return response()->json([
+            'success' => true,
+            'message' => 'Data kandidat berhasil diperbarui (tanpa perubahan status, notifikasi tidak dikirim).',
+            'redirect' => route('kandidat.data')
+        ]);
     }
+}
+
+
+
+
 
     public function history($id)
     {
@@ -398,7 +376,7 @@ class KandidatController extends Controller
 
 
     // details
-     public function show(Kandidat $kandidat)
+    public function show(Kandidat $kandidat)
     {
         // Load relasi yang diperlukan
         $kandidat->load(['pendaftaran', 'cabang', 'bidang_ssws', 'institusi']);
@@ -413,16 +391,16 @@ class KandidatController extends Controller
         // Menggunakan nama kandidat dari relasi pendaftaran untuk nama file
         $namaKandidat = $kandidat->pendaftaran->nama ?? 'Unknown';
         $fileName = 'Kandidat_' . $namaKandidat . '_' . now()->format('Ymd') . '.xlsx';
-        
+
         // 2. Lakukan unduhan
         // Mengirimkan ID kandidat ke KandidatExport
         return Excel::download(new KandidatExport($kandidat->id), $fileName);
     }
-    
+
     // Anda bisa menambahkan fungsi exportAll() jika diperlukan
     public function exportAll()
     {
-         $fileName = 'Semua_Kandidat_' . now()->format('Ymd') . '.xlsx';
-         return Excel::download(new KandidatExport(), $fileName);
+        $fileName = 'Semua_Kandidat_' . now()->format('Ymd') . '.xlsx';
+        return Excel::download(new KandidatExport(), $fileName);
     }
 }

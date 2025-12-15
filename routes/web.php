@@ -182,6 +182,13 @@ Route::middleware(['auth', "role:$admin_roles"])->group(function () {
 // Rute Khusus SUPER ADMIN
 Route::middleware(['auth', 'role:super-admin'])->group(function () {
 
+    // Route yang sudah ada...
+
+    // Route untuk PDF
+    Route::get('/kandidat/download-pdf', [UserController::class, 'downloadPdf'])->name('admin.kandidat.downloadPdf');
+    Route::get('/kandidat/preview-pdf', [UserController::class, 'previewPdf'])->name('admin.kandidat.previewPdf');
+
+    Route::delete('/kandidats/user/{id}', [UserController::class, 'destroy'])->name('kandidats.user.destroy');
 
     Route::put(
         '/kandidat/{kandidat}/update-mendunia',

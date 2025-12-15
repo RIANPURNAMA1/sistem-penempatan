@@ -573,8 +573,8 @@
                                         <div class="row g-3">
                                             <div class="col-md-6">
                                                 <!-- ======================================================
-                                                                                                                                                                                                 MULTI FILE: pas_foto[]
-                                                                                                                                                                                            ====================================================== -->
+                                                                                                                                                                                                     MULTI FILE: pas_foto[]
+                                                                                                                                                                                                ====================================================== -->
                                                 <label class="form-label fw-semibold mb-1">
                                                     Silahkan upload dokumen / foto tambahan 👇
                                                 </label>
@@ -593,8 +593,8 @@
                                                 <div id="previewPasFoto" class="mt-3 d-flex flex-wrap gap-3"></div>
 
                                                 <!-- ======================================================
-                                                                                                                                                                                                 SINGLE FILE: pas_foto_cv
-                                                                                                                                                                                            ====================================================== -->
+                                                                                                                                                                                                     SINGLE FILE: pas_foto_cv
+                                                                                                                                                                                                ====================================================== -->
                                                 <label class="form-label fw-semibold mb-1 mt-4">
                                                     Silahkan upload pas foto untuk CV Anda 👇
                                                 </label>
@@ -3037,10 +3037,11 @@
                         } else {
                             Swal.fire({
                                 icon: 'error',
-                                title: 'Terjadi Kesalahan',
-                                text: 'Gagal mengirim data ke server.',
+                                title: 'Gagal Mengirim',
+                                text: 'Data atau file tidak terbaca oleh server. Pastikan file PDF, JPG, atau PNG dipilih dari perangkat lokal (bukan Google Drive, OneDrive, atau link cloud).',
                             });
                         }
+
                     }
                 });
 
