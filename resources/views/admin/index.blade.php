@@ -85,7 +85,7 @@
 
         <div class="card shadow-sm border-0 rounded-4">
             <div class="card-body table-responsive">
-                <table class="table table-striped align-middle nowrap" id="tableAdmin" style="width:100%">
+                <table class="table table-hover align-middle nowrap w-100" id="tableAdmin" style="width:100%">
                     <thead>
                         <tr>
                             <th class="text-center">No</th>

@@ -3,6 +3,14 @@
 @section('title', 'Daftar Institusi')
 
 @section('content')
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif !important;
+        }
+    </style>
+
 
     <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -40,7 +48,7 @@
             </ol>
         </nav>
 
-        
+
 
         <!-- Filter -->
         <div class="card  border-0 rounded-3 mb-4 shadow shadow-md">
@@ -49,7 +57,7 @@
                     <h6 class="fw-semibold mb-0 text-secondary">
                         <i class="bi bi-funnel me-1"></i> Filter Data
                     </h6>
-                  
+
                 </div>
             </div>
 
@@ -72,12 +80,12 @@
         <!-- Tabel manual -->
         <div class="card shadow shadow-md border-0 rounded-4">
             <div class="card-body table-responsive">
-              <div class="d-flex justify-content-end">
+                <div class="d-flex justify-content-end">
 
-                  <a href="{{ route('institusi.create') }}" class="btn btn-success mb-3">
-                      <i class="bi bi-plus-circle me-1"></i> Tambah Institusi
-                  </a>
-              </div>
+                    <a href="{{ route('institusi.create') }}" class="btn btn-success mb-3">
+                        <i class="bi bi-plus-circle me-1"></i> Tambah Institusi
+                    </a>
+                </div>
 
                 <table id="tableInstitusi" class="table table-striped shadow shadow-md align-middle" id="tableInstitusi">
                     <thead>
@@ -92,7 +100,7 @@
                         @foreach ($institusis as $index => $institusi)
                             <tr>
                                 <td class="text-center">{{ $index + 1 }}</td>
-                             
+
                                 <td>{{ $institusi->perusahaan_penempatan ?? '-' }}</td>
 
                                 <td>{{ $institusi->created_at->format('Y-m-d') }}</td>
@@ -103,8 +111,8 @@
                                             <i class="bi bi-pencil-square"></i>
                                         </a>
 
-                                        <form action="{{ route('institusi.destroy', $institusi->id) }}" class="delete-form" method="POST"
-                                            onsubmit="return confirm('Yakin ingin menghapus data ini?')">
+                                        <form action="{{ route('institusi.destroy', $institusi->id) }}" class="delete-form"
+                                            method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-sm btn-delete btn-danger text-white">
@@ -133,22 +141,21 @@
 
     <!-- Script Filter Manual -->
     <script>
-
         var table = $('#tableInstitusi').DataTable({
-                    responsive: true,
-                    pageLength: 5, // tampilkan 5 baris per halaman
-                    lengthMenu: [5, 10, 25, 50],
-                    language: {
-                        search: "🔍 Cari:",
-                        lengthMenu: "Tampilkan _MENU_ data",
-                        zeroRecords: "Tidak ada data ditemukan",
-                        info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
-                        paginate: {
-                            previous: "←",
-                            next: "→"
-                        }
-                    }
-                });
+            responsive: true,
+            pageLength: 5, // tampilkan 5 baris per halaman
+            lengthMenu: [5, 10, 25, 50],
+            language: {
+                search: "🔍 Cari:",
+                lengthMenu: "Tampilkan _MENU_ data",
+                zeroRecords: "Tidak ada data ditemukan",
+                info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
+                paginate: {
+                    previous: "←",
+                    next: "→"
+                }
+            }
+        });
 
         const filterInput = document.getElementById('filterKota');
         const resetBtn = document.getElementById('resetFilter');
@@ -169,26 +176,26 @@
         });
 
         // SweetAlert Delete Confirmation
-    $(document).on("click", ".btn-delete", function(e) {
-        e.preventDefault();
+        $(document).on("click", ".btn-delete", function(e) {
+            e.preventDefault();
 
-        let form = $(this).closest("form");
+            let form = $(this).closest("form");
 
-        Swal.fire({
-            title: "Yakin menghapus data?",
-            text: "Data yang dihapus tidak bisa dikembalikan!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#d33",
-            cancelButtonColor: "#3085d6",
-            confirmButtonText: "Ya, hapus",
-            cancelButtonText: "Batal"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                form.submit();
-            }
+            Swal.fire({
+                title: "Yakin menghapus data?",
+                text: "Data yang dihapus tidak bisa dikembalikan!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Ya, hapus",
+                cancelButtonText: "Batal"
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
         });
-    });
     </script>
 
 @endsection

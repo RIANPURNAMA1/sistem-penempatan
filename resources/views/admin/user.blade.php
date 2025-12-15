@@ -78,7 +78,7 @@
         <!-- Data Table -->
         <div class="card shadow border-0 rounded-4">
             <div class="card-body table-responsive">
-                <table class="table table-hover align-middle nowrap w-100" id="tableKandidatuser">
+                <table class="table table-hover align-middle nowrap w-100" id="tableUser">
                     <thead class="text-center text-white" style="">
                         <tr>
                             <th>No</th>
@@ -202,6 +202,18 @@
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
     <script>
+        var table = $('#tableUser').DataTable({
+            responsive: true,
+            pageLength: 5, // tampilkan 5 baris per halaman
+            lengthMenu: [5, 10, 25, 50],
+            language: {
+                search: "🔍 Cari:",
+                lengthMenu: "Tampilkan _MENU_ data",
+                zeroRecords: "Tidak ada data ditemukan",
+                info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
+              
+            }
+        });
         document.addEventListener('DOMContentLoaded', function() {
             const filterInput = document.getElementById('filterNama');
             const resetBtn = document.getElementById('resetFilter');

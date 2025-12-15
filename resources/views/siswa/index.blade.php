@@ -209,7 +209,7 @@
                                         <img src="{{ $kandidat->foto && file_exists(public_path($kandidat->foto))
                                             ? asset($kandidat->foto)
                                             : asset('images/default-user.png') }}"
-                                            alt="Foto Kandidat" class="rounded-circle border" width="50" height="50">
+                                            alt="Foto Kandidat" class="rounded-circle border" width="50" height="50" style="object-fit: cover">
                                     </a>
                                 </td>
 

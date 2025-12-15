@@ -33,7 +33,8 @@
                             <th>Cabang</th>
                             <th>Status Kandidat</th>
                             <th>Status Interview</th>
-                            <th>Penempatan</th>
+                            <th>Perusahaan Penempatan</th>
+                            <th>Nama Perusahaan</th>
                             <th>Tanggal Daftar</th>
                             <th>Jumlah Interview</th>
                             <th class="text-center">Aksi</th>
@@ -69,10 +70,13 @@
                                 <td class="text-center">
                                     @if ($kandidat->institusi)
                                         <span
-                                            class="badge bg-primary">{{ $kandidat->institusi->nama_perusahaan ?? '-' }}</span>
+                                            class="badge bg-primary">{{ $kandidat->institusi->perusahaan_penempatan ?? '-' }}</span>
                                     @else
                                         -
                                     @endif
+                                </td>
+                                <td class="text-center">
+                                     {{$kandidat->nama_perusahaan}}
                                 </td>
                                 <td class="text-center">{{ $kandidat->created_at->format('d-m-Y H:i') }}</td>
                                 <td class="text-center"><span
@@ -186,7 +190,8 @@
                             <th>No. WA</th>
                             <th>Cabang</th>
                             <th>Status Kandidat</th>
-                            <th>Penempatan</th>
+                            <th>Penempatan Perusahaan</th>
+                            <th>Nama Perusahaan</th>
                             <th>Jumlah Interview</th>
                             <th>Status Interview</th>
                             <th>Tanggal Daftar</th>
@@ -255,7 +260,8 @@
                                         {{ $kandidat->status_kandidat }}
                                     </span>
                                 </td>
-                                <td>{{ $kandidat->institusi->nama_perusahaan ?? '-' }}</td>
+                                <td>{{ $kandidat->institusi->perusahaan_penempatan ?? '-' }}</td>
+                                <td>{{ $kandidat->nama_perusahaan ?? '-' }}</td>
 
                                 <td class="text-center">{{ $jumlahInterview }}</td>
 

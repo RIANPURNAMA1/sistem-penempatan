@@ -75,8 +75,7 @@
                         <tr class="text-center">
                             <th class="py-3">No</th>
                             <th class="py-3">Status</th>
-                            <th class="py-3">Perusahaan Penempatan (LPK)</th>
-                            <th class="py-3">Perusahaan Jepang</th>
+                            <th class="py-3">Perusahaan Penempatan</th>
                             <th class="py-3">Bidang SSW</th>
                             <th class="py-3">Tanggal & Waktu</th>
                         </tr>
@@ -91,21 +90,14 @@
                                 </td>
 
                                 <td>
-                                    <span class="d-block text-truncate" style="max-width: 250px;"
+                                    <span class="d-block text-center" style="max-width: 250px;"
                                         title="{{ $history->institusi->perusahaan_penempatan ?? 'Tidak ada data' }}">
-                                        {{ $history->institusi->perusahaan_penempatan ?? '<span class="text-muted fst-italic">-</span>' }}
+                                        {{ $history->institusi->perusahaan_penempatan ?? '-' }}
                                     </span>
                                 </td>
 
                                 <td>
-                                    <span class="d-block text-truncate" style="max-width: 250px;"
-                                        title="{{ $history->kandidat->nama_perusahaan ?? 'Tidak ada data' }}">
-                                        {{ $history->kandidat->nama_perusahaan ?? '<span class="text-muted fst-italic">-</span>' }}
-                                    </span>
-                                </td>
-
-                                <td>
-                                    {{ $history->bidang_ssw ?? '<span class="text-muted fst-italic">-</span>' }}
+                                    {{ $history->bidang_ssw ?? '-' }}
                                 </td>
 
 
@@ -151,17 +143,17 @@
                             <tr>
                                 {{-- KOLOM 1: Perusahaan Penempatan --}}
                                 <td>
-                                    {{ $data['institusi']->perusahaan_penempatan ?? '<span class="text-muted fst-italic">-</span>' }}
+                                    {{ $data['institusi']->perusahaan_penempatan ?? '-' }}
                                 </td>
 
                                 {{-- KOLOM 2: Nama Perusahaan Jepang (History) --}}
                                 <td>
-                                    {{ $data['nama_perusahaan_history'] ?? '<span class="text-muted fst-italic">-</span>' }}
+                                    {{ $data['nama_perusahaan_history'] ?? '-' }}
                                 </td>
 
                                 {{-- KOLOM 3: Bidang SSW --}}
                                 <td>
-                                    {{ $data['bidang_ssw'] ?? '<span class="text-muted fst-italic">-</span>' }}
+                                    {{ $data['bidang_ssw'] ?? '-' }}
                                 </td>
 
                                 {{-- Kolom 4: Jumlah Interview --}}

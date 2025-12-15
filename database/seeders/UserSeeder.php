@@ -42,7 +42,7 @@ class UserSeeder extends Seeder
             if ($cabang) {
                 User::create([
                     'name' => "Admin " . $cabang->nama_cabang,
-                    'email' => strtolower(str_replace(' ', '', $cabang->nama_cabang)) . '@example.com',
+                    'email' => strtolower(str_replace(' ', '', $cabang->nama_cabang)) . '@gmail.com',
                     'password' => Hash::make('admin123'),
                     'role' => $cabang->nama_cabang,
                     'cabang_id' => $cabang->id,

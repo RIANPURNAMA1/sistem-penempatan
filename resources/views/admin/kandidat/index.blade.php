@@ -79,7 +79,8 @@
                             <th>Email</th>
                             <th>Cabang</th>
                             <th>Status Kandidat</th>
-                            <th>Penempatan</th>
+                            <th>Perusahaan Penempatan</th>
+                            <th>Nama Perusahaan</th>
                             <th>Tanggal Daftar</th>
                             <th>Aksi</th>
                         </tr>
@@ -92,6 +93,7 @@
                                 <td>{{ $kandidat->pendaftaran->email ?? '-' }}</td>
                                 <td>{{ $kandidat->cabang->nama_cabang ?? '-' }}</td>
                                 <td>{{ $kandidat->status_kandidat }}</td>
+                                <td>{{ $kandidat->institusi->perusahaan_penempatan ?? '-' }}</td>
                                 <td>{{ $kandidat->institusi->nama_perusahaan ?? '-' }}</td>
                                 <td>{{ $kandidat->created_at->format('Y-m-d') }}</td>
                                 <td class="text-center">
