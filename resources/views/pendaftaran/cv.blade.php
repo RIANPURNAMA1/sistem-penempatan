@@ -356,6 +356,19 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
         @endif
+        
+        @if (session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
+
+@if ($errors->any())
+    <div class="alert alert-danger">
+        {{ $errors->first() }}
+    </div>
+@endif
+
 
         <!-- Breadcrumb -->
         <nav aria-label=" breadcrumb" class="mb-4">
@@ -425,7 +438,7 @@
                             </div>
                         </div>
 
-                        <form id="cvForm" action="{{ route('pendaftaran.cv.store') }}" method="POST"
+                        <form id="cvForm"  action="{{ route('pendaftaran.cv.store') }}" method="POST"
                             enctype="multipart/form-data">
                             @method('POST')
                             @csrf
@@ -486,7 +499,7 @@
                                             {{-- No Orang Tua --}}
                                             <label class="form-label fw-semibold mt-3">No Orang Tua (Opsional)</label>
                                             <input type="text" name="no_orang_tua" class="form-control"
-                                                placeholder="Masukkan No Orang Tua" value="{{ old('no_orang_tua') }}">
+                                                placeholder="Masukkan No Orang Tua" value="{{ old('no_orang_tua') }}" required>
                                         </div>
 
                                         <div class="col-md-6">
@@ -550,7 +563,7 @@
 
                                             {{-- Upload Sertifikat --}}
                                             <label class="form-label fw-semibold mt-3">
-                                                Silahkan upload sertifikat yang dimiliki JFT dan SSW (PDF/JPG/PNG, Max 10MB)
+                                                Silahkan upload sertifikat yang dimiliki JFT dan SSW (PDF/JPG/PNG, Max 10MB, Min 3 File)
                                             </label>
 
                                             <input type="file" name="sertifikat_files[]" id="sertifikatInput"
@@ -573,8 +586,8 @@
                                         <div class="row g-3">
                                             <div class="col-md-6">
                                                 <!-- ======================================================
-                                                                                                                                                                                                     MULTI FILE: pas_foto[]
-                                                                                                                                                                                                ====================================================== -->
+                                                                                                                                                                                                 MULTI FILE: pas_foto[]
+                                                                                                                                                                                            ====================================================== -->
                                                 <label class="form-label fw-semibold mb-1">
                                                     Silahkan upload dokumen / foto tambahan 👇
                                                 </label>
@@ -593,8 +606,8 @@
                                                 <div id="previewPasFoto" class="mt-3 d-flex flex-wrap gap-3"></div>
 
                                                 <!-- ======================================================
-                                                                                                                                                                                                     SINGLE FILE: pas_foto_cv
-                                                                                                                                                                                                ====================================================== -->
+                                                                                                                                                                                                 SINGLE FILE: pas_foto_cv
+                                                                                                                                                                                            ====================================================== -->
                                                 <label class="form-label fw-semibold mb-1 mt-4">
                                                     Silahkan upload pas foto untuk CV Anda 👇
                                                 </label>
@@ -982,7 +995,7 @@
                                                 <label class="mt-3 fw-bold">Tinggi Badan (cm)</label>
                                                 <input type="text" name="tinggi_badan"
                                                     class="form-control @error('tinggi_badan') is-invalid @enderror"
-                                                    placeholder="Tinggi Badan (cm)" value="{{ old('tinggi_badan') }} cm"
+                                                    placeholder="Tinggi Badan (cm)" value="{{ old('tinggi_badan') }} "
                                                     required>
                                                 @error('tinggi_badan')
                                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -992,7 +1005,7 @@
                                                 <label class="mt-3 fw-bold">Berat Badan (kg)</label>
                                                 <input type="text" name="berat_badan"
                                                     class="form-control @error('berat_badan') is-invalid @enderror"
-                                                    placeholder="Berat Badan (kg)" value="{{ old('berat_badan') }} kg"
+                                                    placeholder="Berat Badan (kg)" value="{{ old('berat_badan') }} "
                                                     required>
                                                 @error('berat_badan')
                                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -1003,7 +1016,7 @@
                                                 <input type="text" name="ukuran_pinggang"
                                                     class="form-control @error('ukuran_pinggang') is-invalid @enderror"
                                                     placeholder="Ukuran Pinggang (cm)"
-                                                    value="{{ old('ukuran_pinggang') }} cm" required>
+                                                    value="{{ old('ukuran_pinggang') }} " required>
                                                 @error('ukuran_pinggang')
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
@@ -1210,7 +1223,7 @@
                                                         jika tidak ada kosongkan
                                                     </p>
                                                     <input type="text" name="Biaya_keberangkatan_sebelumnya_jisshu"
-                                                        class="form-control" placeholder="Contoh: 25.000.000" required>
+                                                        class="form-control" placeholder="Contoh: 25.000.000" >
                                                 </div>
 
 
@@ -1838,20 +1851,22 @@
                                             {{-- Kelebihan diri --}}
                                             <label class="form-label">Kelebihan Diri <span
                                                     class="text-danger">*</span></label>
-                                            <textarea name="kelebihan_diri" class="form-control" placeholder="Contoh: 私の長所は責任感が強く、時間を守れることです。">{{ old('kelebihan_diri') }}</textarea>
+                                            <textarea name="kelebihan_diri" class="form-control" placeholder="Contoh: 私の長所は責任感が強く、時間を守れることです。" required>{{ old('kelebihan_diri') }}</textarea>
 
                                             {{-- Komentar guru ttg kelebihan --}}
                                             <label class="form-label mt-2">Komentar Guru tentang Kelebihan Anda</label>
-                                            <textarea name="komentar_guru_kelebihan_diri" class="form-control" placeholder="Contoh: 真面目で、毎日一生懸命頑張っています。">{{ old('komentar_guru_kelebihan_diri') }}</textarea>
+                                            <p>Jika tidak ada cukup isi - saja atau jawab tidak ada </p>
+                                            <textarea name="komentar_guru_kelebihan_diri" class="form-control" placeholder="Contoh: 真面目で、毎日一生懸命頑張っています。" required>{{ old('komentar_guru_kelebihan_diri') }}</textarea>
 
                                             {{-- Kekurangan --}}
                                             <label class="form-label mt-2">Kekurangan Diri <span
                                                     class="text-danger">*</span></label>
-                                            <textarea name="kekurangan_diri" class="form-control" placeholder="Contoh: 忘れやすいですが、大事な事をメモして改善しています。">{{ old('kekurangan_diri') }}</textarea>
+                                            <textarea name="kekurangan_diri" class="form-control" placeholder="Contoh: 忘れやすいですが、大事な事をメモして改善しています。" required>{{ old('kekurangan_diri') }}</textarea>
 
                                             {{-- Komentar guru ttg kekurangan --}}
                                             <label class="form-label mt-2">Komentar Guru tentang Kekurangan Anda</label>
-                                            <textarea name="komentar_guru_kekurangan_diri" class="form-control" placeholder="Contoh: もっと集中力を高める必要があります。">{{ old('komentar_guru_kekurangan_diri') }}</textarea>
+                                               <p>Jika tidak ada cukup isi - saja atau jawab tidak ada </p>
+                                            <textarea name="komentar_guru_kekurangan_diri" class="form-control" placeholder="Contoh: もっと集中力を高める必要があります。" required>{{ old('komentar_guru_kekurangan_diri') }}</textarea>
 
                                             {{-- Ketertarikan terhadap Jepang --}}
                                             <label class="form-label mt-2">Ketertarikan terhadap Jepang <span
@@ -1860,16 +1875,17 @@
 
                                             {{-- Orang yang dihormati --}}
                                             <label class="form-label mt-2">Orang yang Dihormati dan Alasannya</label>
-                                            <textarea name="orang_yang_dihormati" class="form-control" placeholder="Contoh: 両親です。いつも支えてくれました。">{{ old('orang_yang_dihormati') }}</textarea>
+                                              <p>Jika tidak ada cukup isi - saja atau jawab tidak ada </p>
+                                            <textarea name="orang_yang_dihormati" class="form-control" placeholder="Contoh: 両親です。いつも支えてくれました。" required>{{ old('orang_yang_dihormati') }}</textarea>
 
                                             {{-- Point plus --}}
                                             <label class="form-label mt-2">Point Plus Diri</label>
-                                            <textarea name="point_plus_diri" class="form-control" placeholder="Contoh: 仕事が早くて正確にできます。">{{ old('point_plus_diri') }}</textarea>
+                                            <textarea name="point_plus_diri" class="form-control" placeholder="Contoh: 仕事が早くて正確にできます。" required>{{ old('point_plus_diri') }}</textarea>
 
                                             {{-- Keahlian khusus --}}
                                             <label class="form-label mt-2">Keahlian Khusus yang Menunjang Pekerjaan <span
                                                     class="text-danger">*</span></label>
-                                            <textarea name="keahlian_khusus" class="form-control" placeholder="Contoh: 機械操作が得意で、小さな部品の検査も正確にできます。">{{ old('keahlian_khusus') }}</textarea>
+                                            <textarea name="keahlian_khusus" class="form-control" placeholder="Contoh: 機械操作が得意で、小さな部品の検査も正確にできます。" required>{{ old('keahlian_khusus') }}</textarea>
 
                                         </div>
 
@@ -2159,70 +2175,70 @@
                 $(this).next('.invalid-feedback').remove();
             });
 
-            // // Form Submit
-            // $('#cvForm').on('submit', function(e) {
-            //     e.preventDefault();
+            // Form Submit
+            $('#cvForm').on('submit', function(e) {
+                e.preventDefault();
 
-            //     let form = $('#cvForm')[0];
-            //     let formData = new FormData(form);
+                let form = $('#cvForm')[0];
+                let formData = new FormData(form);
 
-            //     $.ajax({
-            //         url: $('#cvForm').attr('action'),
-            //         method: 'POST',
-            //         data: formData,
-            //         processData: false,
-            //         contentType: false,
+                $.ajax({
+                    url: $('#cvForm').attr('action'),
+                    method: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
 
-            //         beforeSend: function() {
-            //             $('#submitBtn').prop('disabled', true).html(
-            //                 '<i class="fas fa-spinner fa-spin me-2"></i>Mengirim...');
-            //         },
+                    beforeSend: function() {
+                        $('#submitBtn').prop('disabled', true).html(
+                            '<i class="fas fa-spinner fa-spin me-2"></i>Mengirim...');
+                    },
 
-            //         success: function(response) {
-            //             if (response.status === 'success') {
-            //                 Swal.fire({
-            //                     icon: 'success',
-            //                     title: 'Berhasil!',
-            //                     text: response.message,
-            //                     timer: 1800,
-            //                     showConfirmButton: false
-            //                 });
+                    success: function(response) {
+                        if (response.status === 'success') {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil!',
+                                text: response.message,
+                                timer: 1800,
+                                showConfirmButton: false
+                            });
 
-            //                 setTimeout(function() {
-            //                     window.location.href = '/';
-            //                 }, 1500);
-            //             }
-            //         },
+                            setTimeout(function() {
+                                window.location.href = '/';
+                            }, 1500);
+                        }
+                    },
 
-            //         error: function(xhr) {
-            //             $('#submitBtn').prop('disabled', false).html(
-            //                 '<i class="fas fa-paper-plane me-2"></i>Kirim');
+                    error: function(xhr) {
+                        $('#submitBtn').prop('disabled', false).html(
+                            '<i class="fas fa-paper-plane me-2"></i>Kirim');
 
-            //             if (xhr.status === 422) {
-            //                 let errors = xhr.responseJSON.errors;
+                        if (xhr.status === 422) {
+                            let errors = xhr.responseJSON.errors;
 
-            //                 $.each(errors, function(field, messages) {
-            //                     let input = $('[name="' + field + '"]');
-            //                     input.addClass('is-invalid');
-            //                     input.after('<div class="invalid-feedback d-block">' +
-            //                         messages[0] + '</div>');
-            //                 });
+                            $.each(errors, function(field, messages) {
+                                let input = $('[name="' + field + '"]');
+                                input.addClass('is-invalid');
+                                input.after('<div class="invalid-feedback d-block">' +
+                                    messages[0] + '</div>');
+                            });
 
-            //                 Swal.fire({
-            //                     icon: 'error',
-            //                     title: 'Validasi Gagal',
-            //                     text: 'Silakan periksa kembali isian Anda.',
-            //                 });
-            //             } else {
-            //                 Swal.fire({
-            //                     icon: 'error',
-            //                     title: 'Terjadi Kesalahan',
-            //                     text: 'Gagal mengirim data ke server.',
-            //                 });
-            //             }
-            //         }
-            //     });
-            // });
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Validasi Gagal',
+                                text: 'Silakan periksa kembali isian Anda.',
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Terjadi Kesalahan',
+                                text: 'Upload gagal. Pastikan file PDF, JPG, atau PNG berasal dari perangkat lokal (bukan Google Drive, OneDrive, atau link cloud).',
+                            });
+                        }
+                    }
+                });
+            });
 
             // Initialize
             showStep(1);
@@ -2936,7 +2952,7 @@
         </div>
         <div class="col-md-2">
             <label class="form-label fw-bold">alamat kota *</label>
-            <input type="month" name="pengalaman_kota[]" class="form-control" required>
+            <input type="text" name="pengalaman_kota[]" class="form-control" required>
         </div>
         <div class="col-md-2">
             <label class="form-label fw-bold">Tanggal Masuk *</label>
@@ -2971,81 +2987,97 @@
                 }
             });
 
-            // =============== CLIENT-SIDE VALIDATION + LOADING BUTTON ===============
-            $('#cvForm').on('submit', function(e) {
-                e.preventDefault();
+// =============== CLIENT-SIDE VALIDATION + LOADING BUTTON ===============
+// $('#cvForm').on('submit', function (e) {
+//     e.preventDefault();
 
-                let form = $('#cvForm')[0];
-                let formData = new FormData(form);
+//     let form = this;
 
-                $.ajax({
-                    url: $('#cvForm').attr('action'),
-                    method: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
+//     // VALIDASI HTML5
+//     if (!form.checkValidity()) {
+//         form.classList.add('was-validated');
+//         return;
+//     }
 
-                    beforeSend: function() {
-                        // Tombol berubah menjadi loading
-                        $('#submitBtn').prop('disabled', true);
-                        $('#btnText').addClass('d-none');
-                        $('#btnLoading').removeClass('d-none');
+//     let formData = new FormData(form);
 
-                        // Bersihkan error lama
-                        $('.invalid-feedback').remove();
-                        $('.is-invalid').removeClass('is-invalid');
-                    },
+//     $.ajax({
+//         url: form.action,
+//         type: 'POST',
+//         data: formData,
+//         processData: false,
+//         contentType: false,
 
-                    success: function(response) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Berhasil!',
-                            text: response.message,
-                            timer: 1800,
-                            showConfirmButton: false
-                        });
+//         beforeSend: function () {
+//             // Tombol loading
+//             $('#submitBtn').prop('disabled', true);
+//             $('#btnText').addClass('d-none');
+//             $('#btnLoading').removeClass('d-none');
 
-                        setTimeout(() => {
-                            window.location.href = '/';
-                        }, 1500);
-                    },
+//             // Reset error
+//             $('.is-invalid').removeClass('is-invalid');
+//             $('.invalid-feedback').remove();
+//         },
 
-                    error: function(xhr) {
-                        // Kembalikan tombol ke normal
-                        $('#submitBtn').prop('disabled', false);
-                        $('#btnText').removeClass('d-none');
-                        $('#btnLoading').addClass('d-none');
+//         success: function (response) {
+//             Swal.fire({
+//                 icon: 'success',
+//                 title: 'Berhasil!',
+//                 text: response.message || 'Data berhasil dikirim',
+//                 timer: 1800,
+//                 showConfirmButton: false
+//             });
 
-                        if (xhr.status === 422) {
-                            let errors = xhr.responseJSON.errors;
+//             // Kembalikan tombol (jaga-jaga)
+//             $('#submitBtn').prop('disabled', false);
+//             $('#btnText').removeClass('d-none');
+//             $('#btnLoading').addClass('d-none');
 
-                            $.each(errors, function(field, messages) {
-                                let input = $('[name="' + field + '"]');
-                                input.addClass('is-invalid');
+//             setTimeout(() => {
+//                 window.location.href = response.redirect ?? '/';
+//             }, 1500);
+//         },
 
-                                input.after(
-                                    '<div class="invalid-feedback d-block">' +
-                                    messages[0] + '</div>'
-                                );
-                            });
+//         error: function (xhr) {
+//             // Reset tombol
+//             $('#submitBtn').prop('disabled', false);
+//             $('#btnText').removeClass('d-none');
+//             $('#btnLoading').addClass('d-none');
 
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Validasi Gagal',
-                                text: 'Silakan periksa kembali isian Anda.',
-                            });
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Gagal Mengirim',
-                                text: 'Data atau file tidak terbaca oleh server. Pastikan file PDF, JPG, atau PNG dipilih dari perangkat lokal (bukan Google Drive, OneDrive, atau link cloud).',
-                            });
-                        }
+//             if (xhr.status === 422) {
+//                 let errors = xhr.responseJSON.errors;
 
-                    }
-                });
+//                 $.each(errors, function (field, messages) {
+//                     // Support field array & dot notation
+//                     let input = $('[name="' + field + '"]').length
+//                         ? $('[name="' + field + '"]')
+//                         : $('[name="' + field.replace(/\.\d+/, '[]') + '"]');
 
-            });
+//                     input.addClass('is-invalid');
+
+//                     input.after(`
+//                         <div class="invalid-feedback">
+//                             ${messages[0]}
+//                         </div>
+//                     `);
+//                 });
+
+//                 Swal.fire({
+//                     icon: 'error',
+//                     title: 'Validasi Gagal',
+//                     text: 'Silakan periksa kembali isian Anda.',
+//                 });
+//             } else {
+//                 Swal.fire({
+//                     icon: 'error',
+//                     title: 'Gagal Mengirim',
+//                     text: 'Data atau file tidak terbaca oleh server. Pastikan file berasal dari perangkat lokal (bukan Google Drive, OneDrive, atau link cloud).',
+//                 });
+//             }
+//         }
+//     });
+// });
+
 
 
             // =============== HELPER FUNCTION ===============
