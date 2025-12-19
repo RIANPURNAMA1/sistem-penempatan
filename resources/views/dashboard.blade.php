@@ -30,6 +30,55 @@
         .card {
             transition: box-shadow 0.3s ease;
         }
+
+        .stats-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 10%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+        }
+
+        /* WARNA */
+        .stats-icon.success {
+            background-color: #198754;
+            /* bootstrap success */
+        }
+
+        .stats-icon.warning {
+            background-color: #ffc107;
+            color: #000;
+        }
+
+        .stats-icon.danger {
+            background-color: #dc3545;
+        }
+
+        .stats-icon.primary {
+            background-color: #0d6efd;
+        }
+
+        .stats-icon.info {
+            background-color: #0dcaf0;
+        }
+
+        .stats-icon.blue {
+            background-color: #0d6efd;
+        }
+
+        .stats-icon.green {
+            background-color: #198754;
+        }
+
+        .stats-icon.purple {
+            background-color: #6f42c1;
+        }
+
+        .stats-icon.red {
+            background-color: #dc3545;
+        }
     </style>
 
 
@@ -103,7 +152,7 @@
                     <div class="row">
                         @foreach ($stats as $stat)
                             <div class="col-6 col-lg-3 col-md-6">
-                                <div class="card hover-card shadow shadow-md border-0 ">
+                                <div class="card hover-card shadow shadow-md border-0">
                                     <div class="card-body px-4 py-4-5">
                                         <div class="row align-items-center">
                                             <div class="col-md-4 col-lg-12 col-xl-12 col-xxl-5 text-center">
@@ -120,6 +169,7 @@
                                 </div>
                             </div>
                         @endforeach
+
                     </div>
 
                     <!-- Status Penempatan Kandidat -->
@@ -127,7 +177,7 @@
                         @php
                             $status_icon = [
                                 'Job Matching' => 'bi bi-people',
-                                'Pending' => 'bi bi-hourglass-split',
+                                'lamar ke perusahaan' => 'bi bi-send-fill',
                                 'Interview' => 'bi bi-chat-dots',
                                 'Gagal Interview' => 'bi bi-x-circle',
                                 'Jadwalkan Interview Ulang' => 'bi bi-arrow-repeat',
@@ -140,7 +190,8 @@
                             $status_gradient = [
                                 'Job Matching' =>
                                     'background: linear-gradient(135deg, #6c757d, #adb5bd); color: white;',
-                                'Pending' => 'background: linear-gradient(135deg, #ffc107, #ffcd39); color: #212529;',
+                                'lamar ke perusahaan' =>
+                                    'background: linear-gradient(135deg, #6c757d, #adb5bd); color: white;',
                                 'Interview' => 'background: linear-gradient(135deg, #17a2b8, #007bff); color: white;',
                                 'Gagal Interview' =>
                                     'background: linear-gradient(135deg, #dc3545, #ff6b6b); color: white;',
@@ -282,8 +333,8 @@
                     <div class="row mt-4">
 
                         <!-- =========================
-                                                                                                                BAGIAN KIRI (CHART)
-                                                                                                            ========================== -->
+                                                                                                                            BAGIAN KIRI (CHART)
+                                                                                                                        ========================== -->
                         <div class="col-12 col-md-8">
                             <div class="card h-100 shadow-lg border-0 rounded-4">
 
@@ -637,32 +688,31 @@
 
 
                             @if ($cvs->isEmpty())
-                                    <script>
-                                        document.addEventListener('DOMContentLoaded', function() {
-                                            Swal.fire({
-                                                icon: 'info',
-                                                title: 'Belum Mengisi CV',
-                                                html: `
+                                <script>
+                                    document.addEventListener('DOMContentLoaded', function() {
+                                        Swal.fire({
+                                            icon: 'info',
+                                            title: 'Belum Mengisi CV',
+                                            html: `
                     <p class="mb-3">Kamu belum mengisi CV.</p>
                     <a href="{{ route('pendaftaran.cv.create') }}" 
                        class="btn btn-warning fw-semibold">
                         <i class="bi bi-pencil-square me-1"></i> Isi CV Sekarang
                     </a>
                 `,
-                                                showConfirmButton: false,
-                                                allowOutsideClick: false,
-                                                allowEscapeKey: false,
-                                                background: '#fffaf0',
-                                                color: '#333',
-                                                didOpen: (popup) => {
-                                                    popup.querySelector('a').addEventListener('click', () => {
-                                                        Swal.close();
-                                                    });
-                                                }
-                                            });
+                                            showConfirmButton: false,
+                                            allowOutsideClick: false,
+                                            allowEscapeKey: false,
+                                            background: '#fffaf0',
+                                            color: '#333',
+                                            didOpen: (popup) => {
+                                                popup.querySelector('a').addEventListener('click', () => {
+                                                    Swal.close();
+                                                });
+                                            }
                                         });
-                                    </script>
-                    
+                                    });
+                                </script>
                             @endif
 
 

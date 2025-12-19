@@ -27,8 +27,6 @@ return new class extends Migration
             $table->string('email');
             $table->string('no_wa');
             $table->enum('jenis_kelamin', ['Laki-laki', 'Perempuan']);
-            $table->date('tanggal_daftar');
-
             // Kolom Tanggal/Lokasi (dibuat nullable untuk import yang tidak lengkap)
             $table->date('tempat_tanggal_lahir')->nullable(); // FIX: Menghilangkan ->change()
             $table->string('tempat_lahir')->nullable(); // FIX: Menghilangkan ->change()
@@ -48,6 +46,13 @@ return new class extends Migration
             $table->string('password_prometric')->nullable();
             $table->enum('pernah_ke_jepang', ['Ya', 'Tidak'])->default('Tidak');
             $table->string('paspor')->nullable()->comment('Upload paspor jika sudah memiliki');
+
+            $table->enum('status_jft', ['belum ujian jft', 'sudah ujian jft'])
+                ->default('belum ujian jft');
+
+            $table->enum('status_ssw', ['belum ujian ssw', 'sudah ujian ssw'])
+                ->default('belum ujian ssw');
+
 
             // Dokumen upload (dibuat nullable)
             $table->string('foto')->nullable(); // FIX: Menghilangkan ->change()

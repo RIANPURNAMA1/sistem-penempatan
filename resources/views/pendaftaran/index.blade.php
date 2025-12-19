@@ -147,11 +147,11 @@
                                     <input type="date" class="form-control" name="tempat_tanggal_lahir" required>
                                     <div class="invalid-feedback">Tempat Tanggal Lahir.</div>
                                 </div>
-                                <div class="col-md-6">
+                                {{-- <div class="col-md-6">
                                     <label class="form-label">Tanggal Daftar <span class="text-danger">*</span></label>
                                     <input type="date" class="form-control" name="tanggal_daftar" required>
                                     <div class="invalid-feedback">Tanggal daftar wajib dipilih.</div>
-                                </div>
+                                </div> --}}
                                 <div class="col-12">
                                     <label class="form-label">Alamat Lengkap <span class="text-danger">*</span></label>
                                     <textarea class="form-control" name="alamat" rows="3" required></textarea>
@@ -172,39 +172,6 @@
                                         <option value="S2">S2</option>
                                     </select>
                                     <div class="invalid-feedback">Pendidikan terakhir wajib dipilih.</div>
-                                </div>
-
-                                <!-- Bidang SSW -->
-                                <div class="col-md-6">
-                                    <label class="form-label fw-bold">Bidang SSW</label>
-
-                                    <div id="bidang-wrapper">
-
-                                        <!-- Baris Pertama -->
-                                        <div class="row mb-2 bidang-item">
-                                            <div class="col-10">
-                                                <select name="bidang_ssw[]" class="form-select" required>
-                                                    <option value="">-- Pilih Bidang --</option>
-                                                    <option value="Pengolahan makanan">Pengolahan makanan</option>
-                                                    <option value="Restoran">Restoran</option>
-                                                    <option value="Pertanian">Pertanian</option>
-                                                    <option value="Kaigo (perawat)">Kaigo (perawat)</option>
-                                                    <option value="Building cleaning">Building cleaning</option>
-                                                    <option value="Driver">Driver</option>
-                                                    <option value="Lainnya">Lainnya</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-2">
-                                                <button type="button" class="btn btn-danger remove-bidang">
-                                                    <i class="bi bi-trash-fill"></i>
-                                                </button>
-
-                                            </div>
-                                        </div>
-
-                                    </div>
-
-                                    <button type="button" id="add-bidang" class="btn btn-primary mt-2">+</button>
                                 </div>
 
 
@@ -295,79 +262,119 @@
                             <h5 class="fw-bold border-bottom pb-2 mb-3">
                                 <i class="bi bi-folder-symlink me-2 text-primary"></i> Upload Dokumen Persyaratan
                             </h5>
+
+                            <div class="alert alert-info py-2 small">
+                                <i class="bi bi-info-circle me-1"></i>
+
+                                Jika belum memiliki <strong> Sertifikat JFT & SSW </strong> , silakan dikosongkan.
+                            </div>
+
                             <div class="row g-3">
                                 @php
                                     $dokumenFields = [
                                         [
                                             'label' => 'Foto Diri',
                                             'name' => 'foto',
-                                            'accept' => 'image/jpeg,image/png,application/pdf',
-                                            'format' => 'JPG/PNG',
+                                            'accept' => 'image/jpeg,image/png',
+                                            'format' => 'JPG / PNG',
+                                            'required' => true,
                                         ],
                                         [
                                             'label' => 'Kartu Keluarga (KK)',
                                             'name' => 'kk',
-                                            'accept' => 'image/jpeg,image/png,application/pdf',
+                                            'accept' => 'application/pdf',
                                             'format' => 'PDF',
+                                            'required' => true,
                                         ],
                                         [
                                             'label' => 'KTP',
                                             'name' => 'ktp',
-                                            'accept' => 'image/jpeg,image/png,application/pdf',
+                                            'accept' => 'application/pdf',
                                             'format' => 'PDF',
+                                            'required' => true,
                                         ],
                                         [
                                             'label' => 'Bukti Pelunasan',
                                             'name' => 'bukti_pelunasan',
-                                            'accept' => 'image/jpeg,image/png,application/pdf',
+                                            'accept' => 'application/pdf',
                                             'format' => 'PDF',
+                                            'required' => true,
                                         ],
                                         [
                                             'label' => 'Akte Kelahiran',
                                             'name' => 'akte',
-                                            'accept' => 'image/jpeg,image/png,application/pdf',
+                                            'accept' => 'application/pdf',
                                             'format' => 'PDF',
+                                            'required' => true,
                                         ],
                                         [
                                             'label' => 'Ijazah Terakhir',
                                             'name' => 'ijasah',
-                                            'accept' => 'image/jpeg,image/png,application/pdf',
+                                            'accept' => 'application/pdf',
                                             'format' => 'PDF',
+                                            'required' => true,
                                         ],
                                         [
                                             'label' => 'Sertifikat JFT',
                                             'name' => 'sertifikat_jft',
-                                            'accept' => 'image/jpeg,image/png,application/pdf',
+                                            'accept' => 'application/pdf',
                                             'format' => 'PDF',
+                                            'required' => false,
+                                            'note' => 'Opsional — boleh dikosongkan jika belum memiliki',
                                         ],
                                         [
                                             'label' => 'Sertifikat SSW',
                                             'name' => 'sertifikat_ssw',
-                                            'accept' => 'image/jpeg,image/png,application/pdf',
+                                            'id' => 'sertifikat_ssw',
+                                            'accept' => 'application/pdf',
                                             'format' => 'PDF',
+                                            'required' => false,
+                                            'note' => 'Opsional — boleh dikosongkan jika belum memiliki',
                                         ],
                                     ];
                                 @endphp
 
                                 @foreach ($dokumenFields as $dok)
                                     <div class="col-md-4">
-                                        <label class="form-label">{{ $dok['label'] }} <span
-                                                class="text-danger">*</span></label>
+                                        <label class="form-label fw-semibold">
+                                            {{ $dok['label'] }}
+                                            @if ($dok['required'])
+                                                <span class="text-danger">*</span>
+                                            @else
+                                                <span class="badge bg-secondary ms-1">Opsional</span>
+                                            @endif
+                                        </label>
 
                                         <input type="file" class="form-control preview-input"
                                             name="{{ $dok['name'] }}" accept="{{ $dok['accept'] }}"
-                                            data-preview="{{ $dok['name'] }}-preview" required>
+                                            id="{{ $dok['id'] ?? '' }}" data-preview="{{ $dok['name'] }}-preview"
+                                            {{ $dok['required'] ? 'required' : '' }}>
 
-                                        <div class="form-text">Format diperbolehkan: {{ $dok['format'] }}</div>
+                                        <div class="form-text">
+                                            Format: {{ $dok['format'] }}
+                                            @isset($dok['note'])
+                                                <br>
+                                                <small class="text-muted">
+                                                    <i class="bi bi-info-circle"></i> {{ $dok['note'] }}
+                                                </small>
+                                            @endisset
+                                        </div>
 
-                                        <!-- Preview Container -->
+                                        <!-- Preview -->
                                         <div id="{{ $dok['name'] }}-preview" class="mt-2"></div>
 
-                                        <div class="invalid-feedback">{{ $dok['label'] }} wajib diunggah.</div>
+                                        @if ($dok['required'])
+                                            <div class="invalid-feedback">
+                                                {{ $dok['label'] }} wajib diunggah.
+                                            </div>
+                                        @endif
                                     </div>
                                 @endforeach
+                          
+
                             </div>
                         </div>
+
 
                         <!-- Submit -->
                         <div class="text-end mt-4">
@@ -387,6 +394,25 @@
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sertifikatSSW = document.getElementById('sertifikat_ssw');
+            const bidangSSWContainer = document.getElementById('bidang-ssw-container');
+
+            if (!sertifikatSSW) return;
+
+            sertifikatSSW.addEventListener('change', function() {
+                if (this.files && this.files.length > 0) {
+                    bidangSSWContainer.classList.remove('d-none');
+                } else {
+                    bidangSSWContainer.classList.add('d-none');
+                }
+            });
+        });
+    </script>
+
+
     <script>
         // bidang ssw
         document.getElementById('add-bidang').addEventListener('click', function() {

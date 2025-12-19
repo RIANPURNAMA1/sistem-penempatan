@@ -11,6 +11,33 @@ class Pendaftaran extends Model
 
     protected $guarded = [];
 
+
+    // agar muncul di array / json
+    protected $appends = [
+        'status_jft',
+        'status_ssw'
+    ];
+
+    /* =========================
+       ACCESSOR STATUS UJIAN
+       ========================= */
+
+    // STATUS JFT (JSF)
+    public function getStatusJftAttribute()
+    {
+        return !empty($this->sertifikat_jft)
+            ? 'sudah ujian jft'
+            : 'belum ujian jft';
+    }
+
+    // STATUS SSW
+    public function getStatusSswAttribute()
+    {
+        return !empty($this->sertifikat_ssw)
+            ? 'sudah ujian ssw'
+            : 'belum ujian ssw';
+    }
+
     // Relasi ke cabang
     public function cabang()
     {
@@ -36,6 +63,6 @@ class Pendaftaran extends Model
     }
     public function bidang_ssws()
     {
-        return $this->hasMany(BidangSsw::class , 'pendaftaran_id');
+        return $this->hasMany(BidangSsw::class, 'pendaftaran_id');
     }
 }

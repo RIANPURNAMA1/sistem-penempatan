@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->enum('status_kandidat', [
                 'Job Matching',
                 'Pending',
-                'lamar_ke_perusahaan',
+                'lamar ke perusahaan',
                 'Interview',
                 'Gagal Interview',
                 'Jadwalkan Interview Ulang',

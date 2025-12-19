@@ -78,7 +78,7 @@
                                     <dd class="col-sm-7">{{ $kandidat->usia }} tahun</dd>
                                     <dt class="col-sm-5">Jenis Kelamin</dt>
                                     <dd class="col-sm-7">{{ $kandidat->jenis_kelamin }}</dd>
-                                    
+
                                     <dt class="col-sm-5">Pendidikan Terakhir</dt>
                                     <dd class="col-sm-7">{{ $kandidat->pendidikan_terakhir }}</dd>
                                 </dl>
@@ -127,24 +127,68 @@
                     </div>
                     <div class="card-body">
                         <dl class="row mb-0">
+
                             <dt class="col-sm-4">ID Prometric</dt>
                             <dd class="col-sm-8">{{ $kandidat->id_prometric ?? '-' }}</dd>
+
                             <dt class="col-sm-4">Password Prometric</dt>
                             <dd class="col-sm-8">{{ $kandidat->password_prometric ?? '-' }}</dd>
+
                             <dt class="col-sm-4">Pernah ke Jepang</dt>
-                            <dd class="col-sm-8">{{ $kandidat->pernah_ke_jepang }}</dd>
+                            <dd class="col-sm-8">
+                                <span
+                                    class="badge {{ $kandidat->pernah_ke_jepang === 'Ya' ? 'bg-success' : 'bg-secondary' }}">
+                                    {{ $kandidat->pernah_ke_jepang }}
+                                </span>
+                            </dd>
+
                             <dt class="col-sm-4">Paspor</dt>
                             <dd class="col-sm-8">
                                 @if ($kandidat->paspor)
                                     <a href="{{ asset($kandidat->paspor) }}" target="_blank"
-                                        class="btn btn-sm btn-outline-primary"><i class="bi bi-file-earmark-text me-1"></i>
-                                        Lihat Paspor</a>
+                                        class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-file-earmark-text me-1"></i> Lihat Paspor
+                                    </a>
                                 @else
-                                    -
+                                    <span class="text-muted">Belum ada</span>
                                 @endif
                             </dd>
+
+                            {{-- ================= JFT ================= --}}
+                            <dt class="col-sm-4">Sertifikat JFT</dt>
+                            <dd class="col-sm-8">
+                                @if ($kandidat->sertifikat_jft)
+                                    <a href="{{ asset($kandidat->sertifikat_jft) }}" target="_blank"
+                                        class="btn btn-sm btn-outline-success">
+                                        <i class="bi bi-patch-check me-1"></i> Lihat Sertifikat
+                                    </a>
+                                    <span class="badge bg-success ms-2">Sudah ujian</span>
+                                @else
+                                    <span class="badge bg-secondary">Belum ujian</span>
+                                    <small class="text-muted d-block">
+                                        Sertifikat JFT bersifat opsional dan boleh dikosongkan
+                                    </small>
+                                @endif
+                            </dd>
+
+                            {{-- ================= SSW ================= --}}
+                            <dt class="col-sm-4">Sertifikat SSW</dt>
+                            <dd class="col-sm-8">
+                                @if ($kandidat->sertifikat_ssw)
+                                    <a href="{{ asset($kandidat->sertifikat_ssw) }}" target="_blank"
+                                        class="btn btn-sm btn-outline-success">
+                                        <i class="bi bi-patch-check me-1"></i> Lihat Sertifikat
+                                    </a>
+                                    <span class="badge bg-success ms-2">Sudah ujian</span>
+                                @else
+                                    <span class="badge bg-secondary">Belum ujian</span>
+                            
+                                @endif
+                            </dd>
+
                         </dl>
                     </div>
+
                 </div>
 
                 <div class="card shadow-sm rounded-4 mb-4">

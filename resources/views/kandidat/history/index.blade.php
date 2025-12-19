@@ -60,6 +60,7 @@
                         @php
                             $statusColors = [
                                 'Job Matching' => 'secondary',
+                                'lamar ke perusahaan' => 'secondary',
                                 'Pending' => 'warning',
                                 'Interview' => 'info',
                                 'Gagal Interview' => 'danger',

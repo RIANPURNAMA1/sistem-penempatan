@@ -75,7 +75,7 @@ class KandidatController extends Controller
     | Validasi
     ------------------------------------------------------------ */
         $request->validate([
-            'status_kandidat' => 'required|in:Job Matching,Pending,Interview,Jadwalkan Interview Ulang,Lulus interview,Gagal Interview,Pemberkasan,Berangkat,Ditolak,lamar_ke_perusahaan',
+            'status_kandidat' => 'required|in:Job Matching,Pending,Interview,Jadwalkan Interview Ulang,Lulus interview,Gagal Interview,Pemberkasan,Berangkat,Ditolak,lamar ke perusahaan',
             'institusi_id' => 'nullable|exists:institusis,id',
             'catatan_interview' => 'nullable|string',
             'jadwal_interview' => 'nullable|date',

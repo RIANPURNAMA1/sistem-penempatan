@@ -207,7 +207,7 @@ Route::middleware(['auth', 'role:super-admin'])->group(function () {
     // edit all cv
     Route::get('/edit/cv/kandidat/{id}', [CvController::class, 'editcvkandidat']);
     // Navigasi Halaman Admin
-    Route::get('/kandidat', [DashboardController::class, 'DataKandidat'])->name('pendaftar');
+
     Route::get('/institusi', [PageController::class, 'institusi'])->name('page.institusi');
     Route::get('/penempatan', [PageController::class, 'penempatan'])->name('page.penempatan');
     Route::get('/interview', [PageController::class, 'interview'])->name('page.interview');
@@ -217,6 +217,7 @@ Route::middleware(['auth', 'role:super-admin'])->group(function () {
     Route::resource('cabang', CabangController::class);
 
     // Pengelolaan Siswa/Pendaftaran (Khusus Super Admin)
+    Route::get('/kandidat', [PendaftaranController::class, 'DataPendaftaran'])->name('pendaftar');
     Route::get('/siswa', [PendaftaranController::class, 'DataKandidat'])->name('siswa.index');
     Route::get('/siswa/{id}/edit', [PendaftaranController::class, 'edit'])->name('siswa.edit');
     Route::put('/siswa/{id}', [PendaftaranController::class, 'update'])->name('siswa.update');

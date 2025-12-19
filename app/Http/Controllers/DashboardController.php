@@ -24,10 +24,20 @@ class DashboardController extends Controller
         $totalCabang = Cabang::count(); // total cabang
         $totalInstitusi = Institusi::count(); // total institusi
 
-        // Buat array untuk dinamis di Blade
+        $totalSudahJft = Pendaftaran::where('status_jft', 'sudah ujian jft')->count();
+
+        $totalBelumJft = Pendaftaran::where('status_jft', 'belum ujian jft')->count();
+
+
+        $totalSudahSsw = Pendaftaran::where('status_ssw', 'sudah ujian ssw')->count();
+
+        $totalBelumSsw = Pendaftaran::where('status_ssw', 'belum ujian ssw')->count();
+
+
+
         $stats = [
             [
-                'title' => 'Total User Login',
+                'title' => 'Total User',
                 'count' => $totalUsers,
                 'icon'  => 'bi-person-bounding-box',
                 'color' => 'blue'
@@ -39,23 +49,47 @@ class DashboardController extends Controller
                 'color' => 'green'
             ],
             [
+                'title' => 'Sudah Ujian JFT',
+                'count' => $totalSudahJft,
+                'icon'  => 'bi-check-circle',
+                'color' => 'success'
+            ],
+            [
+                'title' => 'Belum Ujian JFT',
+                'count' => $totalBelumJft,
+                'icon'  => 'bi-x-circle',
+                'color' => 'warning'
+            ],
+            [
+                'title' => 'Sudah Ujian SSW',
+                'count' => $totalSudahSsw,
+                'icon'  => 'bi-check2-square',
+                'color' => 'primary'
+            ],
+            [
+                'title' => 'Belum Ujian SSW',
+                'count' => $totalBelumSsw,
+                'icon'  => 'bi-exclamation-circle',
+                'color' => 'danger'
+            ],
+            [
                 'title' => 'Total Cabang',
                 'count' => $totalCabang,
                 'icon'  => 'bi-building',
                 'color' => 'purple'
             ],
             [
-                'title' => 'Total Institusi',
+                'title' => 'Total Perusahaan Penempatan',
                 'count' => $totalInstitusi,
                 'icon'  => 'bi-bank',
                 'color' => 'red'
-            ]
+            ],
         ];
 
         // Daftar semua status tetap
         $all_status = [
             'Job Matching',
-            'Pending',
+            'lamar ke perusahaan',
             'Interview',
             'Gagal Interview',
             'Jadwalkan Interview Ulang',
@@ -230,21 +264,6 @@ class DashboardController extends Controller
         $kandidat = Kandidat::with(['pendaftaran', 'cabang', 'institusi'])->findOrFail($id);
         return view('kandidat.show', compact('kandidat'));
     }
-    public function DataKandidat(Request $request)
-    {
-        $cabang = Cabang::all();
-
-        $query = Pendaftaran::with(['cabang', 'bidang_ssws'])
-            ->orderBy('created_at', 'desc'); // <--- Urutkan dari terbaru
-
-        if ($request->has('cabang_id') && $request->cabang_id != '') {
-            $query->where('cabang_id', $request->cabang_id);
-        }
-
-        $kandidats = $query->get();
-
-        return view('siswa.index', compact('kandidats', 'cabang'));
-    }
 
 
 
@@ -399,6 +418,19 @@ class DashboardController extends Controller
             }
         }
 
+        // =======================
+        // AUTO UPDATE STATUS JFT & SSW
+        // =======================
+
+        // Jika upload sertifikat JFT
+        if ($request->hasFile('sertifikat_jft')) {
+            $data['status_jft'] = 'sudah ujian jft';
+        }
+
+        // Jika upload sertifikat SSW
+        if ($request->hasFile('sertifikat_ssw')) {
+            $data['status_ssw'] = 'sudah ujian ssw';
+        }
 
         /*
     |--------------------------------------------------------------------------

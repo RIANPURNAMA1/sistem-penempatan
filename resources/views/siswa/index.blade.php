@@ -145,14 +145,14 @@
 
                 </div>
             </div>
-
             <div class="card-body shadow shadow-md">
-                <div class="row g-3 align-items-end">
-                    <div class="col-12 col-md-6">
-                        <form id="filterForm">
-                            <label for="filterCabang" class="form-label fw-semibold text-secondary">Cabang</label>
+                <form id="filterForm">
+                    <div class="row g-3 align-items-end">
 
-                            <select name="cabang_id" id="filterCabang" class="form-select shadow-sm rounded-3 border-1">
+                        <!-- FILTER CABANG -->
+                        <div class="col-12 col-md-4">
+                            <label class="form-label fw-semibold text-secondary">Cabang</label>
+                            <select name="cabang_id" id="filterCabang" class="form-select shadow-sm rounded-3">
                                 <option value="">Semua Cabang</option>
                                 @foreach ($cabang as $item)
                                     <option value="{{ $item->id }}"
@@ -161,19 +161,53 @@
                                     </option>
                                 @endforeach
                             </select>
-                        </form>
-                    </div>
-                </div>
+                        </div>
 
+                        <!-- FILTER STATUS JFT -->
+                        <div class="col-12 col-md-4">
+                            <label class="form-label fw-semibold text-secondary">Status JFT</label>
+                            <select name="status_jft" id="filterJft" class="form-select shadow-sm rounded-3">
+                                <option value="">Semua</option>
+                                <option value="sudah ujian jft"
+                                    {{ request('status_jft') == 'sudah ujian jft' ? 'selected' : '' }}>
+                                    Sudah Ujian JFT
+                                </option>
+                                <option value="belum ujian jft"
+                                    {{ request('status_jft') == 'belum ujian jft' ? 'selected' : '' }}>
+                                    Belum Ujian Jft
+                                </option>
+                            </select>
+                        </div>
+
+                        <!-- FILTER STATUS SSW -->
+                        <div class="col-12 col-md-4">
+                            <label class="form-label fw-semibold text-secondary">Status SSW</label>
+                            <select name="status_ssw" id="filterSsw" class="form-select shadow-sm rounded-3">
+                                <option value="">Semua</option>
+                                <option value="sudah ujian ssw"
+                                    {{ request('status_ssw') == 'sudah ujian ssw' ? 'selected' : '' }}>
+                                    Sudah Ujian SSW
+
+                                </option>
+                                <option value="belum ujian ssw"
+                                    {{ request('status_ssw') == 'belum ujian ssw' ? 'selected' : '' }}>
+                                    Belum Ujian SSW
+                                </option>
+                            </select>
+                        </div>
+
+                    </div>
+                </form>
             </div>
+
+
         </div>
 
 
         <!-- Data Table -->
         <div class="card shadow shadow-md border-0 rounded-4">
             <div class="card-body table-responsive">
-                <table id="tablependaftar" class="table table-striped shadow shadow-md align-middle nowrap"
-                    style="width:100%">
+                <table id="tablependaftar" class="table table-striped  align-middle nowrap" style="width:100%">
                     <thead style="color: #000;">
                         <tr class=" fw-bold">
                             <th class="">No</th>
@@ -185,6 +219,8 @@
                             <th class="">Tempat Lahir</th>
                             <th class="">Tanggal Lahir</th>
                             <th class="">Pendidikan Terakhir</th>
+                            <th class="">Status JFT</th>
+                            <th class="">Status SSW</th>
                             <th class="">Bidang SSW</th>
                             <th class="">Jenis Kelamin</th>
                             <th class="">No WA</th>
@@ -209,7 +245,8 @@
                                         <img src="{{ $kandidat->foto && file_exists(public_path($kandidat->foto))
                                             ? asset($kandidat->foto)
                                             : asset('images/default-user.png') }}"
-                                            alt="Foto Kandidat" class="rounded-circle border" width="50" height="50" style="object-fit: cover">
+                                            alt="Foto Kandidat" class="rounded-circle border" width="50"
+                                            height="50" style="object-fit: cover">
                                     </a>
                                 </td>
 
@@ -227,6 +264,24 @@
                                 </td>
 
                                 <td>{{ $kandidat->pendidikan_terakhir }}</td>
+                                <!-- STATUS JFT -->
+                                <td class="text-center">
+                                    @if ($kandidat->status_jft === 'sudah ujian jft')
+                                        <span class="badge bg-success">Sudah Ujian JFT</span>
+                                    @else
+                                        <span class="badge bg-danger">Belum Ujian JFT</span>
+                                    @endif
+                                </td>
+
+                                <!-- STATUS SSW -->
+                                <td class="text-center">
+                                    @if ($kandidat->status_ssw === 'sudah ujian ssw')
+                                        <span class="badge bg-success">Sudah Ujian SSW</span>
+                                    @else
+                                        <span class="badge bg-warning text-dark">Belum Ujian SSW</span>
+                                    @endif
+                                </td>
+
                                 <td>
                                     @if ($kandidat->bidang_ssws && $kandidat->bidang_ssws->count() > 0)
                                         {{ $kandidat->bidang_ssws->pluck('nama_bidang')->join(', ') }}
@@ -281,7 +336,8 @@
                                 </td>
 
                                 <!-- Tanggal Daftar -->
-                                <td>{{ \Carbon\Carbon::parse($kandidat->tanggal_daftar)->translatedFormat('d F Y') }}</td>
+                                <td>{{ $kandidat->created_at->translatedFormat('d F Y') }}</td>
+
 
                                 <!-- Status Verifikasi -->
                                 <td>
@@ -378,6 +434,29 @@
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            const cabang = document.getElementById('filterCabang');
+            const jft = document.getElementById('filterJft');
+            const ssw = document.getElementById('filterSsw');
+
+            function applyFilter() {
+                const params = new URLSearchParams();
+
+                if (cabang.value) params.append('cabang_id', cabang.value);
+                if (jft.value) params.append('status_jft', jft.value);
+                if (ssw.value) params.append('status_ssw', ssw.value);
+
+                window.location.href = `?${params.toString()}`;
+            }
+
+            cabang.addEventListener('change', applyFilter);
+            jft.addEventListener('change', applyFilter);
+            ssw.addEventListener('change', applyFilter);
+
+        });
+    </script>
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {

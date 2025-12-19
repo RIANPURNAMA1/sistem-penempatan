@@ -563,8 +563,9 @@
 
                                             {{-- Upload Sertifikat --}}
                                             <label class="form-label fw-semibold mt-3">
-                                                Silahkan upload sertifikat yang dimiliki JFT dan SSW (PDF/JPG/PNG, Max 10MB, Min 3 File)
+                                                Silahkan upload sertifikat yang dimiliki JFT dan SSW (PDF/JPG/PNG, Max 10MB, Min 3 File), Jika belum punya boleh kosongkan saja 
                                             </label>
+                                            <p></p>
 
                                             <input type="file" name="sertifikat_files[]" id="sertifikatInput"
                                                 class="form-control" multiple accept=".pdf,.jpg,.jpeg,.png">

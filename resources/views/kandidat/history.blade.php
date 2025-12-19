@@ -45,6 +45,7 @@
             // --- Pindahkan logic warna status ke sini atau ke helper ---
             $statusColors = [
                 'Job Matching' => 'secondary',
+                'lamar ke perusahaan' => 'secondary',
                 'Pending' => 'warning',
                 'Interview' => 'info',
                 'Gagal Interview' => 'danger',

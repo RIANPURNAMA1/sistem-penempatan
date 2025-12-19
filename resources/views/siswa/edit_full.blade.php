@@ -98,13 +98,6 @@
                         </select>
                     </div>
 
-                    <!-- Tanggal Daftar -->
-                    <div class="col-md-6">
-                        <label class="form-label">Tanggal Daftar <span class="text-danger">*</span></label>
-                        <input type="date" name="tanggal_daftar"
-                            value="{{ old('tanggal_daftar', $kandidat->tanggal_daftar) }}" class="form-control" required>
-                    </div>
-
                     <!-- Tempat Tanggal Lahir -->
                     <div class="col-md-6">
                         <label class="form-label">Tempat Lahir <span class="text-danger">*</span></label>

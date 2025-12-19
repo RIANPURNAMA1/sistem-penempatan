@@ -23,7 +23,7 @@ return new class extends Migration
                 'Building cleaning',
                 'Driver',
                 'Lainnya',
-            ]);
+            ])->nullable();
 
             $table->timestamps();
         });

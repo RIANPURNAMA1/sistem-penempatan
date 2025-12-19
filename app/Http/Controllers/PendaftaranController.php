@@ -13,6 +13,7 @@ use App\Models\Kandidat;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Barryvdh\DomPDF\Facade\Pdf as FacadePdf;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
@@ -29,188 +30,208 @@ class PendaftaranController extends Controller
         return view('pendaftaran.index', compact('cabangs', 'alreadyRegistered'));
     }
 
+
+    public function DataPendaftaran(Request $request)
+    {
+        // Ambil data cabang untuk dropdown
+        $cabang = Cabang::all();
+
+        // Query utama
+        $query = Pendaftaran::with(['cabang', 'bidang_ssws'])
+            ->orderBy('created_at', 'desc');
+
+        // ===============================
+        // FILTER CABANG
+        // ===============================
+        if ($request->filled('cabang_id')) {
+            $query->where('cabang_id', $request->cabang_id);
+        }
+
+        // ===============================
+        // FILTER STATUS JFT
+        // ===============================
+        if ($request->filled('status_jft')) {
+            $query->where('status_jft', $request->status_jft);
+        }
+
+        // ===============================
+        // FILTER STATUS SSW
+        // ===============================
+        if ($request->filled('status_ssw')) {
+            $query->where('status_ssw', $request->status_ssw);
+        }
+
+        // Ambil data akhir
+        $kandidats = $query->get();
+
+        return view('siswa.index', compact('kandidats', 'cabang'));
+    }
+
+
+
     public function store(Request $request)
     {
         $validated = $request->validate([
             'nik' => 'required|string|size:16|unique:pendaftarans,nik',
             'nama' => 'required|string|max:255',
-            'usia' => 'required|string|max:255',
-            'agama' => 'required|string|max:255',
-            'status' => 'required|in:belum menikah,menikah,lajang',
+            'usia' => 'nullable|string|max:255',
+            'agama' => 'nullable|string|max:255',
+            'status' => 'nullable|in:belum menikah,menikah,lajang',
             'email' => 'required|email|max:255|unique:pendaftarans,email',
             'no_wa' => ['required', 'string', 'max:15', 'regex:/^08\d{8,12}$/'],
             'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
-            'alamat' => 'required|string|max:500',
-            'provinsi' => 'required|string|max:100',
-            'kab_kota' => 'required|string|max:100',
-            'kecamatan' => 'required|string|max:100',
-            'kelurahan' => 'required|string|max:100',
+
+            'alamat' => 'nullable|string',
+            'provinsi' => 'nullable|string|max:100',
+            'kab_kota' => 'nullable|string|max:100',
+            'kecamatan' => 'nullable|string|max:100',
+            'kelurahan' => 'nullable|string|max:100',
+
             'cabang_id' => 'required|exists:cabangs,id',
 
-            // Ditambahkan
-            'tempat_lahir' => 'required|string|max:255',
-            'tempat_tanggal_lahir' => 'required|date',
-            'tanggal_daftar' => 'required|date',
+            'tempat_lahir' => 'nullable|string|max:255',
+            'tempat_tanggal_lahir' => 'nullable|date',
 
-            // FIELD BARU
             'pendidikan_terakhir' => 'required|string|max:255',
 
-            // Validasi bidang SSW (banyak data)
-            'bidang_ssw' => 'required|array|min:1',
-            'bidang_ssw.*' => 'in:Pengolahan makanan,Restoran,Pertanian,Kaigo (perawat),Building cleaning,Driver,Lainnya',
+            'bidang_ssw' => 'nullable|array',
+            'bidang_ssw.*' => 'string',
 
-            'id_prometric' => 'required|string|max:255',
-            'password_prometric' => 'required|string|max:255',
+            'id_prometric' => 'nullable|string|max:255',
+            'password_prometric' => 'nullable|string|max:255',
             'pernah_ke_jepang' => 'required|in:Ya,Tidak',
 
-            // Paspor opsional — maksimal 5MB
-            'paspor' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
-
-            // FILE WAJIB — ukuran lebih kecil
-            'foto' => 'required|file|mimes:jpg,jpeg,png|max:3072', // 3MB
-            'kk'                => 'nullable|file|mimes:pdf|max:5120',
-            'ktp'               => 'nullable|file|mimes:pdf|max:5120',
-            'bukti_pelunasan'   => 'nullable|file|mimes:pdf|max:5120',
-            'akte'              => 'nullable|file|mimes:pdf|max:5120',
-            'ijasah'            => 'nullable|file|mimes:pdf|max:5120',
-            'sertifikat_jft'    => 'nullable|file|mimes:pdf|max:5120',
-            'sertifikat_ssw'    => 'nullable|file|mimes:pdf|max:5120',
-            'paspor'            => 'nullable|file|mimes:pdf|max:5120',
-
-        ], [
-
-            // Pesan error khusus
-            'file.max' => 'Ukuran file melebihi batas 5MB.',
-            'file.mimes' => 'File harus berformat PDF.',
-
-            // Pesan setiap field
-            'foto.mimes' => 'Foto harus berupa JPG atau PNG.',
-            'kk.mimes' => 'KK harus berupa file PDF.',
-            'ktp.mimes' => 'KTP harus berupa file PDF.',
-            'bukti_pelunasan.mimes' => 'Bukti pelunasan harus berupa file PDF.',
-            'akte.mimes' => 'Akte harus berupa file PDF.',
-            'ijasah.mimes' => 'Ijazah harus berupa file PDF.',
-            'sertifikat_jft.mimes' => 'Sertifikat JFT harus berupa file PDF.',
-            'sertifikat_ssw.mimes' => 'Sertifikat SSW harus berupa file PDF.',
-            'paspor.mimes' => 'Paspor harus berupa file PDF.',
-
-            // Error lainnya
-            'nik.size' => 'NIK harus 16 digit.',
-            'nik.unique' => 'NIK sudah terdaftar.',
-            'email.unique' => 'Email sudah terdaftar.',
-            'no_wa.regex' => 'Nomor WhatsApp harus diawali 08 dan memiliki 10–13 digit.',
-            'status.in' => 'Status harus: belum menikah, menikah, atau lajang.',
-
-            // Field baru
-            'pendidikan_terakhir.required' => 'Pendidikan terakhir wajib dipilih.',
-            'bidang_ssw.required' => 'Bidang SSW wajib dipilih.',
+            // FILE
+            'foto' => 'required|image|mimes:jpg,jpeg,png|max:3072',
+            'kk' => 'nullable|file|mimes:pdf|max:5120',
+            'ktp' => 'nullable|file|mimes:pdf|max:5120',
+            'bukti_pelunasan' => 'nullable|file|mimes:pdf|max:5120',
+            'akte' => 'nullable|file|mimes:pdf|max:5120',
+            'ijasah' => 'nullable|file|mimes:pdf|max:5120',
+            'sertifikat_jft' => 'nullable|file|mimes:pdf|max:5120',
+            'sertifikat_ssw' => 'nullable|file|mimes:pdf|max:5120',
+            'paspor' => 'nullable|file|mimes:pdf|max:5120',
         ]);
 
+        DB::beginTransaction();
 
+        try {
+            /* =======================
+           UPLOAD FILE
+        ======================= */
+            $fileFields = [
+                'foto',
+                'kk',
+                'ktp',
+                'bukti_pelunasan',
+                'akte',
+                'ijasah',
+                'sertifikat_jft',
+                'sertifikat_ssw',
+                'paspor',
+            ];
 
-        $files = [
-            'foto',
-            'kk',
-            'ktp',
-            'bukti_pelunasan',
-            'akte',
-            'ijasah',
-            'sertifikat_jft',
-            'sertifikat_ssw',
-            'paspor'
-        ];
+            $uploadedPaths = [];
 
-        $uploadedPaths = [];
+            foreach ($fileFields as $field) {
+                if ($request->hasFile($field)) {
+                    $file = $request->file($field);
+                    $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                    $folder = public_path("dokumen/{$field}");
 
-        foreach ($files as $fileKey) {
+                    if (!is_dir($folder)) {
+                        mkdir($folder, 0755, true);
+                    }
 
-            if ($request->hasFile($fileKey)) {
-
-                $file = $request->file($fileKey);
-
-                // Nama file baru
-                $filename = time() . '_' . $file->getClientOriginalName();
-
-                // Tujuan folder (public/dokumen/{field})
-                $destination = public_path("dokumen/{$fileKey}");
-
-                // Pastikan folder ada
-                if (!file_exists($destination)) {
-                    mkdir($destination, 0777, true);
+                    $file->move($folder, $filename);
+                    $uploadedPaths[$field] = "dokumen/{$field}/{$filename}";
                 }
-
-                // Pindahkan file ke folder public
-                $file->move($destination, $filename);
-
-                // Simpan path untuk database → ditampilkan pakai asset()
-                $uploadedPaths[$fileKey] = "dokumen/{$fileKey}/{$filename}";
             }
-        }
 
-        // Simpan data
-        $pendaftaran =   Pendaftaran::create([
-            'user_id' => Auth::id(),
-            'cabang_id' => $request->cabang_id,
-            'nik' => $request->nik,
-            'nama' => $request->nama,
-            'usia' => $request->usia,
-            'agama' => $request->agama,
-            'status' => $request->status,
-            'email' => $request->email,
-            'no_wa' => $request->no_wa,
-            'jenis_kelamin' => $request->jenis_kelamin,
+            /* =======================
+           TENTUKAN STATUS JFT & SSW
+        ======================= */
+            $statusJft = isset($uploadedPaths['sertifikat_jft'])
+                ? 'sudah ujian jft'
+                : 'belum ujian jft';
 
-            'tanggal_daftar' => $request->tanggal_daftar,
-            'tempat_lahir' => $request->tempat_lahir,
-            'tempat_tanggal_lahir' => $request->tempat_tanggal_lahir,
+            $statusSsw = isset($uploadedPaths['sertifikat_ssw'])
+                ? 'sudah ujian ssw'
+                : 'belum ujian ssw';
 
-            'alamat' => $request->alamat,
-            'provinsi' => $request->provinsi,
-            'kab_kota' => $request->kab_kota,
-            'kecamatan' => $request->kecamatan,
-            'kelurahan' => $request->kelurahan,
+            /* =======================
+           SIMPAN PENDAFTARAN
+        ======================= */
+            $pendaftaran = Pendaftaran::create([
+                'user_id' => Auth::id(),
+                'cabang_id' => $request->cabang_id,
 
-            // Field baru
-            'pendidikan_terakhir' => $request->pendidikan_terakhir,
+                'nik' => $request->nik,
+                'nama' => $request->nama,
+                'usia' => $request->usia,
+                'agama' => $request->agama,
+                'status' => $request->status,
+                'email' => $request->email,
+                'no_wa' => $request->no_wa,
+                'jenis_kelamin' => $request->jenis_kelamin,
 
-            // File upload
-            'foto' => $uploadedPaths['foto'] ?? null,
-            'kk' => $uploadedPaths['kk'] ?? null,
-            'ktp' => $uploadedPaths['ktp'] ?? null,
-            'bukti_pelunasan' => $uploadedPaths['bukti_pelunasan'] ?? null,
-            'akte' => $uploadedPaths['akte'] ?? null,
-            'ijasah' => $uploadedPaths['ijasah'] ?? null,
-            'sertifikat_jft' => $uploadedPaths['sertifikat_jft'] ?? null,
-            'sertifikat_ssw' => $uploadedPaths['sertifikat_ssw'] ?? null,
-            'paspor' => $uploadedPaths['paspor'] ?? null,
+                'tempat_lahir' => $request->tempat_lahir,
+                'tempat_tanggal_lahir' => $request->tempat_tanggal_lahir,
 
-            // Field tambahan lainnya
-            'id_prometric' => $request->id_prometric,
-            'password_prometric' => $request->password_prometric,
-            'pernah_ke_jepang' => $request->pernah_ke_jepang,
-        ]);
+                'alamat' => $request->alamat,
+                'provinsi' => $request->provinsi,
+                'kab_kota' => $request->kab_kota,
+                'kecamatan' => $request->kecamatan,
+                'kelurahan' => $request->kelurahan,
 
-        // Simpan banyak bidang SSW
-        if ($request->has('bidang_ssw')) {
-            foreach ($request->bidang_ssw as $bidang) {
-                BidangSsw::create([
-                    'pendaftaran_id' => $pendaftaran->id,  // <-- pastikan ini terisi
-                    'nama_bidang' => $bidang
-                ]);
+                'pendidikan_terakhir' => $request->pendidikan_terakhir,
+
+                // FILE
+                'foto' => $uploadedPaths['foto'] ?? null,
+                'kk' => $uploadedPaths['kk'] ?? null,
+                'ktp' => $uploadedPaths['ktp'] ?? null,
+                'bukti_pelunasan' => $uploadedPaths['bukti_pelunasan'] ?? null,
+                'akte' => $uploadedPaths['akte'] ?? null,
+                'ijasah' => $uploadedPaths['ijasah'] ?? null,
+                'sertifikat_jft' => $uploadedPaths['sertifikat_jft'] ?? null,
+                'sertifikat_ssw' => $uploadedPaths['sertifikat_ssw'] ?? null,
+                'paspor' => $uploadedPaths['paspor'] ?? null,
+
+                // STATUS SESUAI MIGRATION
+                'status_jft' => $statusJft,
+                'status_ssw' => $statusSsw,
+
+                'id_prometric' => $request->id_prometric,
+                'password_prometric' => $request->password_prometric,
+                'pernah_ke_jepang' => $request->pernah_ke_jepang,
+            ]);
+
+            /* =======================
+           SIMPAN BIDANG SSW
+        ======================= */
+            if ($request->filled('bidang_ssw')) {
+                foreach ($request->bidang_ssw as $bidang) {
+                    BidangSsw::create([
+                        'pendaftaran_id' => $pendaftaran->id,
+                        'nama_bidang' => $bidang,
+                    ]);
+                }
             }
+
+            $this->sendMessageToAdmin($pendaftaran);
+
+            DB::commit();
+
+            return redirect()->back()
+                ->with('success', 'Pendaftaran berhasil. Status JFT & SSW otomatis ditentukan.');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            return redirect()->back()
+                ->with('error', 'Terjadi kesalahan saat menyimpan data.');
         }
-        // ----------------------------------------------
-        // 🔥 Panggil fungsi kirim WA ke admin
-        // ----------------------------------------------
-        $this->sendMessageToAdmin($pendaftaran);
-        // ----------------------------------------------
-
-
-
-
-        // Controller Response untuk create pendaftaran biasa
-        return redirect()->back()->with('success', 'Berhasil mendaftar dan akun kandidat otomatis dibuat.');
     }
+
 
 
 
@@ -619,7 +640,6 @@ class PendaftaranController extends Controller
             'cabang_id' => 'sometimes|required|exists:cabangs,id',
             'tempat_lahir' => 'sometimes|required|string|max:255',
             'tempat_tanggal_lahir' => 'sometimes|required|date',
-            'tanggal_daftar' => 'sometimes|required|date',
 
             'id_prometric' => 'nullable|string|max:255',
             'password_prometric' => 'nullable|string|max:255',
@@ -658,6 +678,24 @@ class PendaftaranController extends Controller
         ]);
 
 
+        // STATUS JFT
+        if ($request->hasFile('sertifikat_jft')) {
+            $data['status_jft'] = 'sudah ujian jft';
+        } else {
+            // jika sebelumnya sudah ada, jangan diturunkan
+            $data['status_jft'] = $pendaftaran->sertifikat_jft
+                ? 'sudah ujian jft'
+                : 'belum ujian jft';
+        }
+
+        // STATUS SSW
+        if ($request->hasFile('sertifikat_ssw')) {
+            $data['status_ssw'] = 'sudah ujian ssw';
+        } else {
+            $data['status_ssw'] = $pendaftaran->sertifikat_ssw
+                ? 'sudah ujian ssw'
+                : 'belum ujian ssw';
+        }
         /*
     |--------------------------------------------------------------------------
     | 1. Siapkan data text (exclude file fields)
@@ -729,7 +767,19 @@ class PendaftaranController extends Controller
                 $data[$fileKey] = "dokumen/{$fileKey}/{$filename}";
             }
         }
+        // =======================
+        // AUTO UPDATE STATUS JFT & SSW
+        // =======================
 
+        // Jika upload sertifikat JFT
+        if ($request->hasFile('sertifikat_jft')) {
+            $data['status_jft'] = 'sudah ujian jft';
+        }
+
+        // Jika upload sertifikat SSW
+        if ($request->hasFile('sertifikat_ssw')) {
+            $data['status_ssw'] = 'sudah ujian ssw';
+        }
 
         /*
     |--------------------------------------------------------------------------

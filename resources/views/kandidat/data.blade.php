@@ -75,7 +75,7 @@
                             @php
                                 $statuses = [
                                     'Job Matching',
-                                    'lamar_ke_perusahaan',
+                                    'lamar ke perusahaan',
                                     'Pending',
                                     'Interview',
                                     'Gagal Interview',
@@ -189,7 +189,8 @@
                                     <td>
                                         @php
                                             $statusColors = [
-                                                'Job Matching' => 'secondary',
+                                                'Job Matching' => 'secondary', 
+                                                'lamar ke perusahaan' => 'secondary', 
                                                 'Pending' => 'warning',
                                                 'Interview' => 'info',
                                                 'Gagal Interview' => 'danger',
