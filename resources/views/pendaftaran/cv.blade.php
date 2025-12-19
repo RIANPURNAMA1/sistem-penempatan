@@ -438,7 +438,7 @@
                             </div>
                         </div>
 
-                        <form id="cvForm"  action="{{ route('pendaftaran.cv.store') }}" method="POST"
+                        <form id=""  action="{{ route('pendaftaran.cv.store') }}" method="POST"
                             enctype="multipart/form-data">
                             @method('POST')
                             @csrf

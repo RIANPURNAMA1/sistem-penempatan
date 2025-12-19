@@ -371,19 +371,14 @@ class CvController extends Controller
 
             DB::commit();
 
-            return response()->json([
-                "status" => "success",
-                "message" => "Data CV berhasil disimpan!"
-            ]);
+            // Redirect kembali dengan pesan sukses
+            return redirect()->back()->with('success', 'Data CV berhasil disimpan!');
         } catch (\Exception $e) {
 
             DB::rollBack();
 
-            return response()->json([
-                "status"  => "error",
-                "message" => "Gagal menyimpan CV.",
-                "detail"  => $e->getMessage(),
-            ], 500);
+            // Redirect kembali dengan pesan error
+            return redirect()->back()->with('error', 'Gagal menyimpan CV. Detail: ' . $e->getMessage());
         }
     }
 
