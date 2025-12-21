@@ -538,7 +538,7 @@
                                             [
                                                 'icon' => 'person-badge',
                                                 'title' => 'Lamar ke Perusahaan',
-                                                'status' => 'lamar_ke_perusahaan',
+                                                'status' => 'lamar ke perusahaan',
                                             ],
                                             [
                                                 'icon' => 'person-video3',
