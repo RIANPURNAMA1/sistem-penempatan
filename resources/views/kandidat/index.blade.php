@@ -29,6 +29,7 @@
                     <thead class="text-dark fw-bold">
                         <tr>
                             <th class="text-center">No</th>
+                            <th>Foto</th>
                             <th>Nama Kandidat</th>
                             <th>Cabang</th>
                             <th>Status Kandidat</th>
@@ -44,12 +45,16 @@
                         @foreach ($kandidats as $index => $kandidat)
                             <tr>
                                 <td class="text-center fw-semibold">{{ $index + 1 }}</td>
+                                <td>
+                                    <img src="{{ asset($kandidat->pendaftaran->foto) }}" class="rounded-circle" width="50" height="50" alt="" style="object-fit: cover">
+                                </td>
                                 <td>{{ $kandidat->pendaftaran->nama ?? '-' }}</td>
                                 <td>{{ $kandidat->cabang->nama_cabang ?? '-' }}</td>
                                 <td class="text-center">
                                     <span
                                         class="badge 
                                     {{ $kandidat->status_kandidat === 'Job Matching' ? 'bg-secondary text-white' : '' }}
+                                    {{ $kandidat->status_kandidat === 'lamar ke perusahaan' ? 'bg-secondary text-white' : '' }}
                                     {{ $kandidat->status_kandidat === 'Pending' ? 'bg-info text-dark' : '' }}
                                     {{ $kandidat->status_kandidat === 'Interview' ? 'bg-warning text-dark' : '' }}
                                     {{ $kandidat->status_kandidat === 'Gagal Interview' ? 'bg-danger' : '' }}
@@ -81,7 +86,7 @@
                                 <td class="text-center">{{ $kandidat->created_at->format('d-m-Y H:i') }}</td>
                                 <td class="text-center"><span
                                         class="badge bg-secondary">{{ $kandidat->jumlah_interview }}</span></td>
-                                <td class="text-center">
+                                <td class="text-center d-flex gap-2">
                                     <a href="{{ route('admins.dashboard.kandidat.show', $kandidat->id) }}"
                                         class="btn btn-sm btn-info text-white">
                                         <i class="bi bi-eye"></i>
@@ -181,7 +186,7 @@
         <!-- Data Table -->
         <div class="card shadow-sm">
             <div class="card-body table-responsive">
-                <table class="table table-striped nowrap" id="" style="width:100%">
+                <table class="table table-striped nowrap" id="cabang" style="width:100%">
                     <thead>
                         <tr>
                             <th>No</th>
@@ -275,7 +280,7 @@
 
                                 <td>{{ $kandidat->created_at->format('Y-m-d') }}</td>
 
-                                <td class="text-center">
+                                <td class="text-center d-flex gap-2">
                                     <a href="{{ route('admins.dashboard.kandidat.show', $kandidat->id) }}"
                                         class="btn btn-sm btn-info text-white">
                                         <i class="bi bi-eye"></i>

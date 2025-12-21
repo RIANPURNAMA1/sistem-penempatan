@@ -145,65 +145,6 @@
                         </select>
                     </div>
 
-                    <!-- Bidang SSW -->
-                    <!-- BIDANG SSW - FIXED (TANPA bidang_ssw_id) -->
-                    <div class="col-md-6">
-                        <label class="form-label fw-bold">Bidang SSW <span class="text-danger">*</span></label>
-
-                        <?php
-                        $bidang_options = ['Pengolahan makanan', 'Restoran', 'Pertanian', 'Kaigo (perawat)', 'Building cleaning', 'Driver', 'Lainnya'];
-                        $bidangSsws = $kandidat->bidang_ssws ?? collect();
-                        ?>
-
-                        <div id="bidang-wrapper">
-
-                            {{-- Loop data yang sudah ada - TANPA hidden input bidang_ssw_id --}}
-                            @foreach ($bidangSsws as $bidang)
-                                <div class="row mb-2 bidang-item align-items-center">
-                                    <div class="col-10">
-                                        <select name="bidang_ssw[]" class="form-select" required>
-                                            <option value="">-- Pilih Bidang --</option>
-                                            @foreach ($bidang_options as $option)
-                                                <option value="{{ $option }}"
-                                                    {{ $bidang->nama_bidang == $option ? 'selected' : '' }}>
-                                                    {{ $option }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-
-                                    <div class="col-2">
-                                        <button type="button" class="btn btn-danger remove-bidang"
-                                            title="Hapus Bidang Ini">
-                                            <i class="bi bi-trash-fill"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            @endforeach
-
-                            {{-- Jika data kosong, tampilkan 1 baris --}}
-                            @if ($bidangSsws->isEmpty())
-                                <div class="row mb-2 bidang-item align-items-center">
-                                    <div class="col-10">
-                                        <select name="bidang_ssw[]" class="form-select" required>
-                                            <option value="">-- Pilih Bidang --</option>
-                                            @foreach ($bidang_options as $option)
-                                                <option value="{{ $option }}">{{ $option }}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-
-                                    <div class="col-2">
-                                        <button type="button" class="btn btn-danger remove-bidang" title="Hapus Baris">
-                                            <i class="bi bi-trash-fill"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            @endif
-                        </div>
-
-                        <button type="button" id="add-bidang" class="btn btn-primary mt-2">+ Tambah Bidang</button>
-                    </div>
 
                     <!-- Cabang -->
                     <div class="col-md-12">
@@ -513,6 +454,87 @@
                         @endif
                     </div>
 
+                    <!-- BIDANG SSW - CONDITIONAL DISPLAY -->
+                    @php
+                        $bidang_options = [
+                            'Pengolahan makanan',
+                            'Restoran',
+                            'Pertanian',
+                            'Kaigo (perawat)',
+                            'Building cleaning',
+                            'Driver',
+                            'Lainnya',
+                        ];
+                        $bidangSsws = $kandidat->bidang_ssws ?? collect();
+                        $hasSertifikatSSW = !empty($kandidat->sertifikat_ssw);
+                    @endphp
+
+                    <!-- Container Bidang SSW - Hidden jika tidak ada data dan tidak ada sertifikat -->
+                    <div class="col-12 {{ $bidangSsws->isEmpty() && !$hasSertifikatSSW ? 'd-none' : '' }}"
+                        id="bidang-ssw-container" data-has-existing="{{ $hasSertifikatSSW ? 'true' : 'false' }}">
+                        <label class="form-label fw-bold">
+                            Bidang SSW
+                            <span class="text-danger" id="bidang-required-indicator">*</span>
+                        </label>
+
+                        <div class="alert alert-success py-2 small mb-3">
+                            <i class="bi bi-info-circle me-1"></i>
+                            Pilih bidang SSW yang sesuai dengan sertifikat Anda. Anda dapat menambahkan lebih dari satu
+                            bidang.
+                        </div>
+
+                        <div id="bidang-wrapper">
+                            {{-- Loop data yang sudah ada --}}
+                            @if ($bidangSsws->isNotEmpty())
+                                @foreach ($bidangSsws as $bidang)
+                                    <div class="row mb-2 bidang-item align-items-center">
+                                        <div class="col-md-11 col-12">
+                                            <select name="bidang_ssw[]" class="form-select" required>
+                                                <option value="">-- Pilih Bidang --</option>
+                                                @foreach ($bidang_options as $option)
+                                                    <option value="{{ $option }}"
+                                                        {{ $bidang->nama_bidang == $option ? 'selected' : '' }}>
+                                                        {{ $option }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+
+                                        <div class="col-md-1 col-3">
+                                            <button type="button" class="btn btn-danger w-100 remove-bidang"
+                                                title="Hapus Bidang Ini">
+                                                <i class="bi bi-trash-fill"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @else
+                                {{-- Baris default (hanya tampil jika container visible) --}}
+                                <div class="row mb-2 bidang-item align-items-center">
+                                    <div class="col-md-10 col-9">
+                                        <select name="bidang_ssw[]" class="form-select" required>
+                                            <option value="">-- Pilih Bidang --</option>
+                                            @foreach ($bidang_options as $option)
+                                                <option value="{{ $option }}">{{ $option }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-2 col-3">
+                                        <button type="button" class="btn btn-danger w-100 remove-bidang"
+                                            title="Hapus Baris">
+                                            <i class="bi bi-trash-fill"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+
+                        <button type="button" id="add-bidang" class="btn btn-primary mt-2">
+                            <i class="bi bi-plus-lg"></i> Tambah Bidang
+                        </button>
+                    </div>
+
                     <div class="col-12 mt-3">
                         <button type="submit" id="btnSubmit" class="btn btn-success py-2">
                             <i class="bi bi-save"></i> Simpan Perubahan
@@ -532,41 +554,93 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
-        document.getElementById('add-bidang').addEventListener('click', function() {
+        // Script untuk menampilkan/menyembunyikan Bidang SSW berdasarkan input Sertifikat SSW
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputSsw = document.getElementById('input-ssw');
+            const bidangContainer = document.getElementById('bidang-ssw-container');
+            const bidangSelects = document.querySelectorAll('select[name="bidang_ssw[]"]');
+            const bidangRequiredIndicator = document.getElementById('bidang-required-indicator');
 
-            let wrapper = document.getElementById('bidang-wrapper');
+            // Fungsi untuk toggle container bidang SSW
+            function toggleBidangContainer() {
+                if (inputSsw.files && inputSsw.files.length > 0) {
+                    // Jika ada file yang dipilih, tampilkan container
+                    bidangContainer.classList.remove('d-none');
 
-            // HTML baris baru
-            let row = document.createElement('div');
-            row.classList.add('row', 'mb-2', 'bidang-item');
+                    // Set required untuk semua select bidang
+                    document.querySelectorAll('select[name="bidang_ssw[]"]').forEach(function(select) {
+                        select.setAttribute('required', 'required');
+                    });
+                } else {
+                    // Jika tidak ada file, cek apakah ada sertifikat existing
+                    const hasExistingSertifikat = bidangContainer.dataset.hasExisting === 'true';
 
-            row.innerHTML = `
-        <div class="col-10">
-            <select name="bidang_ssw[]" class="form-select" required>
-                <option value="">-- Pilih Bidang --</option>
-                <option value="Pengolahan makanan">Pengolahan makanan</option>
-                <option value="Restoran">Restoran</option>
-                <option value="Pertanian">Pertanian</option>
-                <option value="Kaigo (perawat)">Kaigo (perawat)</option>
-                <option value="Building cleaning">Building cleaning</option>
-                <option value="Driver">Driver</option>
-                <option value="Lainnya">Lainnya</option>
-            </select>
-        </div>
-        <div class="col-2">
-            <button type="button" class="btn btn-danger remove-bidang"><i class="bi bi-trash-fill"></i></button>
-        </div>
-    `;
+                    if (!hasExistingSertifikat) {
+                        // Sembunyikan container jika tidak ada sertifikat existing
+                        bidangContainer.classList.add('d-none');
 
-            wrapper.appendChild(row);
-        });
-
-        // EVENT HAPUS BARIS
-        document.addEventListener('click', function(e) {
-            if (e.target.classList.contains('remove-bidang')) {
-                e.target.closest('.bidang-item').remove();
+                        // Hapus required dari semua select bidang
+                        document.querySelectorAll('select[name="bidang_ssw[]"]').forEach(function(select) {
+                            select.removeAttribute('required');
+                        });
+                    }
+                }
             }
+
+            // Event listener untuk perubahan input file
+            inputSsw.addEventListener('change', function() {
+                toggleBidangContainer();
+            });
+
+            // Tombol tambah bidang
+            document.getElementById('add-bidang').addEventListener('click', function() {
+                const bidangWrapper = document.getElementById('bidang-wrapper');
+                const newRow = document.createElement('div');
+                newRow.className = 'row mb-2 bidang-item align-items-center';
+
+                newRow.innerHTML = `
+            <div class="col-md-10 col-9">
+                <select name="bidang_ssw[]" class="form-select" required>
+                    <option value="">-- Pilih Bidang --</option>
+                    <option value="Pengolahan makanan">Pengolahan makanan</option>
+                    <option value="Restoran">Restoran</option>
+                    <option value="Pertanian">Pertanian</option>
+                    <option value="Kaigo (perawat)">Kaigo (perawat)</option>
+                    <option value="Building cleaning">Building cleaning</option>
+                    <option value="Driver">Driver</option>
+                    <option value="Lainnya">Lainnya</option>
+                </select>
+            </div>
+            <div class="col-md-2 col-3">
+                <button type="button" class="btn btn-danger w-100 remove-bidang" title="Hapus Baris">
+                    <i class="bi bi-trash-fill"></i>
+                </button>
+            </div>
+        `;
+
+                bidangWrapper.appendChild(newRow);
+            });
+
+            // Event delegation untuk tombol hapus bidang
+            document.getElementById('bidang-wrapper').addEventListener('click', function(e) {
+                if (e.target.closest('.remove-bidang')) {
+                    const bidangItem = e.target.closest('.bidang-item');
+                    const allItems = document.querySelectorAll('.bidang-item');
+
+                    // Jangan hapus jika hanya tersisa 1 item
+                    if (allItems.length > 1) {
+                        bidangItem.remove();
+                    } else {
+                        alert('Minimal harus ada satu bidang SSW!');
+                    }
+                }
+            });
+
+            // Jalankan check pertama kali saat halaman dimuat
+            toggleBidangContainer();
         });
+
+
         // preview
         function previewFile(input, previewId) {
             const preview = document.getElementById(previewId);

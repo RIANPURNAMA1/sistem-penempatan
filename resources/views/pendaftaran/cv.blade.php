@@ -1563,6 +1563,10 @@
                                             <!-- Tahun Masuk -->
                                             <div class="col-md-2">
                                                 <label class="form-label fw-bold">Tahun Masuk *</label>
+                                                    <p class="text-muted small mb-1">
+                                                    <br>
+
+                                                </p>
                                                 <input type="number" name="pendidikan_tahun_masuk[]"
                                                     class="form-control" placeholder="Contoh: 2020" required>
                                             </div>
@@ -1570,6 +1574,10 @@
                                             <!-- Tahun Lulus -->
                                             <div class="col-md-2">
                                                 <label class="form-label fw-bold">Tahun Lulus *</label>
+                                                    <p class="text-muted small mb-1">
+                                                    <br>
+
+                                                </p>
                                                 <input type="number" name="pendidikan_tahun_lulus[]"
                                                     class="form-control" placeholder="Contoh: 2024" required>
                                             </div>

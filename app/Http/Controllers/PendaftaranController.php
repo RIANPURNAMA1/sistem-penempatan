@@ -95,7 +95,7 @@ class PendaftaranController extends Controller
             'pendidikan_terakhir' => 'required|string|max:255',
 
             'bidang_ssw' => 'nullable|array',
-            'bidang_ssw.*' => 'string',
+            'bidang_ssw.*' => 'nullable|string|in:Pengolahan makanan,Restoran,Pertanian,Kaigo (perawat),Building cleaning,Driver,Lainnya',
 
             'id_prometric' => 'nullable|string|max:255',
             'password_prometric' => 'nullable|string|max:255',

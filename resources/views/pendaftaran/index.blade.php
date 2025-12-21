@@ -1,6 +1,29 @@
 @extends('layouts.app')
 
 @section('content')
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        integrity="sha512-u3eJv6TsgUsP62eFZlyDdc0AGJi/7luWGINuD/7++UZ5EONosFVJeFt3PcTJS3BM4tiTqcKoy0ucZZ+jJ7G8Aw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    @if (session('error'))
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <strong>Error:</strong> {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    @endif
+
+    @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if ($errors->any())
+        <div class="alert alert-danger">
+            {{ $errors->first() }}
+        </div>
+    @endif
+
     <div class="">
         <!-- Breadcrumb -->
         <nav aria-label="breadcrumb" class="mb-4">
@@ -255,18 +278,15 @@
                             </div>
                         </div>
 
-
-
                         <!-- ==================== Upload Dokumen ==================== -->
                         <div class="mb-4">
                             <h5 class="fw-bold border-bottom pb-2 mb-3">
                                 <i class="bi bi-folder-symlink me-2 text-primary"></i> Upload Dokumen Persyaratan
                             </h5>
 
-                            <div class="alert alert-info py-2 small">
+                            <div class="alert alert-success py-2 small">
                                 <i class="bi bi-info-circle me-1"></i>
-
-                                Jika belum memiliki <strong> Sertifikat JFT & SSW </strong> , silakan dikosongkan.
+                                Jika belum memiliki <strong> Sertifikat JFT & SSW </strong>, silakan dikosongkan.
                             </div>
 
                             <div class="row g-3">
@@ -370,11 +390,45 @@
                                         @endif
                                     </div>
                                 @endforeach
-                          
-
                             </div>
                         </div>
+                        <!-- ==================== Bidang SSW (Hidden by Default) ==================== -->
+                        <div class="mb-4 d-none" id="bidang-ssw-container">
+                            <h5 class="fw-bold border-bottom pb-2 mb-3">
+                                <i class="bi bi-bookmark-check me-2 text-success"></i> Bidang SSW
+                                <span class="badge bg-secondary ms-2">Opsional</span>
+                            </h5>
 
+                            <div class="alert alert-success py-2 small">
+                                <i class="bi bi-info-circle me-1"></i>
+                                Pilih bidang SSW yang sesuai dengan sertifikat Anda. Anda dapat menambahkan lebih dari satu
+                                bidang.
+                                <strong>Field ini opsional</strong>, boleh dikosongkan.
+                            </div>
+
+                            <div id="bidang-wrapper">
+                                <!-- Baris pertama -->
+                                <div class="row mb-2 bidang-item align-items-center">
+                                    <div class="col-md-10 col-9">
+                                        <select name="bidang_ssw[]" class="form-select" disabled>
+                                            <option value="">-- Pilih Bidang --</option>
+                                            <option value="Pengolahan makanan">Pengolahan makanan</option>
+                                            <option value="Restoran">Restoran</option>
+                                            <option value="Pertanian">Pertanian</option>
+                                            <option value="Kaigo (perawat)">Kaigo (perawat)</option>
+                                            <option value="Building cleaning">Building cleaning</option>
+                                            <option value="Driver">Driver</option>
+                                            <option value="Lainnya">Lainnya</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-2 col-3">
+                                        <button type="button" class="btn btn-success w-100" id="add-bidang">
+                                            <i class="bi bi-plus-lg"></i> Tambah
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
                         <!-- Submit -->
                         <div class="text-end mt-4">
@@ -392,70 +446,177 @@
             </div>
         </div>
     </div>
-
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const sertifikatSSW = document.getElementById('sertifikat_ssw');
             const bidangSSWContainer = document.getElementById('bidang-ssw-container');
+            const bidangWrapper = document.getElementById('bidang-wrapper');
+            const addBidangBtn = document.getElementById('add-bidang');
 
-            if (!sertifikatSSW) return;
+            // ==================== TOGGLE BIDANG SSW SAAT UPLOAD/REMOVE SERTIFIKAT ====================
+            if (sertifikatSSW && bidangSSWContainer) {
+                sertifikatSSW.addEventListener('change', function() {
+                    if (this.files && this.files.length > 0) {
+                        // Ada file - Tampilkan container bidang SSW
+                        bidangSSWContainer.classList.remove('d-none');
 
-            sertifikatSSW.addEventListener('change', function() {
-                if (this.files && this.files.length > 0) {
-                    bidangSSWContainer.classList.remove('d-none');
-                } else {
-                    bidangSSWContainer.classList.add('d-none');
+                        // Enable semua select bidang
+                        enableBidangInputs();
+
+                        // Pastikan ada minimal 1 baris
+                        ensureMinimumBidangRow();
+
+                        console.log('Sertifikat SSW uploaded - Bidang SSW container shown');
+
+                    } else {
+                        // File dihapus - Sembunyikan container bidang SSW
+                        bidangSSWContainer.classList.add('d-none');
+
+                        // Disable semua select bidang (agar tidak terkirim ke backend)
+                        disableBidangInputs();
+
+                        // Reset semua nilai select
+                        resetAllBidangSelects();
+
+                        console.log('Sertifikat SSW removed - Bidang SSW container hidden');
+                    }
+                });
+            }
+
+            // ==================== TAMBAH BIDANG SSW ====================
+            if (addBidangBtn) {
+                addBidangBtn.addEventListener('click', function() {
+                    const newRow = document.createElement('div');
+                    newRow.classList.add('row', 'mb-2', 'bidang-item', 'align-items-center');
+
+                    newRow.innerHTML = `
+                <div class="col-md-10 col-9">
+                    <select name="bidang_ssw[]" class="form-select">
+                        <option value="">-- Pilih Bidang --</option>
+                        <option value="Pengolahan makanan">Pengolahan makanan</option>
+                        <option value="Restoran">Restoran</option>
+                        <option value="Pertanian">Pertanian</option>
+                        <option value="Kaigo (perawat)">Kaigo (perawat)</option>
+                        <option value="Building cleaning">Building cleaning</option>
+                        <option value="Driver">Driver</option>
+                        <option value="Lainnya">Lainnya</option>
+                    </select>
+                </div>
+                <div class="col-md-2 col-3">
+                    <button type="button" class="btn btn-danger w-100 remove-bidang">
+                        <i class="bi bi-trash-fill"></i> Hapus
+                    </button>
+                </div>
+            `;
+
+                    bidangWrapper.appendChild(newRow);
+                    console.log('New bidang row added');
+                });
+            }
+
+            // ==================== HAPUS BIDANG SSW ====================
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('remove-bidang') ||
+                    e.target.closest('.remove-bidang')) {
+
+                    const bidangItem = e.target.closest('.bidang-item');
+                    const totalItems = bidangWrapper.querySelectorAll('.bidang-item').length;
+
+                    // Boleh hapus jika lebih dari 1 baris
+                    if (totalItems > 1) {
+                        bidangItem.remove();
+                        console.log('Bidang row removed');
+                    } else {
+                        // Jika hanya 1 baris tersisa, reset ke kosong
+                        const select = bidangItem.querySelector('select[name="bidang_ssw[]"]');
+                        if (select) {
+                            select.value = '';
+                        }
+
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'Info',
+                            text: 'Minimal harus ada 1 baris bidang. Baris telah direset ke kosong.',
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                    }
                 }
             });
-        });
-    </script>
 
+            // ==================== HELPER FUNCTIONS ====================
 
-    <script>
-        // bidang ssw
-        document.getElementById('add-bidang').addEventListener('click', function() {
-
-            let wrapper = document.getElementById('bidang-wrapper');
-
-            // HTML baris baru
-            let row = document.createElement('div');
-            row.classList.add('row', 'mb-2', 'bidang-item');
-
-            row.innerHTML = `
-        <div class="col-10">
-            <select name="bidang_ssw[]" class="form-select" required>
-                <option value="">-- Pilih Bidang --</option>
-                <option value="Pengolahan makanan">Pengolahan makanan</option>
-                <option value="Restoran">Restoran</option>
-                <option value="Pertanian">Pertanian</option>
-                <option value="Kaigo (perawat)">Kaigo (perawat)</option>
-                <option value="Building cleaning">Building cleaning</option>
-                <option value="Driver">Driver</option>
-                <option value="Lainnya">Lainnya</option>
-            </select>
-        </div>
-        <div class="col-2">
-            <button type="button" class="btn btn-danger remove-bidang"><i class="bi bi-trash-fill"></i></button>
-        </div>
-    `;
-
-            wrapper.appendChild(row);
-        });
-
-        // EVENT HAPUS BARIS
-        document.addEventListener('click', function(e) {
-            if (e.target.classList.contains('remove-bidang')) {
-                e.target.closest('.bidang-item').remove();
+            // Enable semua input bidang (TANPA set required - karena nullable)
+            function enableBidangInputs() {
+                const selects = bidangWrapper.querySelectorAll('select[name="bidang_ssw[]"]');
+                selects.forEach(select => {
+                    select.removeAttribute('disabled');
+                });
+                console.log('Bidang inputs enabled');
             }
-        });
-        document.addEventListener("DOMContentLoaded", function() {
+
+            // Disable semua input bidang (agar tidak terkirim)
+            function disableBidangInputs() {
+                const selects = bidangWrapper.querySelectorAll('select[name="bidang_ssw[]"]');
+                selects.forEach(select => {
+                    select.setAttribute('disabled', 'disabled');
+                });
+                console.log('Bidang inputs disabled');
+            }
+
+            // Pastikan minimal ada 1 baris bidang
+            function ensureMinimumBidangRow() {
+                const totalItems = bidangWrapper.querySelectorAll('.bidang-item').length;
+
+                if (totalItems === 0) {
+                    const newRow = document.createElement('div');
+                    newRow.classList.add('row', 'mb-2', 'bidang-item', 'align-items-center');
+
+                    newRow.innerHTML = `
+                <div class="col-md-10 col-9">
+                    <select name="bidang_ssw[]" class="form-select">
+                        <option value="">-- Pilih Bidang --</option>
+                        <option value="Pengolahan makanan">Pengolahan makanan</option>
+                        <option value="Restoran">Restoran</option>
+                        <option value="Pertanian">Pertanian</option>
+                        <option value="Kaigo (perawat)">Kaigo (perawat)</option>
+                        <option value="Building cleaning">Building cleaning</option>
+                        <option value="Driver">Driver</option>
+                        <option value="Lainnya">Lainnya</option>
+                    </select>
+                </div>
+                <div class="col-md-2 col-3">
+                    <button type="button" class="btn btn-success w-100" id="add-bidang">
+                        <i class="bi bi-plus-lg"></i> Tambah
+                    </button>
+                </div>
+            `;
+
+                    bidangWrapper.appendChild(newRow);
+                    console.log('Minimum bidang row ensured');
+                }
+            }
+
+            // Reset semua select ke nilai kosong
+            function resetAllBidangSelects() {
+                const selects = bidangWrapper.querySelectorAll('select[name="bidang_ssw[]"]');
+                selects.forEach(select => {
+                    select.value = '';
+                });
+                console.log('All bidang selects reset');
+            }
+
+            // ==================== FILE PREVIEW ====================
             document.querySelectorAll(".preview-input").forEach(input => {
                 input.addEventListener("change", function(e) {
                     const file = e.target.files[0];
-                    const previewId = e.target.getAttribute("data-preview");
+                    const previewId = this.getAttribute("data-preview");
                     const previewBox = document.getElementById(previewId);
+
+                    if (!previewBox) return;
 
                     previewBox.innerHTML = ""; // reset
 
@@ -463,13 +624,79 @@
 
                     const fileType = file.type;
 
-                    if (fileType.includes("image")) {
+                    if (fileType.startsWith("image/")) {
                         // Preview Gambar
                         const img = document.createElement("img");
                         img.src = URL.createObjectURL(file);
                         img.style.maxWidth = "120px";
                         img.style.maxHeight = "120px";
                         img.classList.add("rounded", "border");
+                        img.onload = () => URL.revokeObjectURL(img.src);
+                        previewBox.appendChild(img);
+
+                    } else if (fileType === "application/pdf") {
+                        // Preview PDF
+                        const objectURL = URL.createObjectURL(file);
+                        const pdfContainer = document.createElement("div");
+                        pdfContainer.className = "d-flex align-items-center";
+                        pdfContainer.innerHTML = `
+                    <i class="bi bi-file-earmark-pdf-fill text-danger fs-2 me-2"></i>
+                    <div>
+                        <small class="d-block text-muted">${file.name}</small>
+                        <a href="${objectURL}" target="_blank" class="btn btn-sm btn-primary mt-1">
+                            <i class="bi bi-eye"></i> Lihat PDF
+                        </a>
+                    </div>
+                `;
+                        previewBox.appendChild(pdfContainer);
+                    }
+                });
+            });
+        });
+
+        // preview
+        document.addEventListener("DOMContentLoaded", function() {
+            // Debug: cek apakah elemen ditemukan
+            const previewInputs = document.querySelectorAll(".preview-input");
+            console.log("Jumlah input preview:", previewInputs.length);
+
+            if (previewInputs.length === 0) {
+                console.error("Tidak ada elemen dengan class 'preview-input'!");
+                return;
+            }
+
+            previewInputs.forEach((input, index) => {
+                console.log(`Input ${index}:`, input.name, input.dataset.preview);
+
+                input.addEventListener("change", function(e) {
+                    const file = e.target.files[0];
+                    const previewId = e.target.getAttribute("data-preview");
+                    const previewBox = document.getElementById(previewId);
+
+                    console.log("File selected:", file?.name, "Preview ID:", previewId);
+
+                    if (!previewBox) {
+                        console.error(`Preview box tidak ditemukan: ${previewId}`);
+                        return;
+                    }
+
+                    previewBox.innerHTML = ""; // reset
+
+                    if (!file) return;
+
+                    const fileType = file.type;
+                    console.log("File type:", fileType);
+
+                    if (fileType.startsWith("image/")) {
+                        // Preview Gambar
+                        const img = document.createElement("img");
+                        img.src = URL.createObjectURL(file);
+                        img.style.maxWidth = "120px";
+                        img.style.maxHeight = "120px";
+                        img.classList.add("rounded", "border");
+                        img.onload = function() {
+                            URL.revokeObjectURL(this.src); // free memory
+                        };
                         previewBox.appendChild(img);
 
                     } else if (fileType === "application/pdf") {
@@ -484,121 +711,57 @@
                     </div>
                 `;
                         previewBox.appendChild(pdfIcon);
+                    } else {
+                        console.warn("File type tidak didukung:", fileType);
                     }
                 });
             });
         });
 
+        // Pindahkan kode API wilayah ke DOMContentLoaded vanilla JS
+        document.addEventListener('DOMContentLoaded', function() {
+            // Kode sertifikat SSW (sudah ada)
+            const sertifikatSSW = document.getElementById('sertifikat_ssw');
+            const bidangSSWContainer = document.getElementById('bidang-ssw-container');
 
-        $(document).ready(function() {
-
-            // FORM SUBMIT AJAX
-            $("form").on("submit", function(e) {
-                e.preventDefault();
-
-                let form = this;
-
-                // Validasi Bootstrap
-                if (!form.checkValidity()) {
-                    form.classList.add("was-validated");
-                    return;
-                }
-
-                let btn = $("#btnSubmit");
-
-                // ANIMASI LOADING
-                btn.prop("disabled", true);
-                btn.find(".btn-text").addClass("d-none");
-                btn.find(".spinner-border").removeClass("d-none");
-
-                let formData = new FormData(form);
-
-                $.ajax({
-                    url: $(form).attr("action"),
-                    type: "POST",
-                    data: formData,
-                    contentType: false,
-                    processData: false,
-                    success: function(res) {
-                        Swal.fire({
-                            icon: "success",
-                            title: "Berhasil",
-                            text: "Pendaftaran berhasil dikirim.",
-                            timer: 3000,
-                            showConfirmButton: false,
-                        }).then(() => {
-                            // Redirect ke grup WhatsApp
-                            window.location.href = "/"
-
-                        });
-
-                        // Reset form
-                        form.reset();
-                        form.classList.remove("was-validated");
-                    },
-
-                    error: function(xhr) {
-                        let message = "Terjadi kesalahan. Silakan coba lagi.";
-
-                        // Validasi Laravel (422)
-                        if (xhr.status === 422 && xhr.responseJSON?.errors?.file) {
-                            message = xhr.responseJSON.errors.file[0];
-                        }
-                        // Error custom dari backend
-                        else if (xhr.responseJSON?.message) {
-                            message = xhr.responseJSON.message;
-                        }
-                        // File dari cloud / tidak terbaca
-                        else if (xhr.status === 400 || xhr.status === 0) {
-                            message =
-                                "Upload gagal. Pastikan file PDF, JPG, atau PNG berasal dari perangkat lokal (bukan Google Drive, OneDrive, atau link cloud).";
-                        }
-
-                        Swal.fire({
-                            icon: "error",
-                            title: "Gagal Mengirim",
-                            text: message
-                        });
-                    },
-
-                    complete: function() {
-                        // KEMBALIKAN TOMBOL NORMAL
-                        btn.prop("disabled", false);
-                        btn.find(".btn-text").removeClass("d-none");
-                        btn.find(".spinner-border").addClass("d-none");
+            if (sertifikatSSW) {
+                sertifikatSSW.addEventListener('change', function() {
+                    if (this.files && this.files.length > 0) {
+                        bidangSSWContainer.classList.remove('d-none');
+                    } else {
+                        bidangSSWContainer.classList.add('d-none');
                     }
                 });
-            });
+            }
 
-
-            // Bootstrap validation
-            'use strict';
-            const forms = document.querySelectorAll('.needs-validation');
-            Array.from(forms).forEach(form => {
-                form.addEventListener('submit', function(event) {
-                    if (!form.checkValidity()) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                    }
-                    form.classList.add('was-validated');
-                }, false);
-            });
-
-            // API WILAYAH
+            // API WILAYAH - Pindahkan ke sini
             const provinsiSelect = document.getElementById('provinsi');
             const kabKotaSelect = document.getElementById('kab_kota');
             const kecamatanSelect = document.getElementById('kecamatan');
             const kelurahanSelect = document.getElementById('kelurahan');
 
-            // Ambil provinsi
+            // Pastikan semua elemen ada
+            if (!provinsiSelect || !kabKotaSelect || !kecamatanSelect || !kelurahanSelect) {
+                console.error('Elemen select tidak ditemukan!');
+                return;
+            }
+
+            // Ambil provinsi dengan error handling
             fetch('https://www.emsifa.com/api-wilayah-indonesia/api/provinces.json')
-                .then(res => res.json())
+                .then(res => {
+                    if (!res.ok) throw new Error('Gagal mengambil data provinsi');
+                    return res.json();
+                })
                 .then(data => {
                     data.forEach(p => {
-                        provinsiSelect.innerHTML +=
-                            `<option value="${p.name}" data-id="${p.id}">${p.name}</option>`;
+                        const option = document.createElement('option');
+                        option.value = p.name;
+                        option.dataset.id = p.id;
+                        option.textContent = p.name;
+                        provinsiSelect.appendChild(option);
                     });
-                });
+                })
+                .catch(err => console.error('Error loading provinces:', err));
 
             // Saat provinsi berubah
             provinsiSelect.addEventListener('change', function() {
@@ -606,17 +769,24 @@
                 kecamatanSelect.innerHTML = '<option value="">-- Pilih Kecamatan --</option>';
                 kelurahanSelect.innerHTML = '<option value="">-- Pilih Kelurahan --</option>';
 
-                const provId = this.selectedOptions[0].dataset.id;
+                const selectedOption = this.selectedOptions[0];
+                const provId = selectedOption ? selectedOption.dataset.id : null;
+
                 if (!provId) return;
 
-                fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${provId}.json`)
+                fetch(
+                        `https://www.emsifa.com/api-wilayah-indonesia/api/regencies/${provId}.json`)
                     .then(res => res.json())
                     .then(data => {
                         data.forEach(k => {
-                            kabKotaSelect.innerHTML +=
-                                `<option value="${k.name}" data-id="${k.id}">${k.name}</option>`;
+                            const option = document.createElement('option');
+                            option.value = k.name;
+                            option.dataset.id = k.id;
+                            option.textContent = k.name;
+                            kabKotaSelect.appendChild(option);
                         });
-                    });
+                    })
+                    .catch(err => console.error('Error loading regencies:', err));
             });
 
             // Saat kab/kota berubah
@@ -624,36 +794,48 @@
                 kecamatanSelect.innerHTML = '<option value="">-- Pilih Kecamatan --</option>';
                 kelurahanSelect.innerHTML = '<option value="">-- Pilih Kelurahan --</option>';
 
-                const kabId = this.selectedOptions[0].dataset.id;
+                const selectedOption = this.selectedOptions[0];
+                const kabId = selectedOption ? selectedOption.dataset.id : null;
+
                 if (!kabId) return;
 
-                fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/districts/${kabId}.json`)
+                fetch(
+                        `https://www.emsifa.com/api-wilayah-indonesia/api/districts/${kabId}.json`)
                     .then(res => res.json())
                     .then(data => {
                         data.forEach(c => {
-                            kecamatanSelect.innerHTML +=
-                                `<option value="${c.name}" data-id="${c.id}">${c.name}</option>`;
+                            const option = document.createElement('option');
+                            option.value = c.name;
+                            option.dataset.id = c.id;
+                            option.textContent = c.name;
+                            kecamatanSelect.appendChild(option);
                         });
-                    });
+                    })
+                    .catch(err => console.error('Error loading districts:', err));
             });
 
             // Saat kecamatan berubah
             kecamatanSelect.addEventListener('change', function() {
                 kelurahanSelect.innerHTML = '<option value="">-- Pilih Kelurahan --</option>';
 
-                const kecId = this.selectedOptions[0].dataset.id;
+                const selectedOption = this.selectedOptions[0];
+                const kecId = selectedOption ? selectedOption.dataset.id : null;
+
                 if (!kecId) return;
 
                 fetch(`https://www.emsifa.com/api-wilayah-indonesia/api/villages/${kecId}.json`)
                     .then(res => res.json())
                     .then(data => {
                         data.forEach(v => {
-                            kelurahanSelect.innerHTML +=
-                                `<option value="${v.name}">${v.name}</option>`;
+                            const option = document.createElement('option');
+                            option.value = v.name;
+                            option.textContent = v.name;
+                            kelurahanSelect.appendChild(option);
                         });
-                    });
+                    })
+                    .catch(err => console.error('Error loading villages:', err));
             });
-
         });
     </script>
+
 @endsection

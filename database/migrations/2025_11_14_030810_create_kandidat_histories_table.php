@@ -19,7 +19,7 @@ return new class extends Migration {
             $table->enum('status_kandidat', [
                 'Job Matching',
                 'Pending',
-                'lamar_ke_perusahaan', // <--- DITAMBAHKAN
+                'lamar ke perusahaan', // <--- DITAMBAHKAN
                 'Interview',
                 'Jadwalkan Interview Ulang',
                 'Lulus interview',

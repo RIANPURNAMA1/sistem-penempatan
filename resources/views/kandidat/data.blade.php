@@ -254,9 +254,8 @@
 
                                     <!-- Tanggal Daftar -->
                                     <td>
-                                        {{ $k->pendaftaran->tanggal_daftar
-                                            ? \Carbon\Carbon::parse($k->pendaftaran->tanggal_daftar)->format('d F Y')
-                                            : '-' }}
+                                        {{ $k->pendaftaran->created_at
+                                          }}
                                     </td>
 
                                     <!-- Jumlah Interview -->
@@ -337,7 +336,7 @@
                                     <!-- Tombol Aksi -->
                                     <td class="d-flex gap-2">
                                         <a href="{{ route('kandidat.edit', $k->id) }}"
-                                            class="btn btn-sm btn-warning text-white mb-1">
+                                            class="btn btn-sm btn-success text-white mb-1">
                                             <i class="bi bi-pencil"></i>
                                         </a>
 

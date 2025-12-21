@@ -38,8 +38,8 @@
                                 {{ $kandidat->status_kandidat == 'Job Matching' ? 'selected' : '' }}>Job Matching</option>
                             <option value="Pending" {{ $kandidat->status_kandidat == 'Pending' ? 'selected' : '' }}>Pending
                             </option>
-                            <option value="lamar_ke_perusahaan"
-                                {{ $kandidat->status_kandidat == 'lamar_ke_perusahaan' ? 'selected' : '' }}>Lamar ke
+                            <option value="lamar ke perusahaan"
+                                {{ $kandidat->status_kandidat == 'lamar ke perusahaan' ? 'selected' : '' }}>Lamar ke
                                 Perusahaan</option>
                             <option value="Interview" {{ $kandidat->status_kandidat == 'Interview' ? 'selected' : '' }}>
                                 Interview</option>
