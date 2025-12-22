@@ -72,8 +72,8 @@
                         });
                     </script>
                 @else
-                    <form action="{{ route('pendaftaran.store') }}" method="POST" enctype="multipart/form-data"
-                        class="needs-validation" novalidate>
+                    <form id="formPendaftaran" action="{{ route('pendaftaran.store') }}" method="POST"
+                        enctype="multipart/form-data" class="needs-validation" novalidate>
                         @csrf
                         @method('POST')
 
@@ -448,6 +448,76 @@
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+
+            $('#formPendaftaran').on('submit', function(e) {
+                e.preventDefault();
+
+                let form = this;
+                let formData = new FormData(form);
+
+                $.ajax({
+                    url: $(form).attr('action'),
+                    type: 'POST',
+                    data: formData,
+                    processData: false, // WAJIB utk FormData
+                    contentType: false, // WAJIB utk FormData
+                    headers: {
+                        'X-CSRF-TOKEN': $('input[name="_token"]').val()
+                    },
+                    beforeSend: function() {
+                        // loading (opsional)
+                        $('button[type="submit"]').prop('disabled', true).text('Menyimpan...');
+                    },
+                    success: function(response) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil',
+                            text: response.message ?? 'Data berhasil disimpan',
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+
+                        setTimeout(() => {
+                            location.reload();
+                        }, 2000);
+                    },
+
+                    error: function(xhr) {
+                        $('button[type="submit"]').prop('disabled', false).text('Simpan');
+
+                        if (xhr.status === 422) {
+                            let errors = xhr.responseJSON.errors;
+                            let msg = '';
+
+                            $.each(errors, function(key, value) {
+                                msg += `• ${value[0]}<br>`;
+                            });
+
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Validasi Gagal',
+                                html: msg,
+                                confirmButtonText: 'Perbaiki'
+                            });
+
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops!',
+                                text: 'Terjadi kesalahan pada server. Silakan coba lagi.'
+                            });
+                        }
+
+                    }
+                });
+            });
+
+        });
+    </script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
