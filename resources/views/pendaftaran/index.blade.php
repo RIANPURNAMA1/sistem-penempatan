@@ -410,7 +410,7 @@
                                 <!-- Baris pertama -->
                                 <div class="row mb-2 bidang-item align-items-center">
                                     <div class="col-md-10 col-9">
-                                        <select name="bidang_ssw[]" class="form-select" disabled>
+                                        <select name="bidang_ssw[]" class="form-select" disabled required>
                                             <option value="">-- Pilih Bidang --</option>
                                             <option value="Pengolahan makanan">Pengolahan makanan</option>
                                             <option value="Restoran">Restoran</option>
@@ -423,7 +423,7 @@
                                     </div>
                                     <div class="col-md-2 col-3">
                                         <button type="button" class="btn btn-success w-100" id="add-bidang">
-                                            <i class="bi bi-plus-lg"></i> Tambah
+                                            <i class="bi bi-plus-lg"></i>
                                         </button>
                                     </div>
                                 </div>
@@ -577,7 +577,7 @@
                 </div>
                 <div class="col-md-2 col-3">
                     <button type="button" class="btn btn-danger w-100 remove-bidang">
-                        <i class="bi bi-trash-fill"></i> Hapus
+                        <i class="bi bi-trash-fill"></i> 
                     </button>
                 </div>
             `;
