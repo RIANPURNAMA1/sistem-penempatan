@@ -54,7 +54,7 @@
                     </p>
                     <p class="text-sm-start text-secondary">
                         <small>Daftar Sejak:
-                            {{ $kandidat->pendaftaran->tanggal_daftar ? \Carbon\Carbon::parse($kandidat->pendaftaran->tanggal_daftar)->format('d F Y') : '-' }}</small>
+                            {{ $kandidat->pendaftaran->created_at ? \Carbon\Carbon::parse($kandidat->pendaftaran->created_at)->format('d F Y') : '-' }}</small>
                     </p>
                 </div>
 

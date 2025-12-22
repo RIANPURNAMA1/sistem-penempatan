@@ -1677,10 +1677,10 @@
         </div>
     </div>
         {{-- sertifikat --}}
-    <div class=" mt-4">
+    {{-- <div class=" mt-4">
         <div class="">
             <div class="card-body d-flex justify-content-center" style="display: flex; justify-content: center;">
-                {{-- SERTIFIKAT --}}
+     
                 <tr>
 
                     <td>
@@ -1720,7 +1720,7 @@
                 </tr>
             </div>
         </div>
-    </div>
+    </div> --}}
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>

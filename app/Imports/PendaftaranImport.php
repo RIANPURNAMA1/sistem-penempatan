@@ -86,63 +86,98 @@ class PendaftaranImport implements ToModel, WithHeadingRow
             $cabangId = Auth::user()->cabang_id ?? 1;
         }
 
-        // ========================================
-        // 5. Simpan ke database (aman untuk excel kosong)
-        // ========================================
         return new Pendaftaran([
 
-            // Identitas dasar
-            'nik'                => $get('nik', 'NIK-' . rand(100000, 999999)),
-            'nama'               => $get('nama', 'Data Kosong'),
-            'usia'               => $get('usia', 'Data Kosong'),
-            'agama'              => $get('agama', 'Data Kosong'),
-            'status'             => $get('status', 'belum menikah'),
+            // =========================
+            // Identitas dasar (WAJIB)
+            // =========================
+            'nik'   => $get('nik', 'NIK-' . rand(100000, 999999)),
+            'nama'  => $get('nama', 'Data Kosong'),
 
-            'email'              => $get('email', 'email' . rand(1000, 9999) . '@gmail.com'),
-            'no_wa'              => $get('no_wa', '080000000000'),
-            'jenis_kelamin'      => $get('jenis_kelamin', 'Laki-laki'),
+            'usia'   => $get('usia'),
+            'agama' => $get('agama'),
 
-            'tanggal_daftar'     => $tanggalDaftar,
+            // ENUM aman
+            'status' => in_array(
+                $get('status'),
+                ['belum menikah', 'menikah', 'lajang']
+            ) ? $get('status') : 'belum menikah',
 
-            // Tempat & Tanggal Lahir
+            // WAJIB di migration
+            'email' => $get('email', 'email' . rand(1000, 9999) . '@gmail.com'),
+            'no_wa' => $get('no_wa', '080000000000'),
+
+            'jenis_kelamin' => in_array(
+                $get('jenis_kelamin'),
+                ['Laki-laki', 'Perempuan']
+            ) ? $get('jenis_kelamin') : 'Laki-laki',
+
+            // =========================
+            // Tanggal & Tempat
+            // =========================
             'tempat_tanggal_lahir' => $tempatTanggalLahir,
-            'tempat_lahir'         => $get('tempat_lahir', 'Data Kosong'),
+            'tempat_lahir'         => $get('tempat_lahir'),
 
-            // Alamat & Pendidikan
-            'alamat'              => $get('alamat', 'Data Kosong'),
-            'pendidikan_terakhir' => $get('pendidikan_terakhir', 'Data Kosong'),
-          // Simpan bidang SSW tanpa memaksa value (boleh kosong total)
+            // =========================
+            // Pendidikan (WAJIB)
+            // =========================
+            'alamat'              => $get('alamat'),
+            'pendidikan_terakhir' => $get('pendidikan_terakhir', 'Tidak Diketahui'),
 
+            // =========================
+            // JANGAN DIISI → BIAR DEFAULT DB
+            // =========================
+            // status_jft
+            // status_ssw
 
-            // Lokasi administratif
-            'provinsi'            => $get('provinsi', 'Data Kosong'),
-            'kab_kota'            => $get('kab_kota', 'Data Kosong'),
-            'kecamatan'           => $get('kecamatan', 'Data Kosong'),
-            'kelurahan'           => $get('kelurahan', 'Data Kosong'),
+            // =========================
+            // Lokasi
+            // =========================
+            'provinsi'   => $get('provinsi'),
+            'kab_kota'   => $get('kab_kota'),
+            'kecamatan'  => $get('kecamatan'),
+            'kelurahan'  => $get('kelurahan'),
 
+            // =========================
             // Tambahan
-            'id_prometric'        => $get('id_prometric', '-'),
-            'password_prometric'  => $get('password_prometric', '-'),
-            'pernah_ke_jepang'    => $get('pernah_ke_jepang', 'Tidak'),
-            'paspor'              => $get('paspor', null),
+            // =========================
+            'id_prometric'       => $get('id_prometric'),
+            'password_prometric' => $get('password_prometric'),
 
-            // Dokumen file (default jika kosong)
-            'foto'               => $get('foto', 'Data Kosong'),
-            'sertifikat_jft'     => $get('sertifikat_jft', null),
-            'sertifikat_ssw'     => $get('sertifikat_ssw', null),
-            'kk'                 => $get('kk', null),
-            'ktp'                => $get('ktp', null),
-            'bukti_pelunasan'    => $get('bukti_pelunasan', null),
-            'akte'               => $get('akte', null),
-            'ijasah'             => $get('ijasah', null),
+            'pernah_ke_jepang' => in_array(
+                $get('pernah_ke_jepang'),
+                ['Ya', 'Tidak']
+            ) ? $get('pernah_ke_jepang') : 'Tidak',
 
+            'paspor' => $get('paspor'),
+
+            // =========================
+            // Dokumen
+            // =========================
+            'foto'            => $get('foto'),
+            'sertifikat_jft'  => $get('sertifikat_jft'),
+            'sertifikat_ssw'  => $get('sertifikat_ssw'),
+            'kk'              => $get('kk'),
+            'ktp'             => $get('ktp'),
+            'bukti_pelunasan' => $get('bukti_pelunasan'),
+            'akte'            => $get('akte'),
+            'ijasah'          => $get('ijasah'),
+
+            // =========================
             // Admin
-            'verifikasi'         => $get('verifikasi', 'menunggu'),
-            'catatan_admin'      => $get('catatan_admin', null),
+            // =========================
+            'verifikasi' => in_array(
+                $get('verifikasi'),
+                ['menunggu', 'data belum lengkap', 'diterima', 'ditolak']
+            ) ? $get('verifikasi') : 'menunggu',
 
+            'catatan_admin' => $get('catatan_admin'),
+
+            // =========================
             // Relasi
-            'user_id'            => $userId,
-            'cabang_id'          => $cabangId,
+            // =========================
+            'user_id'   => $userId,
+            'cabang_id' => $cabangId,
         ]);
     }
 }
