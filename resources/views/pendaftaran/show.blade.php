@@ -175,16 +175,49 @@
                             <dt class="col-sm-4">Sertifikat SSW</dt>
                             <dd class="col-sm-8">
                                 @if ($kandidat->sertifikat_ssw)
-                                    <a href="{{ asset($kandidat->sertifikat_ssw) }}" target="_blank"
-                                        class="btn btn-sm btn-outline-success">
-                                        <i class="bi bi-patch-check me-1"></i> Lihat Sertifikat
-                                    </a>
+                                    @php
+                                        // Decode JSON jika multiple files
+                                        $sertifikatFiles = is_string($kandidat->sertifikat_ssw)
+                                            ? json_decode($kandidat->sertifikat_ssw, true)
+                                            : $kandidat->sertifikat_ssw;
+
+                                        // Jika bukan array, jadikan array
+                                        if (!is_array($sertifikatFiles)) {
+                                            $sertifikatFiles = [$sertifikatFiles];
+                                        }
+                                    @endphp
+
+                                    @foreach ($sertifikatFiles as $index => $file)
+                                        <a href="{{ asset($file) }}" target="_blank"
+                                            class="btn btn-sm btn-outline-success mb-1">
+                                            <i class="bi bi-file-earmark-pdf me-1"></i>
+                                            Sertifikat {{ count($sertifikatFiles) > 1 ? $index + 1 : '' }}
+                                        </a>
+                                    @endforeach
+
                                     <span class="badge bg-success ms-2">Sudah ujian</span>
                                 @else
                                     <span class="badge bg-secondary">Belum ujian</span>
-                            
                                 @endif
                             </dd>
+
+                            {{-- ================= BIDANG SSW ================= --}}
+                            <dt class="col-sm-4">Bidang SSW</dt>
+                            <dd class="col-sm-8">
+                                @if ($kandidat->bidang_ssws && $kandidat->bidang_ssws->count() > 0)
+                                    <div class="d-flex flex-wrap gap-2">
+                                        @foreach ($kandidat->bidang_ssws as $bidang)
+                                            <span class="badge bg-primary">
+                                                <i class="bi bi-briefcase me-1"></i>
+                                                {{ $bidang->nama_bidang }}
+                                            </span>
+                                        @endforeach
+                                    </div>
+                                @else
+                                    <span class="text-muted fst-italic">Belum memilih bidang</span>
+                                @endif
+                            </dd>
+
 
                         </dl>
                     </div>
@@ -202,7 +235,6 @@
                                 $dokumen = [
                                     'Foto' => $kandidat->foto,
                                     'Sertifikat JFT' => $kandidat->sertifikat_jft,
-                                    'Sertifikat SSW' => $kandidat->sertifikat_ssw,
                                     'Kartu Keluarga (KK)' => $kandidat->kk,
                                     'KTP' => $kandidat->ktp,
                                     'Bukti Pelunasan' => $kandidat->bukti_pelunasan,

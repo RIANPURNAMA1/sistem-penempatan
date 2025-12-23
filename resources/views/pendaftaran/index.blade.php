@@ -286,7 +286,7 @@
 
                             <div class="alert alert-success py-2 small">
                                 <i class="bi bi-info-circle me-1"></i>
-                                Jika belum memiliki <strong> Sertifikat JFT & SSW </strong>, silakan dikosongkan.
+                                Jika belum memiliki <strong>Sertifikat JFT & SSW</strong>, silakan dikosongkan.
                             </div>
 
                             <div class="row g-3">
@@ -345,11 +345,10 @@
                                         [
                                             'label' => 'Sertifikat SSW',
                                             'name' => 'sertifikat_ssw',
-                                            'id' => 'sertifikat_ssw',
                                             'accept' => 'application/pdf',
                                             'format' => 'PDF',
                                             'required' => false,
-                                            'note' => 'Opsional — boleh dikosongkan jika belum memiliki',
+                                            'note' => 'Opsional — boleh upload lebih dari 1 file (PDF)',
                                         ],
                                     ];
                                 @endphp
@@ -366,8 +365,10 @@
                                         </label>
 
                                         <input type="file" class="form-control preview-input"
-                                            name="{{ $dok['name'] }}" accept="{{ $dok['accept'] }}"
-                                            id="{{ $dok['id'] ?? '' }}" data-preview="{{ $dok['name'] }}-preview"
+                                            name="{{ $dok['name'] === 'sertifikat_ssw' ? 'sertifikat_ssw[]' : $dok['name'] }}"
+                                            id="{{ $dok['name'] }}" accept="{{ $dok['accept'] }}"
+                                            data-preview="{{ $dok['name'] }}-preview"
+                                            {{ $dok['name'] === 'sertifikat_ssw' ? 'multiple' : '' }}
                                             {{ $dok['required'] ? 'required' : '' }}>
 
                                         <div class="form-text">
@@ -380,7 +381,7 @@
                                             @endisset
                                         </div>
 
-                                        <!-- Preview -->
+                                        {{-- PREVIEW --}}
                                         <div id="{{ $dok['name'] }}-preview" class="mt-2"></div>
 
                                         @if ($dok['required'])
@@ -392,6 +393,7 @@
                                 @endforeach
                             </div>
                         </div>
+
                         <!-- ==================== Bidang SSW (Hidden by Default) ==================== -->
                         <div class="mb-4 d-none" id="bidang-ssw-container">
                             <h5 class="fw-bold border-bottom pb-2 mb-3">

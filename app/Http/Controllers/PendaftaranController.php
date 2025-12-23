@@ -109,7 +109,9 @@ class PendaftaranController extends Controller
             'akte' => 'required|file|mimes:pdf|max:5120',
             'ijasah' => 'required|file|mimes:pdf|max:5120',
             'sertifikat_jft' => 'nullable|file|mimes:pdf|max:5120',
-            'sertifikat_ssw' => 'nullable|file|mimes:pdf|max:5120',
+            'sertifikat_ssw'   => 'nullable|array',
+            'sertifikat_ssw.*' => 'file|mimes:pdf|max:5120', // 5MB per file
+
             'paspor' => 'nullable|file|mimes:pdf|max:5120',
         ]);
 
@@ -117,9 +119,11 @@ class PendaftaranController extends Controller
 
         try {
             /* =======================
-           UPLOAD FILE
-        ======================= */
-            $fileFields = [
+   UPLOAD FILE
+======================= */
+
+            // ================= SINGLE FILE =================
+            $singleFileFields = [
                 'foto',
                 'kk',
                 'ktp',
@@ -127,13 +131,12 @@ class PendaftaranController extends Controller
                 'akte',
                 'ijasah',
                 'sertifikat_jft',
-                'sertifikat_ssw',
                 'paspor',
             ];
 
             $uploadedPaths = [];
 
-            foreach ($fileFields as $field) {
+            foreach ($singleFileFields as $field) {
                 if ($request->hasFile($field)) {
                     $file = $request->file($field);
                     $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
@@ -147,6 +150,27 @@ class PendaftaranController extends Controller
                     $uploadedPaths[$field] = "dokumen/{$field}/{$filename}";
                 }
             }
+
+            // ================= MULTI FILE (SSW) =================
+            if ($request->hasFile('sertifikat_ssw')) {
+                $paths = [];
+                $folder = public_path('dokumen/sertifikat_ssw');
+
+                if (!is_dir($folder)) {
+                    mkdir($folder, 0755, true);
+                }
+
+                foreach ($request->file('sertifikat_ssw') as $file) {
+                    $filename = time() . '_' . uniqid() . '.' . $file->getClientOriginalExtension();
+                    $file->move($folder, $filename);
+
+                    $paths[] = "dokumen/sertifikat_ssw/{$filename}";
+                }
+
+                // SIMPAN SEBAGAI JSON
+                $uploadedPaths['sertifikat_ssw'] = json_encode($paths);
+            }
+
 
             /* =======================
            TENTUKAN STATUS JFT & SSW

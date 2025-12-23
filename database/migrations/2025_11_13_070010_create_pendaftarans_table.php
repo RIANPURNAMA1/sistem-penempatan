@@ -57,7 +57,10 @@ return new class extends Migration
             // Dokumen upload (dibuat nullable)
             $table->string('foto')->nullable(); // FIX: Menghilangkan ->change()
             $table->string('sertifikat_jft')->nullable(); // FIX: Menghilangkan ->change()
-            $table->string('sertifikat_ssw')->nullable(); // FIX: Menghilangkan ->change()
+            // =======================
+            // FILE MULTI (JSON)
+            // =======================
+            $table->json('sertifikat_ssw')->nullable();
             $table->string('kk')->nullable(); // FIX: Menghilangkan ->change()
             $table->string('ktp')->nullable(); // FIX: Menghilangkan ->change()
             $table->string('bukti_pelunasan')->nullable(); // FIX: Menghilangkan ->change()

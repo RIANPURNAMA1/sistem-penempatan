@@ -38,6 +38,14 @@ class Pendaftaran extends Model
             : 'belum ujian ssw';
     }
 
+       // =======================
+    // CAST DATA
+    // =======================
+    protected $casts = [
+        // otomatis json_encode / json_decode
+        'sertifikat_ssw' => 'array',
+    ];
+
     // Relasi ke cabang
     public function cabang()
     {
