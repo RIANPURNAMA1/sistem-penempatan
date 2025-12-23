@@ -333,8 +333,8 @@
                     <div class="row mt-4">
 
                         <!-- =========================
-                                                                                                                                BAGIAN KIRI (CHART)
-                                                                                                                            ========================== -->
+                                                                                                                                    BAGIAN KIRI (CHART)
+                                                                                                                                ========================== -->
                         <div class="col-12 col-md-8">
                             <div class="card h-100 shadow-lg border-0 rounded-4">
 
@@ -514,6 +514,13 @@
                     </script>
                 @endif
                 @if (auth()->user()->role === 'kandidat')
+                    @if (session('success'))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            {{ session('success') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
+
                     {{-- @include('components.mobile_menu') --}}
                     <!-- Header Tabel -->
 

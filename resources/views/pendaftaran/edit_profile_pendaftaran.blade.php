@@ -21,7 +21,7 @@
 
         <div class="card shadow-md p-3 rounded-3">
 
-            <form id="edit-cv-form" action="{{ route('pendaftaran.update.profile', $kandidat->id) }}" method="POST"
+            <form action="{{ route('pendaftaran.update.profile', $kandidat->id) }}" method="POST"
                 enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
@@ -428,31 +428,43 @@
                     <!-- SSW -->
                     <div class="col-md-6">
                         <label class="form-label">Sertifikat SSW</label>
-                        <input type="file" name="sertifikat_ssw" class="form-control" id="input-ssw"
-                            onchange="previewFile(this, 'preview-ssw')">
+                        <input type="file" name="sertifikat_ssw[]" class="form-control" id="input-ssw"
+                            onchange="previewFiles(this, 'preview-ssw')" multiple>
 
                         <div id="preview-ssw" class="mt-2" style="display: none;">
                             <small class="text-muted d-block">Preview Baru:</small>
-                            <img src="" alt="Preview Sertifikat SSW" class="img-thumbnail" width="120">
-                            <a href="" target="_blank" class="btn btn-sm btn-info mt-1"
-                                style="display: none;">Lihat Dokumen</a>
+                            <div class="d-flex flex-wrap gap-2">
+                                <!-- Preview file baru akan diisi oleh JS -->
+                            </div>
                         </div>
 
                         @if ($kandidat->sertifikat_ssw)
-                            <div class="mt-2">
-                                <small class="text-muted d-block">Preview Saat Ini:</small>
-                                @if (in_array(pathinfo($kandidat->sertifikat_ssw, PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png', 'gif', 'webp']))
-                                    <img src="{{ asset($kandidat->sertifikat_ssw) }}" alt="Sertifikat SSW"
-                                        class="img-thumbnail" width="120">
-                                @else
-                                    <a href="{{ asset($kandidat->sertifikat_ssw) }}" target="_blank"
-                                        class="btn btn-sm btn-warning mt-1">
-                                        Lihat Dokumen
-                                    </a>
-                                @endif
-                            </div>
+                            @php
+                                $sswFiles = json_decode($kandidat->sertifikat_ssw, true) ?? [];
+                            @endphp
+                            @if (count($sswFiles) > 0)
+                                <div class="mt-2">
+                                    <small class="text-muted d-block">Preview Saat Ini:</small>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        @foreach ($sswFiles as $file)
+                                            @if (in_array(pathinfo($file, PATHINFO_EXTENSION), ['jpg', 'jpeg', 'png', 'gif', 'webp']))
+                                                <img src="{{ asset($file) }}" alt="Sertifikat SSW"
+                                                    class="img-thumbnail" width="120">
+                                            @else
+                                                <a href="{{ asset($file) }}" target="_blank"
+                                                    class="btn btn-sm btn-warning mt-1">
+                                                    Lihat Dokumen
+                                                </a>
+                                            @endif
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endif
                         @endif
+
                     </div>
+
+
 
                     <!-- BIDANG SSW - CONDITIONAL DISPLAY -->
                     @php
@@ -552,8 +564,34 @@
     <!-- jQuery & SweetAlert -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <script>
+        function previewFiles(input, previewId) {
+            const previewContainer = document.getElementById(previewId);
+            const wrapper = previewContainer.querySelector('div');
+            wrapper.innerHTML = ''; // clear previous preview
+            if (input.files.length > 0) {
+                previewContainer.style.display = 'block';
+                Array.from(input.files).forEach(file => {
+                    const ext = file.name.split('.').pop().toLowerCase();
+                    if (['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) {
+                        const img = document.createElement('img');
+                        img.src = URL.createObjectURL(file);
+                        img.className = 'img-thumbnail';
+                        img.width = 120;
+                        wrapper.appendChild(img);
+                    } else {
+                        const link = document.createElement('a');
+                        link.href = '#';
+                        link.textContent = 'Preview ' + file.name;
+                        link.className = 'btn btn-sm btn-info mt-1';
+                        wrapper.appendChild(link);
+                    }
+                });
+            } else {
+                previewContainer.style.display = 'none';
+            }
+        }
+
         // Script untuk menampilkan/menyembunyikan Bidang SSW berdasarkan input Sertifikat SSW
         document.addEventListener('DOMContentLoaded', function() {
             const inputSsw = document.getElementById('input-ssw');
@@ -794,7 +832,7 @@
 
         $(document).ready(function() {
 
-            $('#btnSubmit').on('click', function(e) {
+            $('#').on('click', function(e) {
                 e.preventDefault();
                 let btn = $(this);
                 let form = $('#edit-cv-form')[0];

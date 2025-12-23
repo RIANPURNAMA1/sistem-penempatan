@@ -318,7 +318,9 @@ class DashboardController extends Controller
             'akte' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
             'ijasah' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
             'sertifikat_jft' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
-            'sertifikat_ssw' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+            'sertifikat_ssw' => 'nullable|array',
+            'sertifikat_ssw.*' => 'file|mimes:jpg,jpeg,png,pdf|max:5120',
+
         ], [
             // Pesan error
             'file.max' => 'Ukuran file melebihi batas.',
@@ -379,7 +381,6 @@ class DashboardController extends Controller
             'akte',
             'ijasah',
             'sertifikat_jft',
-            'sertifikat_ssw',
             'paspor'
         ];
 
@@ -417,6 +418,25 @@ class DashboardController extends Controller
                 $data[$fileKey] = "dokumen/{$fileKey}/{$filename}";
             }
         }
+        if ($request->hasFile('sertifikat_ssw')) {
+            $files = [];
+            foreach ($request->file('sertifikat_ssw') as $file) {
+                // skip jika bukan file valid
+                if (!$file instanceof \Illuminate\Http\UploadedFile) {
+                    continue;
+                }
+
+                $filename = time() . '_' . $file->getClientOriginalName();
+                $destination = public_path("dokumen/sertifikat_ssw");
+                if (!file_exists($destination)) mkdir($destination, 0777, true);
+                $file->move($destination, $filename);
+                $files[] = "dokumen/sertifikat_ssw/{$filename}";
+            }
+
+            if (!empty($files)) {
+                $pendaftaran->sertifikat_ssw = json_encode($files);
+            }
+        }
 
         // =======================
         // AUTO UPDATE STATUS JFT & SSW
@@ -431,6 +451,9 @@ class DashboardController extends Controller
         if ($request->hasFile('sertifikat_ssw')) {
             $data['status_ssw'] = 'sudah ujian ssw';
         }
+
+
+
 
         /*
     |--------------------------------------------------------------------------
