@@ -356,18 +356,18 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
         @endif
-        
-        @if (session('success'))
-    <div class="alert alert-success">
-        {{ session('success') }}
-    </div>
-@endif
 
-@if ($errors->any())
-    <div class="alert alert-danger">
-        {{ $errors->first() }}
-    </div>
-@endif
+        @if (session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                {{ $errors->first() }}
+            </div>
+        @endif
 
 
         <!-- Breadcrumb -->
@@ -438,7 +438,7 @@
                             </div>
                         </div>
 
-                        <form id=""  action="{{ route('pendaftaran.cv.store') }}" method="POST"
+                        <form id="" action="{{ route('pendaftaran.cv.store') }}" method="POST"
                             enctype="multipart/form-data">
                             @method('POST')
                             @csrf
@@ -499,7 +499,8 @@
                                             {{-- No Orang Tua --}}
                                             <label class="form-label fw-semibold mt-3">No Orang Tua (Opsional)</label>
                                             <input type="text" name="no_orang_tua" class="form-control"
-                                                placeholder="Masukkan No Orang Tua" value="{{ old('no_orang_tua') }}" required>
+                                                placeholder="Masukkan No Orang Tua" value="{{ old('no_orang_tua') }}"
+                                                required>
                                         </div>
 
                                         <div class="col-md-6">
@@ -563,7 +564,8 @@
 
                                             {{-- Upload Sertifikat --}}
                                             <label class="form-label fw-semibold mt-3">
-                                                Silahkan upload sertifikat yang dimiliki JFT dan SSW (PDF/JPG/PNG, Max 10MB, Min 3 File), Jika belum punya boleh kosongkan saja 
+                                                Silahkan upload sertifikat yang dimiliki JFT dan SSW (PDF/JPG/PNG, Max 10MB,
+                                                Min 3 File), Jika belum punya boleh kosongkan saja
                                             </label>
                                             <p></p>
 
@@ -587,8 +589,8 @@
                                         <div class="row g-3">
                                             <div class="col-md-6">
                                                 <!-- ======================================================
-                                                                                                                                                                                                 MULTI FILE: pas_foto[]
-                                                                                                                                                                                            ====================================================== -->
+                                                                                                                                                                                                     MULTI FILE: pas_foto[]
+                                                                                                                                                                                                ====================================================== -->
                                                 <label class="form-label fw-semibold mb-1">
                                                     Silahkan upload dokumen / foto tambahan 👇
                                                 </label>
@@ -607,8 +609,8 @@
                                                 <div id="previewPasFoto" class="mt-3 d-flex flex-wrap gap-3"></div>
 
                                                 <!-- ======================================================
-                                                                                                                                                                                                 SINGLE FILE: pas_foto_cv
-                                                                                                                                                                                            ====================================================== -->
+                                                                                                                                                                                                     SINGLE FILE: pas_foto_cv
+                                                                                                                                                                                                ====================================================== -->
                                                 <label class="form-label fw-semibold mb-1 mt-4">
                                                     Silahkan upload pas foto untuk CV Anda 👇
                                                 </label>
@@ -1224,7 +1226,7 @@
                                                         jika tidak ada kosongkan
                                                     </p>
                                                     <input type="text" name="Biaya_keberangkatan_sebelumnya_jisshu"
-                                                        class="form-control" placeholder="Contoh: 25.000.000" >
+                                                        class="form-control" placeholder="Contoh: 25.000.000">
                                                 </div>
 
 
@@ -1563,7 +1565,7 @@
                                             <!-- Tahun Masuk -->
                                             <div class="col-md-2">
                                                 <label class="form-label fw-bold">Tahun Masuk *</label>
-                                                    <p class="text-muted small mb-1">
+                                                <p class="text-muted small mb-1">
                                                     <br>
 
                                                 </p>
@@ -1574,7 +1576,7 @@
                                             <!-- Tahun Lulus -->
                                             <div class="col-md-2">
                                                 <label class="form-label fw-bold">Tahun Lulus *</label>
-                                                    <p class="text-muted small mb-1">
+                                                <p class="text-muted small mb-1">
                                                     <br>
 
                                                 </p>
@@ -1865,7 +1867,8 @@
                                             {{-- Komentar guru ttg kelebihan --}}
                                             <label class="form-label mt-2">Komentar Guru tentang Kelebihan Anda</label>
                                             <p>Jika tidak ada cukup isi - saja atau jawab tidak ada </p>
-                                            <textarea name="komentar_guru_kelebihan_diri" class="form-control" placeholder="Contoh: 真面目で、毎日一生懸命頑張っています。" required>{{ old('komentar_guru_kelebihan_diri') }}</textarea>
+                                            <textarea name="komentar_guru_kelebihan_diri" class="form-control" placeholder="Contoh: 真面目で、毎日一生懸命頑張っています。"
+                                                required>{{ old('komentar_guru_kelebihan_diri') }}</textarea>
 
                                             {{-- Kekurangan --}}
                                             <label class="form-label mt-2">Kekurangan Diri <span
@@ -1874,8 +1877,9 @@
 
                                             {{-- Komentar guru ttg kekurangan --}}
                                             <label class="form-label mt-2">Komentar Guru tentang Kekurangan Anda</label>
-                                               <p>Jika tidak ada cukup isi - saja atau jawab tidak ada </p>
-                                            <textarea name="komentar_guru_kekurangan_diri" class="form-control" placeholder="Contoh: もっと集中力を高める必要があります。" required>{{ old('komentar_guru_kekurangan_diri') }}</textarea>
+                                            <p>Jika tidak ada cukup isi - saja atau jawab tidak ada </p>
+                                            <textarea name="komentar_guru_kekurangan_diri" class="form-control" placeholder="Contoh: もっと集中力を高める必要があります。"
+                                                required>{{ old('komentar_guru_kekurangan_diri') }}</textarea>
 
                                             {{-- Ketertarikan terhadap Jepang --}}
                                             <label class="form-label mt-2">Ketertarikan terhadap Jepang <span
@@ -1884,7 +1888,7 @@
 
                                             {{-- Orang yang dihormati --}}
                                             <label class="form-label mt-2">Orang yang Dihormati dan Alasannya</label>
-                                              <p>Jika tidak ada cukup isi - saja atau jawab tidak ada </p>
+                                            <p>Jika tidak ada cukup isi - saja atau jawab tidak ada </p>
                                             <textarea name="orang_yang_dihormati" class="form-control" placeholder="Contoh: 両親です。いつも支えてくれました。" required>{{ old('orang_yang_dihormati') }}</textarea>
 
                                             {{-- Point plus --}}
@@ -1933,15 +1937,18 @@
 
                                             {{-- ANAK --}}
                                             <label class="form-label fw-bold">Anak</label>
+                                            <p>Jika memiliki lebih dari satu anak, silakan isi secara berurutan (misalnya:
+                                                anak 1, anak 2).</p>
                                             <input type="text" name="anak_nama" class="form-control mb-2"
                                                 placeholder="Nama Anak" value="{{ old('anak_nama') }}">
                                             <input type="text" name="anak_jenis_kelamin" class="form-control mb-2"
-                                                placeholder="Jenis Kelamin (例：男/女)"
+                                                placeholder="Jenis Kelamin (例：男 / 女)"
                                                 value="{{ old('anak_jenis_kelamin') }}">
                                             <input type="text" name="anak_usia" class="form-control mb-2"
                                                 placeholder="Usia" value="{{ old('anak_usia') }}">
                                             <input type="text" name="anak_pendidikan" class="form-control mb-3"
                                                 placeholder="Pendidikan" value="{{ old('anak_pendidikan') }}">
+
 
                                             {{-- IBU --}}
                                             <label class="form-label fw-bold">Ibu <span
@@ -1970,6 +1977,8 @@
 
                                             {{-- KAKAK --}}
                                             <label class="form-label fw-bold">Kakak</label>
+                                            <p>Jika memiliki lebih dari satu kakak, silakan isi secara berurutan (misalnya:
+                                                kakak 1, kakak 2).</p>
                                             <input type="text" name="kakak_nama" class="form-control mb-2"
                                                 placeholder="Nama Kakak" value="{{ old('kakak_nama') }}">
                                             <input type="text" name="kakak_usia" class="form-control mb-2"
@@ -1984,6 +1993,8 @@
 
                                             {{-- ADIK --}}
                                             <label class="form-label fw-bold">Adik</label>
+                                            <p>Jika memiliki lebih dari satu adik, silakan isi secara berurutan (misalnya:
+                                                adik 1, adik 2).</p>
                                             <input type="text" name="adik_nama" class="form-control mb-2"
                                                 placeholder="Nama Adik" value="{{ old('adik_nama') }}">
                                             <input type="text" name="adik_usia" class="form-control mb-2"
@@ -1995,6 +2006,7 @@
                                                 placeholder="Pekerjaan" value="{{ old('adik_pekerjaan') }}">
                                             <input type="text" name="adik_status" class="form-control mb-3"
                                                 placeholder="Status (例：実弟 / 義弟 / なし)" value="{{ old('adik_status') }}">
+
 
                                             {{-- PENGHASILAN KELUARGA --}}
                                             <label class="form-label fw-bold">Rata-rata Penghasilan Keluarga per Bulan (円)
@@ -2996,96 +3008,96 @@
                 }
             });
 
-// =============== CLIENT-SIDE VALIDATION + LOADING BUTTON ===============
-// $('#cvForm').on('submit', function (e) {
-//     e.preventDefault();
+            // =============== CLIENT-SIDE VALIDATION + LOADING BUTTON ===============
+            // $('#cvForm').on('submit', function (e) {
+            //     e.preventDefault();
 
-//     let form = this;
+            //     let form = this;
 
-//     // VALIDASI HTML5
-//     if (!form.checkValidity()) {
-//         form.classList.add('was-validated');
-//         return;
-//     }
+            //     // VALIDASI HTML5
+            //     if (!form.checkValidity()) {
+            //         form.classList.add('was-validated');
+            //         return;
+            //     }
 
-//     let formData = new FormData(form);
+            //     let formData = new FormData(form);
 
-//     $.ajax({
-//         url: form.action,
-//         type: 'POST',
-//         data: formData,
-//         processData: false,
-//         contentType: false,
+            //     $.ajax({
+            //         url: form.action,
+            //         type: 'POST',
+            //         data: formData,
+            //         processData: false,
+            //         contentType: false,
 
-//         beforeSend: function () {
-//             // Tombol loading
-//             $('#submitBtn').prop('disabled', true);
-//             $('#btnText').addClass('d-none');
-//             $('#btnLoading').removeClass('d-none');
+            //         beforeSend: function () {
+            //             // Tombol loading
+            //             $('#submitBtn').prop('disabled', true);
+            //             $('#btnText').addClass('d-none');
+            //             $('#btnLoading').removeClass('d-none');
 
-//             // Reset error
-//             $('.is-invalid').removeClass('is-invalid');
-//             $('.invalid-feedback').remove();
-//         },
+            //             // Reset error
+            //             $('.is-invalid').removeClass('is-invalid');
+            //             $('.invalid-feedback').remove();
+            //         },
 
-//         success: function (response) {
-//             Swal.fire({
-//                 icon: 'success',
-//                 title: 'Berhasil!',
-//                 text: response.message || 'Data berhasil dikirim',
-//                 timer: 1800,
-//                 showConfirmButton: false
-//             });
+            //         success: function (response) {
+            //             Swal.fire({
+            //                 icon: 'success',
+            //                 title: 'Berhasil!',
+            //                 text: response.message || 'Data berhasil dikirim',
+            //                 timer: 1800,
+            //                 showConfirmButton: false
+            //             });
 
-//             // Kembalikan tombol (jaga-jaga)
-//             $('#submitBtn').prop('disabled', false);
-//             $('#btnText').removeClass('d-none');
-//             $('#btnLoading').addClass('d-none');
+            //             // Kembalikan tombol (jaga-jaga)
+            //             $('#submitBtn').prop('disabled', false);
+            //             $('#btnText').removeClass('d-none');
+            //             $('#btnLoading').addClass('d-none');
 
-//             setTimeout(() => {
-//                 window.location.href = response.redirect ?? '/';
-//             }, 1500);
-//         },
+            //             setTimeout(() => {
+            //                 window.location.href = response.redirect ?? '/';
+            //             }, 1500);
+            //         },
 
-//         error: function (xhr) {
-//             // Reset tombol
-//             $('#submitBtn').prop('disabled', false);
-//             $('#btnText').removeClass('d-none');
-//             $('#btnLoading').addClass('d-none');
+            //         error: function (xhr) {
+            //             // Reset tombol
+            //             $('#submitBtn').prop('disabled', false);
+            //             $('#btnText').removeClass('d-none');
+            //             $('#btnLoading').addClass('d-none');
 
-//             if (xhr.status === 422) {
-//                 let errors = xhr.responseJSON.errors;
+            //             if (xhr.status === 422) {
+            //                 let errors = xhr.responseJSON.errors;
 
-//                 $.each(errors, function (field, messages) {
-//                     // Support field array & dot notation
-//                     let input = $('[name="' + field + '"]').length
-//                         ? $('[name="' + field + '"]')
-//                         : $('[name="' + field.replace(/\.\d+/, '[]') + '"]');
+            //                 $.each(errors, function (field, messages) {
+            //                     // Support field array & dot notation
+            //                     let input = $('[name="' + field + '"]').length
+            //                         ? $('[name="' + field + '"]')
+            //                         : $('[name="' + field.replace(/\.\d+/, '[]') + '"]');
 
-//                     input.addClass('is-invalid');
+            //                     input.addClass('is-invalid');
 
-//                     input.after(`
-//                         <div class="invalid-feedback">
-//                             ${messages[0]}
-//                         </div>
-//                     `);
-//                 });
+            //                     input.after(`
+        //                         <div class="invalid-feedback">
+        //                             ${messages[0]}
+        //                         </div>
+        //                     `);
+            //                 });
 
-//                 Swal.fire({
-//                     icon: 'error',
-//                     title: 'Validasi Gagal',
-//                     text: 'Silakan periksa kembali isian Anda.',
-//                 });
-//             } else {
-//                 Swal.fire({
-//                     icon: 'error',
-//                     title: 'Gagal Mengirim',
-//                     text: 'Data atau file tidak terbaca oleh server. Pastikan file berasal dari perangkat lokal (bukan Google Drive, OneDrive, atau link cloud).',
-//                 });
-//             }
-//         }
-//     });
-// });
+            //                 Swal.fire({
+            //                     icon: 'error',
+            //                     title: 'Validasi Gagal',
+            //                     text: 'Silakan periksa kembali isian Anda.',
+            //                 });
+            //             } else {
+            //                 Swal.fire({
+            //                     icon: 'error',
+            //                     title: 'Gagal Mengirim',
+            //                     text: 'Data atau file tidak terbaca oleh server. Pastikan file berasal dari perangkat lokal (bukan Google Drive, OneDrive, atau link cloud).',
+            //                 });
+            //             }
+            //         }
+            //     });
+            // });
 
 
 
