@@ -71,49 +71,107 @@ class PendaftaranController extends Controller
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'nik' => 'required|string|size:16|unique:pendaftarans,nik',
-            'nama' => 'required|string|max:255',
-            'usia' => 'nullable|string|max:255',
-            'agama' => 'nullable|string|max:255',
-            'status' => 'nullable|in:belum menikah,menikah,lajang',
-            'email' => 'required|email|max:255|unique:pendaftarans,email',
-            'no_wa' => ['required', 'string', 'max:15', 'regex:/^08\d{8,12}$/'],
-            'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
+        $validated = $request->validate(
+            [
+                'nik' => 'required|string|size:16|unique:pendaftarans,nik',
+                'nama' => 'required|string|max:255',
+                'usia' => 'nullable|string|max:255',
+                'agama' => 'nullable|string|max:255',
+                'status' => 'nullable|in:belum menikah,menikah,lajang',
+                'email' => 'required|email|max:255|unique:pendaftarans,email',
+                'no_wa' => ['required', 'string', 'max:15', 'regex:/^08\d{8,12}$/'],
+                'jenis_kelamin' => 'required|in:Laki-laki,Perempuan',
 
-            'alamat' => 'nullable|string',
-            'provinsi' => 'nullable|string|max:100',
-            'kab_kota' => 'nullable|string|max:100',
-            'kecamatan' => 'nullable|string|max:100',
-            'kelurahan' => 'nullable|string|max:100',
+                'alamat' => 'nullable|string',
+                'provinsi' => 'nullable|string|max:100',
+                'kab_kota' => 'nullable|string|max:100',
+                'kecamatan' => 'nullable|string|max:100',
+                'kelurahan' => 'nullable|string|max:100',
 
-            'cabang_id' => 'required|exists:cabangs,id',
+                'cabang_id' => 'required|exists:cabangs,id',
 
-            'tempat_lahir' => 'nullable|string|max:255',
-            'tempat_tanggal_lahir' => 'nullable|date',
+                'tempat_lahir' => 'nullable|string|max:255',
+                'tempat_tanggal_lahir' => 'nullable|date',
 
-            'pendidikan_terakhir' => 'required|string|max:255',
+                'pendidikan_terakhir' => 'required|string|max:255',
 
-            'bidang_ssw' => 'nullable|array',
-            'bidang_ssw.*' => 'nullable|string|in:Pengolahan makanan,Restoran,Pertanian,Kaigo (perawat),Building cleaning,Driver,Lainnya',
+                'bidang_ssw' => 'nullable|array',
+                'bidang_ssw.*' => 'nullable|string|in:Pengolahan makanan,Restoran,Pertanian,Kaigo (perawat),Building cleaning,Driver,Lainnya',
 
-            'id_prometric' => 'nullable|string|max:255',
-            'password_prometric' => 'nullable|string|max:255',
-            'pernah_ke_jepang' => 'required|in:Ya,Tidak',
+                'id_prometric' => 'nullable|string|max:255',
+                'password_prometric' => 'nullable|string|max:255',
+                'pernah_ke_jepang' => 'required|in:Ya,Tidak',
 
-            // FILE
-            'foto' => 'required|image|mimes:jpg,jpeg,png|max:3072',
-            'kk' => 'required|file|mimes:pdf|max:5120',
-            'ktp' => 'required|file|mimes:pdf|max:5120',
-            'bukti_pelunasan' => 'required|file|mimes:pdf|max:5120',
-            'akte' => 'required|file|mimes:pdf|max:5120',
-            'ijasah' => 'required|file|mimes:pdf|max:5120',
-            'sertifikat_jft' => 'nullable|file|mimes:pdf|max:5120',
-            'sertifikat_ssw'   => 'nullable|array',
-            'sertifikat_ssw.*' => 'file|mimes:pdf|max:5120', // 5MB per file
+                // FILE
+                'foto' => 'required|image|mimes:jpg,jpeg,png|max:3072',
+                'kk' => 'required|file|mimes:pdf|max:5120',
+                'ktp' => 'required|file|mimes:pdf|max:5120',
+                'bukti_pelunasan' => 'required|file|mimes:pdf|max:5120',
+                'akte' => 'required|file|mimes:pdf|max:5120',
+                'ijasah' => 'required|file|mimes:pdf|max:5120',
+                'sertifikat_jft' => 'nullable|file|mimes:pdf|max:5120',
+                'sertifikat_ssw' => 'nullable|array',
+                'sertifikat_ssw.*' => 'file|mimes:pdf|max:5120',
+                'paspor' => 'nullable|file|mimes:pdf|max:5120',
+            ],
+            [
+                // REQUIRED
+                'required' => ':attribute wajib diisi.',
+                'email.email' => 'Format email tidak valid.',
+                'email.unique' => 'Email sudah terdaftar.',
+                'nik.unique' => 'NIK sudah terdaftar.',
+                'nik.size' => 'NIK harus terdiri dari 16 digit.',
 
-            'paspor' => 'nullable|file|mimes:pdf|max:5120',
-        ]);
+                // ENUM / IN
+                'status.in' => 'Status perkawinan tidak valid.',
+                'jenis_kelamin.in' => 'Jenis kelamin harus Laki-laki atau Perempuan.',
+                'pernah_ke_jepang.in' => 'Pilihan pernah ke Jepang tidak valid.',
+
+                // REGEX
+                'no_wa.regex' => 'Nomor WhatsApp harus diawali 08 dan berjumlah 10–14 digit.',
+
+                // FILE
+                'image' => ':attribute harus berupa gambar.',
+                'mimes' => ':attribute harus berformat :values.',
+                'max' => ':attribute maksimal berukuran :max KB.',
+
+                // ARRAY
+                'bidang_ssw.array' => 'Bidang SSW harus berupa pilihan.',
+                'bidang_ssw.*.in' => 'Bidang SSW yang dipilih tidak valid.',
+            ],
+            [
+                // LABEL FIELD (BIAR LEBIH MANUSIAWI)
+                'nik' => 'NIK',
+                'nama' => 'Nama Lengkap',
+                'usia' => 'Usia',
+                'agama' => 'Agama',
+                'status' => 'Status Perkawinan',
+                'email' => 'Email',
+                'no_wa' => 'Nomor WhatsApp',
+                'jenis_kelamin' => 'Jenis Kelamin',
+                'alamat' => 'Alamat',
+                'provinsi' => 'Provinsi',
+                'kab_kota' => 'Kabupaten/Kota',
+                'kecamatan' => 'Kecamatan',
+                'kelurahan' => 'Kelurahan',
+                'cabang_id' => 'Cabang',
+                'tempat_lahir' => 'Tempat Lahir',
+                'tempat_tanggal_lahir' => 'Tanggal Lahir',
+                'pendidikan_terakhir' => 'Pendidikan Terakhir',
+                'bidang_ssw' => 'Bidang SSW',
+                'pernah_ke_jepang' => 'Pernah ke Jepang',
+                'foto' => 'Foto',
+                'kk' => 'Kartu Keluarga',
+                'ktp' => 'KTP',
+                'bukti_pelunasan' => 'Bukti Pelunasan',
+                'akte' => 'Akta Kelahiran',
+                'ijasah' => 'Ijazah',
+                'sertifikat_jft' => 'Sertifikat JFT',
+                'sertifikat_ssw' => 'Sertifikat SSW',
+                'paspor' => 'Paspor',
+            ]
+        );
+
 
         DB::beginTransaction();
 

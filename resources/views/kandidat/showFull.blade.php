@@ -101,7 +101,7 @@
 
                                     <dt class="col-sm-5 text-sm-end">Tgl Daftar:</dt>
                                     <dd class="col-sm-7">
-                                        {{ $kandidat->pendaftaran->tanggal_daftar ? \Carbon\Carbon::parse($kandidat->pendaftaran->tanggal_daftar)->format('d F Y') : '-' }}
+                                        {{ $kandidat->pendaftaran->created_at ? \Carbon\Carbon::parse($kandidat->pendaftaran->created_at)->format('d F Y') : '-' }}
                                     </dd>
 
                                     <dt class="col-sm-5 text-sm-end">Agama:</dt>
@@ -188,12 +188,13 @@
 
                             <div class="col-md-6">
                                 <h6 class="text-primary mb-3">Status Dokumen Upload</h6>
+
                                 <div class="row small">
                                     @php
                                         $dokumen = [
                                             'Foto' => 'foto',
                                             'Sertifikat JFT' => 'sertifikat_jft',
-                                            'Sertifikat SSW' => 'sertifikat_ssw',
+                                            'Sertifikat SSW' => 'sertifikat_ssw', // ARRAY / STRING / JSON
                                             'Kartu Keluarga (KK)' => 'kk',
                                             'KTP' => 'ktp',
                                             'Akte Kelahiran' => 'akte',
@@ -201,25 +202,64 @@
                                             'Bukti Pelunasan' => 'bukti_pelunasan',
                                         ];
                                     @endphp
+
                                     @foreach ($dokumen as $label => $field)
                                         <div class="col-md-6">
                                             <dl class="row mb-1">
                                                 <dt class="col-sm-7">{{ $label }}:</dt>
+
                                                 <dd class="col-sm-5 text-end">
-                                                    @if ($kandidat->pendaftaran->$field)
-                                                        <a href="{{ asset($kandidat->pendaftaran->$field) }}"
-                                                            target="_blank" class="text-success" title="Lihat Dokumen">
-                                                            <i class="fas fa-check-circle"></i>
-                                                        </a>
+
+                                                    {{-- ================= SERTIFIKAT SSW ================= --}}
+                                                    @if ($field === 'sertifikat_ssw')
+                                                        @php
+                                                            $raw = $kandidat->pendaftaran->sertifikat_ssw ?? null;
+
+                                                            // NORMALISASI DATA → PASTI ARRAY
+                                                            if (is_string($raw)) {
+                                                                $decoded = json_decode($raw, true);
+                                                                $files = is_array($decoded) ? $decoded : [$raw];
+                                                            } elseif (is_array($raw)) {
+                                                                $files = $raw;
+                                                            } else {
+                                                                $files = [];
+                                                            }
+                                                        @endphp
+
+                                                        @if (!empty($files))
+                                                            @foreach ($files as $index => $file)
+                                                                @if (!empty($file))
+                                                                    <a href="{{ asset($file) }}" target="_blank"
+                                                                        class="text-success me-1"
+                                                                        title="Lihat Sertifikat {{ $index + 1 }}">
+                                                                        <i class="fas fa-check-circle"></i>
+                                                                    </a>
+                                                                @endif
+                                                            @endforeach
+                                                        @else
+                                                            <i class="fas fa-times-circle text-danger"></i>
+                                                        @endif
+
+                                                        {{-- ================= DOKUMEN SINGLE FILE ================= --}}
                                                     @else
-                                                        <i class="fas fa-times-circle text-danger"></i>
+                                                        @if (!empty($kandidat->pendaftaran->$field))
+                                                            <a href="{{ asset($kandidat->pendaftaran->$field) }}"
+                                                                target="_blank" class="text-success"
+                                                                title="Lihat Dokumen">
+                                                                <i class="fas fa-check-circle"></i>
+                                                            </a>
+                                                        @else
+                                                            <i class="fas fa-times-circle text-danger"></i>
+                                                        @endif
                                                     @endif
+
                                                 </dd>
                                             </dl>
                                         </div>
                                     @endforeach
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -316,7 +356,7 @@
                                 <dl class="row mb-0">
                                     <dt class="col-sm-12">Pemberkasan:</dt>
                                     <dd class="col-sm-12">
-                                      {{ $kandidat->biaya_pemberkasan ? $kandidat->biaya_pemberkasan : '-' }}
+                                        {{ $kandidat->biaya_pemberkasan ? $kandidat->biaya_pemberkasan : '-' }}
 
                                     </dd>
                                 </dl>
@@ -325,7 +365,7 @@
                                 <dl class="row mb-0">
                                     <dt class="col-sm-12">ADM Tahap 1:</dt>
                                     <dd class="col-sm-12">
-                                        {{ $kandidat->adm_tahap1 ?  $kandidat->adm_tahap1 : '-'}}
+                                        {{ $kandidat->adm_tahap1 ? $kandidat->adm_tahap1 : '-' }}
                                     </dd>
                                 </dl>
                             </div>
@@ -333,7 +373,7 @@
                                 <dl class="row mb-0">
                                     <dt class="col-sm-12">ADM Tahap 2:</dt>
                                     <dd class="col-sm-12">
-                                        {{ $kandidat->adm_tahap2 ?   $kandidat->adm_tahap2 :'-'}}
+                                        {{ $kandidat->adm_tahap2 ? $kandidat->adm_tahap2 : '-' }}
                                     </dd>
                                 </dl>
                             </div>
