@@ -333,8 +333,8 @@
                     <div class="row mt-4">
 
                         <!-- =========================
-                                                                                                                            BAGIAN KIRI (CHART)
-                                                                                                                        ========================== -->
+                                                                                                                                BAGIAN KIRI (CHART)
+                                                                                                                            ========================== -->
                         <div class="col-12 col-md-8">
                             <div class="card h-100 shadow-lg border-0 rounded-4">
 
@@ -694,20 +694,30 @@
                                             icon: 'info',
                                             title: 'Belum Mengisi CV',
                                             html: `
-                    <p class="mb-3">Kamu belum mengisi CV.</p>
-                    <a href="{{ route('pendaftaran.cv.create') }}" 
-                       class="btn btn-warning fw-semibold">
-                        <i class="bi bi-pencil-square me-1"></i> Isi CV Sekarang
-                    </a>
-                `,
+            <p class="mb-3">Kamu belum mengisi CV.</p>
+            <a href="{{ route('pendaftaran.cv.create') }}" 
+               class="btn btn-warning fw-semibold">
+                <i class="bi bi-pencil-square me-1"></i> Isi CV Sekarang
+            </a>
+        `,
                                             showConfirmButton: false,
-                                            allowOutsideClick: false,
-                                            allowEscapeKey: false,
+                                            allowOutsideClick: true, // sekarang bisa klik luar untuk close
+                                            allowEscapeKey: true, // bisa ESC untuk close
                                             background: '#fffaf0',
                                             color: '#333',
                                             didOpen: (popup) => {
+                                                // event klik di tombol "Isi CV" tetap menutup popup
                                                 popup.querySelector('a').addEventListener('click', () => {
                                                     Swal.close();
+                                                });
+
+                                                // event klik di mana saja (document) menutup popup
+                                                document.addEventListener('click', function handler(e) {
+                                                    // jangan trigger klik tombol link
+                                                    if (!e.target.closest('a')) {
+                                                        Swal.close();
+                                                        document.removeEventListener('click', handler);
+                                                    }
                                                 });
                                             }
                                         });
