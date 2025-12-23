@@ -934,7 +934,7 @@
                                                     <div class="invalid-feedback d-block">{{ $message }}</div>
                                                 @enderror
 
-                                                <select name="jenis_sim" class="form-control mt-2">
+                                                <select name="jenis_sim" class="form-control mt-2" >
                                                     <option value="">-- Jenis SIM (Opsional) --</option>
                                                     @foreach (['SIM A', 'SIM B', 'SIM C', 'SIM D'] as $sim)
                                                         <option value="{{ $sim }}"

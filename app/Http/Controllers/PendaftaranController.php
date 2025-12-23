@@ -103,11 +103,11 @@ class PendaftaranController extends Controller
 
             // FILE
             'foto' => 'required|image|mimes:jpg,jpeg,png|max:3072',
-            'kk' => 'nullable|file|mimes:pdf|max:5120',
-            'ktp' => 'nullable|file|mimes:pdf|max:5120',
-            'bukti_pelunasan' => 'nullable|file|mimes:pdf|max:5120',
-            'akte' => 'nullable|file|mimes:pdf|max:5120',
-            'ijasah' => 'nullable|file|mimes:pdf|max:5120',
+            'kk' => 'required|file|mimes:pdf|max:5120',
+            'ktp' => 'required|file|mimes:pdf|max:5120',
+            'bukti_pelunasan' => 'required|file|mimes:pdf|max:5120',
+            'akte' => 'required|file|mimes:pdf|max:5120',
+            'ijasah' => 'required|file|mimes:pdf|max:5120',
             'sertifikat_jft' => 'nullable|file|mimes:pdf|max:5120',
             'sertifikat_ssw' => 'nullable|file|mimes:pdf|max:5120',
             'paspor' => 'nullable|file|mimes:pdf|max:5120',
