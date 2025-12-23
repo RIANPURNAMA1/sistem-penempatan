@@ -64,8 +64,8 @@ return [
     | is set to "UTC" by default as it is suitable for most use cases.
     |
     */
+    'timezone' => 'Asia/Jakarta',
 
-    'timezone' => 'UTC',
 
     /*
     |--------------------------------------------------------------------------
@@ -123,12 +123,12 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
-      /*
+    /*
     |--------------------------------------------------------------------------
     | Class Aliases
     |--------------------------------------------------------------------------
     */
-    
+
 
     'aliases' => [
         'Fonnte' => App\Services\FonnteService::class,
@@ -137,6 +137,6 @@ return [
 
 
 
-    
+
 
 ];

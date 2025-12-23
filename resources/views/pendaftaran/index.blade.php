@@ -72,7 +72,7 @@
                         });
                     </script>
                 @else
-                    <form id="formPendaftaran" action="{{ route('pendaftaran.store') }}" method="POST"
+                    <form id="" action="{{ route('pendaftaran.store') }}" method="POST"
                         enctype="multipart/form-data" class="needs-validation" novalidate>
                         @csrf
                         @method('POST')
