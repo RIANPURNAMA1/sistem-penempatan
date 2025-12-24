@@ -203,6 +203,8 @@ Route::middleware(['auth', 'role:super-admin'])->group(function () {
     // update
     Route::put('/cv/update-kandidat/{id}', [CvController::class, 'updatecvkandidat'])
         ->name('cv.updatekandidat');
+    // delete
+    Route::delete('/cv/{id}', [CvController::class, 'destroy'])->name('cv.destroy');
 
     // edit all cv
     Route::get('/edit/cv/kandidat/{id}', [CvController::class, 'editcvkandidat']);

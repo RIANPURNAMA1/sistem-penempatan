@@ -950,17 +950,18 @@ class CvController extends Controller
     public function destroy($id)
     {
         try {
-            $cv = Cv::where('id', $id)
-                ->where('user_id', Auth::id())
-                ->firstOrFail();
+            $cv = Cv::findOrFail($id);
+
+            // Hapus file foto jika ada
+            if ($cv->pas_foto_cv && file_exists(public_path($cv->pas_foto_cv))) {
+                unlink(public_path($cv->pas_foto_cv));
+            }
 
             $cv->delete();
 
-            return redirect()->route('pendaftaran.cv')
-                ->with('success', 'CV berhasil dihapus.');
+            return redirect('/data/cv/kandidat')->with('success', 'CV kandidat berhasil dihapus!');
         } catch (\Exception $e) {
-            return redirect()->back()
-                ->with('error', 'Gagal menghapus CV.');
+            return redirect()->route('cv.index')->with('error', 'Gagal menghapus CV kandidat!');
         }
     }
 }

@@ -539,10 +539,10 @@
 
                                             {{-- Bidang Sertifikasi Lainnya --}}
                                             <label class="form-label fw-semibold mt-3">Bidang Sertifikasi Lainnya
-                                                (Opsional)</label>
+                                                (Opsional) jawab - aja</label>
                                             <input type="text" name="bidang_sertifikasi_lainnya" class="form-control"
                                                 placeholder="Isi jika ada bidang sertifikasi lain"
-                                                value="{{ old('bidang_sertifikasi_lainnya') }}">
+                                                value="{{ old('bidang_sertifikasi_lainnya') }}" required>
 
                                             {{-- Program Kawakami --}}
                                             <label class="form-label fw-semibold mt-3">Apakah mengikuti program pertanian
@@ -565,12 +565,12 @@
                                             {{-- Upload Sertifikat --}}
                                             <label class="form-label fw-semibold mt-3">
                                                 Silahkan upload sertifikat yang dimiliki JFT dan SSW (PDF/JPG/PNG, Max 10MB,
-                                                Min 3 File), Jika belum punya boleh kosongkan saja
+                                                Min 3 File)
                                             </label>
                                             <p></p>
 
                                             <input type="file" name="sertifikat_files[]" id="sertifikatInput"
-                                                class="form-control" multiple accept=".pdf,.jpg,.jpeg,.png">
+                                                class="form-control" multiple accept=".pdf,.jpg,.jpeg,.png" required>
 
                                             <!-- PREVIEW -->
                                             <div id="previewSertifikat" class="mt-3 d-flex flex-wrap gap-3"></div>
@@ -589,8 +589,8 @@
                                         <div class="row g-3">
                                             <div class="col-md-6">
                                                 <!-- ======================================================
-                                                                                                                                                                                                         MULTI FILE: pas_foto[]
-                                                                                                                                                                                                    ====================================================== -->
+                                                                                                                                                                                                             MULTI FILE: pas_foto[]
+                                                                                                                                                                                                        ====================================================== -->
                                                 <label class="form-label fw-semibold mb-1">
                                                     Silahkan upload dokumen / foto tambahan 👇
                                                 </label>
@@ -609,8 +609,8 @@
                                                 <div id="previewPasFoto" class="mt-3 d-flex flex-wrap gap-3"></div>
 
                                                 <!-- ======================================================
-                                                                                                                                                                                                         SINGLE FILE: pas_foto_cv
-                                                                                                                                                                                                    ====================================================== -->
+                                                                                                                                                                                                             SINGLE FILE: pas_foto_cv
+                                                                                                                                                                                                        ====================================================== -->
                                                 <label class="form-label fw-semibold mb-1 mt-4">
                                                     Silahkan upload pas foto untuk CV Anda 👇
                                                 </label>
@@ -626,7 +626,7 @@
                                                     <strong>Hanya 1 file, format gambar (.jpg/.jpeg/.png)</strong>
                                                 </div>
                                                 <input type="file" id="pasFotoInputCv" name="pas_foto_cv"
-                                                    accept=".jpg,.jpeg,.png" class="form-control">
+                                                    accept=".jpg,.jpeg,.png" class="form-control" required>
                                                 <div id="previewPasFotoCv" class="mt-3 d-flex flex-wrap gap-3"></div>
 
 
@@ -748,11 +748,11 @@
 
                                                 {{-- AGAMA LAINNYA --}}
                                                 <label class="form-label fw-semibold mt-2">
-                                                    Agama Lainnya (Opsional)
+                                                    Agama Lainnya (Opsional) jawab - aja
                                                 </label>
                                                 <input type="text" name="agama_lainnya" class="form-control"
                                                     placeholder="Agama Lainnya (Opsional)"
-                                                    value="{{ old('agama_lainnya') }}">
+                                                    value="{{ old('agama_lainnya') }}" required>
 
 
                                                 {{-- TEMPAT/TANGGAL LAHIR --}}
@@ -810,8 +810,8 @@
                                                 <div class="mb-3">
                                                     <label class="form-label">Provinsi</label>
                                                     <select name="provinsi" id="provinsi"
-                                                        class="form-control @error('provinsi') is-invalid @enderror">
-                                                        <option value="">-- Pilih Provinsi --</option>
+                                                        class="form-control @error('provinsi') is-invalid @enderror" required>
+                                                        <option value="" >-- Pilih Provinsi --</option>
                                                     </select>
 
                                                     @error('provinsi')
@@ -823,7 +823,7 @@
                                                 <div class="mb-3">
                                                     <label class="form-label">Kabupaten / Kota</label>
                                                     <select name="kabupaten" id="kabupaten"
-                                                        class="form-control @error('kabupaten') is-invalid @enderror">
+                                                        class="form-control @error('kabupaten') is-invalid @enderror" required>
                                                         <option value="">-- Pilih Kabupaten / Kota --</option>
                                                     </select>
 
@@ -836,7 +836,7 @@
                                                 <div class="mb-3">
                                                     <label class="form-label">Kecamatan</label>
                                                     <select name="kecamatan" id="kecamatan"
-                                                        class="form-control @error('kecamatan') is-invalid @enderror">
+                                                        class="form-control @error('kecamatan') is-invalid @enderror" required>
                                                         <option value="">-- Pilih Kecamatan --</option>
                                                     </select>
 
@@ -849,7 +849,7 @@
                                                 <div class="mb-3">
                                                     <label class="form-label">Kelurahan</label>
                                                     <select name="kelurahan" id="kelurahan"
-                                                        class="form-control @error('kelurahan') is-invalid @enderror">
+                                                        class="form-control @error('kelurahan') is-invalid @enderror" required>
                                                         <option value="">-- Pilih Kelurahan --</option>
                                                     </select>
 
@@ -1171,17 +1171,17 @@
 
                                                 <input type="text" name="sudah_vaksin_berapa_kali_lainnya"
                                                     class="form-control mt-2" placeholder="Lainnya"
-                                                    value="{{ old('sudah_vaksin_berapa_kali_lainnya') }}">
+                                                    value="{{ old('sudah_vaksin_berapa_kali_lainnya') }}" required>
 
                                                 <!-- Kesehatan -->
                                                 <label class="mt-3 fw-bold">Kondisi Kesehatan Badan</label>
-                                                <textarea name="kesehatan_badan" class="form-control" placeholder="Kesehatan Badan">{{ old('kesehatan_badan') }}</textarea>
+                                                <textarea name="kesehatan_badan" class="form-control" placeholder="Kesehatan Badan" required>{{ old('kesehatan_badan') }}</textarea>
 
                                                 <label class="mt-3 fw-bold">Riwayat Penyakit / Cedera</label>
-                                                <textarea name="penyakit_cedera_masa_lalu" class="form-control" placeholder="Riwayat Penyakit & Cedera">{{ old('penyakit_cedera_masa_lalu') }}</textarea>
+                                                <textarea name="penyakit_cedera_masa_lalu" class="form-control" required placeholder="Riwayat Penyakit & Cedera">{{ old('penyakit_cedera_masa_lalu') }}</textarea>
 
                                                 <label class="mt-3 fw-bold">Hobi</label>
-                                                <textarea name="hobi" class="form-control" placeholder="Hobi">{{ old('hobi') }}</textarea>
+                                                <textarea name="hobi" class="form-control" placeholder="Hobi" required>{{ old('hobi') }}</textarea>
 
                                                 <!-- Sumber Biaya -->
                                                 <label class="mt-3 fw-bold">Rencana Sumber Biaya Keberangkatan</label>
@@ -1223,10 +1223,10 @@
                                                     <p class="text-muted small mb-1">
 
                                                         <br><b>Contoh: 25.000.000</b>
-                                                        jika tidak ada kosongkan
+                                                        jika tidak ada isi - aja
                                                     </p>
                                                     <input type="text" name="Biaya_keberangkatan_sebelumnya_jisshu"
-                                                        class="form-control" placeholder="Contoh: 25.000.000">
+                                                        class="form-control" placeholder="Contoh: 25.000.000" required>
                                                 </div>
 
 
@@ -1256,7 +1256,6 @@
                                                         <div class="invalid-feedback">{{ $message }}</div>
                                                     @enderror
                                                 </div>
-
                                                 <div class="mt-3">
                                                     <label class="fw-bold">Apakah Bersedia Kerja Lembur?</label><br>
                                                     <div class="form-check form-check-inline">
@@ -1444,7 +1443,6 @@
                                             @error('kelincahan_dalam_bekerja')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
-
                                         </div>
 
                                         {{-- KOLOM KANAN --}}

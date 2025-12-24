@@ -8,7 +8,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
         rel="stylesheet">
-
+    <!-- SweetAlert2 -->
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.min.css" rel="stylesheet">
 
     <!-- Init Theme -->
     <script src="{{ asset('assets/static/js/initTheme.js') }}"></script>
@@ -80,6 +81,11 @@
         .cv-name {
             margin: 0;
             font-size: 1.1rem;
+        }
+
+        /* Custom SweetAlert2 */
+        .swal2-popup {
+            font-family: 'Poppins', sans-serif;
         }
     </style>
 
@@ -179,11 +185,7 @@
 
                             <!-- Foto -->
                             <td class="text-center">
-                                <!-- Detail -->
                                 <a href="{{ route('cv.show', $cv->id) }}" class="">
-
-
-
                                     @if ($cv->pas_foto_cv)
                                         <img src="{{ asset($cv->pas_foto_cv) }}" class="rounded-circle"
                                             style="width: 50px; height: 50px; object-fit: cover;"
@@ -205,8 +207,7 @@
                             <!-- Jenis Kelamin -->
                             <td class="text-center">
                                 <span class="badge {{ $cv->jenis_kelamin == 'Laki-laki' ? 'bg-primary' : 'bg-danger' }}">
-                                    <i
-                                        class="bi bi-{{ $cv->jenis_kelamin == 'Laki-laki' ? 'gender-male' : 'gender-female' }} me-1"></i>
+                                    <i class="bi bi-{{ $cv->jenis_kelamin == 'Laki-laki' ? 'gender-male' : 'gender-female' }} me-1"></i>
                                     {{ $cv->jenis_kelamin ?? '-' }}
                                 </span>
                             </td>
@@ -234,7 +235,6 @@
                             <!-- Aksi -->
                             <td>
                                 <div class="btn-group-vertical btn-group-sm w-100" role="group">
-
                                     <!-- Dropdown untuk CV -->
                                     <div class="btn-group btn-group-sm" role="group">
                                         <button type="button" class="btn btn-outline-info dropdown-toggle"
@@ -248,38 +248,50 @@
                                                 </a>
                                             </li>
                                             <li>
-                                                <a class="dropdown-item"
-                                                    href="{{ route('cv.show.pdf.violeta', $cv->id) }}">
+                                                <a class="dropdown-item" href="{{ route('cv.show.pdf.violeta', $cv->id) }}">
                                                     <i class="bi bi-file-pdf me-2"></i>CV Violeta
                                                 </a>
                                             </li>
                                             <li>
-                                                <a class="dropdown-item"
-                                                    href="{{ route('cv.show.pdf.nawasena', $cv->id) }}">
+                                                <a class="dropdown-item" href="{{ route('cv.show.pdf.nawasena', $cv->id) }}">
                                                     <i class="bi bi-file-earmark-pdf me-2"></i>CV Nawasena
                                                 </a>
                                             </li>
                                             <li>
-                                                <a class="dropdown-item"
-                                                    href="{{ route('cv.show.pdf.yambo', $cv->id) }}">
+                                                <a class="dropdown-item" href="{{ route('cv.show.pdf.yambo', $cv->id) }}">
                                                     <i class="bi bi-file-earmark-pdf me-2"></i>CV Yambo
                                                 </a>
                                             </li>
                                             <li>
-                                                <a class="dropdown-item"
-                                                    href="{{ route('cv.show.pdf.madoka', $cv->id) }}">
+                                                <a class="dropdown-item" href="{{ route('cv.show.pdf.madoka', $cv->id) }}">
                                                     <i class="bi bi-file-earmark-pdf me-2"></i>CV Madoka
                                                 </a>
                                             </li>
                                             <li>
-                                                <a class="dropdown-item"
-                                                    href="{{ route('cv.show.pdf.mendunia', $cv->id) }}">
+                                                <a class="dropdown-item" href="{{ route('cv.show.pdf.mendunia', $cv->id) }}">
                                                     <i class="bi bi-file-earmark-pdf me-2"></i>CV Mendunia
                                                 </a>
                                             </li>
                                         </ul>
                                     </div>
+
+                                    <!-- Tombol Delete -->
+                                    <button type="button" class="btn btn-outline-danger btn-sm mt-1 btn-delete" 
+                                        data-id="{{ $cv->id }}"
+                                        data-name="{{ $cv->nama_lengkap_romaji ?? ($cv->nama_lengkap_katakana ?? 'Kandidat') }}"
+                                        data-photo="{{ $cv->pas_foto_cv ? asset($cv->pas_foto_cv) : '' }}">
+                                        <i class="bi bi-trash me-1"></i> Hapus
+                                    </button>
                                 </div>
+
+                                <!-- Hidden Form untuk Delete -->
+                                <form id="delete-form-{{ $cv->id }}" 
+                                      action="{{ route('cv.destroy', $cv->id) }}" 
+                                      method="POST" 
+                                      style="display: none;">
+                                    @csrf
+                                    @method('DELETE')
+                                </form>
                             </td>
                         </tr>
                     @empty
@@ -295,12 +307,6 @@
             </table>
         </div>
 
-        <!-- Pagination (jika ada) -->
-        @if (method_exists($cvs, 'links'))
-            <div class="d-flex justify-content-center mt-4">
-                {{ $cvs->links() }}
-            </div>
-        @endif
         <!-- No Results Message -->
         <div id="noResults" class="alert alert-warning text-center py-5 mt-4" style="display: none;">
             <i class="bi bi-search fs-1 d-block mb-3"></i>
@@ -320,6 +326,7 @@
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.all.min.js"></script>
 
     <script>
         $(document).ready(function() {
@@ -371,6 +378,85 @@
                 // Submit form to reset cabang filter
                 $('#filterForm').submit();
             });
+
+            // Delete Confirmation dengan SweetAlert2
+            $('.btn-delete').on('click', function() {
+                const id = $(this).data('id');
+                const name = $(this).data('name');
+                const photo = $(this).data('photo');
+
+                let imageHtml = '';
+                if (photo) {
+                    imageHtml = `<img src="${photo}" class="rounded-circle mb-3" style="width: 100px; height: 100px; object-fit: cover;">`;
+                } else {
+                    imageHtml = `<div class="rounded-circle bg-light d-inline-flex align-items-center justify-content-center mb-3" style="width: 100px; height: 100px;">
+                        <i class="bi bi-person-circle text-secondary" style="font-size: 4rem;"></i>
+                    </div>`;
+                }
+
+                Swal.fire({
+                    title: 'Konfirmasi Hapus',
+                    html: `
+                        ${imageHtml}
+                        <p class="mb-2">Apakah Anda yakin ingin menghapus CV kandidat:</p>
+                        <h5 class="text-primary mb-3"><strong>${name}</strong></h5>
+                        <div class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            <small>Data yang dihapus tidak dapat dikembalikan!</small>
+                        </div>
+                    `,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#dc3545',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: '<i class="bi bi-trash me-1"></i> Ya, Hapus!',
+                    cancelButtonText: '<i class="bi bi-x-circle me-1"></i> Batal',
+                    reverseButtons: true,
+                    customClass: {
+                        confirmButton: 'btn btn-danger px-4',
+                        cancelButton: 'btn btn-secondary px-4'
+                    },
+                    buttonsStyling: false
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Show loading
+                        Swal.fire({
+                            title: 'Menghapus...',
+                            text: 'Mohon tunggu sebentar',
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            showConfirmButton: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+
+                        // Submit form
+                        $('#delete-form-' + id).submit();
+                    }
+                });
+            });
+
+            // Success/Error message dari session
+            @if(session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: '{{ session('success') }}',
+                    timer: 3000,
+                    showConfirmButton: false
+                });
+            @endif
+
+            @if(session('error'))
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal!',
+                    text: '{{ session('error') }}',
+                    timer: 3000,
+                    showConfirmButton: false
+                });
+            @endif
         });
     </script>
 
