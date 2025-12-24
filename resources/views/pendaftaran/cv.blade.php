@@ -438,7 +438,7 @@
                             </div>
                         </div>
 
-                        <form id="" action="{{ route('pendaftaran.cv.store') }}" method="POST"
+                        <form id="cvForm" action="{{ route('pendaftaran.cv.store') }}" method="POST"
                             enctype="multipart/form-data">
                             @method('POST')
                             @csrf
@@ -589,8 +589,8 @@
                                         <div class="row g-3">
                                             <div class="col-md-6">
                                                 <!-- ======================================================
-                                                                                                                                                                                                     MULTI FILE: pas_foto[]
-                                                                                                                                                                                                ====================================================== -->
+                                                                                                                                                                                                         MULTI FILE: pas_foto[]
+                                                                                                                                                                                                    ====================================================== -->
                                                 <label class="form-label fw-semibold mb-1">
                                                     Silahkan upload dokumen / foto tambahan 👇
                                                 </label>
@@ -609,8 +609,8 @@
                                                 <div id="previewPasFoto" class="mt-3 d-flex flex-wrap gap-3"></div>
 
                                                 <!-- ======================================================
-                                                                                                                                                                                                     SINGLE FILE: pas_foto_cv
-                                                                                                                                                                                                ====================================================== -->
+                                                                                                                                                                                                         SINGLE FILE: pas_foto_cv
+                                                                                                                                                                                                    ====================================================== -->
                                                 <label class="form-label fw-semibold mb-1 mt-4">
                                                     Silahkan upload pas foto untuk CV Anda 👇
                                                 </label>
@@ -934,7 +934,7 @@
                                                     <div class="invalid-feedback d-block">{{ $message }}</div>
                                                 @enderror
 
-                                                <select name="jenis_sim" class="form-control mt-2" >
+                                                <select name="jenis_sim" class="form-control mt-2">
                                                     <option value="">-- Jenis SIM (Opsional) --</option>
                                                     @foreach (['SIM A', 'SIM B', 'SIM C', 'SIM D'] as $sim)
                                                         <option value="{{ $sim }}"
@@ -2197,69 +2197,7 @@
             });
 
             // Form Submit
-            $('#cvForm').on('submit', function(e) {
-                e.preventDefault();
 
-                let form = $('#cvForm')[0];
-                let formData = new FormData(form);
-
-                $.ajax({
-                    url: $('#cvForm').attr('action'),
-                    method: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-
-                    beforeSend: function() {
-                        $('#submitBtn').prop('disabled', true).html(
-                            '<i class="fas fa-spinner fa-spin me-2"></i>Mengirim...');
-                    },
-
-                    success: function(response) {
-                        if (response.status === 'success') {
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Berhasil!',
-                                text: response.message,
-                                timer: 1800,
-                                showConfirmButton: false
-                            });
-
-                            setTimeout(function() {
-                                window.location.href = '/';
-                            }, 1500);
-                        }
-                    },
-
-                    error: function(xhr) {
-                        $('#submitBtn').prop('disabled', false).html(
-                            '<i class="fas fa-paper-plane me-2"></i>Kirim');
-
-                        if (xhr.status === 422) {
-                            let errors = xhr.responseJSON.errors;
-
-                            $.each(errors, function(field, messages) {
-                                let input = $('[name="' + field + '"]');
-                                input.addClass('is-invalid');
-                                input.after('<div class="invalid-feedback d-block">' +
-                                    messages[0] + '</div>');
-                            });
-
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Validasi Gagal',
-                                text: 'Silakan periksa kembali isian Anda.',
-                            });
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Terjadi Kesalahan',
-                                text: 'Upload gagal. Pastikan file PDF, JPG, atau PNG berasal dari perangkat lokal (bukan Google Drive, OneDrive, atau link cloud).',
-                            });
-                        }
-                    }
-                });
-            });
 
             // Initialize
             showStep(1);
@@ -3009,95 +2947,95 @@
             });
 
             // =============== CLIENT-SIDE VALIDATION + LOADING BUTTON ===============
-            // $('#cvForm').on('submit', function (e) {
-            //     e.preventDefault();
+            $('#cvForm').on('submit', function(e) {
+                e.preventDefault();
 
-            //     let form = this;
+                let form = this;
 
-            //     // VALIDASI HTML5
-            //     if (!form.checkValidity()) {
-            //         form.classList.add('was-validated');
-            //         return;
-            //     }
+                // VALIDASI HTML5
+                if (!form.checkValidity()) {
+                    form.classList.add('was-validated');
+                    return;
+                }
 
-            //     let formData = new FormData(form);
+                let formData = new FormData(form);
 
-            //     $.ajax({
-            //         url: form.action,
-            //         type: 'POST',
-            //         data: formData,
-            //         processData: false,
-            //         contentType: false,
+                $.ajax({
+                    url: form.action,
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
 
-            //         beforeSend: function () {
-            //             // Tombol loading
-            //             $('#submitBtn').prop('disabled', true);
-            //             $('#btnText').addClass('d-none');
-            //             $('#btnLoading').removeClass('d-none');
+                    beforeSend: function() {
+                        // Tombol loading
+                        $('#submitBtn').prop('disabled', true);
+                        $('#btnText').addClass('d-none');
+                        $('#btnLoading').removeClass('d-none');
 
-            //             // Reset error
-            //             $('.is-invalid').removeClass('is-invalid');
-            //             $('.invalid-feedback').remove();
-            //         },
+                        // Reset error
+                        $('.is-invalid').removeClass('is-invalid');
+                        $('.invalid-feedback').remove();
+                    },
 
-            //         success: function (response) {
-            //             Swal.fire({
-            //                 icon: 'success',
-            //                 title: 'Berhasil!',
-            //                 text: response.message || 'Data berhasil dikirim',
-            //                 timer: 1800,
-            //                 showConfirmButton: false
-            //             });
+                    success: function(response) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: response.message || 'Data berhasil dikirim',
+                            timer: 1800,
+                            showConfirmButton: false
+                        });
 
-            //             // Kembalikan tombol (jaga-jaga)
-            //             $('#submitBtn').prop('disabled', false);
-            //             $('#btnText').removeClass('d-none');
-            //             $('#btnLoading').addClass('d-none');
+                        // Kembalikan tombol (jaga-jaga)
+                        $('#submitBtn').prop('disabled', false);
+                        $('#btnText').removeClass('d-none');
+                        $('#btnLoading').addClass('d-none');
 
-            //             setTimeout(() => {
-            //                 window.location.href = response.redirect ?? '/';
-            //             }, 1500);
-            //         },
+                        setTimeout(() => {
+                            window.location.href = response.redirect ?? '/';
+                        }, 1500);
+                    },
 
-            //         error: function (xhr) {
-            //             // Reset tombol
-            //             $('#submitBtn').prop('disabled', false);
-            //             $('#btnText').removeClass('d-none');
-            //             $('#btnLoading').addClass('d-none');
+                    error: function(xhr) {
+                        // Reset tombol
+                        $('#submitBtn').prop('disabled', false);
+                        $('#btnText').removeClass('d-none');
+                        $('#btnLoading').addClass('d-none');
 
-            //             if (xhr.status === 422) {
-            //                 let errors = xhr.responseJSON.errors;
+                        if (xhr.status === 422) {
+                            let errors = xhr.responseJSON.errors;
 
-            //                 $.each(errors, function (field, messages) {
-            //                     // Support field array & dot notation
-            //                     let input = $('[name="' + field + '"]').length
-            //                         ? $('[name="' + field + '"]')
-            //                         : $('[name="' + field.replace(/\.\d+/, '[]') + '"]');
+                            $.each(errors, function(field, messages) {
+                                // Support field array & dot notation
+                                let input = $('[name="' + field + '"]').length ?
+                                    $('[name="' + field + '"]') :
+                                    $('[name="' + field.replace(/\.\d+/, '[]') + '"]');
 
-            //                     input.addClass('is-invalid');
+                                input.addClass('is-invalid');
 
-            //                     input.after(`
-        //                         <div class="invalid-feedback">
-        //                             ${messages[0]}
-        //                         </div>
-        //                     `);
-            //                 });
+                                input.after(`
+                                <div class="invalid-feedback">
+                                    ${messages[0]}
+                                </div>
+                            `);
+                            });
 
-            //                 Swal.fire({
-            //                     icon: 'error',
-            //                     title: 'Validasi Gagal',
-            //                     text: 'Silakan periksa kembali isian Anda.',
-            //                 });
-            //             } else {
-            //                 Swal.fire({
-            //                     icon: 'error',
-            //                     title: 'Gagal Mengirim',
-            //                     text: 'Data atau file tidak terbaca oleh server. Pastikan file berasal dari perangkat lokal (bukan Google Drive, OneDrive, atau link cloud).',
-            //                 });
-            //             }
-            //         }
-            //     });
-            // });
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Validasi Gagal',
+                                text: 'Silakan periksa kembali isian Anda.',
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Gagal Mengirim',
+                                text: 'Data atau file tidak terbaca oleh server. Pastikan file berasal dari perangkat lokal (bukan Google Drive, OneDrive, atau link cloud).',
+                            });
+                        }
+                    }
+                });
+            });
 
 
 
