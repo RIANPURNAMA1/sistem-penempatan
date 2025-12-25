@@ -842,19 +842,33 @@ class CvController extends Controller
             $oldPasFotoCvPath = $cv->pas_foto_cv;
             $pasFotoPathCv = $oldPasFotoCvPath;
 
+            // ============================================================
+            // 2. UPLOAD PAS FOTO CV (SINGLE)
+            // → SIMPAN DI PUBLIC & HAPUS FILE LAMA JIKA DIUBAH
+            // ============================================================
 
-            /* ============================================================
-        2. UPLOAD PAS FOTO CV (SINGLE) → HAPUS FILE LAMA JIKA DIUBAH
-        ============================================================ */
+            $pasFotoPathCv = $oldPasFotoCvPath ?? null;
+
             if ($request->hasFile('pas_foto_cv')) {
-                // Hapus pas foto CV lama (jika ada)
-                if ($oldPasFotoCvPath && File::exists(storage_path('app/public/' . $oldPasFotoCvPath))) {
-                    File::delete(storage_path('app/public/' . $oldPasFotoCvPath));
+
+                // ============================
+                // HAPUS FILE LAMA (JIKA ADA)
+                // ============================
+                if ($oldPasFotoCvPath && File::exists(public_path($oldPasFotoCvPath))) {
+                    File::delete(public_path($oldPasFotoCvPath));
                 }
 
-                // Upload pas foto CV baru
+                // ============================
+                // UPLOAD FILE BARU KE PUBLIC
+                // ============================
                 $file = $request->file('pas_foto_cv');
-                $pasFotoPathCv = $file->store('uploads/pas_foto_cv', 'public');
+                $fileName = time() . '_' . uniqid() . '_' . $file->getClientOriginalName();
+
+                // Simpan ke public/uploads/pas_foto_cv
+                $file->move(public_path('uploads/pas_foto_cv'), $fileName);
+
+                // Simpan path relatif (untuk asset())
+                $pasFotoPathCv = 'uploads/pas_foto_cv/' . $fileName;
             }
 
 
