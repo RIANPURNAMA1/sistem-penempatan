@@ -328,7 +328,7 @@ class PendaftaranController extends Controller
             }
 
             // ===== Nomor ADMIN =====
-            $adminNumber = env('ADMIN_WA', '6282118364415');
+            $adminNumber = env('ADMIN_WA', '6289662695289');
 
             // ===== Format nomor WA pendaftar =====
             $noWa = preg_replace('/\D/', '', $pendaftaran->no_wa);
