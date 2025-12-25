@@ -50,19 +50,25 @@ class User extends Authenticatable
         ];
     }
 
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'last_activity' => 'datetime',
+    ];
+
+
     public function role()
     {
         return $this->belongsTo(Role::class);
     }
 
-    
-  // Relasi ke Pendaftaran
+
+    // Relasi ke Pendaftaran
     public function pendaftaran()
     {
         return $this->hasOne(Pendaftaran::class); // 1:1
         // Jika 1 user bisa punya banyak pendaftaran: return $this->hasMany(Pendaftaran::class);
     }
-    
+
 
 
     // Relasi ke User

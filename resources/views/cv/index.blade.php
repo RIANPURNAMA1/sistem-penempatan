@@ -3,13 +3,12 @@
 @section('title', 'Daftar CV')
 
 @section('content')
-
+    <!-- Bootstrap 5 & DataTables CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
         rel="stylesheet">
-    <!-- SweetAlert2 -->
-    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.min.css" rel="stylesheet">
 
     <!-- Init Theme -->
     <script src="{{ asset('assets/static/js/initTheme.js') }}"></script>
@@ -163,8 +162,8 @@
 
         <!-- Table Container -->
         <div class="table-responsive">
-            <table class="table table-hover align-middle" id="cvTable">
-                <thead class="table-light">
+            <table class="table align-middle" id="tableCv">
+                <thead class="">
                     <tr>
                         <th scope="col" class="text-center" style="width: 80px;">Foto</th>
                         <th scope="col">Nama</th>
@@ -207,7 +206,8 @@
                             <!-- Jenis Kelamin -->
                             <td class="text-center">
                                 <span class="badge {{ $cv->jenis_kelamin == 'Laki-laki' ? 'bg-primary' : 'bg-danger' }}">
-                                    <i class="bi bi-{{ $cv->jenis_kelamin == 'Laki-laki' ? 'gender-male' : 'gender-female' }} me-1"></i>
+                                    <i
+                                        class="bi bi-{{ $cv->jenis_kelamin == 'Laki-laki' ? 'gender-male' : 'gender-female' }} me-1"></i>
                                     {{ $cv->jenis_kelamin ?? '-' }}
                                 </span>
                             </td>
@@ -233,11 +233,11 @@
                             </td>
 
                             <!-- Aksi -->
-                            <td>
-                                <div class="btn-group-vertical btn-group-sm w-100" role="group">
+                            <td class="d-flex">
+                                <div class="btn-group-vertical btn-group-sm " role="group">
                                     <!-- Dropdown untuk CV -->
                                     <div class="btn-group btn-group-sm" role="group">
-                                        <button type="button" class="btn btn-outline-info dropdown-toggle"
+                                        <button type="button" class="btn btn-success dropdown-toggle"
                                             data-bs-toggle="dropdown" aria-expanded="false">
                                             <i class="bi bi-file-pdf me-1"></i> Download CV
                                         </button>
@@ -248,27 +248,32 @@
                                                 </a>
                                             </li>
                                             <li>
-                                                <a class="dropdown-item" href="{{ route('cv.show.pdf.violeta', $cv->id) }}">
+                                                <a class="dropdown-item"
+                                                    href="{{ route('cv.show.pdf.violeta', $cv->id) }}">
                                                     <i class="bi bi-file-pdf me-2"></i>CV Violeta
                                                 </a>
                                             </li>
                                             <li>
-                                                <a class="dropdown-item" href="{{ route('cv.show.pdf.nawasena', $cv->id) }}">
+                                                <a class="dropdown-item"
+                                                    href="{{ route('cv.show.pdf.nawasena', $cv->id) }}">
                                                     <i class="bi bi-file-earmark-pdf me-2"></i>CV Nawasena
                                                 </a>
                                             </li>
                                             <li>
-                                                <a class="dropdown-item" href="{{ route('cv.show.pdf.yambo', $cv->id) }}">
+                                                <a class="dropdown-item"
+                                                    href="{{ route('cv.show.pdf.yambo', $cv->id) }}">
                                                     <i class="bi bi-file-earmark-pdf me-2"></i>CV Yambo
                                                 </a>
                                             </li>
                                             <li>
-                                                <a class="dropdown-item" href="{{ route('cv.show.pdf.madoka', $cv->id) }}">
+                                                <a class="dropdown-item"
+                                                    href="{{ route('cv.show.pdf.madoka', $cv->id) }}">
                                                     <i class="bi bi-file-earmark-pdf me-2"></i>CV Madoka
                                                 </a>
                                             </li>
                                             <li>
-                                                <a class="dropdown-item" href="{{ route('cv.show.pdf.mendunia', $cv->id) }}">
+                                                <a class="dropdown-item"
+                                                    href="{{ route('cv.show.pdf.mendunia', $cv->id) }}">
                                                     <i class="bi bi-file-earmark-pdf me-2"></i>CV Mendunia
                                                 </a>
                                             </li>
@@ -276,7 +281,7 @@
                                     </div>
 
                                     <!-- Tombol Delete -->
-                                    <button type="button" class="btn btn-outline-danger btn-sm mt-1 btn-delete" 
+                                    <button type="button" class="btn btn-danger btn-sm mt-1 btn-delete"
                                         data-id="{{ $cv->id }}"
                                         data-name="{{ $cv->nama_lengkap_romaji ?? ($cv->nama_lengkap_katakana ?? 'Kandidat') }}"
                                         data-photo="{{ $cv->pas_foto_cv ? asset($cv->pas_foto_cv) : '' }}">
@@ -285,10 +290,8 @@
                                 </div>
 
                                 <!-- Hidden Form untuk Delete -->
-                                <form id="delete-form-{{ $cv->id }}" 
-                                      action="{{ route('cv.destroy', $cv->id) }}" 
-                                      method="POST" 
-                                      style="display: none;">
+                                <form id="delete-form-{{ $cv->id }}" action="{{ route('cv.destroy', $cv->id) }}"
+                                    method="POST" style="display: none;">
                                     @csrf
                                     @method('DELETE')
                                 </form>
@@ -324,11 +327,31 @@
         @endif
     </div>
 
+    <!-- JS Dependencies -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.5/dist/sweetalert2.all.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
+        // Inisialisasi DataTables
+        var table = $('#tableCv').DataTable({
+            responsive: true,
+            pageLength: 5,
+            lengthMenu: [5, 10, 25, 50],
+            language: {
+                search: "🔍 Cari:",
+                lengthMenu: "Tampilkan _MENU_ data",
+                zeroRecords: "Tidak ada data ditemukan",
+                info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
+                paginate: {
+                    previous: "←",
+                    next: "→"
+                }
+            }
+        });
+
         $(document).ready(function() {
             // Search functionality
             $('#searchInput').on('keyup', function() {
@@ -387,7 +410,8 @@
 
                 let imageHtml = '';
                 if (photo) {
-                    imageHtml = `<img src="${photo}" class="rounded-circle mb-3" style="width: 100px; height: 100px; object-fit: cover;">`;
+                    imageHtml =
+                        `<img src="${photo}" class="rounded-circle mb-3" style="width: 100px; height: 100px; object-fit: cover;">`;
                 } else {
                     imageHtml = `<div class="rounded-circle bg-light d-inline-flex align-items-center justify-content-center mb-3" style="width: 100px; height: 100px;">
                         <i class="bi bi-person-circle text-secondary" style="font-size: 4rem;"></i>
@@ -413,7 +437,7 @@
                     cancelButtonText: '<i class="bi bi-x-circle me-1"></i> Batal',
                     reverseButtons: true,
                     customClass: {
-                        confirmButton: 'btn btn-danger px-4',
+                        confirmButton: 'btn btn-danger px-4 m-2',
                         cancelButton: 'btn btn-secondary px-4'
                     },
                     buttonsStyling: false
@@ -438,7 +462,7 @@
             });
 
             // Success/Error message dari session
-            @if(session('success'))
+            @if (session('success'))
                 Swal.fire({
                     icon: 'success',
                     title: 'Berhasil!',
@@ -448,7 +472,7 @@
                 });
             @endif
 
-            @if(session('error'))
+            @if (session('error'))
                 Swal.fire({
                     icon: 'error',
                     title: 'Gagal!',

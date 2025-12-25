@@ -228,9 +228,7 @@ class DashboardController extends Controller
         }
 
         $kandidatsFiltered = $queryKandidat
-            ->orderBy('created_at', 'desc')
-            ->paginate(1)   // jumlah per halaman
-            ->withQueryString(); // agar filter tidak hilang saat berpindah halaman
+            ->orderBy('created_at', 'desc')->get();
 
 
         // Ambil data kandidat beserta relasi pendaftaran, cabang, dan institusi

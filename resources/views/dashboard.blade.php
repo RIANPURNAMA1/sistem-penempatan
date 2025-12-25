@@ -333,8 +333,8 @@
                     <div class="row mt-4">
 
                         <!-- =========================
-                                                                                                                                    BAGIAN KIRI (CHART)
-                                                                                                                                ========================== -->
+                                                                                                                                            BAGIAN KIRI (CHART)
+                                                                                                                                        ========================== -->
                         <div class="col-12 col-md-8">
                             <div class="card h-100 shadow-lg border-0 rounded-4">
 
@@ -390,10 +390,17 @@
 
                                             @foreach ($users as $user)
                                                 @php
-                                                    $isOnline = $user->last_activity >= now()->subMinutes(5);
+                                                    $isOnline =
+                                                        $user->last_activity &&
+                                                        $user->last_activity >= now()->subMinutes(5);
                                                     $statusColor = $isOnline ? 'success' : 'danger';
                                                     $statusText = $isOnline ? 'Online' : 'Offline';
+
+                                                    $lastActiveText = $user->last_activity
+                                                        ? $user->last_activity->diffForHumans()
+                                                        : 'Belum pernah aktif';
                                                 @endphp
+
 
                                                 <li class="list-group-item d-flex justify-content-between align-items-center py-3 rounded-2 mb-1 shadow-sm"
                                                     style="border-left: 4px solid {{ $isOnline ? '#28a745' : '#dc3545' }}; transition: all 0.3s; cursor: pointer;">
@@ -401,19 +408,25 @@
                                                     <div class="d-flex align-items-center">
                                                         <!-- Avatar -->
                                                         <div class="rounded-circle bg-{{ $statusColor }} bg-opacity-10 text-{{ $statusColor }} d-flex align-items-center justify-content-center me-3"
-                                                            style="width: 45px; height: 45px; font-size: 18px; transition: transform 0.2s;">
+                                                            style="width: 45px; height: 45px; font-size: 18px;">
                                                             <i class="bi bi-person-fill"></i>
                                                         </div>
 
-                                                        <!-- Nama User -->
-                                                        <span class="fw-semibold">{{ $user->name }}</span>
+                                                        <!-- Nama & Terakhir Aktif -->
+                                                        <div class="d-flex flex-column">
+                                                            <span class="fw-semibold">{{ $user->name }}</span>
+                                                            <small class="text-muted">
+                                                                {{ $isOnline ? 'Aktif sekarang' : 'Terakhir aktif ' . $lastActiveText }}
+                                                            </small>
+                                                        </div>
                                                     </div>
 
-                                                    <!-- Status Dot -->
+                                                    <!-- Status -->
                                                     <div class="d-flex align-items-center gap-2">
                                                         <span
                                                             class="status-dot rounded-circle d-inline-block {{ $isOnline ? 'bg-success' : 'bg-danger' }}"
-                                                            style="width: 12px; height: 12px; animation: {{ $isOnline ? 'pulse 1.5s infinite' : 'none' }};"></span>
+                                                            style="width: 12px; height: 12px; animation: {{ $isOnline ? 'pulse 1.5s infinite' : 'none' }};">
+                                                        </span>
                                                         <small
                                                             class="fw-semibold text-{{ $statusColor }}">{{ $statusText }}</small>
                                                     </div>
