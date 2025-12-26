@@ -316,15 +316,6 @@
             <h5>Tidak Ada Hasil</h5>
             <p class="mb-0">Tidak ditemukan kandidat yang sesuai dengan pencarian.</p>
         </div>
-
-        <!-- Pagination -->
-        @if ($cvs->hasPages())
-            <div class="d-flex justify-content-center mt-5">
-                <nav aria-label="Page navigation">
-                    {{ $cvs->links('pagination::bootstrap-5') }}
-                </nav>
-            </div>
-        @endif
     </div>
 
     <!-- JS Dependencies -->

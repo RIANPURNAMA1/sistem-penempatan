@@ -26,9 +26,7 @@ class CvController extends Controller
         }
 
         // Pagination - 12 data per halaman dengan query string
-        $cvs = $query->orderBy('created_at', 'desc')
-            ->paginate(12)
-            ->withQueryString();
+        $cvs = $query->orderBy('created_at', 'desc')->get();
 
         $cabang = Cabang::all();
 
