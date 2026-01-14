@@ -46,6 +46,35 @@
                     </li>
                 </ol>
             </nav>
+
+            <div class="card shadow-sm border-0">
+                <div class="card-body ">
+                    <h5 class="card-title mb-4 fw-bold text-secondary">Statistik Kandidat SSW</h5>
+                    <div class="row g-3">
+                        @foreach ($statistik_ssw as $nama_bidang => $data)
+                            <div class="col-md-4 col-lg-4">
+                                <div class="card h-100 border-1 shadow-none">
+                                    <div class="card-body">
+                                        <h6 class="text-uppercase small fw-bold text-muted mb-3">{{ $nama_bidang }}</h6>
+                                        <div class="d-flex justify-content-between align-items-end">
+                                            <div>
+                                                <span class="display-6 fw-bold">{{ $data['total'] }}</span>
+                                                <span class="text-muted">Total</span>
+                                            </div>
+                                            <div class="text-end small">
+                                                <div class="text-secondary border-bottom mb-1">L: <span
+                                                        class="fw-bold">{{ $data['L'] }}</span></div>
+                                                <div class="text-secondary">P: <span
+                                                        class="fw-bold">{{ $data['P'] }}</span></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
             {{-- <!-- Header -->
             <div class="mb-4 text-center text-md-start">
                 <h2 class="fw-bold  mb-2">
@@ -55,62 +84,215 @@
                     Berikut adalah data kandidat yang telah masuk dalam sistem.
                 </p>
             </div> --}}
-            <!-- 🔍 Filter Section -->
-            <div class="card shadow shadow-md mb-3">
-                <div class="card-body">
-                    <div class="row g-3">
-                        <!-- Filter Cabang -->
-                        <div class="col-12 col-md-4">
-                            <label for="filterCabang" class="form-label fw-semibold">Filter Cabang</label>
-                            <select id="filterCabang" class="form-select">
-                                <option value="">Semua Cabang</option>
-                                @foreach ($cabangs as $cabang)
-                                    <option value="{{ $cabang->nama_cabang }}">{{ $cabang->nama_cabang }}</option>
-                                @endforeach
-                            </select>
-                        </div>
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center">
+                        <h6 class="fw-bold text-secondary mb-0 me-3">
+                            <i class="fas fa-users me-2"></i>Filter Kandidat
+                        </h6>
 
-                        <!-- Filter Status Kandidat -->
-                        <div class="col-12 col-md-4">
-                            @php
-                                $statuses = [
-                                    'Job Matching',
-                                    'lamar ke perusahaan',
-                                    'Pending',
-                                    'Interview',
-                                    'Gagal Interview',
-                                    'Jadwalkan Interview Ulang',
-                                    'Lulus interview',
-                                    'Pemberkasan',
-                                    'Berangkat',
-                                    'Diterima',
-                                    'Ditolak',
-                                ];
-                            @endphp
-
-                            <label for="filterStatus" class="form-label fw-semibold">Filter Status Kandidat</label>
-                            <select id="filterStatus" class="form-select">
-                                <option value="">Semua Status</option>
-                                @foreach ($statuses as $status)
-                                    <option value="{{ $status }}">{{ $status }}</option>
-                                @endforeach
-                            </select>
-
-                        </div>
-
-                        <!-- Reset Filter -->
-                        <div class="col-12 col-md-4 text-md-end">
-                            <button id="resetFilter" class="btn btn-outline-info mt-3 mt-md-0">
-                                <i class="bi bi-arrow-repeat"></i> Reset Filter
+                        <div class="dropdown me-2">
+                            <button class="btn btn-white border shadow-none dropdown-toggle" type="button" id="megaFilter"
+                                data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                                <i class="fas fa-filter me-2 text-muted"></i> Saring & Filter Data
                             </button>
+
+                            <div class="dropdown-menu shadow-lg p-4" aria-labelledby="megaFilter"
+                                style="width: 750px; max-width: 90vw;">
+                                <form action="{{ route('kandidat.data') }}" method="GET" id="filterForm">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <p class="small fw-bold text-uppercase text-muted border-bottom pb-1 mb-2">
+                                                Bidang SSW</p>
+                                            <div class="filter-scroll mb-3" style="max-height: 150px; overflow-y: auto;">
+                                                @foreach (['Pengolahan makanan', 'Restoran', 'Pertanian', 'Kaigo (perawat)', 'Building cleaning', 'Driver'] as $ssw)
+                                                    <div class="form-check mb-1">
+                                                        <input class="form-check-input" type="checkbox" name="f_ssw[]"
+                                                            value="{{ $ssw }}" id="ssw_{{ $loop->index }}"
+                                                            {{ in_array($ssw, request('f_ssw', [])) ? 'checked' : '' }}>
+                                                        <label class="form-check-label small"
+                                                            for="ssw_{{ $loop->index }}">{{ $ssw }}</label>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+
+                                            <p class="small fw-bold text-uppercase text-muted border-bottom pb-1 mb-2">
+                                                Cabang</p>
+                                            <div class="filter-scroll" style="max-height: 150px; overflow-y: auto;">
+                                                @foreach ($cabangs as $cabang)
+                                                    <div class="form-check mb-1">
+                                                        <input class="form-check-input" type="checkbox" name="f_cabang[]"
+                                                            value="{{ $cabang->nama_cabang }}"
+                                                            id="cab_{{ $cabang->id }}"
+                                                            {{ in_array($cabang->nama_cabang, request('f_cabang', [])) ? 'checked' : '' }}>
+                                                        <label class="form-check-label small"
+                                                            for="cab_{{ $cabang->id }}">{{ $cabang->nama_cabang }}</label>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-4 border-start border-end">
+                                            <p class="small fw-bold text-uppercase text-muted border-bottom pb-1 mb-2">
+                                                Status Kandidat</p>
+                                            <div class="filter-scroll mb-3" style="max-height: 250px; overflow-y: auto;">
+                                                @php
+                                                    $statuses = [
+                                                        'Job Matching',
+                                                        'lamar ke perusahaan',
+                                                        'Pending',
+                                                        'Interview',
+                                                        'Gagal Interview',
+                                                        'Lulus interview',
+                                                        'Pemberkasan',
+                                                        'Berangkat',
+                                                        'Diterima',
+                                                    ];
+                                                @endphp
+                                                @foreach ($statuses as $status)
+                                                    <div class="form-check mb-1">
+                                                        <input class="form-check-input" type="checkbox" name="f_status[]"
+                                                            value="{{ $status }}" id="st_{{ $loop->index }}"
+                                                            {{ in_array($status, request('f_status', [])) ? 'checked' : '' }}>
+                                                        <label class="form-check-label small text-capitalize"
+                                                            for="st_{{ $loop->index }}">{{ $status }}</label>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+
+                                            <p class="small fw-bold text-uppercase text-muted border-bottom pb-1 mb-2">
+                                                Pendidikan</p>
+                                            @foreach (['SMA', 'SMK', 'D3', 'S1'] as $edu)
+                                                <div class="form-check mb-1">
+                                                    <input class="form-check-input" type="checkbox" name="f_edu[]"
+                                                        value="{{ $edu }}" id="edu_{{ $edu }}"
+                                                        {{ in_array($edu, request('f_edu', [])) ? 'checked' : '' }}>
+                                                    <label class="form-check-label small"
+                                                        for="edu_{{ $edu }}">{{ $edu }}</label>
+                                                </div>
+                                            @endforeach
+                                        </div>
+
+                                        <div class="col-md-4">
+                                            <p class="small fw-bold text-uppercase text-muted border-bottom pb-1 mb-2">
+                                                Jenis Kelamin</p>
+                                            <div class="form-check mb-1">
+                                                <input class="form-check-input" type="checkbox" name="f_jk[]"
+                                                    value="Laki-laki" id="jkL"
+                                                    {{ in_array('Laki-laki', request('f_jk', [])) ? 'checked' : '' }}>
+                                                <label class="form-check-label small" for="jkL">Laki-laki</label>
+                                            </div>
+                                            <div class="form-check mb-3">
+                                                <input class="form-check-input" type="checkbox" name="f_jk[]"
+                                                    value="Perempuan" id="jkP"
+                                                    {{ in_array('Perempuan', request('f_jk', [])) ? 'checked' : '' }}>
+                                                <label class="form-check-label small" for="jkP">Perempuan</label>
+                                            </div>
+
+                                            <p class="small fw-bold text-uppercase text-muted border-bottom pb-1 mb-2">
+                                                Pengalaman</p>
+                                            <div class="form-check mb-3">
+                                                <input class="form-check-input" type="checkbox" name="f_eks[]"
+                                                    value="Ya" id="eksYa"
+                                                    {{ in_array('Ya', request('f_eks', [])) ? 'checked' : '' }}>
+                                                <label class="form-check-label small" for="eksYa">Eks-Jepang</label>
+                                            </div>
+
+                                            <p class="small fw-bold text-uppercase text-muted border-bottom pb-1 mb-2">
+                                                Rentang Umur</p>
+                                            <div class="input-group input-group-sm mb-4">
+                                                <input type="number" name="age_min" class="form-control"
+                                                    placeholder="Min" value="{{ request('age_min') }}">
+                                                <input type="number" name="age_max" class="form-control"
+                                                    placeholder="Max" value="{{ request('age_max') }}">
+                                            </div>
+
+                                            <button type="submit" class="btn btn-dark btn-sm w-100 mb-2">
+                                                Terapkan Filter
+                                            </button>
+                                            <a href="{{ route('kandidat.data') }}"
+                                                class="btn btn-outline-secondary btn-sm w-100">
+                                                Reset
+                                            </a>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
+
+                        {{-- Tombol Reset di sebelah dropdown filter --}}
+                        @if (request()->hasAny(['f_ssw', 'f_cabang', 'f_status', 'f_edu', 'f_jk', 'f_eks', 'age_min', 'age_max']))
+                            <a href="{{ route('kandidat.data') }}" class="btn btn-outline-danger btn-sm shadow-none">
+                                <i class="fas fa-redo me-1"></i> Reset Filter
+                            </a>
+                        @endif
                     </div>
                 </div>
             </div>
+
+            {{-- Tampilkan Badge Filter Aktif (Monokrom / Tidak Warna-warni) --}}
+            @if (request()->hasAny(['f_ssw', 'f_cabang', 'f_status', 'f_edu', 'f_jk', 'f_eks', 'age_min', 'age_max']))
+                <div class="mb-3 d-flex flex-wrap align-items-center gap-2">
+
+                    <span class="badge bg-secondary-subtle text-dark border">
+                        <i class="fas fa-filter me-1"></i> Filter Aktif
+                    </span>
+
+                    @foreach (request('f_cabang', []) as $cabang)
+                        <span class="badge bg-light text-dark border">
+                            Cabang: {{ $cabang }}
+                        </span>
+                    @endforeach
+
+                    @foreach (request('f_ssw', []) as $ssw)
+                        <span class="badge bg-light text-dark border">
+                            SSW: {{ $ssw }}
+                        </span>
+                    @endforeach
+
+                    @foreach (request('f_status', []) as $status)
+                        <span class="badge bg-light text-dark border">
+                            Status: {{ $status }}
+                        </span>
+                    @endforeach
+
+                    @foreach (request('f_edu', []) as $edu)
+                        <span class="badge bg-light text-dark border">
+                            Pendidikan: {{ $edu }}
+                        </span>
+                    @endforeach
+
+                    @foreach (request('f_jk', []) as $jk)
+                        <span class="badge bg-light text-dark border">
+                            JK: {{ $jk }}
+                        </span>
+                    @endforeach
+
+                    @foreach (request('f_eks', []) as $eks)
+                        <span class="badge bg-light text-dark border">
+                            Pengalaman Jepang: {{ $eks }}
+                        </span>
+                    @endforeach
+
+                    @if (request('age_min') || request('age_max'))
+                        <span class="badge bg-light text-dark border">
+                            Umur: {{ request('age_min', '0') }} – {{ request('age_max', '∞') }}
+                        </span>
+                    @endif
+
+                    <a href="{{ route('kandidat.data') }}" class="badge bg-dark text-white text-decoration-none ms-2">
+                        <i class="fas fa-times me-1"></i> Reset Filter
+                    </a>
+
+                </div>
+            @endif
+
+
             <!-- 🧾 Data Table -->
             <div class="card shadow shadow-md">
                 <div class="card-body table-responsive">
-                    <table id="tableKandidatutama" class="table shadow shadow-md align-middle nowrap" style="width:100%">
+                    <table id="tableKandidatutama" class="table shadow shadow-md align-middle nowrap "
+                        style="width:100%">
                         <thead class="">
                             <tr class="text-white text-center">
                                 <th>No</th>
@@ -121,6 +303,7 @@
                                 <th>Status Kandidat di Mendunia</th>
                                 <th>Perusahaan Penempatan</th>
                                 <th>Nama Perusahaan</th>
+                                <th>Bidang ssw yang di miliki</th>
                                 <th>Bidang Pekerjaan SSW</th>
                                 <th>Tanggal Daftar</th>
                                 <th>Jumlah Interview</th>
@@ -166,8 +349,9 @@
 
                                         @if ($foto)
                                             <a href="{{ $detailUrl }}">
-                                                <img src="{{ asset($foto) }}" alt="Foto Kandidat" class="rounded-circle"
-                                                    width="50" height="50" style="object-fit: cover;">
+                                                <img src="{{ asset($foto) }}" alt="Foto Kandidat"
+                                                    class="rounded-circle" width="50" height="50"
+                                                    style="object-fit: cover;">
                                             </a>
                                         @else
                                             <a href="{{ $detailUrl }}">
@@ -189,8 +373,8 @@
                                     <td>
                                         @php
                                             $statusColors = [
-                                                'Job Matching' => 'secondary', 
-                                                'lamar ke perusahaan' => 'secondary', 
+                                                'Job Matching' => 'secondary',
+                                                'lamar ke perusahaan' => 'secondary',
                                                 'Pending' => 'warning',
                                                 'Interview' => 'info',
                                                 'Gagal Interview' => 'danger',
@@ -242,6 +426,10 @@
 
                                     <!-- Nama Perusahaan -->
                                     <td>{{ $k->nama_perusahaan ?? '-' }}</td>
+                                    <td class="col-sm-7">
+                                        {{ $k->pendaftaran->bidang_ssws->pluck('nama_bidang')->implode(', ')}}
+
+                                    </td>
 
                                     <!-- Bidang -->
                                     <td>
@@ -254,8 +442,7 @@
 
                                     <!-- Tanggal Daftar -->
                                     <td>
-                                        {{ $k->pendaftaran->created_at
-                                          }}
+                                        {{ $k->pendaftaran->created_at }}
                                     </td>
 
                                     <!-- Jumlah Interview -->
@@ -285,7 +472,7 @@
                                     <td>{{ $k->catatan_mensetsu ?? '-' }}</td>
 
                                     <!-- Kolom Biaya -->
-                                    <td>{{$k->biaya_pemberkasan }}</td>
+                                    <td>{{ $k->biaya_pemberkasan }}</td>
 
                                     <td>{{ $k->adm_tahap1 }}</td>
 
@@ -340,8 +527,8 @@
                                             <i class="bi bi-pencil"></i>
                                         </a>
 
-                                        <a href="{{ route('kandidat.history', $k->id) }}" class="btn btn-info btn-sm mb-1"
-                                            title="History">
+                                        <a href="{{ route('kandidat.history', $k->id) }}"
+                                            class="btn btn-info btn-sm mb-1" title="History">
                                             <i class="bi bi-clock-history"></i>
                                         </a>
                                     </td>
@@ -360,12 +547,11 @@
         <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
         <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
         <script>
             // Inisialisasi DataTables
             var table = $('#tableKandidatutama').DataTable({
                 responsive: true,
-                pageLength: 5,
+                pageLength: 10,
                 lengthMenu: [5, 10, 25, 50],
                 language: {
                     search: "🔍 Cari:",
@@ -379,11 +565,9 @@
                 }
             });
 
-            // update status kandidat mendunia 
+            // Update status kandidat mendunia (AJAX)
             $(document).on('change', '.status-mendunia', function() {
-
                 let form = $(this).closest('form');
-
                 Swal.fire({
                     title: "Yakin Ubah Status?",
                     text: "Status kandidat akan diperbarui.",
@@ -392,10 +576,7 @@
                     confirmButtonText: "Ya, ubah!",
                     cancelButtonText: "Batal",
                 }).then((result) => {
-
                     if (result.isConfirmed) {
-
-                        // submit via AJAX
                         $.ajax({
                             url: form.attr('action'),
                             type: "POST",
@@ -404,7 +585,7 @@
                                 Swal.fire({
                                     icon: "success",
                                     title: "Berhasil!",
-                                    text: "Status kandidat di Mendunia telah diperbarui.",
+                                    text: "Status kandidat telah diperbarui.",
                                     timer: 2000,
                                     showConfirmButton: false
                                 });
@@ -421,37 +602,127 @@
                 });
             });
 
+            // // Custom filter untuk DataTables
+            // $.fn.dataTable.ext.search.push(
+            //     function(settings, data, dataIndex) {
+            //         // DEBUG: Uncomment baris ini untuk melihat data setiap kolom
+            //         // console.log('Data Row:', data);
 
-            // Custom filter untuk Cabang dan Status
-            $.fn.dataTable.ext.search.push(
-                function(settings, data, dataIndex) {
-                    var selectedCabang = $('#filterCabang').val();
-                    var selectedStatus = $('#filterStatus').val();
+            //         // 1. Filter Cabang - COBA BEBERAPA INDEX
+            //         var selectedCabang = $('input[name="f_cabang[]"]:checked').map(function() {
+            //             return $(this).val().toLowerCase().trim();
+            //         }).get();
 
-                    // Ambil elemen row
-                    var rowNode = table.row(dataIndex).node();
+            //         // Coba cek di beberapa kolom (sesuaikan dengan tabel Anda)
+            //         var cabangData = '';
+            //         // Coba index 1, 2, atau 3 - sesuaikan dengan posisi kolom cabang
+            //         for (var i = 0; i < 5; i++) {
+            //             if (data[i] && data[i].toLowerCase().includes('cabang') === false) {
+            //                 // Cek apakah ini kolom cabang dengan mencocokkan dengan salah satu nilai cabang
+            //                 var tempData = data[i].toLowerCase().trim();
+            //                 if (selectedCabang.length > 0 && selectedCabang.some(cab => tempData.includes(cab))) {
+            //                     cabangData = tempData;
+            //                     break;
+            //                 } else if (selectedCabang.length === 0) {
+            //                     // Jika tidak ada filter, ambil data dari kolom yang diduga cabang
+            //                     cabangData = data[1] ? data[1].toLowerCase().trim() : '';
+            //                     break;
+            //                 }
+            //             }
+            //         }
 
-                    // Ambil teks cabang dan status
-                    var cabang = $('td:eq(3)', rowNode).text().trim(); // kolom Cabang
-                    var status = $('td:eq(4)', rowNode).text().trim(); // kolom Status Kandidat
+            //         var cabangMatch = selectedCabang.length === 0 || selectedCabang.some(function(cab) {
+            //             return cabangData === cab || cabangData.includes(cab);
+            //         });
 
-                    var cabangMatch = selectedCabang === "" || cabang === selectedCabang;
-                    var statusMatch = selectedStatus === "" || status === selectedStatus;
+            //         // 2. Filter SSW (Bidang)
+            //         var selectedSSW = $('input[name="f_ssw[]"]:checked').map(function() {
+            //             return $(this).val().toLowerCase().trim();
+            //         }).get();
 
-                    return cabangMatch && statusMatch;
-                }
-            );
+            //         var bidangSSW = (data[8] || '').toLowerCase().trim();
+            //         var sswMatch = selectedSSW.length === 0 || selectedSSW.some(function(ssw) {
+            //             return bidangSSW.includes(ssw);
+            //         });
 
-            // Event filter change
-            $('#filterCabang, #filterStatus').on('change', function() {
-                table.draw(); // redraw tabel dengan filter baru
-            });
+            //         // 3. Filter Status
+            //         var selectedStatus = $('input[name="f_status[]"]:checked').map(function() {
+            //             return $(this).val().toLowerCase().trim();
+            //         }).get();
 
-            // Reset filter
-            $('#resetFilter').on('click', function() {
-                $('#filterCabang').val('');
-                $('#filterStatus').val('');
-                table.draw();
-            });
+            //         var statusData = (data[7] || '').toLowerCase().trim();
+            //         var statusMatch = selectedStatus.length === 0 || selectedStatus.some(function(status) {
+            //             return statusData.includes(status);
+            //         });
+
+            //         // 4. Filter Pendidikan
+            //         var selectedEdu = $('input[name="f_edu[]"]:checked').map(function() {
+            //             return $(this).val().toLowerCase().trim();
+            //         }).get();
+
+            //         var eduData = (data[5] || '').toLowerCase().trim();
+            //         var eduMatch = selectedEdu.length === 0 || selectedEdu.some(function(edu) {
+            //             return eduData.includes(edu);
+            //         });
+
+            //         // 5. Filter Jenis Kelamin
+            //         var selectedJK = $('input[name="f_jk[]"]:checked').map(function() {
+            //             return $(this).val().toLowerCase().trim();
+            //         }).get();
+
+            //         var jkData = (data[4] || '').toLowerCase().trim();
+            //         var jkMatch = selectedJK.length === 0 || selectedJK.some(function(jk) {
+            //             return jkData.includes(jk);
+            //         });
+
+            //         // 6. Filter Pengalaman (Eks-Jepang)
+            //         var selectedEks = $('input[name="f_eks[]"]:checked').map(function() {
+            //             return $(this).val().toLowerCase().trim();
+            //         }).get();
+
+            //         var eksData = (data[9] || '').toLowerCase().trim();
+            //         var eksMatch = selectedEks.length === 0 || selectedEks.some(function(eks) {
+            //             return eksData.includes(eks) || (eks === 'ya' && eksData !== 'tidak');
+            //         });
+
+            //         // 7. Filter Rentang Umur
+            //         var ageMin = parseInt($('input[name="age_min"]').val()) || 0;
+            //         var ageMax = parseInt($('input[name="age_max"]').val()) || 999;
+            //         var ageData = parseInt(data[6]) || 0;
+            //         var ageMatch = (ageData >= ageMin && ageData <= ageMax);
+
+            //         // Return true jika semua filter match
+            //         return cabangMatch && sswMatch && statusMatch && eduMatch && jkMatch && eksMatch && ageMatch;
+            //     }
+            // );
+
+            // // Event handler untuk tombol "Terapkan Filter"
+            // $('#filterForm').on('submit', function(e) {
+            //     e.preventDefault();
+            //     table.draw();
+            // });
+
+            // // Event handler untuk checkbox filter (real-time)
+            // $('input[name="f_ssw[]"], input[name="f_edu[]"], input[name="f_status[]"], input[name="f_jk[]"], input[name="f_eks[]"], input[name="f_cabang[]"]')
+            //     .on('change', function() {
+            //         table.draw();
+            //     });
+
+            // // Event handler untuk input umur
+            // $('input[name="age_min"], input[name="age_max"]').on('keyup change', function() {
+            //     table.draw();
+            // });
+
+            // // Reset filter
+            // $('#resetFilter').on('click', function() {
+            //     $('input[type="checkbox"]').prop('checked', false);
+            //     $('input[name="age_min"], input[name="age_max"]').val('');
+            //     table.draw();
+            // });
+
+            // // Search box kustom
+            // $('input[placeholder="Cari nama atau NIK..."]').on('keyup', function() {
+            //     table.search(this.value).draw();
+            // });
         </script>
     @endsection

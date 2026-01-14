@@ -20,17 +20,100 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class KandidatController extends Controller
 {
-    // Tampilkan semua kandidat
-    public function index()
-    {
-        $kandidats = Kandidat::with(['pendaftaran', 'cabang', 'institusi'])
-            ->where('status_kandidat', '!=', 'Ditolak')
-            ->orderBy('created_at', 'desc')
-            ->get();
-        $cabangs = Cabang::all(); // ambil semua cabang untuk filter
+ public function index(Request $request)
+{
+    // Query dasar
+    $query = Kandidat::with(['pendaftaran.bidang_ssws', 'cabang', 'institusi'])
+        ->where('status_kandidat', '!=', 'Ditolak')
+        ->orderBy('created_at', 'desc');
 
-        return view('kandidat.data', compact('kandidats', 'cabangs'));
+    // Filter Cabang
+    if ($request->has('f_cabang') && !empty($request->f_cabang)) {
+        $query->whereHas('cabang', function($q) use ($request) {
+            $q->whereIn('nama_cabang', $request->f_cabang);
+        });
     }
+
+    // Filter Bidang SSW
+    if ($request->has('f_ssw') && !empty($request->f_ssw)) {
+        $query->whereHas('pendaftaran.bidang_ssws', function($q) use ($request) {
+            $q->whereIn('nama_bidang', $request->f_ssw);
+        });
+    }
+
+    // Filter Status Kandidat
+    if ($request->has('f_status') && !empty($request->f_status)) {
+        $query->whereIn('status_kandidat', $request->f_status);
+    }
+
+    // Filter Pendidikan
+    if ($request->has('f_edu') && !empty($request->f_edu)) {
+        $query->whereHas('pendaftaran', function($q) use ($request) {
+            $q->whereIn('pendidikan_terakhir', $request->f_edu);
+        });
+    }
+
+    // Filter Jenis Kelamin
+    if ($request->has('f_jk') && !empty($request->f_jk)) {
+        $query->whereHas('pendaftaran', function($q) use ($request) {
+            $q->whereIn('jenis_kelamin', $request->f_jk);
+        });
+    }
+
+    // Filter Pengalaman (Eks-Jepang)
+    if ($request->has('f_eks') && !empty($request->f_eks)) {
+        $query->whereHas('pendaftaran', function($q) {
+            $q->where('pernah_ke_jepang', 'Ya')
+              ->orWhere('pernah_ke_jepang', 'like', '%ya%');
+        });
+    }
+
+    // Filter Rentang Umur
+    if ($request->has('age_min') && $request->age_min != '') {
+        $query->whereHas('pendaftaran', function($q) use ($request) {
+            $q->whereRaw('TIMESTAMPDIFF(YEAR, tanggal_lahir, CURDATE()) >= ?', [$request->age_min]);
+        });
+    }
+
+    if ($request->has('age_max') && $request->age_max != '') {
+        $query->whereHas('pendaftaran', function($q) use ($request) {
+            $q->whereRaw('TIMESTAMPDIFF(YEAR, tanggal_lahir, CURDATE()) <= ?', [$request->age_max]);
+        });
+    }
+
+    // Eksekusi query
+    $kandidats = $query->get();
+
+    // Data cabang untuk dropdown
+    $cabangs = Cabang::all();
+
+    // List bidang SSW
+    $list_bidang = [
+        'Pengolahan makanan',
+        'Restoran',
+        'Pertanian',
+        'Kaigo (perawat)',
+        'Building cleaning',
+        'Driver'
+    ];
+
+    // Statistik SSW
+    $statistik_ssw = [];
+    foreach ($list_bidang as $bidang) {
+        $filtered = $kandidats->filter(function ($kandidat) use ($bidang) {
+            if (!$kandidat->pendaftaran) return false;
+            return $kandidat->pendaftaran->bidang_ssws->contains('nama_bidang', $bidang);
+        });
+
+        $statistik_ssw[$bidang] = [
+            'total' => $filtered->count(),
+            'L' => $filtered->where('pendaftaran.jenis_kelamin', 'Laki-laki')->count(),
+            'P' => $filtered->where('pendaftaran.jenis_kelamin', 'Perempuan')->count(),
+        ];
+    }
+
+    return view('kandidat.data', compact('kandidats', 'cabangs', 'statistik_ssw'));
+}
 
     // Form edit status interview
     public function edit($id)
