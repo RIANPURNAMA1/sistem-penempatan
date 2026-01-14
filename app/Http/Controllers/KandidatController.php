@@ -68,18 +68,24 @@ class KandidatController extends Controller
         });
     }
 
-    // Filter Rentang Umur
-    if ($request->has('age_min') && $request->age_min != '') {
-        $query->whereHas('pendaftaran', function($q) use ($request) {
-            $q->whereRaw('TIMESTAMPDIFF(YEAR, tanggal_lahir, CURDATE()) >= ?', [$request->age_min]);
-        });
-    }
+// Filter Rentang Umur
+if ($request->filled('age_min')) {
+    $query->whereHas('pendaftaran', function ($q) use ($request) {
+        $q->whereRaw(
+            'TIMESTAMPDIFF(YEAR, pendaftarans.tempat_tanggal_lahir, CURDATE()) >= ?',
+            [$request->age_min]
+        );
+    });
+}
 
-    if ($request->has('age_max') && $request->age_max != '') {
-        $query->whereHas('pendaftaran', function($q) use ($request) {
-            $q->whereRaw('TIMESTAMPDIFF(YEAR, tanggal_lahir, CURDATE()) <= ?', [$request->age_max]);
-        });
-    }
+if ($request->filled('age_max')) {
+    $query->whereHas('pendaftaran', function ($q) use ($request) {
+        $q->whereRaw(
+            'TIMESTAMPDIFF(YEAR, pendaftarans.tempat_tanggal_lahir, CURDATE()) <= ?',
+            [$request->age_max]
+        );
+    });
+}
 
     // Eksekusi query
     $kandidats = $query->get();
