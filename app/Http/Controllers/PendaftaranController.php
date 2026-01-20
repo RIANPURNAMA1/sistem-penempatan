@@ -740,6 +740,11 @@ class PendaftaranController extends Controller
             'ijasah' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
             'sertifikat_jft' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
             'sertifikat_ssw' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:5120',
+
+
+            'bidang_ssw' => 'nullable|array',
+            'bidang_ssw.*' => 'nullable|in:Pengolahan makanan,Restoran,Pertanian,Kaigo (perawat),Building cleaning,Driver,Lainnya',
+
         ], [
             // Pesan error
             'file.max' => 'Ukuran file melebihi batas.',
@@ -778,11 +783,6 @@ class PendaftaranController extends Controller
                 ? 'sudah ujian ssw'
                 : 'belum ujian ssw';
         }
-        /*
-    |--------------------------------------------------------------------------
-    | 1. Siapkan data text (exclude file fields)
-    |--------------------------------------------------------------------------
-    */
         $data = $request->except([
             '_token',
             '_method',
@@ -794,15 +794,11 @@ class PendaftaranController extends Controller
             'akte',
             'ijasah',
             'sertifikat_jft',
-            'sertifikat_ssw'
+            'sertifikat_ssw',
+            'bidang_ssw',
         ]);
 
 
-        /*
-    |--------------------------------------------------------------------------
-    | 2. Daftar file yang perlu diproses
-    |--------------------------------------------------------------------------
-    */
         $files = [
             'foto',
             'kk',
@@ -815,60 +811,67 @@ class PendaftaranController extends Controller
             'paspor'
         ];
 
-
-        /*
-    |--------------------------------------------------------------------------
-    | 3. Upload file baru & hapus file lama
-    |--------------------------------------------------------------------------
-    */
         foreach ($files as $fileKey) {
             if ($request->hasFile($fileKey)) {
 
-                // HAPUS FILE LAMA jika ada
                 if (!empty($pendaftaran->$fileKey)) {
-                    $oldFilePath = public_path($pendaftaran->$fileKey);
-                    if (file_exists($oldFilePath)) {
-                        unlink($oldFilePath);
+                    $oldPath = public_path($pendaftaran->$fileKey);
+                    if (file_exists($oldPath)) {
+                        unlink($oldPath);
                     }
                 }
 
-                // UPLOAD FILE BARU
                 $file = $request->file($fileKey);
                 $filename = time() . '_' . $file->getClientOriginalName();
                 $destination = public_path("dokumen/{$fileKey}");
 
-                // Pastikan folder ada
                 if (!file_exists($destination)) {
                     mkdir($destination, 0777, true);
                 }
 
-                // Pindahkan file
                 $file->move($destination, $filename);
 
-                // Simpan path baru ke array $data
                 $data[$fileKey] = "dokumen/{$fileKey}/{$filename}";
             }
         }
-        // =======================
-        // AUTO UPDATE STATUS JFT & SSW
-        // =======================
 
-        // Jika upload sertifikat JFT
-        if ($request->hasFile('sertifikat_jft')) {
-            $data['status_jft'] = 'sudah ujian jft';
-        }
 
-        // Jika upload sertifikat SSW
-        if ($request->hasFile('sertifikat_ssw')) {
-            $data['status_ssw'] = 'sudah ujian ssw';
-        }
+        $data['status_jft'] = !empty($data['sertifikat_jft'] ?? $pendaftaran->sertifikat_jft)
+            ? 'sudah ujian jft'
+            : 'belum ujian jft';
 
-        /*
-    |--------------------------------------------------------------------------
-    | 4. Update Database
-    |--------------------------------------------------------------------------
-    */
+        $data['status_ssw'] = !empty($data['sertifikat_ssw'] ?? $pendaftaran->sertifikat_ssw)
+            ? 'sudah ujian ssw'
+            : 'belum ujian ssw';
+
+
         $pendaftaran->update($data);
+
+
+
+        $bidangRequest = collect($request->input('bidang_ssw', []))
+            ->filter()
+            ->unique()
+            ->values();
+
+        $hasSertifikatSSW =
+            $request->hasFile('sertifikat_ssw') ||
+            !empty($pendaftaran->sertifikat_ssw);
+
+        if ($hasSertifikatSSW && $bidangRequest->isEmpty()) {
+            return back()->with('error', 'Bidang SSW wajib diisi.');
+        }
+
+        // hapus bidang lama
+        $pendaftaran->bidang_ssws()->delete();
+
+        // simpan bidang baru
+        foreach ($bidangRequest as $bidang) {
+            $pendaftaran->bidang_ssws()->create([
+                'kandidat_id' => $pendaftaran->kandidat->id ?? null,
+                'nama_bidang' => $bidang,
+            ]);
+        }
 
 
         return redirect()

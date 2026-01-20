@@ -30,20 +30,56 @@
         <div class="card shadow-lg border-0 mb-4">
             <div class="card-body d-flex flex-column flex-md-row align-items-center p-4">
 
+                {{-- FOTO KANDIDAT --}}
                 <div class="me-md-4 mb-3 mb-md-0 text-center">
                     @php
                         $foto = $kandidat->pendaftaran->foto ?? null;
+                        $nama = $kandidat->pendaftaran->nama ?? 'User';
                     @endphp
+
                     @if ($foto)
                         <img src="{{ asset($foto) }}" alt="Foto Kandidat"
                             class="rounded-circle border border-primary border-3" width="150" height="150"
-                            style="object-fit: cover;">
+                            style="object-fit: cover; cursor: pointer;" data-bs-toggle="modal"
+                            data-bs-target="#modalFotoKandidat">
                     @else
-                        <img src="https://ui-avatars.com/api/?name={{ urlencode($kandidat->pendaftaran->nama ?? 'User') }}&background=0D8ABC&color=fff&size=150"
-                            class="rounded-circle border border-primary border-3" width="150" height="150"
-                            style="object-fit: cover;">
+                        <img src="https://ui-avatars.com/api/?name={{ urlencode($nama) }}&background=0D8ABC&color=fff&size=150"
+                            alt="Avatar" class="rounded-circle border border-primary border-3" width="150"
+                            height="150" style="object-fit: cover;">
                     @endif
                 </div>
+
+                {{-- MODAL PREVIEW FOTO --}}
+                @if ($foto)
+                    <div class="modal fade" id="modalFotoKandidat" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-lg">
+                            <div class="modal-content">
+
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Preview Foto Kandidat</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+
+                                <div class="modal-body text-center">
+                                    <img src="{{ asset($foto) }}" alt="Preview Foto" class="img-fluid rounded border"
+                                        style="max-height: 70vh;">
+                                </div>
+
+                                <div class="modal-footer">
+                                    <a href="{{ asset($foto) }}" download class="btn btn-success">
+                                        Download Foto
+                                    </a>
+
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                        Tutup
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                @endif
+
 
                 <div class="text-center text-md-start">
                     <h3 class="mt-2 mt-md-0 text-dark">{{ $kandidat->pendaftaran->nama ?? 'Nama Kandidat' }}</h3>
@@ -63,7 +99,8 @@
                         title="Riwayat Perubahan Data">
                         <i class="fas fa-history"></i>
                     </a>
-                    <a href="{{ route('kandidat.edit', $kandidat->id) }}" class="btn btn-warning" title="Edit Data Lengkap">
+                    <a href="{{ route('kandidat.edit', $kandidat->id) }}" class="btn btn-warning"
+                        title="Edit Data Lengkap">
                         <i class="fas fa-edit"></i>
                     </a>
                     <a href="{{ route('kandidat.export', $kandidat->id) }}" class="btn btn-success"
