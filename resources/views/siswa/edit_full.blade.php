@@ -490,7 +490,7 @@
                         <button type="submit" id="btnSubmit" class="btn btn-success py-2">
                             <i class="bi bi-save"></i> Simpan Perubahan
                         </button>
-                        <a href="/siswa" class="btn btn-primary py-2">kembali</a>
+                        <a href="/kandidat" class="btn btn-primary py-2">kembali</a>
                     </div>
 
                 </div>
