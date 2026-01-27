@@ -20,106 +20,106 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class KandidatController extends Controller
 {
- public function index(Request $request)
-{
-    // Query dasar
-    $query = Kandidat::with(['pendaftaran.bidang_ssws', 'cabang', 'institusi'])
-        ->where('status_kandidat', '!=', 'Ditolak')
-        ->orderBy('created_at', 'desc');
+    public function index(Request $request)
+    {
+        // Query dasar
+        $query = Kandidat::with(['pendaftaran.bidang_ssws', 'cabang', 'institusi'])
+            ->where('status_kandidat', '!=', 'Ditolak')
+            ->orderBy('created_at', 'desc');
 
-    // Filter Cabang
-    if ($request->has('f_cabang') && !empty($request->f_cabang)) {
-        $query->whereHas('cabang', function($q) use ($request) {
-            $q->whereIn('nama_cabang', $request->f_cabang);
-        });
-    }
+        // Filter Cabang
+        if ($request->has('f_cabang') && !empty($request->f_cabang)) {
+            $query->whereHas('cabang', function ($q) use ($request) {
+                $q->whereIn('nama_cabang', $request->f_cabang);
+            });
+        }
 
-    // Filter Bidang SSW
-    if ($request->has('f_ssw') && !empty($request->f_ssw)) {
-        $query->whereHas('pendaftaran.bidang_ssws', function($q) use ($request) {
-            $q->whereIn('nama_bidang', $request->f_ssw);
-        });
-    }
+        // Filter Bidang SSW
+        if ($request->has('f_ssw') && !empty($request->f_ssw)) {
+            $query->whereHas('pendaftaran.bidang_ssws', function ($q) use ($request) {
+                $q->whereIn('nama_bidang', $request->f_ssw);
+            });
+        }
 
-    // Filter Status Kandidat
-    if ($request->has('f_status') && !empty($request->f_status)) {
-        $query->whereIn('status_kandidat', $request->f_status);
-    }
+        // Filter Status Kandidat
+        if ($request->has('f_status') && !empty($request->f_status)) {
+            $query->whereIn('status_kandidat', $request->f_status);
+        }
 
-    // Filter Pendidikan
-    if ($request->has('f_edu') && !empty($request->f_edu)) {
-        $query->whereHas('pendaftaran', function($q) use ($request) {
-            $q->whereIn('pendidikan_terakhir', $request->f_edu);
-        });
-    }
+        // Filter Pendidikan
+        if ($request->has('f_edu') && !empty($request->f_edu)) {
+            $query->whereHas('pendaftaran', function ($q) use ($request) {
+                $q->whereIn('pendidikan_terakhir', $request->f_edu);
+            });
+        }
 
-    // Filter Jenis Kelamin
-    if ($request->has('f_jk') && !empty($request->f_jk)) {
-        $query->whereHas('pendaftaran', function($q) use ($request) {
-            $q->whereIn('jenis_kelamin', $request->f_jk);
-        });
-    }
+        // Filter Jenis Kelamin
+        if ($request->has('f_jk') && !empty($request->f_jk)) {
+            $query->whereHas('pendaftaran', function ($q) use ($request) {
+                $q->whereIn('jenis_kelamin', $request->f_jk);
+            });
+        }
 
-    // Filter Pengalaman (Eks-Jepang)
-    if ($request->has('f_eks') && !empty($request->f_eks)) {
-        $query->whereHas('pendaftaran', function($q) {
-            $q->where('pernah_ke_jepang', 'Ya')
-              ->orWhere('pernah_ke_jepang', 'like', '%ya%');
-        });
-    }
+        // Filter Pengalaman (Eks-Jepang)
+        if ($request->has('f_eks') && !empty($request->f_eks)) {
+            $query->whereHas('pendaftaran', function ($q) {
+                $q->where('pernah_ke_jepang', 'Ya')
+                    ->orWhere('pernah_ke_jepang', 'like', '%ya%');
+            });
+        }
 
-// Filter Rentang Umur
-if ($request->filled('age_min')) {
-    $query->whereHas('pendaftaran', function ($q) use ($request) {
-        $q->whereRaw(
-            'TIMESTAMPDIFF(YEAR, pendaftarans.tempat_tanggal_lahir, CURDATE()) >= ?',
-            [$request->age_min]
-        );
-    });
-}
+        // Filter Rentang Umur
+        if ($request->filled('age_min')) {
+            $query->whereHas('pendaftaran', function ($q) use ($request) {
+                $q->whereRaw(
+                    'TIMESTAMPDIFF(YEAR, pendaftarans.tempat_tanggal_lahir, CURDATE()) >= ?',
+                    [$request->age_min]
+                );
+            });
+        }
 
-if ($request->filled('age_max')) {
-    $query->whereHas('pendaftaran', function ($q) use ($request) {
-        $q->whereRaw(
-            'TIMESTAMPDIFF(YEAR, pendaftarans.tempat_tanggal_lahir, CURDATE()) <= ?',
-            [$request->age_max]
-        );
-    });
-}
+        if ($request->filled('age_max')) {
+            $query->whereHas('pendaftaran', function ($q) use ($request) {
+                $q->whereRaw(
+                    'TIMESTAMPDIFF(YEAR, pendaftarans.tempat_tanggal_lahir, CURDATE()) <= ?',
+                    [$request->age_max]
+                );
+            });
+        }
 
-    // Eksekusi query
-    $kandidats = $query->get();
+        // Eksekusi query
+        $kandidats = $query->get();
 
-    // Data cabang untuk dropdown
-    $cabangs = Cabang::all();
+        // Data cabang untuk dropdown
+        $cabangs = Cabang::all();
 
-    // List bidang SSW
-    $list_bidang = [
-        'Pengolahan makanan',
-        'Restoran',
-        'Pertanian',
-        'Kaigo (perawat)',
-        'Building cleaning',
-        'Driver'
-    ];
-
-    // Statistik SSW
-    $statistik_ssw = [];
-    foreach ($list_bidang as $bidang) {
-        $filtered = $kandidats->filter(function ($kandidat) use ($bidang) {
-            if (!$kandidat->pendaftaran) return false;
-            return $kandidat->pendaftaran->bidang_ssws->contains('nama_bidang', $bidang);
-        });
-
-        $statistik_ssw[$bidang] = [
-            'total' => $filtered->count(),
-            'L' => $filtered->where('pendaftaran.jenis_kelamin', 'Laki-laki')->count(),
-            'P' => $filtered->where('pendaftaran.jenis_kelamin', 'Perempuan')->count(),
+        // List bidang SSW
+        $list_bidang = [
+            'Pengolahan makanan',
+            'Restoran',
+            'Pertanian',
+            'Kaigo (perawat)',
+            'Building cleaning',
+            'Driver'
         ];
-    }
 
-    return view('kandidat.data', compact('kandidats', 'cabangs', 'statistik_ssw'));
-}
+        // Statistik SSW
+        $statistik_ssw = [];
+        foreach ($list_bidang as $bidang) {
+            $filtered = $kandidats->filter(function ($kandidat) use ($bidang) {
+                if (!$kandidat->pendaftaran) return false;
+                return $kandidat->pendaftaran->bidang_ssws->contains('nama_bidang', $bidang);
+            });
+
+            $statistik_ssw[$bidang] = [
+                'total' => $filtered->count(),
+                'L' => $filtered->where('pendaftaran.jenis_kelamin', 'Laki-laki')->count(),
+                'P' => $filtered->where('pendaftaran.jenis_kelamin', 'Perempuan')->count(),
+            ];
+        }
+
+        return view('kandidat.data', compact('kandidats', 'cabangs', 'statistik_ssw'));
+    }
 
     // Form edit status interview
     public function edit($id)
@@ -321,19 +321,30 @@ if ($request->filled('age_max')) {
 
             // Teks pesan WA
             $pesanWa =
+                "📢 *PEMBARUAN DATA KANDIDAT*\n" .
+                "🕒 *Tanggal Pembaruan*: " . now()->format('d M Y H:i') . "\n\n" .
+
                 "Halo *{$nama}*,\n\n" .
                 "Kami dari *Mendunia Jepang* ingin menginformasikan bahwa terdapat pembaruan terbaru terkait proses administrasi dan penempatan Anda. Kami terus berupaya memastikan setiap tahapan berjalan dengan transparan, akurat, dan sesuai prosedur yang berlaku.\n\n" .
+
                 "📌 *Status Terbaru Anda*: {$request->status_kandidat}\n" .
-                "🕒 *Tanggal Pembaruan*: " . now()->format('d M Y H:i') . "\n" .
+
+                (!empty($request->jadwal_interview)
+                    ? "📅 *Tanggal Interview*: " . \Carbon\Carbon::parse($request->jadwal_interview)->format('d M Y') . "\n"
+                    : ""
+                ) .
+
                 (!empty($request->catatan_interview)
                     ? "📝 *Catatan Tambahan*:\n{$request->catatan_interview}\n\n"
                     : "\n"
                 ) .
+
                 "Kami berharap informasi ini dapat membantu Anda mengikuti alur proses dengan lebih nyaman.\n\n" .
                 "Apabila Anda membutuhkan penjelasan lebih lanjut atau memiliki pertanyaan seputar tahapan berikutnya, silakan menghubungi kami kapan saja. Tim kami siap membantu.\n\n" .
                 "Terima kasih atas kepercayaan Anda kepada *Mendunia Jepang*. Semoga setiap langkah Anda menuju Jepang semakin lancar dan diberi kemudahan.\n\n" .
                 "Salam hangat,\n" .
                 "*Tim Sukses Mendunia*";
+
 
             /* ------------------------------------------------------------
         | 🔔 Kirim WhatsApp via Fonnte (FIXED dengan HTTP Client)
