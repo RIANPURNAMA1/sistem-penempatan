@@ -55,7 +55,7 @@
 </style>
 
 
-<header class="fixed-top  mb-3 d-md-none mobile-header shadow-lg dark light " style="z-index: 1040;">
+<header class="fixed-top  mb-3 d-lg-none mobile-header shadow-lg dark light " style="z-index: 1040;">
     <nav class="navbar px-3 py-2">
         <div class="container-fluid d-flex justify-content-between align-items-center">
 
