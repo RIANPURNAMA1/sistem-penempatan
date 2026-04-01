@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
         integrity="sha512-u3eJv6TsgUsP62eFZlyDdc0AGJi/7luWGINuD/7++UZ5EONosFVJeFt3PcTJS3BM4tiTqcKoy0ucZZ+jJ7G8Aw=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 
     <head>
         <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -13,6 +14,9 @@
 
 
     <style>
+        body, .form-label, .form-control, .form-select, .btn, h4, h5, p, span, div {
+            font-family: 'Inter', sans-serif !important;
+        }
         .progress-wrapper {
             position: relative;
             width: 100%;
@@ -69,9 +73,9 @@
 
         .progress-step.active .circle,
         .progress-step.completed .circle {
-            background: #4f46e5;
+            background: #05005e;
             color: #fff;
-            box-shadow: 0 0 12px rgba(79, 70, 229, 0.7);
+            box-shadow: 0 0 12px rgba(8, 0, 153, 0.678);
         }
 
         .progress-step .label {
@@ -82,7 +86,7 @@
         }
 
         .progress-step.active .label {
-            color: #4f46e5;
+            color: #06006e;
         }
 
         .progress-step.completed .label {
@@ -370,23 +374,9 @@
         @endif
 
 
-        <!-- Breadcrumb -->
-        <nav aria-label=" breadcrumb" class="mb-4">
-            <ol class="breadcrumb border rounded-3 bg-white px-3 py-2 shadow-sm mb-0">
-                <li class="breadcrumb-item">
-                    <a href="#" class="text-decoration-none text-secondary">
-                        <i class="bi bi-house-door me-1"></i> Dashboard
-                    </a>
-                </li>
-                <li class="breadcrumb-item active fw-semibold" aria-current="page">
-                    <i class="bi bi-person-lines-fill"></i> Form Pendaftaran CV
-                </li>
-            </ol>
-        </nav>
-
         <div class="row justify-content-center">
             <div class="col-md-12">
-                <div class="card shadow-lg">
+                <div class="card shadow-md">
                     <div class="card-header">
                         <h4 class="mb-0"><i class="fas fa-file-alt me-2"></i>Form Curriculum Vitae (CV)</h4>
                         <p class="mb-0 mt-2 opacity-75">Silakan lengkapi semua informasi dengan benar</p>

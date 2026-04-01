@@ -3,290 +3,97 @@
 @section('title', 'History Kandidat')
 
 @section('content')
-
-    <div class="mt-4">
-        <!-- Breadcrumb -->
-        <nav aria-label="breadcrumb" class="mb-4">
-            <ol class="breadcrumb border rounded-3 px-3 py-2 shadow-sm mb-0">
-                <li class="breadcrumb-item">
-                    <a href="{{ route('dashboard') }}" class="text-decoration-none text-secondary">
-                        <i class="bi bi-house-door me-1"></i> Dashboard
-                    </a>
-                </li>
-                <li class="breadcrumb-item">
-                    <a href="{{ route('kandidat.data') }}" class="text-decoration-none text-secondary">
-                        <i class="bi bi-people me-1"></i> Daftar Kandidat
-                    </a>
-                </li>
-                <li class="breadcrumb-item active fw-semibold" aria-current="page">
-                    <i class="bi bi-clock-history me-1"></i> History Kandidat
-                </li>
-            </ol>
-        </nav>
-
-        <!-- Profil Kandidat -->
-        <div class="d-flex align-items-center mb-4 gap-3">
-            @if ($kandidat->pendaftaran->foto ?? false)
-                <img src="{{ asset($kandidat->pendaftaran->foto) }}" alt="Foto Kandidat"
-                    class="rounded-circle border shadow-sm" width="80" height="80">
-            @else
-                <div class="rounded-circle border shadow-sm d-flex justify-content-center align-items-center"
-                    style="width:80px; height:80px; background-color:#f0f0f0;">
-                    <i class="bi bi-person-fill fs-3 text-muted"></i>
-                </div>
-            @endif
+    <div class="p-6">
+        <div class="mb-6 flex items-center justify-between">
             <div>
-                <h3 class="mb-0">{{ $kandidat->pendaftaran->nama ?? 'Kandidat' }}</h3>
-                <small class="text-muted">{{ $kandidat->pendaftaran->email ?? '-' }}</small>
+                <h1 class="text-2xl font-bold text-gray-900">{{ $kandidat->pendaftaran->nama ?? 'Kandidat' }}</h1>
+                <p class="text-gray-500 text-sm">{{ $kandidat->pendaftaran->email ?? '-' }}</p>
             </div>
+            <a href="{{ route('kandidat.data') }}" class="text-gray-600 hover:text-gray-900">
+                ← Kembali
+            </a>
         </div>
 
         @php
-            // --- Pindahkan logic warna status ke sini atau ke helper ---
             $statusColors = [
-                'Job Matching' => 'secondary',
-                'lamar ke perusahaan' => 'secondary',
-                'Pending' => 'warning',
-                'Interview' => 'info',
-                'Gagal Interview' => 'danger',
-                'Jadwalkan Interview Ulang' => 'dark',
-                'Lulus interview' => 'primary',
-                'Pemberkasan' => 'info',
-                'Berangkat' => 'success', // Ganti 'Berangkat' ke success (hijau)
-                'Diterima' => 'success',
-                'Ditolak' => 'danger',
+                'Job Matching' => 'bg-gray-100 text-gray-700',
+                'lamar ke perusahaan' => 'bg-gray-100 text-gray-700',
+                'Pending' => 'bg-yellow-100 text-yellow-700',
+                'Interview' => 'bg-blue-100 text-blue-700',
+                'Gagal Interview' => 'bg-red-100 text-red-700',
+                'Jadwalkan Interview Ulang' => 'bg-gray-800 text-white',
+                'Lulus interview' => 'bg-indigo-100 text-indigo-700',
+                'Pemberkasan' => 'bg-blue-100 text-blue-700',
+                'Berangkat' => 'bg-green-100 text-green-700',
+                'Diterima' => 'bg-green-100 text-green-700',
+                'Ditolak' => 'bg-red-100 text-red-700',
             ];
-
             $getStatusBadge = function ($status, $colors) {
-                $color = $colors[$status] ?? 'secondary';
-                return '<span class="badge bg-' . $color . ' px-3 py-2 text-wrap">' . $status . '</span>';
+                $color = $colors[$status] ?? 'bg-gray-100 text-gray-700';
+                return '<span class="px-2 py-1 rounded text-xs font-medium ' . $color . '">' . $status . '</span>';
             };
         @endphp
 
-        {{-- ================================================================= --}}
-        {{-- 1. Tabel History Lengkap --}}
-        {{-- ================================================================= --}}
-        <div class="card shadow-lg border-0 rounded-4 mb-5">
-            <div class="card-header  rounded-top-4 py-3">
-                <h5 class="mb-0"><i class="bi bi-clock-history me-2"></i> Riwayat Status Kandidat</h5>
-            </div>
-            <div class="card-body table-responsive p-4">
-                <table class="table  align-middle nowrap" id="tableHistoryAll" style="width:100%">
-                    <thead class="">
-                        <tr class="text-center">
-                            <th class="py-3">No</th>
-                            <th class="py-3">Status</th>
-                            <th class="py-3">Perusahaan Penempatan</th>
-                            <th class="py-3">Bidang SSW</th>
-                            <th class="py-3">Tanggal & Waktu</th>
+        <div class="mb-6">
+            <h2 class="text-lg font-semibold text-gray-800 mb-3">Riwayat Status</h2>
+            <table class="w-full text-sm text-left border">
+                <thead class="bg-gray-100 text-gray-700">
+                    <tr>
+                        <th class="px-4 py-2 border">No</th>
+                        <th class="px-4 py-2 border">Status</th>
+                        <th class="px-4 py-2 border">Perusahaan</th>
+                        <th class="px-4 py-2 border">Bidang SSW</th>
+                        <th class="px-4 py-2 border">Tanggal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($histories as $index => $history)
+                        <tr class="border">
+                            <td class="px-4 py-2 border">{{ $index + 1 }}</td>
+                            <td class="px-4 py-2 border">{!! $getStatusBadge($history->status_kandidat, $statusColors) !!}</td>
+                            <td class="px-4 py-2 border">{{ $history->institusi->perusahaan_penempatan ?? '-' }}</td>
+                            <td class="px-4 py-2 border">{{ $history->bidang_ssw ?? '-' }}</td>
+                            <td class="px-4 py-2 border text-gray-500">{{ $history->created_at->format('d M Y H:i') }}</td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($histories as $index => $history)
-                            <tr class="align-middle">
-                                <td class="text-center fw-semibold">{{ $index + 1 }}</td>
-
-                                <td>
-                                    {!! $getStatusBadge($history->status_kandidat, $statusColors) !!}
-                                </td>
-
-                                <td>
-                                    <span class="d-block text-center" style="max-width: 250px;"
-                                        title="{{ $history->institusi->perusahaan_penempatan ?? 'Tidak ada data' }}">
-                                        {{ $history->institusi->perusahaan_penempatan ?? '-' }}
-                                    </span>
-                                </td>
-
-                                <td>
-                                    {{ $history->bidang_ssw ?? '-' }}
-                                </td>
-
-
-                                <td class="text-center text-nowrap small text-muted">
-                                    {{ $history->created_at->format('d M Y') }}<br>
-                                    <span class="fw-semibold">{{ $history->created_at->format('H:i') }} WIB</span>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="6" class="text-center text-muted py-5">
-                                    <i class="bi bi-info-circle me-1"></i> Tidak ada riwayat status yang tercatat.
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-
-        {{-- ================================================================= --}}
-        {{-- 2. Tabel Summary Interview per Perusahaan --}}
-        {{-- ================================================================= --}}
-        <div class="card shadow-lg border-0 rounded-4">
-            <div class="card-header  rounded-top-4 py-3">
-                <h5 class="mb-0"><i class="bi bi-briefcase-fill me-2"></i> Ringkasan Interview Berdasarkan Perusahaan</h5>
-            </div>
-            <div class="card-body table-responsive p-4">
-                <table class="table align-middle nowrap" id="tableSummary" style="width:100%">
-                    <thead class="">
+                    @empty
                         <tr>
-                            <th class="py-3">Perusahaan Penempatan (LPK)</th>
-                            <th class="py-3">Perusahaan Jepang Terakhir</th>
-                            <th class="py-3">Bidang SSW</th>
-                            <th class="py-3 text-center">Jumlah Interview</th>
-                            <th class="py-3 text-center">Status Terakhir</th>
-                            <th class="py-3 text-center">Tanggal Status Terakhir</th>
+                            <td colspan="5" class="px-4 py-4 text-center text-gray-500">Tidak ada riwayat</td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @forelse ($interviewPerPerusahaan as $index => $data)
-                            <tr>
-                                {{-- KOLOM 1: Perusahaan Penempatan --}}
-                                <td>
-                                    {{ $data['institusi']->perusahaan_penempatan ?? '-' }}
-                                </td>
-
-                                {{-- KOLOM 2: Nama Perusahaan Jepang (History) --}}
-                                <td>
-                                    {{ $data['nama_perusahaan_history'] ?? '-' }}
-                                </td>
-
-                                {{-- KOLOM 3: Bidang SSW --}}
-                                <td>
-                                    {{ $data['bidang_ssw'] ?? '-' }}
-                                </td>
-
-                                {{-- Kolom 4: Jumlah Interview --}}
-                                <td class="text-center fw-bold">{{ $data['jumlah_interview'] }}x</td>
-
-                                {{-- Kolom 5: Status Terakhir (Menggunakan Badge Warna) --}}
-                                <td class="text-center">
-                                    {!! $getStatusBadge($data['status_terakhir'], $statusColors) !!}
-                                </td>
-
-                                {{-- Kolom 6: Tanggal Terakhir --}}
-                                <td class="text-center text-nowrap small text-muted">
-                                    {{ $data['tanggal_terakhir']->format('d M Y H:i') }}
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="6" class="text-center text-muted py-5">
-                                    <i class="bi bi-info-circle me-1"></i> Tidak ada ringkasan interview yang tercatat.
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
 
-        <script>
-            $(document).ready(function() {
-                const dataTableConfig = {
-                    responsive: true,
-                    pageLength: 10,
-                    lengthMenu: [5, 10, 25, 50],
-                    language: {
-                        search: "🔍 Cari:",
-                        lengthMenu: "Tampilkan _MENU_ data",
-                        zeroRecords: "Tidak ada data ditemukan",
-                        info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
-                        infoEmpty: "Menampilkan 0 - 0 dari 0 data",
-                        infoFiltered: "(disaring dari _MAX_ total data)",
-                        paginate: {
-                            previous: "←",
-                            next: "→"
-                        }
-                    }
-                };
-
-                // Inisialisasi Tabel 1
-                $('#tableHistoryAll').DataTable(dataTableConfig);
-
-                // Inisialisasi Tabel 2
-                $('#tableSummary').DataTable(dataTableConfig);
-            });
-        </script>
+        <div>
+            <h2 class="text-lg font-semibold text-gray-800 mb-3">Ringkasan Interview per Perusahaan</h2>
+            <table class="w-full text-sm text-left border">
+                <thead class="bg-gray-100 text-gray-700">
+                    <tr>
+                        <th class="px-4 py-2 border">Perusahaan LPK</th>
+                        <th class="px-4 py-2 border">Perusahaan Jepang</th>
+                        <th class="px-4 py-2 border">Bidang SSW</th>
+                        <th class="px-4 py-2 border text-center">Jml</th>
+                        <th class="px-4 py-2 border text-center">Status</th>
+                        <th class="px-4 py-2 border text-center">Terakhir</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($interviewPerPerusahaan as $data)
+                        <tr class="border">
+                            <td class="px-4 py-2 border">{{ $data['institusi']->perusahaan_penempatan ?? '-' }}</td>
+                            <td class="px-4 py-2 border">{{ $data['nama_perusahaan_history'] ?? '-' }}</td>
+                            <td class="px-4 py-2 border">{{ $data['bidang_ssw'] ?? '-' }}</td>
+                            <td class="px-4 py-2 border text-center font-medium">{{ $data['jumlah_interview'] }}x</td>
+                            <td class="px-4 py-2 border text-center">{!! $getStatusBadge($data['status_terakhir'], $statusColors) !!}</td>
+                            <td class="px-4 py-2 border text-center text-gray-500">{{ $data['tanggal_terakhir']->format('d M Y') }}</td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6" class="px-4 py-4 text-center text-gray-500">Tidak ada ringkasan</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
     </div>
-    @if (auth()->check() && auth()->user()->role === 'super-admin')
-        <!-- Back Button -->
-        <div class="mt-3">
-            <a href="{{ route('kandidat.data') }}" class="btn btn-secondary">
-                <i class="bi bi-arrow-left-circle me-1"></i> Kembali ke Daftar Kandidat
-            </a>
-        </div>
-    @endif
-
-    @if (auth()->check() &&
-            auth()->user()->role ===
-                'Cabang Cianjur Selatan Mendunia,Cabang Cianjur Pamoyanan Mendunia,Cabang Batam Mendunia,Cabang Banyuwangi Mendunia,Cabang Kendal Mendunia,Cabang Pati Mendunia,Cabang Tulung Agung Mendunia,Cabang Bangkalan Mendunia,Cabang Bojonegoro Mendunia,Cabang Jember Mendunia,Cabang Wonosobo Mendunia,Cabang Eshan Mendunia')
-        <!-- Back Button -->
-        <div class="mt-3">
-            <a href="/" class="btn btn-secondary">
-                <i class="bi bi-arrow-left-circle me-1"></i> Kembali ke Dashboard
-            </a>
-        </div>
-    @endif
-    </div>
-    <!-- JS Dependencies -->
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <script>
-        // Inisialisasi DataTables
-        var table = $('#tableKandidatutama').DataTable({
-            responsive: true,
-            pageLength: 5,
-            lengthMenu: [5, 10, 25, 50],
-            language: {
-                search: "🔍 Cari:",
-                lengthMenu: "Tampilkan _MENU_ data",
-                zeroRecords: "Tidak ada data ditemukan",
-                info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
-                paginate: {
-                    previous: "←",
-                    next: "→"
-                }
-            }
-        });
-
-
-        // Custom filter untuk Cabang dan Status
-        $.fn.dataTable.ext.search.push(
-            function(settings, data, dataIndex) {
-                var selectedCabang = $('#filterCabang').val();
-                var selectedStatus = $('#filterStatus').val();
-
-                // Ambil elemen row
-                var rowNode = table.row(dataIndex).node();
-
-                // Ambil teks cabang dan status
-                var cabang = $('td:eq(3)', rowNode).text().trim(); // kolom Cabang
-                var status = $('td:eq(4)', rowNode).text().trim(); // kolom Status Kandidat
-
-                var cabangMatch = selectedCabang === "" || cabang === selectedCabang;
-                var statusMatch = selectedStatus === "" || status === selectedStatus;
-
-                return cabangMatch && statusMatch;
-            }
-        );
-
-        // Event filter change
-        $('#filterCabang, #filterStatus').on('change', function() {
-            table.draw(); // redraw tabel dengan filter baru
-        });
-
-        // Reset filter
-        $('#resetFilter').on('click', function() {
-            $('#filterCabang').val('');
-            $('#filterStatus').val('');
-            table.draw();
-        });
-    </script>
-
 @endsection
