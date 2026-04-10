@@ -141,155 +141,173 @@
                 </form>
             </div>
         </div>
+<div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden p-3">
+    <div class="overflow-x-auto">
+        <table id="tablependaftar" class="w-full text-left text-sm">
+            <thead class="bg-base-200 text-base-content border-b border-base-content/10">
 
-        <!-- Data Table -->
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden p-3">
-            <div class="overflow-x-auto">
-                <table id="tablependaftar" class="w-full text-left text-sm">
-                    <thead class="bg-base-200 text-base-content border-b border-base-content/10">
-                        <!-- Baris 1: Grouping Header -->
-                        <tr class="text-center uppercase text-[10px] tracking-wider font-bold text-gray-500">
-                            <th colspan="2" class="bg-base-300/50 border-r border-base-content/10">Sistem</th>
-                            <th colspan="6" class="bg-blue-50 border-r border-blue-100 text-blue-700">Biodata Pribadi
-                            </th>
-                            <th colspan="3" class="bg-green-50 border-r border-green-100 text-green-700">Kualifikasi
-                                (JFT/SSW)</th>
-                            <th colspan="3" class="bg-purple-50 border-r border-purple-100 text-purple-700">Kontak &
-                                Cabang</th>
-                            <th colspan="4" class="bg-amber-50 text-amber-700">Administrasi & Status</th>
-                            <th class="bg-base-300"></th>
-                        </tr>
+                {{-- Baris 1: Grouping Header --}}
+                <tr class="text-center uppercase text-[10px] tracking-wider font-bold text-gray-500">
+                    <th colspan="2" class="bg-base-300/50 border-r border-base-content/10">Sistem</th>
+                    <th colspan="7" class="bg-blue-50 border-r border-blue-100 text-blue-700">Biodata Pribadi</th>
+                    <th colspan="4" class="bg-green-50 border-r border-green-100 text-green-700">Kualifikasi (JFT/SSW)</th>
+                    <th colspan="2" class="bg-purple-50 border-r border-purple-100 text-purple-700">Kontak & Cabang</th>
+                    <th colspan="4" class="bg-amber-50 text-amber-700">Administrasi & Status</th>
+                    <th class="bg-base-300"></th>
+                </tr>
 
-                        <!-- Baris 2: Detail Header -->
-                        <tr class="text-center whitespace-nowrap">
-                            <th class="px-3 py-3 border-r border-base-content/5">No</th>
-                            <th class="px-3 py-3 border-r border-base-content/10">Foto</th>
+                {{-- Baris 2: Detail Header --}}
+                <tr class="text-center whitespace-nowrap">
+                    {{-- Sistem --}}
+                    <th class="px-3 py-3 border-r border-base-content/5">No</th>
+                    <th class="px-3 py-3 border-r border-base-content/10">Foto</th>
 
-                            <th class="px-3 py-3">NIK</th>
-                            <th class="px-3 py-3 text-left">Nama</th>
-                            <th class="px-3 py-3">Email</th>
-                            <th class="px-3 py-3">Alamat</th>
-                            <th class="px-3 py-3">Tgl Lahir</th>
-                            <th class="px-3 py-3 border-r border-blue-100">JK</th>
+                    {{-- Biodata Pribadi (7 kolom) --}}
+                    <th class="px-3 py-3 bg-blue-50/50">NIK</th>
+                    <th class="px-3 py-3 bg-blue-50/50 text-left">Nama</th>
+                    <th class="px-3 py-3 bg-blue-50/50">Email</th>
+                    <th class="px-3 py-3 bg-blue-50/50">Alamat</th>
+                    <th class="px-3 py-3 bg-blue-50/50">Tgl Lahir</th>
+                    <th class="px-3 py-3 bg-blue-50/50">JK</th>
+                    <th class="px-3 py-3 bg-blue-50/50 border-r border-blue-100">Pendidikan</th>
 
-                            <th class="px-3 py-3 bg-green-50/50">Pendidikan</th>
-                            <th class="px-3 py-3 bg-green-50/50">JFT</th>
-                            <th class="px-3 py-3 bg-green-50/50">SSW</th>
-                            <th class="px-3 py-3 bg-green-50/50 border-r border-green-100">Bidang SSW</th>
+                    {{-- Kualifikasi (4 kolom) --}}
+                    <th class="px-3 py-3 bg-green-50/50">JFT</th>
+                    <th class="px-3 py-3 bg-green-50/50">SSW</th>
+                    <th class="px-3 py-3 bg-green-50/50">Bidang SSW</th>
+                    <th class="px-3 py-3 bg-green-50/50 border-r border-green-100">Nilai</th>
 
-                            <th class="px-3 py-3 bg-purple-50/50">No WA</th>
-                            <th class="px-3 py-3 bg-purple-50/50 border-r border-purple-100">Cabang</th>
+                    {{-- Kontak & Cabang (2 kolom) --}}
+                    <th class="px-3 py-3 bg-purple-50/50">No WA</th>
+                    <th class="px-3 py-3 bg-purple-50/50 border-r border-purple-100">Cabang</th>
 
-                            <th class="px-3 py-3 bg-amber-50/50">Dok</th>
-                            <th class="px-3 py-3 bg-amber-50/50">Tgl Daftar</th>
-                            <th class="px-3 py-3 bg-amber-50/50">Status</th>
-                            <th class="px-3 py-3 bg-amber-50/50 border-r border-amber-100">Catatan</th>
+                    {{-- Administrasi & Status (4 kolom) --}}
+                    <th class="px-3 py-3 bg-amber-50/50">Dok</th>
+                    <th class="px-3 py-3 bg-amber-50/50">Tgl Daftar</th>
+                    <th class="px-3 py-3 bg-amber-50/50">Status</th>
+                    <th class="px-3 py-3 bg-amber-50/50 border-r border-amber-100">Catatan</th>
 
-                            <th class="px-4 py-3 sticky right-0 bg-base-200 shadow-l">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-100">
-                        @foreach ($kandidats as $index => $kandidat)
-                            <tr class="hover:bg-gray-50 transition" data-cabang="{{ $kandidat->cabang_id }}">
-                                <td class="px-3 py-3 text-gray-500">{{ $index + 1 }}</td>
-                                <td class="px-3 py-3">
-                                    <a href="/pendaftaran/{{ $kandidat->id }}/pendaftar">
-                                        <img src="{{ $kandidat->foto && file_exists(public_path($kandidat->foto)) ? asset($kandidat->foto) : asset('images/default-user.png') }}"
-                                            class="w-10 h-10 rounded-md object-cover border border-gray-200">
-                                    </a>
-                                </td>
-                                <td class="px-3 py-3">{{ $kandidat->nik }}</td>
-                                <td class="px-3 py-3 font-medium text-gray-800">{{ ucwords(strtolower($kandidat->nama)) }}
-                                </td>
-                                <td class="px-3 py-3 text-gray-600">{{ $kandidat->email }}</td>
-                                <td class="px-3 py-3 text-gray-600 max-w-[150px] truncate">{{ $kandidat->alamat }}</td>
-                                <td class="px-3 py-3 text-gray-600">
-                                    {{ \Carbon\Carbon::parse($kandidat->tempat_tanggal_lahir)->format('d/m/Y') }}</td>
-                                <td class="px-3 py-3 text-gray-600">{{ $kandidat->pendidikan_terakhir }}</td>
-                                <td class="px-3 py-3 text-center">
-                                    @if ($kandidat->status_jft === 'sudah ujian jft')
-                                        <span
-                                            class="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">Sudah</span>
-                                    @else
-                                        <span
-                                            class="px-2 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium">Belum</span>
-                                    @endif
-                                </td>
-                                <td class="px-3 py-3 text-center">
-                                    @if ($kandidat->status_ssw === 'sudah ujian ssw')
-                                        <span
-                                            class="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">Sudah</span>
-                                    @else
-                                        <span
-                                            class="px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-medium">Belum</span>
-                                    @endif
-                                </td>
-                                <td class="px-3 py-3 text-gray-600 text-xs">
-                                    @if ($kandidat->bidang_ssws && $kandidat->bidang_ssws->count() > 0)
-                                        {{ $kandidat->bidang_ssws->pluck('nama_bidang')->join(', ') }}
-                                    @else
-                                        -
-                                    @endif
-                                </td>
-                                <td class="px-3 py-3 text-gray-600">{{ $kandidat->jenis_kelamin }}</td>
-                                <td class="px-3 py-3 text-gray-600">{{ $kandidat->no_wa }}</td>
-                                <td class="px-3 py-3 text-gray-600">{{ $kandidat->cabang->nama_cabang ?? '-' }}</td>
-                                <td class="px-3 py-3 text-center">
-                                    <div class="flex justify-center gap-1">
-                                        <a href="{{ asset($kandidat->kk) }}" target="_blank"
-                                            class="p-1.5 bg-blue-100 text-blue-600 rounded hover:bg-blue-200 transition"
-                                            title="KK">
-                                            <i class="bi bi-file-earmark-text"></i>
-                                        </a>
-                                        <a href="{{ asset($kandidat->ktp) }}" target="_blank"
-                                            class="p-1.5 bg-blue-100 text-blue-600 rounded hover:bg-blue-200 transition"
-                                            title="KTP">
-                                            <i class="bi bi-person-badge"></i>
-                                        </a>
-                                    </div>
-                                </td>
-                                <td class="px-3 py-3 text-gray-500">{{ $kandidat->created_at->format('d/m/Y') }}</td>
-                                <td class="px-3 py-3 text-center">
-                                    @if ($kandidat->verifikasi == 'menunggu')
-                                        <span
-                                            class="px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-medium">Menunggu</span>
-                                    @elseif ($kandidat->verifikasi == 'data belum lengkap')
-                                        <span
-                                            class="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">Belum
-                                            Lengkap</span>
-                                    @elseif ($kandidat->verifikasi == 'diterima')
-                                        <span
-                                            class="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">Diterima</span>
-                                    @else
-                                        <span
-                                            class="px-2 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium">Ditolak</span>
-                                    @endif
-                                </td>
-                                <td class="px-3 py-3 text-gray-500 text-xs max-w-[120px] truncate">
-                                    {{ $kandidat->catatan_admin ?? '-' }}</td>
-                                <td class="px-3 py-3 text-center">
-                                    <div class="inline-flex items-center gap-1 justify-center">
-                                        <button onclick="openVerifikasiModal('{{ $kandidat->id }}', '{{ $kandidat->nama }}', '{{ $kandidat->verifikasi }}', '{{ $kandidat->catatan_admin ?? '' }}')" class="p-2 bg-blue-100 text-blue-600 hover:bg-blue-200 rounded-lg transition" title="Verifikasi">
-                                            <i class="bi bi-check-circle"></i>
-                                        </button>
-                                        <a href="{{ route('pendaftaran.edit.full', $kandidat->id) }}" class="p-2 bg-amber-100 text-amber-600 hover:bg-amber-200 rounded-lg transition" title="Edit Data">
-                                            <i class="bi bi-pencil-square"></i>
-                                        </a>
-                                        <?php $nomor_wa_bersih = preg_replace('/^0/', '62', $kandidat->no_wa); ?>
-                                        <a href="https://wa.me/{{ $nomor_wa_bersih }}" target="_blank" class="p-2 bg-green-100 text-green-600 hover:bg-green-200 rounded-lg transition" title="WhatsApp">
-                                            <i class="bi bi-whatsapp"></i>
-                                        </a>
-                                        <button class="p-2 bg-red-100 text-red-600 hover:bg-red-200 rounded-lg transition delete-btn" data-id="{{ $kandidat->id }}" title="Hapus">
-                                            <i class="bi bi-trash"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        </div>
+                    <th class="px-4 py-3 sticky right-0 bg-base-200 shadow-l">Aksi</th>
+                </tr>
+            </thead>
+
+            <tbody class="divide-y divide-gray-100">
+                @foreach ($kandidats as $index => $kandidat)
+                    <tr class="hover:bg-gray-50 transition" data-cabang="{{ $kandidat->cabang_id }}">
+
+                        {{-- Sistem --}}
+                        <td class="px-3 py-3 text-gray-500 text-center">{{ $index + 1 }}</td>
+                        <td class="px-3 py-3">
+                            <a href="/pendaftaran/{{ $kandidat->id }}/pendaftar">
+                                <img src="{{ $kandidat->foto && file_exists(public_path($kandidat->foto)) ? asset($kandidat->foto) : asset('images/default-user.png') }}"
+                                    class="w-10 h-10 rounded-md object-cover border border-gray-200">
+                            </a>
+                        </td>
+
+                        {{-- Biodata Pribadi --}}
+                        <td class="px-3 py-3 text-gray-600">{{ $kandidat->nik ?? '-' }}</td>
+                        <td class="px-3 py-3 font-medium text-gray-800">{{ ucwords(strtolower($kandidat->nama)) }}</td>
+                        <td class="px-3 py-3 text-gray-600">{{ $kandidat->email ?? '-' }}</td>
+                        <td class="px-3 py-3 text-gray-600 max-w-[150px] truncate">{{ $kandidat->alamat ?? '-' }}</td>
+                        <td class="px-3 py-3 text-gray-600">
+                            {{ $kandidat->tempat_tanggal_lahir ? \Carbon\Carbon::parse($kandidat->tempat_tanggal_lahir)->format('d/m/Y') : '-' }}
+                        </td>
+                        <td class="px-3 py-3 text-gray-600 text-center">
+                            @if ($kandidat->jenis_kelamin === 'Laki-laki' || $kandidat->jenis_kelamin === 'L')
+                                <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">L</span>
+                            @elseif ($kandidat->jenis_kelamin === 'Perempuan' || $kandidat->jenis_kelamin === 'P')
+                                <span class="px-2 py-1 bg-pink-100 text-pink-700 rounded-full text-xs font-medium">P</span>
+                            @else
+                                <span class="text-gray-400">-</span>
+                            @endif
+                        </td>
+                        <td class="px-3 py-3 text-gray-600 text-center">
+                            {{ $kandidat->pendidikan_terakhir ?? '-' }}
+                        </td>
+
+                        {{-- Kualifikasi --}}
+                        <td class="px-3 py-3 text-center">
+                            @if ($kandidat->status_jft === 'sudah ujian jft')
+                                <span class="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">Sudah</span>
+                            @else
+                                <span class="px-2 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium">Belum</span>
+                            @endif
+                        </td>
+                        <td class="px-3 py-3 text-center">
+                            @if ($kandidat->status_ssw === 'sudah ujian ssw')
+                                <span class="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">Sudah</span>
+                            @else
+                                <span class="px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-medium">Belum</span>
+                            @endif
+                        </td>
+                        <td class="px-3 py-3 text-gray-600 text-xs">
+                            {{ $kandidat->bidang_ssws && $kandidat->bidang_ssws->count() > 0 ? $kandidat->bidang_ssws->pluck('nama_bidang')->join(', ') : '-' }}
+                        </td>
+                        <td class="px-3 py-3 text-gray-600 text-center text-xs">
+                            {{ $kandidat->nilai_ssw ?? '-' }}
+                        </td>
+
+                        {{-- Kontak & Cabang --}}
+                        <td class="px-3 py-3 text-gray-600">{{ $kandidat->no_wa ?? '-' }}</td>
+                        <td class="px-3 py-3 text-gray-600">{{ $kandidat->cabang->nama_cabang ?? '-' }}</td>
+
+                        {{-- Administrasi --}}
+                        <td class="px-3 py-3 text-center">
+                            <div class="flex justify-center gap-1">
+                                <a href="{{ asset($kandidat->kk) }}" target="_blank"
+                                    class="p-1.5 bg-blue-100 text-blue-600 rounded hover:bg-blue-200 transition" title="KK">
+                                    <i class="bi bi-file-earmark-text"></i>
+                                </a>
+                                <a href="{{ asset($kandidat->ktp) }}" target="_blank"
+                                    class="p-1.5 bg-blue-100 text-blue-600 rounded hover:bg-blue-200 transition" title="KTP">
+                                    <i class="bi bi-person-badge"></i>
+                                </a>
+                            </div>
+                        </td>
+                        <td class="px-3 py-3 text-gray-500 text-center">{{ $kandidat->created_at->format('d/m/Y') }}</td>
+                        <td class="px-3 py-3 text-center">
+                            @if ($kandidat->verifikasi == 'menunggu')
+                                <span class="px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full text-xs font-medium">Menunggu</span>
+                            @elseif ($kandidat->verifikasi == 'data belum lengkap')
+                                <span class="px-2 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-medium">Belum Lengkap</span>
+                            @elseif ($kandidat->verifikasi == 'diterima')
+                                <span class="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">Diterima</span>
+                            @else
+                                <span class="px-2 py-1 bg-red-100 text-red-700 rounded-full text-xs font-medium">Ditolak</span>
+                            @endif
+                        </td>
+                        <td class="px-3 py-3 text-gray-500 text-xs max-w-[120px] truncate">
+                            {{ $kandidat->catatan_admin ?? '-' }}
+                        </td>
+
+                        {{-- Aksi --}}
+                        <td class="px-3 py-3 text-center sticky right-0 bg-white border-l border-gray-100">
+                            <div class="inline-flex items-center gap-1 justify-center">
+                                <button onclick="openVerifikasiModal('{{ $kandidat->id }}', '{{ $kandidat->nama }}', '{{ $kandidat->verifikasi }}', '{{ $kandidat->catatan_admin ?? '' }}')"
+                                    class="p-2 bg-blue-100 text-blue-600 hover:bg-blue-200 rounded-lg transition" title="Verifikasi">
+                                    <i class="bi bi-check-circle"></i>
+                                </button>
+                                <a href="{{ route('pendaftaran.edit.full', $kandidat->id) }}"
+                                    class="p-2 bg-amber-100 text-amber-600 hover:bg-amber-200 rounded-lg transition" title="Edit Data">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                @php $nomor_wa_bersih = preg_replace('/^0/', '62', $kandidat->no_wa ?? ''); @endphp
+                                <a href="https://wa.me/{{ $nomor_wa_bersih }}" target="_blank"
+                                    class="p-2 bg-green-100 text-green-600 hover:bg-green-200 rounded-lg transition" title="WhatsApp">
+                                    <i class="bi bi-whatsapp"></i>
+                                </a>
+                                <button class="p-2 bg-red-100 text-red-600 hover:bg-red-200 rounded-lg transition delete-btn"
+                                    data-id="{{ $kandidat->id }}" title="Hapus">
+                                    <i class="bi bi-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+</div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
