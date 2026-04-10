@@ -1,4 +1,5 @@
 @extends('layouts.app')
+
 @section('content')
 
     <style>
@@ -92,7 +93,7 @@
     <div class="space-y-4 md:space-y-6">
 
         @if (auth()->user()->role === 'super-admin')
-            {{-- Stats Cards - Mobile Responsive --}}
+            {{-- Stats Cards --}}
             <div class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
                 @foreach ($stats as $stat)
                     <div class="bg-white rounded-xl p-3 sm:p-4 md:p-5 shadow-sm border border-gray-100 card-hover">
@@ -102,8 +103,7 @@
                                 <i class="bi {{ $stat['icon'] }} text-base sm:text-lg md:text-xl"></i>
                             </div>
                             <div class="min-w-0">
-                                <p
-                                    class="text-gray-500 text-[10px] sm:text-xs font-medium uppercase tracking-wide truncate">
+                                <p class="text-gray-500 text-[10px] sm:text-xs font-medium uppercase tracking-wide truncate">
                                     {{ $stat['title'] }}</p>
                                 <h3 class="text-lg sm:text-xl md:text-2xl font-bold text-gray-800">{{ $stat['count'] }}</h3>
                             </div>
@@ -118,29 +118,26 @@
                 <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-5 gap-2 sm:gap-3 md:gap-4">
                     @php
                         $status_config = [
-                            'Job Matching' => ['bg' => 'bg-gray-500', 'icon' => 'bi-people'],
-                            'lamar ke perusahaan' => ['bg' => 'bg-gray-400', 'icon' => 'bi-send'],
-                            'Interview' => ['bg' => 'bg-cyan-500', 'icon' => 'bi-chat-dots'],
-                            'Gagal Interview' => ['bg' => 'bg-red-500', 'icon' => 'bi-x-circle'],
+                            'Job Matching'              => ['bg' => 'bg-gray-500',   'icon' => 'bi-people'],
+                            'lamar ke perusahaan'       => ['bg' => 'bg-gray-400',   'icon' => 'bi-send'],
+                            'Interview'                 => ['bg' => 'bg-cyan-500',   'icon' => 'bi-chat-dots'],
+                            'Gagal Interview'           => ['bg' => 'bg-red-500',    'icon' => 'bi-x-circle'],
                             'Jadwalkan Interview Ulang' => ['bg' => 'bg-orange-500', 'icon' => 'bi-arrow-repeat'],
-                            'Lulus interview' => ['bg' => 'bg-emerald-500', 'icon' => 'bi-check-circle'],
-                            'Pemberkasan' => ['bg' => 'bg-blue-600', 'icon' => 'bi-file-earmark-check'],
-                            'Berangkat' => ['bg' => 'bg-green-500', 'icon' => 'bi-airplane-engines'],
-                            'Ditolak' => ['bg' => 'bg-red-600', 'icon' => 'bi-x-circle'],
+                            'Lulus interview'           => ['bg' => 'bg-emerald-500','icon' => 'bi-check-circle'],
+                            'Pemberkasan'               => ['bg' => 'bg-blue-600',   'icon' => 'bi-file-earmark-check'],
+                            'Berangkat'                 => ['bg' => 'bg-green-500',  'icon' => 'bi-airplane-engines'],
+                            'Ditolak'                   => ['bg' => 'bg-red-600',    'icon' => 'bi-x-circle'],
                         ];
                     @endphp
                     @foreach ($status_penempatan as $status => $jumlah)
                         <div class="bg-white rounded-xl p-2 sm:p-3 md:p-4 shadow-sm border border-gray-100 card-hover">
                             <div class="flex flex-col items-center text-center">
-                                <div
-                                    class="w-9 h-9 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-lg flex items-center justify-center text-white mb-2 {{ $status_config[$status]['bg'] ?? 'bg-gray-500' }}">
-                                    <i
-                                        class="bi {{ $status_config[$status]['icon'] ?? 'bi-circle' }} text-sm sm:text-base md:text-xl"></i>
+                                <div class="w-9 h-9 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-lg flex items-center justify-center text-white mb-2 {{ $status_config[$status]['bg'] ?? 'bg-gray-500' }}">
+                                    <i class="bi {{ $status_config[$status]['icon'] ?? 'bi-circle' }} text-sm sm:text-base md:text-xl"></i>
                                 </div>
                                 <p class="text-[9px] sm:text-[10px] md:text-xs text-gray-500 font-medium uppercase tracking-wide truncate w-full"
                                     style="text-transform: capitalize;">{{ $status }}</p>
-                                <h3 class="text-base sm:text-lg md:text-xl font-bold text-gray-800 mt-1">
-                                    {{ $jumlah }}</h3>
+                                <h3 class="text-base sm:text-lg md:text-xl font-bold text-gray-800 mt-1">{{ $jumlah }}</h3>
                             </div>
                         </div>
                     @endforeach
@@ -153,15 +150,12 @@
                 <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                     <div class="px-3 sm:px-4 md:px-5 py-3 md:py-4 border-b border-gray-100">
                         <div class="flex items-center gap-2 sm:gap-3">
-                            <div
-                                class="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-lg bg-indigo-500 flex items-center justify-center text-white flex-shrink-0">
+                            <div class="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-lg bg-indigo-500 flex items-center justify-center text-white flex-shrink-0">
                                 <i class="bi bi-bar-chart text-sm sm:text-base md:text-lg"></i>
                             </div>
                             <div class="min-w-0">
-                                <h3 class="font-semibold text-gray-800 text-sm sm:text-base truncate">Kandidat Percabang
-                                </h3>
-                                <p class="text-[10px] sm:text-xs text-gray-500 hidden sm:block">Distribusi kandidat per
-                                    cabang</p>
+                                <h3 class="font-semibold text-gray-800 text-sm sm:text-base truncate">Kandidat Percabang</h3>
+                                <p class="text-[10px] sm:text-xs text-gray-500 hidden sm:block">Distribusi kandidat per cabang</p>
                             </div>
                         </div>
                     </div>
@@ -174,8 +168,7 @@
                 <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                     <div class="px-3 sm:px-4 md:px-5 py-3 md:py-4 border-b border-gray-100">
                         <div class="flex items-center gap-2 sm:gap-3">
-                            <div
-                                class="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-lg bg-emerald-500 flex items-center justify-center text-white flex-shrink-0">
+                            <div class="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-lg bg-emerald-500 flex items-center justify-center text-white flex-shrink-0">
                                 <i class="bi bi-people text-sm sm:text-base md:text-lg"></i>
                             </div>
                             <div>
@@ -192,22 +185,18 @@
                                     ? $user->last_activity->diffForHumans()
                                     : 'Belum pernah';
                             @endphp
-                            <div
-                                class="flex items-center justify-between p-2 sm:p-3 rounded-lg hover:bg-gray-50 transition-colors mb-1">
+                            <div class="flex items-center justify-between p-2 sm:p-3 rounded-lg hover:bg-gray-50 transition-colors mb-1">
                                 <div class="flex items-center gap-2 sm:gap-3 min-w-0">
-                                    <div
-                                        class="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-semibold text-xs sm:text-sm flex-shrink-0">
+                                    <div class="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-semibold text-xs sm:text-sm flex-shrink-0">
                                         {{ substr($user->name, 0, 1) }}
                                     </div>
                                     <div class="min-w-0">
-                                        <p class="text-xs sm:text-sm font-medium text-gray-800 truncate">
-                                            {{ $user->name }}</p>
+                                        <p class="text-xs sm:text-sm font-medium text-gray-800 truncate">{{ $user->name }}</p>
                                         <p class="text-[10px] sm:text-xs text-gray-500 truncate">
                                             {{ $isOnline ? 'Online' : $lastActiveText }}</p>
                                     </div>
                                 </div>
-                                <span
-                                    class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full flex-shrink-0 {{ $isOnline ? 'bg-emerald-500' : 'bg-gray-300' }}"></span>
+                                <span class="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full flex-shrink-0 {{ $isOnline ? 'bg-emerald-500' : 'bg-gray-300' }}"></span>
                             </div>
                         @endforeach
                     </div>
@@ -218,8 +207,7 @@
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                 <div class="px-3 sm:px-4 md:px-5 py-3 md:py-4 border-b border-gray-100">
                     <div class="flex items-center gap-2 sm:gap-3">
-                        <div
-                            class="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-lg bg-purple-500 flex items-center justify-center text-white flex-shrink-0">
+                        <div class="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-lg bg-purple-500 flex items-center justify-center text-white flex-shrink-0">
                             <i class="bi bi-pie-chart text-sm sm:text-base md:text-lg"></i>
                         </div>
                         <div>
@@ -240,86 +228,40 @@
                         chart: {
                             type: 'bar',
                             height: 280,
-                            toolbar: {
-                                show: false
-                            },
+                            toolbar: { show: false },
                             fontFamily: 'Inter, sans-serif'
                         },
                         colors: ['#6366f1', '#f59e0b', '#06b6d4', '#ef4444', '#10b981', '#8b5cf6'],
                         plotOptions: {
-                            bar: {
-                                horizontal: false,
-                                columnWidth: '70%',
-                                borderRadius: 6
-                            }
+                            bar: { horizontal: false, columnWidth: '70%', borderRadius: 6 }
                         },
-                        dataLabels: {
-                            enabled: false
-                        },
-                        stroke: {
-                            show: true,
-                            width: 2,
-                            colors: ['transparent']
-                        },
+                        dataLabels: { enabled: false },
+                        stroke: { show: true, width: 2, colors: ['transparent'] },
                         xaxis: {
                             categories: @json(array_values($cabangs)),
-                            labels: {
-                                style: {
-                                    colors: '#6b7280',
-                                    fontSize: '10px'
-                                }
-                            }
+                            labels: { style: { colors: '#6b7280', fontSize: '10px' } }
                         },
                         yaxis: {
-                            labels: {
-                                style: {
-                                    colors: '#6b7280',
-                                    fontSize: '10px'
-                                }
-                            }
+                            labels: { style: { colors: '#6b7280', fontSize: '10px' } }
                         },
-                        fill: {
-                            opacity: 1
-                        },
-                        tooltip: {
-                            y: {
-                                formatter: function(val) {
-                                    return val + " kandidat";
-                                }
-                            }
-                        },
-                        legend: {
-                            position: 'bottom'
-                        }
+                        fill: { opacity: 1 },
+                        tooltip: { y: { formatter: function(val) { return val + " kandidat"; } } },
+                        legend: { position: 'bottom' }
                     };
                     new ApexCharts(document.querySelector("#chart-kandidat"), options).render();
 
                     var statusOptions = {
                         series: @json($statusCounts),
-                        chart: {
-                            type: 'pie',
-                            height: 280,
-                            fontFamily: 'Inter, sans-serif'
-                        },
+                        chart: { type: 'pie', height: 280, fontFamily: 'Inter, sans-serif' },
                         labels: @json($statusLabels),
-                        legend: {
-                            position: 'bottom'
-                        },
-                        dataLabels: {
-                            enabled: true
-                        },
-                        colors: ['#6b7280', '#f59e0b', '#06b6d4', '#ef4444', '#8b5cf6', '#10b981', '#3b82f6', '#22c55e',
-                            '#000000'
-                        ],
+                        legend: { position: 'bottom' },
+                        dataLabels: { enabled: true },
+                        colors: ['#6b7280', '#f59e0b', '#06b6d4', '#ef4444', '#8b5cf6', '#10b981', '#3b82f6', '#22c55e', '#000000'],
                         responsive: [{
                             breakpoint: 480,
                             options: {
-                                chart: {
-                                    height: 220
-                                },
-                                legend: {
-                                    position: 'bottom'
-                                }
+                                chart: { height: 220 },
+                                legend: { position: 'bottom' }
                             }
                         }]
                     };
@@ -331,8 +273,7 @@
         {{-- Kandidat View --}}
         @if (auth()->user()->role === 'kandidat')
             @if (session('success'))
-                <div
-                    class="bg-emerald-50 border border-emerald-200 text-emerald-700 px-4 py-3 rounded-xl mb-4 flex items-center gap-2">
+                <div class="bg-emerald-50 border border-emerald-200 text-emerald-700 px-4 py-3 rounded-xl mb-4 flex items-center gap-2">
                     <i class="bi bi-check-circle-fill"></i>
                     <span class="text-sm">{{ session('success') }}</span>
                 </div>
@@ -344,7 +285,6 @@
                 <div class="lg:col-span-2">
                     <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
 
-                        {{-- Header --}}
                         <div class="px-4 py-3 border-b border-gray-100 flex items-center gap-3">
                             <div class="w-9 h-9 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
                                 <i class="bi bi-clock-history text-blue-600 text-sm"></i>
@@ -358,41 +298,39 @@
                         <div class="p-4 md:p-5">
                             @php
                                 $timelineSteps = [
-                                    ['icon' => 'check-circle', 'title' => 'Job Matching', 'status' => 'Job Matching'],
-                                    [
-                                        'icon' => 'person-badge',
-                                        'title' => 'Lamar ke perusahaan',
-                                        'status' => 'lamar ke perusahaan',
-                                    ],
-                                    ['icon' => 'camera-video', 'title' => 'Interview', 'status' => 'Interview'],
-                                    [
-                                        'icon' => 'patch-check',
-                                        'title' => 'Lulus interview',
-                                        'status' => 'Lulus interview',
-                                    ],
-                                    [
-                                        'icon' => 'file-earmark-text',
-                                        'title' => 'Pemberkasan',
-                                        'status' => 'Pemberkasan',
-                                    ],
-                                    ['icon' => 'send', 'title' => 'Berangkat', 'status' => 'Berangkat'],
-                                    ['icon' => 'x-circle', 'title' => 'Gagal Interview', 'status' => 'Gagal Interview'],
+                                    ['icon' => 'check-circle',      'title' => 'Job Matching',        'status' => 'Job Matching'],
+                                    ['icon' => 'person-badge',       'title' => 'Lamar ke perusahaan', 'status' => 'lamar ke perusahaan'],
+                                    ['icon' => 'camera-video',       'title' => 'Interview',           'status' => 'Interview'],
+                                    ['icon' => 'patch-check',        'title' => 'Lulus interview',     'status' => 'Lulus interview'],
+                                    ['icon' => 'file-earmark-text',  'title' => 'Pemberkasan',         'status' => 'Pemberkasan'],
+                                    ['icon' => 'send',               'title' => 'Berangkat',           'status' => 'Berangkat'],
+                                    ['icon' => 'x-circle',           'title' => 'Gagal Interview',     'status' => 'Gagal Interview'],
                                 ];
+
+                                $statusList = array_column($timelineSteps, 'status');
+
+                                // Filter hanya pendaftaran yang punya relasi kandidat
+                                $validDataKandidat = $dataKandidat->filter(fn($p) => !is_null($p->kandidat));
                             @endphp
 
-                            @foreach ($dataKandidat as $pendaftaran)
-                                @php
-                                    $kandidat = $pendaftaran->kandidat;
-                                    $namaPerusahaan =
-                                        $kandidat->nama_perusahaan ?? ($kandidat->institusi->nama_perusahaan ?? '-');
-$bidangSsw = optional($kandidat->bidang_ssws)->pluck('nama_bidang')->join(', ') ?? '-';
-                                    $statusList = array_column($timelineSteps, 'status');
-                                    $currentIndex = array_search($kandidat->status_kandidat ?? '', $statusList);
-                                    $isFail = $kandidat->status_kandidat === 'Gagal Interview';
-                                @endphp
+                            @if ($validDataKandidat->isEmpty())
+                                {{-- Tampilkan pesan jika tidak ada data --}}
+                                <div class="text-center py-8 text-gray-400">
+                                    <i class="bi bi-inbox text-3xl block mb-2"></i>
+                                    <p class="text-sm">Belum ada proses kandidat.</p>
+                                </div>
+                            @else
+                                @foreach ($validDataKandidat as $pendaftaran)
+                                    @php
+                                        $kandidat      = $pendaftaran->kandidat;
+                                        $namaPerusahaan = $kandidat->nama_perusahaan
+                                            ?? ($kandidat->institusi->nama_perusahaan ?? '-');
+                                        $bidangSsw     = optional($kandidat->bidang_ssws)->pluck('nama_bidang')->join(', ') ?: '-';
+                                        $currentIndex  = array_search($kandidat->status_kandidat ?? '', $statusList);
+                                        $isFail        = $kandidat->status_kandidat === 'Gagal Interview';
+                                    @endphp
 
-                                @if ($kandidat)
-                                    @foreach ($timelineSteps as $stepIndex => $step)
+                                    @foreach ($timelineSteps as $step)
                                         @php
                                             $stepIdx = array_search($step['status'], $statusList);
 
@@ -407,28 +345,28 @@ $bidangSsw = optional($kandidat->bidang_ssws)->pluck('nama_bidang')->join(', ') 
                                             }
 
                                             $dotClass = match ($state) {
-                                                'done' => 'bg-green-50 border-green-400',
-                                                'active' => 'bg-blue-50 border-blue-400',
-                                                'danger' => 'bg-red-50 border-red-400',
-                                                default => 'bg-gray-100 border-gray-200',
+                                                'done'    => 'bg-green-50 border-green-400',
+                                                'active'  => 'bg-blue-50 border-blue-400',
+                                                'danger'  => 'bg-red-50 border-red-400',
+                                                default   => 'bg-gray-100 border-gray-200',
                                             };
                                             $iconClass = match ($state) {
-                                                'done' => 'text-green-700',
+                                                'done'   => 'text-green-700',
                                                 'active' => 'text-blue-700',
                                                 'danger' => 'text-red-600',
-                                                default => 'text-gray-300',
+                                                default  => 'text-gray-300',
                                             };
                                             $cardClass = match ($state) {
-                                                'done' => 'bg-green-50 border-green-100',
+                                                'done'   => 'bg-green-50 border-green-100',
                                                 'active' => 'bg-blue-50 border-blue-200',
                                                 'danger' => 'bg-red-50 border-red-200',
-                                                default => 'bg-gray-50 border-gray-100',
+                                                default  => 'bg-gray-50 border-gray-100',
                                             };
                                             $badgeClass = match ($state) {
-                                                'done' => 'bg-green-100 text-green-800',
+                                                'done'   => 'bg-green-100 text-green-800',
                                                 'active' => 'bg-blue-100 text-blue-800',
                                                 'danger' => 'bg-red-100 text-red-800',
-                                                default => 'bg-gray-100 text-gray-400',
+                                                default  => 'bg-gray-100 text-gray-400',
                                             };
                                             $isLast = $loop->last;
                                         @endphp
@@ -437,13 +375,11 @@ $bidangSsw = optional($kandidat->bidang_ssws)->pluck('nama_bidang')->join(', ') 
 
                                             {{-- Dot + Connector --}}
                                             <div class="flex flex-col items-center w-9 flex-shrink-0">
-                                                <div
-                                                    class="w-9 h-9 rounded-full border-2 flex items-center justify-center {{ $dotClass }}">
+                                                <div class="w-9 h-9 rounded-full border-2 flex items-center justify-center {{ $dotClass }}">
                                                     @if ($state === 'done')
                                                         <i class="bi bi-check-lg text-xs {{ $iconClass }}"></i>
                                                     @else
-                                                        <i
-                                                            class="bi bi-{{ $step['icon'] }} text-xs {{ $iconClass }}"></i>
+                                                        <i class="bi bi-{{ $step['icon'] }} text-xs {{ $iconClass }}"></i>
                                                     @endif
                                                 </div>
                                                 @unless ($isLast)
@@ -461,35 +397,30 @@ $bidangSsw = optional($kandidat->bidang_ssws)->pluck('nama_bidang')->join(', ') 
 
                                                             @if (in_array($state, ['active', 'danger']))
                                                                 <p class="text-xs text-gray-400 mt-0.5">
-                                                                    Update:
-                                                                    {{ $kandidat->updated_at->format('d M Y, H:i') }}
+                                                                    Update: {{ $kandidat->updated_at->format('d M Y, H:i') }}
                                                                 </p>
                                                                 @if ($namaPerusahaan !== '-')
                                                                     <p class="text-xs text-gray-500 mt-1">
                                                                         Perusahaan:
-                                                                        <span
-                                                                            class="font-medium text-gray-700">{{ $namaPerusahaan }}</span>
+                                                                        <span class="font-medium text-gray-700">{{ $namaPerusahaan }}</span>
                                                                     </p>
                                                                 @endif
                                                                 @if ($kandidat->detail_pekerjaan)
                                                                     <p class="text-xs text-gray-500 mt-0.5">
                                                                         Detail pekerjaan:
-                                                                        <span
-                                                                            class="italic text-gray-600">{{ $kandidat->detail_pekerjaan }}</span>
+                                                                        <span class="italic text-gray-600">{{ $kandidat->detail_pekerjaan }}</span>
                                                                     </p>
                                                                 @endif
-                                                                @if ($bidangSsw)
+                                                                @if ($bidangSsw !== '-')
                                                                     <p class="text-xs text-gray-500 mt-0.5">
                                                                         Bidang SSW:
-                                                                        <span
-                                                                            class="font-medium text-gray-700">{{ $bidangSsw }}</span>
+                                                                        <span class="font-medium text-gray-700">{{ $bidangSsw }}</span>
                                                                     </p>
                                                                 @endif
                                                             @endif
                                                         </div>
 
-                                                        <span
-                                                            class="text-[11px] font-medium px-2.5 py-1 rounded-full whitespace-nowrap {{ $badgeClass }}">
+                                                        <span class="text-[11px] font-medium px-2.5 py-1 rounded-full whitespace-nowrap {{ $badgeClass }}">
                                                             {{ $step['status'] }}
                                                         </span>
                                                     </div>
@@ -498,13 +429,8 @@ $bidangSsw = optional($kandidat->bidang_ssws)->pluck('nama_bidang')->join(', ') 
 
                                         </div>
                                     @endforeach
-                                @else
-                                    <div class="text-center py-8 text-gray-400">
-                                        <i class="bi bi-inbox text-3xl block mb-2"></i>
-                                        <p class="text-sm">Belum ada proses kandidat.</p>
-                                    </div>
-                                @endif
-                            @endforeach
+                                @endforeach
+                            @endif
                         </div>
 
                     </div>
