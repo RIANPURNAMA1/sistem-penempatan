@@ -1,65 +1,43 @@
-
 const THEME_KEY = "theme"
 
-function toggleDarkTheme() {
-  setTheme(
-    document.documentElement.getAttribute("data-bs-theme") === 'dark'
-      ? "light"
-      : "dark"
-  )
-}
-
 /**
- * Set theme for mazer
- * @param {"dark"|"light"} theme
- * @param {boolean} persist 
+ * Set theme ke light secara permanen
+ * @param {"light"} theme
  */
-function setTheme(theme, persist = false) {
-  document.body.classList.add(theme)
-  document.documentElement.setAttribute('data-bs-theme', theme)
+function setTheme(theme = "light") {
+  // Hapus class dark jika ada, tambahkan light
+  document.body.classList.remove("dark")
+  document.body.classList.add("light")
   
-  if (persist) {
-    localStorage.setItem(THEME_KEY, theme)
-  }
+  // Set atribut bootstrap ke light
+  document.documentElement.setAttribute('data-bs-theme', 'light')
+  
+  // Bersihkan localStorage agar tidak ada sisa 'dark'
+  localStorage.removeItem(THEME_KEY)
 }
 
 /**
- * Init theme from setTheme()
+ * Inisialisasi tema (Selalu Light)
  */
 function initTheme() {
-  //If the user manually set a theme, we'll load that
-  const storedTheme = localStorage.getItem(THEME_KEY)
-  if (storedTheme) {
-    return setTheme(storedTheme)
-  }
-  //Detect if the user set his preferred color scheme to dark
-  if (!window.matchMedia) {
-    return
-  }
-
-  //Media query to detect dark preference
-  const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)")
-
-  //Register change listener
-  mediaQuery.addEventListener("change", (e) =>
-    setTheme(e.matches ? "dark" : "light", true)
-  )
-  return setTheme(mediaQuery.matches ? "dark" : "light", true)
+  return setTheme("light")
 }
 
+// Jalankan saat halaman dimuat
 window.addEventListener('DOMContentLoaded', () => {
   const toggler = document.getElementById("toggle-dark")
-  const theme = localStorage.getItem(THEME_KEY)
-
+  
+  // Jika ada tombol switch dark mode di UI, kita sembunyikan atau matikan fungsinya
   if(toggler) {
-    toggler.checked = theme === "dark"
-    
-    toggler.addEventListener("input", (e) => {
-      setTheme(e.target.checked ? "dark" : "light", true)
-    })
+    toggler.checked = false
+    toggler.disabled = true // Opsional: buat tombol tidak bisa diklik
+    // Atau sembunyikan containernya
+    // toggler.parentElement.style.display = 'none'
   }
-
+  
+  // Pastikan tema diset ke light
+  setTheme("light")
 });
 
+// Panggil fungsi init
 initTheme()
-
