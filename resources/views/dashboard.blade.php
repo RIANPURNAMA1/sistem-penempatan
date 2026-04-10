@@ -385,7 +385,7 @@
                                     $kandidat = $pendaftaran->kandidat;
                                     $namaPerusahaan =
                                         $kandidat->nama_perusahaan ?? ($kandidat->institusi->nama_perusahaan ?? '-');
-                                    $bidangSsw = $kandidat->bidang_ssws->pluck('nama_bidang')->join(', ');
+$bidangSsw = optional($kandidat->bidang_ssws)->pluck('nama_bidang')->join(', ') ?? '-';
                                     $statusList = array_column($timelineSteps, 'status');
                                     $currentIndex = array_search($kandidat->status_kandidat ?? '', $statusList);
                                     $isFail = $kandidat->status_kandidat === 'Gagal Interview';

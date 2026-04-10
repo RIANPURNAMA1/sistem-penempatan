@@ -50,7 +50,7 @@
         <div id="main" class="lg:ml-64 min-h-screen">
             
             {{-- Mobile Header --}}
-            @include('components.headers')
+            @include('components.Headers')
             
             {{-- Desktop Header Bar --}}
             <div class="hidden lg:flex items-center justify-end py-3 px-6  border-b border-gray-300 rounded-lg">
