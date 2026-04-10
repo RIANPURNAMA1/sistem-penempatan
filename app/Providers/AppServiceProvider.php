@@ -29,6 +29,10 @@ public function boot(): void
 
         $view->with('myKandidat', $myKandidat);
     });
+
+    if (config('app.env') !== 'local') {
+        \URL::forceScheme('https');
+    }
 }
 
 }
