@@ -182,8 +182,8 @@
                         <td class="bg text-center" colspan="2">生年月日 TANGGAL LAHIR</td>
                         <td class="bg">視力 PENGLIHATAN</td>
                         <td colspan="2">
-                            右 (R): ___ <br>
-                            左 (L): ___
+                            右 (R): {{$cv->kemampuan_penglihatan_mata}} <br>
+                            左 (L): {{$cv->kemampuan_penglihatan_mata}}
                         </td>
                     </tr>
                     <tr>
