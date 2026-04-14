@@ -352,11 +352,11 @@
                 </tr>
                 <tr>
                     <td class="bg label-text" style="width: 209px">自己ＰＲ　PROMOSI DIRI</td>
-                    <td class="value-text"></td>
+                    <td class="value-text">{{$cv->point_plus_diri}}</td>
                 </tr>
                 <tr>
                     <td class="bg label-text">日本へ行く目的　TUJUAN KE JEPANG</td>
-                    <td class="value-text"></td>
+                    <td class="value-text">{{$cv->ketertarikan_terhadap_jepang}}</td>
                 </tr>
                 <tr>
                     <td class="bg label-text"> 回国後の目標　TUJUAN SETELAH PULANG DARI JEPANG</td>
