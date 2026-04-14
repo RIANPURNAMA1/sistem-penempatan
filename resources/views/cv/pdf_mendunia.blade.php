@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CV {{ $cv->nama_lengkap_romaji }}</title>
+    <title> CV {{$cv->nama_lengkap_romaji}}</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -14,7 +14,7 @@
 
         .cv-container {
             width: 100%;
-            padding: 0;
+            padding: 10px;
             margin: 0 auto;
             max-width: 900px;
         }
@@ -64,6 +64,16 @@
             body {
                 font-weight: 500 !important;
             }
+
+            @page {
+                margin: 10mm;
+            }
+        }
+
+        /* Hapus header/footer saat print */
+        @page {
+            margin: 10mm;
+            size: auto;
         }
     </style>
     <style>
@@ -138,7 +148,7 @@
                 <img src="{{ asset($cv->pas_foto_cv) }}" alt="Pas Foto"
                     style="
                     width: 180px; /* Agar gambar mengisi penuh lebar sel */
-                    height: 269px; /* Agar gambar mengisi penuh tinggi sel */
+                    height: 287px; /* Agar gambar mengisi penuh tinggi sel */
                     display: block; /* Penting: Menghapus spasi ekstra di bawah gambar */
                     object-fit: cover; /* Opsional: Memastikan gambar menutupi area tanpa terdistorsi */
                 ">
@@ -415,11 +425,11 @@
                     <td class="small-text">日本の住所 ALAMAT DI JEPANG</td>
                 </tr>
                 <tr>
-                    <td class="value-text" style="width: 209px">SISKA PANGANDARAN</td>
-                    <td class="value-text">KAKAK PEREMPUAN （姉）</td>
-                    <td class="value-text">客室乗務圓</td>
-                    <td class="value-text">28歳</td>
-                    <td class="value-text">千葉県、本三里塚、光が丘　１１４０</td>
+                    <td class="value-text" style="width: 209px; height:25px"></td>
+                    <td class="value-text"></td>
+                    <td class="value-text"></td>
+                    <td class="value-text"></td>
+                    <td class="value-text"></td>
                 </tr>
             </table>
             <table style="width: 837px">
