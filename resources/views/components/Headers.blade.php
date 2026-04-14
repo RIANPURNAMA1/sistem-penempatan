@@ -34,7 +34,7 @@
     }
 </style>
 
-<header class="fixed-top mb-3 lg:hidden mobile-header shadow-md" style="z-index: 9999;">
+<header class="fixed-top mb-3 lg:hidden mobile-header shadow-md" style="z-index: 1040;">
     <nav class="px-3 py-2">
         <div class="flex justify-between items-center">
             <div class="flex items-center gap-2">

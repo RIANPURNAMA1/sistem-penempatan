@@ -3,8 +3,8 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-<div id="sidebar" class="fixed inset-y-0 left-0" style="z-index: 9998;">
-    <div id="sidebar-wrapper" class="flex flex-col w-64 h-screen bg-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out -translate-x-full lg:translate-x-0 overflow-hidden" style="z-index: 9999;">
+<div id="sidebar" class="fixed inset-x-0 top-0 z-30 lg:w-64">
+    <div id="sidebar-wrapper" class="flex flex-col w-full max-h-[80vh] bg-white border-b border-gray-200 lg:w-64 lg:h-screen lg:border-r lg:border-b-0 overflow-hidden lg:translate-y-0" style="z-index: 1050; margin-top: 0px; transition: margin-top 0.3s ease;">
         
         {{-- Header with Logo --}}
         <div class="flex items-center gap-3 p-4 border-b border-gray-200">
@@ -207,7 +207,7 @@
 </div>
 
 {{-- Overlay for mobile --}}
-<div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden lg:hidden" onclick="toggleSidebar()"></div>
+<div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-0 z-40 hidden" onclick="toggleSidebar()"></div>
 
 <style>
     * {
@@ -272,15 +272,30 @@
             return;
         }
         
-        if (sidebar.classList.contains('-translate-x-full')) {
-            sidebar.classList.remove('-translate-x-full');
-            sidebar.classList.add('translate-x-0');
+        const isMobile = window.innerWidth < 1024;
+        
+        // Check if currently hidden
+        const isHidden = sidebar.style.display === 'none' || sidebar.style.marginTop === '-100%';
+        
+        if (isHidden) {
+            // Show sidebar
+            sidebar.style.display = 'flex';
+            if (isMobile) {
+                sidebar.style.marginTop = '0px';
+            }
+            sidebar.style.zIndex = '9999';
             if (overlay) {
-                overlay.classList.remove('hidden');
+                overlay.classList.add('hidden');
             }
         } else {
-            sidebar.classList.remove('translate-x-0');
-            sidebar.classList.add('-translate-x-full');
+            // Hide sidebar
+            if (isMobile) {
+                sidebar.style.marginTop = '-100%';
+            }
+            setTimeout(() => {
+                sidebar.style.display = 'none';
+            }, 300);
+            sidebar.style.zIndex = '0';
             if (overlay) {
                 overlay.classList.add('hidden');
             }
@@ -288,6 +303,20 @@
     }
     
     document.addEventListener('DOMContentLoaded', function() {
+        // Initialize sidebar state based on screen size
+        const sidebar = document.getElementById('sidebar-wrapper');
+        const isMobile = window.innerWidth < 1024;
+        
+        if (isMobile) {
+            sidebar.style.marginTop = '-100%';
+            sidebar.style.display = 'none';
+            sidebar.style.zIndex = '0';
+        } else {
+            sidebar.style.marginTop = '0px';
+            sidebar.style.display = 'flex';
+            sidebar.style.zIndex = '9999';
+        }
+        
         // Toggle submenu
         document.querySelectorAll('.has-sub > a').forEach(link => {
             link.addEventListener('click', function(e) {
