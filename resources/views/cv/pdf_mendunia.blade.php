@@ -4,11 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> CV {{$cv->nama_lengkap_romaji}}</title>
+    <title> CV {{ $cv->nama_lengkap_romaji }}</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            padding: 20px;
+            padding: 10px;
             font-size: 10px;
         }
 
@@ -21,7 +21,7 @@
 
         .bg {
             background-color: #a5bfdf;
-            font-size:10px;
+            font-size: 10px;
         }
 
         table {
@@ -89,7 +89,7 @@
 
         .cv-table td {
             border: 1px solid black;
-         
+
             padding: 4px;
             vertical-align: middle;
         }
@@ -119,6 +119,23 @@
         .no-border-top {
             border-top: none !important;
         }
+
+         /* Header title area */
+        .header-title-area {
+            text-align: center;
+            margin-bottom: 2px;
+        }
+ 
+        .riwayat-hidup {
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+ 
+        .jisshusei-karekisho {
+            font-size: 10px;
+            letter-spacing: 1px;
+        }
     </style>
 </head>
 
@@ -142,7 +159,11 @@
 
     </div>
     <div class="cv-container ">
-        <img src="{{ asset('assets/compiled/png/LOGO/logo.png') }}" style="width: 120px" alt="">
+        <div class="header-title-area" style="flex: 1; text-align: center; padding-top: 1px;">
+            <div class="riwayat-hidup">RIWAYAT HIDUP</div>
+            <div class="jisshusei-karekisho">実習生経歴書</div>
+        </div>
+        <img src="{{ asset('assets/compiled/png/LOGO/logo.png') }}" style="width: 180px" alt="">
         <div class="d-flex">
             <div class="p-2 mt-5">
                 <img src="{{ asset($cv->pas_foto_cv) }}" alt="Pas Foto"
@@ -192,8 +213,8 @@
                         <td class="bg text-center" colspan="2">生年月日 TANGGAL LAHIR</td>
                         <td class="bg">視力 PENGLIHATAN</td>
                         <td colspan="2">
-                            右 (R): {{$cv->kemampuan_penglihatan_mata}} <br>
-                            左 (L): {{$cv->kemampuan_penglihatan_mata}}
+                            右 {{ $cv->kemampuan_penglihatan_mata }} <br>
+                            左 {{ $cv->kemampuan_penglihatan_mata }}
                         </td>
                     </tr>
                     <tr>
@@ -276,13 +297,25 @@
             <table class="table-alamat" style="width: 837px">
                 @foreach ($cv->pendidikans as $p)
                     <tr class="text-center">
-                        <td class="small-text" style="width:70px">{{ $p->tahun_masuk }} 年X月</td>
+                        <td class="small-text" style="width:96px">{{ $p->tahun_masuk }} 年X月</td>
                         <td class="small-text" style="width:20px">-</td>
-                        <td class="small-text" style="width:70px">{{ $p->tahun_lulus }} 年X月</td>
+                        <td class="small-text" style="width:96px">{{ $p->tahun_lulus }} 年X月</td>
                         <td class="value-text" style="width: 383px">{{ $p->nama }}</td>
                         <td class="value-text">{{ $p->jurusan }}</td>
                     </tr>
                 @endforeach
+                <tr>
+                    <td style="height: 20px">
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                    <td>
+                    </td>
+                </tr>
             </table>
 
             {{-- pengalaman kerja --}}
@@ -300,11 +333,11 @@
             <table class="table-alamat" style="width: 837px">
                 @foreach ($cv->pengalamans as $p)
                     <tr class="text-center">
-                        <td class="small-text" style="width:70px">
+                        <td class="small-text" style="width:95px">
                             {{ date('Y', strtotime($p->tanggal_masuk)) }} 年
                         </td>
                         <td class="small-text" style="width:20px">-</td>
-                        <td class="small-text" style="width:70px">
+                        <td class="small-text" style="width:94px">
                             {{ $p->tanggal_keluar ? date('Y', strtotime($p->tanggal_keluar)) . ' 年' : '現在' }}
                         </td>
                         <td class="value-text" style="width: 383px">{{ $p->perusahaan }}</td>
@@ -312,6 +345,14 @@
                         <td class="value-text">{{ $p->gaji }}</td>
                     </tr>
                 @endforeach
+                <tr>
+                    <td style="height: 20px"></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
             </table>
 
             {{-- keluarga --}}
@@ -362,11 +403,11 @@
                 </tr>
                 <tr>
                     <td class="bg label-text" style="width: 209px">自己ＰＲ　PROMOSI DIRI</td>
-                    <td class="value-text">{{$cv->point_plus_diri}}</td>
+                    <td class="value-text">{{ $cv->point_plus_diri }}</td>
                 </tr>
                 <tr>
                     <td class="bg label-text">日本へ行く目的　TUJUAN KE JEPANG</td>
-                    <td class="value-text">{{$cv->ketertarikan_terhadap_jepang}}</td>
+                    <td class="value-text">{{ $cv->ketertarikan_terhadap_jepang }}</td>
                 </tr>
                 <tr>
                     <td class="bg label-text"> 回国後の目標　TUJUAN SETELAH PULANG DARI JEPANG</td>
@@ -406,7 +447,8 @@
                     <td class="value-text" style="width: 105px">ADA (有）</td>
                     <td class="value-text">JFT A2</td>
                     <td class="bg label-text">
-                        <minimax:tool_call> IZIN {{ $cv->jenis_sim }}
+                        <minimax:tool_call> 運転免許　SURAT IZIN  <br>
+                        MENGEMUDI (SIM A) {{ $cv->jenis_sim }}
                     </td>
                     <td class="value-text">{{ $cv->surat_izin_mengemudi }}</td>
                     <td class="bg label-text"> 他　LAIN - LAIN</td>
