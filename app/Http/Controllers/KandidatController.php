@@ -304,100 +304,104 @@ class KandidatController extends Controller
             'bidang_ssw' => $bidangNama,
         ]);
 
-        /* ------------------------------------------------------------
-    | 📞 Persiapan Data Umum
+/* ------------------------------------------------------------
+| 📞 Persiapan Data Umum
+------------------------------------------------------------ */
+$noWa  = $kandidat->pendaftaran->no_wa ?? null;
+$nama  = $kandidat->pendaftaran->nama ?? $kandidat->nama;
+$email = $kandidat->pendaftaran->email ?? null;
+
+/* ------------------------------------------------------------
+| ✅ CEK APAKAH STATUS KANDIDAT BERUBAH
+------------------------------------------------------------ */
+$statusBerubah = ($status_lama !== $request->status_kandidat);
+
+if ($statusBerubah) {
+
+    $pesanWa =
+        "📢 *PEMBARUAN DATA KANDIDAT*\n" .
+        "🕒 *Tanggal Pembaruan*: " . now()->format('d M Y H:i') . "\n\n" .
+
+        "Halo *{$nama}*,\n\n" .
+        "Kami dari *Mendunia Jepang* ingin menginformasikan bahwa terdapat pembaruan terbaru terkait proses administrasi dan penempatan Anda. Kami terus berupaya memastikan setiap tahapan berjalan dengan transparan, akurat, dan sesuai prosedur yang berlaku.\n\n" .
+
+        "📌 *Status Terbaru Anda*: {$request->status_kandidat}\n" .
+
+        (!empty($request->jadwal_interview)
+            ? "📅 *Tanggal Interview*: " . \Carbon\Carbon::parse($request->jadwal_interview)->format('d M Y') . "\n"
+            : ""
+        ) .
+
+        (!empty($request->catatan_interview)
+            ? "📝 *Catatan Tambahan*:\n{$request->catatan_interview}\n\n"
+            : "\n"
+        ) .
+
+        "Kami berharap informasi ini dapat membantu Anda mengikuti alur proses dengan lebih nyaman.\n\n" .
+        "Apabila Anda membutuhkan penjelasan lebih lanjut atau memiliki pertanyaan seputar tahapan berikutnya, silakan menghubungi kami kapan saja. Tim kami siap membantu.\n\n" .
+        "Terima kasih atas kepercayaan Anda kepada *Mendunia Jepang*. Semoga setiap langkah Anda menuju Jepang semakin lancar dan diberi kemudahan.\n\n" .
+        "Salam hangat,\n" .
+        "*Tim Sukses Mendunia*";
+
+    /* ------------------------------------------------------------
+    | 🔔 Kirim WhatsApp via WA Blast Pro (Baileys)
     ------------------------------------------------------------ */
-        $noWa = $kandidat->pendaftaran->no_wa ?? null;
-        $nama = $kandidat->pendaftaran->nama ?? $kandidat->nama;
-        $email = $kandidat->pendaftaran->email ?? null;
+    if (!empty($noWa)) {
+        try {
+            $waBlastUrl   = rtrim(env('WA_BLAST_URL', 'http://localhost:3001'), '/');
+            $waBlastToken = env('WA_BLAST_TOKEN');
+            $deviceId     = env('WA_BLAST_DEVICE_ID');
 
-        /* ------------------------------------------------------------
-    | ✅ CEK APAKAH STATUS KANDIDAT BERUBAH
-    ------------------------------------------------------------ */
-        $statusBerubah = ($status_lama !== $request->status_kandidat);
-
-        // Hanya kirim notifikasi jika status benar-benar berubah
-        if ($statusBerubah) {
-
-            // Teks pesan WA
-            $pesanWa =
-                "📢 *PEMBARUAN DATA KANDIDAT*\n" .
-                "🕒 *Tanggal Pembaruan*: " . now()->format('d M Y H:i') . "\n\n" .
-
-                "Halo *{$nama}*,\n\n" .
-                "Kami dari *Mendunia Jepang* ingin menginformasikan bahwa terdapat pembaruan terbaru terkait proses administrasi dan penempatan Anda. Kami terus berupaya memastikan setiap tahapan berjalan dengan transparan, akurat, dan sesuai prosedur yang berlaku.\n\n" .
-
-                "📌 *Status Terbaru Anda*: {$request->status_kandidat}\n" .
-
-                (!empty($request->jadwal_interview)
-                    ? "📅 *Tanggal Interview*: " . \Carbon\Carbon::parse($request->jadwal_interview)->format('d M Y') . "\n"
-                    : ""
-                ) .
-
-                (!empty($request->catatan_interview)
-                    ? "📝 *Catatan Tambahan*:\n{$request->catatan_interview}\n\n"
-                    : "\n"
-                ) .
-
-                "Kami berharap informasi ini dapat membantu Anda mengikuti alur proses dengan lebih nyaman.\n\n" .
-                "Apabila Anda membutuhkan penjelasan lebih lanjut atau memiliki pertanyaan seputar tahapan berikutnya, silakan menghubungi kami kapan saja. Tim kami siap membantu.\n\n" .
-                "Terima kasih atas kepercayaan Anda kepada *Mendunia Jepang*. Semoga setiap langkah Anda menuju Jepang semakin lancar dan diberi kemudahan.\n\n" .
-                "Salam hangat,\n" .
-                "*Tim Sukses Mendunia*";
-
-
-            /* ------------------------------------------------------------
-        | 🔔 Kirim WhatsApp via Fonnte (FIXED dengan HTTP Client)
-        ------------------------------------------------------------ */
-            if (!empty($noWa)) {
-                try {
-                    // ===== Token Fonnte =====
-                    $token = env('FONNTE_TOKEN');
-                    if (!$token) {
-                        Log::error('FONNTE_TOKEN belum diset');
-                        throw new \Exception('FONNTE_TOKEN tidak valid');
-                    }
-
-                    // ===== Format nomor WA kandidat =====
-                    $noWaFormatted = preg_replace('/\D/', '', $noWa);
-                    if (str_starts_with($noWaFormatted, '0')) {
-                        $noWaFormatted = '62' . substr($noWaFormatted, 1);
-                    }
-
-                    Log::info("Mencoba mengirim WA ke kandidat: {$noWaFormatted}");
-
-                    // ===== Kirim via Fonnte menggunakan Laravel HTTP Client =====
-                    $response = Http::withHeaders([
-                        'Authorization' => $token,
-                    ])->asForm()->post('https://api.fonnte.com/send', [
-                        'target'  => $noWaFormatted,
-                        'message' => $pesanWa,
-                        'delay'   => 2,
-                    ]);
-
-                    // ===== Cek response =====
-                    if ($response->successful()) {
-                        $responseData = $response->json();
-
-                        if (isset($responseData['status']) && $responseData['status'] == true) {
-                            Log::info("✅ WA ke kandidat {$noWaFormatted} berhasil dikirim");
-                        } else {
-                            $errorMsg = $responseData['reason'] ?? $responseData['message'] ?? 'Unknown error';
-                            Log::error("❌ Fonnte Error: {$errorMsg}", [
-                                'response' => $response->body()
-                            ]);
-                        }
-                    } else {
-                        Log::error("❌ WA ke kandidat {$noWaFormatted} gagal dikirim", [
-                            'status' => $response->status(),
-                            'response' => $response->body()
-                        ]);
-                    }
-                } catch (\Exception $e) {
-                    Log::error("❌ Exception kirim WA ke kandidat: " . $e->getMessage());
-                    Log::error("Stack trace: " . $e->getTraceAsString());
-                }
+            if (!$waBlastToken) {
+                Log::error('WA_BLAST_TOKEN belum diset di .env');
+                throw new \Exception('WA_BLAST_TOKEN tidak valid');
             }
+
+            if (!$deviceId) {
+                Log::error('WA_BLAST_DEVICE_ID belum diset di .env');
+                throw new \Exception('WA_BLAST_DEVICE_ID tidak valid');
+            }
+
+            // Format nomor: hilangkan karakter non-digit, ganti awalan 0 → 62
+            $noWaFormatted = preg_replace('/\D/', '', $noWa);
+            if (str_starts_with($noWaFormatted, '0')) {
+                $noWaFormatted = '62' . substr($noWaFormatted, 1);
+            }
+
+            Log::info("Mencoba mengirim WA ke kandidat: {$noWaFormatted} via WA Blast Pro");
+
+            $response = Http::withHeaders([
+                'Authorization' => "Bearer {$waBlastToken}",
+                'Content-Type'  => 'application/json',
+            ])->post("{$waBlastUrl}/api/messages/send", [
+                'deviceId' => $deviceId,
+                'target'   => $noWaFormatted,
+                'message'  => $pesanWa,
+            ]);
+
+            if ($response->successful()) {
+                $responseData = $response->json();
+
+                if (isset($responseData['success']) && $responseData['success'] === true) {
+                    Log::info("✅ WA ke kandidat {$noWaFormatted} berhasil dikirim via WA Blast Pro");
+                } else {
+                    $errorMsg = $responseData['message'] ?? $responseData['error'] ?? 'Unknown error';
+                    Log::error("❌ WA Blast Pro Error: {$errorMsg}", [
+                        'response' => $response->body(),
+                    ]);
+                }
+            } else {
+                Log::error("❌ WA ke kandidat {$noWaFormatted} gagal dikirim via WA Blast Pro", [
+                    'status'   => $response->status(),
+                    'response' => $response->body(),
+                ]);
+            }
+
+        } catch (\Exception $e) {
+            Log::error("❌ Exception kirim WA ke kandidat: " . $e->getMessage());
+            Log::error("Stack trace: " . $e->getTraceAsString());
+        }
+    }
 
             /* ------------------------------------------------------------
         | 📧 Kirim Email Notifikasi

@@ -24,21 +24,8 @@
         </div>
     @endif
 
-    <div class="">
-        <!-- Breadcrumb -->
-        <nav aria-label="breadcrumb" class="mb-4">
-            <ol class="breadcrumb border rounded-3 px-3 py-2 shadow-sm mb-0">
-                <li class="breadcrumb-item">
-                    <a href="#" class="text-decoration-none text-secondary">
-                        <i class="bi bi-house-door me-1"></i> Dashboard
-                    </a>
-                </li>
-                <li class="breadcrumb-item active fw-semibold" aria-current="page">
-                    <i class="bi bi-person-lines-fill"></i> Form Pendaftaran Kandidat
-                </li>
-            </ol>
-        </nav>
-
+    <div class="mt-4">
+    
         <!-- Header -->
         <h4 class="fw-bold mb-3">
             <i class="bi bi-person-plus-fill me-2 text-primary"></i> Formulir Pendaftaran Kandidat

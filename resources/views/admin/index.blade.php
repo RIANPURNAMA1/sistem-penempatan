@@ -3,255 +3,149 @@
 @section('title', 'Daftar Admin')
 
 @section('content')
-    <!-- Bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+<link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Bootstrap Icons -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-
-    <!-- ✅ DataTables Bootstrap 5 CSS -->
-    <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
-        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
-        rel="stylesheet">
-</head>
 <style>
-    body {
-        font-family: 'Poppins', sans-serif;
+    body, .table, .form-label, .form-select, .btn, div, span, th, td {
+        font-family: 'Inter', sans-serif !important;
+        font-size: 12px !important;
     }
+    .table th, .table td { padding: 8px 10px; }
+    .table .badge { font-size: 10px; }
+    .table .btn { padding: 3px 6px; font-size: 11px; }
+    .form-select, .btn { font-size: 12px; }
+    .dataTables_length select, .dataTables_filter input { font-size: 11px; }
+    .dataTables_info, .dataTables_paginate { font-size: 11px; }
+    #tableAdmin { font-size: 11px; }
 </style>
-    <div class="">
-        {{-- SWEETALERT DITAMPILKAN DENGAN BLADE --}}
-        {{-- Pastikan Anda sudah memuat SweetAlert2 di layouts.app, atau pindahkan link/script-nya ke luar section content --}}
-        @if (session('success'))
-            <script>
-                // Pastikan Swal sudah didefinisikan (script SweetAlert harus dimuat di bawah)
-                if (typeof Swal !== 'undefined') {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Sukses',
-                        text: '{{ session('success') }}',
-                        timer: 3000,
-                        showConfirmButton: false
-                    });
-                }
-            </script>
-        @endif
-        @if (session('error'))
-            <script>
-                if (typeof Swal !== 'undefined') {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: '{{ session('error') }}',
-                        timer: 3000,
-                        showConfirmButton: false
-                    });
-                }
-            </script>
-        @endif
 
-        {{-- Hapus Link CSS DataTables/Bootstrap di sini (asumsi dimuat di layouts.app atau di bagian bawah) --}}
-        {{-- Jika Anda meletakkan di sini, ini akan diletakkan di dalam <body>, yang TIDAK direkomendasikan. --}}
-        {{-- Jika Bootstrap 5 & Icons belum dimuat di layouts.app, pindahkan ke layouts.app. --}}
+<div class="py-3">
+    @if (session('success'))
+        <script>Swal.fire({ icon: 'success', title: 'Sukses', text: '{{ session('success') }}', timer: 3000, showConfirmButton: false });</script>
+    @endif
+    @if (session('error'))
+        <script>Swal.fire({ icon: 'error', title: 'Error', text: '{{ session('error') }}', timer: 3000, showConfirmButton: false });</script>
+    @endif
 
-        <nav aria-label="breadcrumb" class="mb-4 shadow shadow-md border-none">
-            <ol class="breadcrumb border rounded-3 px-3 py-2 shadow-sm mb-0">
-                <li class="breadcrumb-item">
-                    <a href="{{ url('/') }}" class="text-decoration-none text-secondary">
-                        <i class="bi bi-house-door me-1"></i> Dashboard
-                    </a>
-                </li>
-                <li class="breadcrumb-item active fw-semibold" aria-current="page">
-                    <i class="bi bi-person-gear me-1"></i> Daftar Admin
-                </li>
-            </ol>
-        </nav>
+    <!-- Breadcrumb -->
+    <nav class="mb-4">
+        <ol class="flex items-center text-sm text-gray-500">
+            <li><a href="{{ url('/') }}" class="hover:text-blue-600"><i class="bi bi-house-door"></i></a></li>
+            <li class="mx-2"><i class="bi bi-chevron-right text-gray-400"></i></li>
+            <li class="text-gray-700 font-medium">Daftar Admin</li>
+        </ol>
+    </nav>
 
-        <div
-            class="mb-4 d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-2">
+    <!-- Header Card -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 mb-4">
+        <div class="p-4 flex flex-wrap items-center justify-between gap-3">
             <div>
-                <h2 class="fw-bold mb-2">
-                    <i class="bi bi-shield-lock text-primary me-2"></i> Daftar Admin Sistem
-                </h2>
-                <p class="text-muted fst-italic">
-                    Berikut adalah data akun admin yang terdaftar dalam sistem manajemen.
-                </p>
+                <h2 class="font-bold text-gray-800"><i class="bi bi-shield-lock text-blue-600 me-2"></i>Daftar Admin Sistem</h2>
+                <p class="text-gray-500 text-sm">Data akun admin yang terdaftar dalam sistem</p>
             </div>
-            <a href="{{ route('admins.create') }}"
-                class="btn btn-primary fw-semibold shadow-sm px-4 py-2 rounded-3 text-white">
-                <i class="bi bi-plus-circle me-1"></i> Tambah Admin Baru
+            <a href="{{ route('admins.create') }}" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition text-sm">
+                <i class="bi bi-plus-circle me-1"></i> Tambah Admin
             </a>
         </div>
+    </div>
 
-        <div class="card shadow-sm border-0 rounded-4">
-            <div class="card-body table-responsive">
-                <table class="table table-hover align-middle nowrap w-100" id="tableAdmin" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th class="text-center">No</th>
-                            <th>Nama</th>
-                            <th>Email</th>
-                            <th>Role</th>
-                            <th>Tanggal Dibuat</th>
-                            <th>Diperbarui</th>
-                            <th class="text-center">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($admins as $index => $admin)
-                            {{-- Karena AdminController sudah memfilter 'kandidat', if ini opsional tapi tetap baik --}}
-                            @if ($admin->role !== 'kandidat')
-                                <tr>
-                                    <td class="text-center">{{ $index + 1 }}</td>
-                                    <td>{{ $admin->name }}</td>
-                                    <td>{{ $admin->email }}</td>
-                                    <td>
-                                        @php
-                                            $roleName = $admin->role ?? 'Tidak Ada';
-                                            // Menyesuaikan warna badge berdasarkan role yang ada di migration
-                                            $badge = match (strtolower($roleName)) {
-                                                'super admin' => 'danger',
-                                                'cabang cianjur selatan mendunia',
-                                                'cabang cianjur pamoyanan mendunia'
-                                                    => 'primary',
-                                                'cabang batam mendunia', 'cabang banyuwangi mendunia' => 'success',
-                                                default => 'info', // Default untuk role cabang lainnya
-                                            };
-                                            // Membersihkan nama role untuk tampilan (Opsional)
-                                            $displayRole = str_replace('Cabang ', '', $roleName);
-                                            $displayRole = str_replace(' Mendunia', '', $displayRole);
-                                        @endphp
-                                        <span class="badge bg-{{ $badge }}">{{ ucfirst($displayRole) }}</span>
-                                    </td>
-                                    <td>{{ $admin->created_at->format('Y-m-d H:i') }}</td>
-                                    <td>{{ $admin->updated_at->format('Y-m-d H:i') }}</td>
-                                    <td class="text-center">
-                                        <div class="btn-group">
-                                            <a href="{{ route('admins.edit', $admin->id) }}"
-                                                class="btn btn-sm btn-warning text-white" title="Edit">
-                                                <i class="bi bi-pencil-square"></i>
-                                            </a>
-                                            {{-- Admin Super tidak bisa dihapus, cek di controller --}}
-                                            <form action="{{ route('admins.destroy', $admin->id) }}" method="POST"
-                                                class="d-inline delete-form">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-danger text-white"
-                                                    title="Hapus">
-                                                    <i class="bi bi-trash3"></i>
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endif
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
+    <!-- Table -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden p-3">
+        <div class="overflow-x-auto">
+            <table id="tableAdmin" class="w-full text-left text-sm">
+                <thead class="bg-gray-50 text-gray-700 border-b border-gray-200">
+                    <tr>
+                        <th class="px-3 py-3 font-semibold text-center">No</th>
+                        <th class="px-3 py-3 font-semibold">Nama</th>
+                        <th class="px-3 py-3 font-semibold">Email</th>
+                        <th class="px-3 py-3 font-semibold">Role</th>
+                        <th class="px-3 py-3 font-semibold">Tgl Dibuat</th>
+                        <th class="px-3 py-3 font-semibold">Diperbarui</th>
+                        <th class="px-3 py-3 font-semibold text-center">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                    @foreach ($admins as $index => $admin)
+                        @if ($admin->role !== 'kandidat')
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="px-3 py-3 text-center text-gray-500">{{ $index + 1 }}</td>
+                                <td class="px-3 py-3 font-medium text-gray-800">{{ $admin->name }}</td>
+                                <td class="px-3 py-3 text-gray-600">{{ $admin->email }}</td>
+                                <td class="px-3 py-3">
+                                    @php
+                                        $roleName = $admin->role ?? 'Tidak Ada';
+                                        $badgeClass = match(strtolower($roleName)) {
+                                            'super admin' => 'bg-red-100 text-red-700',
+                                            'super-admin' => 'bg-red-100 text-red-700',
+                                            default => 'bg-blue-100 text-blue-700',
+                                        };
+                                        $displayRole = str_replace(['Cabang ', ' Mendunia'], '', $roleName);
+                                    @endphp
+                                    <span class="px-2 py-1 rounded-full text-xs font-medium {{ $badgeClass }}">{{ ucfirst($displayRole) }}</span>
+                                </td>
+                                <td class="px-3 py-3 text-gray-500">{{ $admin->created_at->format('d/m/Y') }}</td>
+                                <td class="px-3 py-3 text-gray-500">{{ $admin->updated_at->format('d/m/Y') }}</td>
+                                <td class="px-3 py-3 text-center">
+                                    <div class="inline-flex items-center gap-1">
+                                        <a href="{{ route('admins.edit', $admin->id) }}" class="p-1.5 bg-amber-100 text-amber-600 rounded hover:bg-amber-200 transition" title="Edit">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+                                        <form action="{{ route('admins.destroy', $admin->id) }}" method="POST" class="inline delete-form">
+                                            @csrf @method('DELETE')
+                                            <button type="submit" class="p-1.5 bg-red-100 text-red-600 rounded hover:bg-red-200 transition" title="Hapus">
+                                                <i class="bi bi-trash3"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        @endif
+                    @endforeach
+                </tbody>
+            </table>
         </div>
     </div>
-    <!-- ✅ Dependencies -->
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+</div>
 
-    <!-- ✅ DataTables JS -->
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- SweetAlert2 -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    var table = $('#tableAdmin').DataTable({
+        pageLength: 10,
+        lengthMenu: [5, 10, 25, 50],
+        language: {
+            search: "Cari:",
+            lengthMenu: "Tampilkan _MENU_ data",
+            zeroRecords: "Tidak ada data ditemukan",
+            info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
+            paginate: { previous: "‹", next: "›" }
+        }
+    });
 
-    <script>
-        var table = $('#tableAdmin').DataTable({
-            responsive: true,
-            pageLength: 5, // tampilkan 5 baris per halaman
-            lengthMenu: [5, 10, 25, 50],
-            language: {
-                search: "🔍 Cari:",
-                lengthMenu: "Tampilkan _MENU_ data",
-                zeroRecords: "Tidak ada data ditemukan",
-                info: "Menampilkan _START_ - _END_ dari _TOTAL_ data",
-                paginate: {
-                    previous: "←",
-                    next: "→"
-                }
+    $('.delete-form').on('submit', function(e) {
+        e.preventDefault();
+        const form = this;
+        Swal.fire({
+            title: 'Apakah Anda yakin?',
+            text: "Data admin akan dihapus!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc2626',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Ya, hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                form.submit();
             }
         });
-
-      // LOGIC SWEETALERT UNTUK HAPUS
-        $('.delete-form').on('submit', function(e) {
-            e.preventDefault(); // Mencegah form dikirim secara default
-            const form = this; // Menyimpan referensi form saat ini
-            
-            Swal.fire({
-                title: 'Apakah Anda yakin?',
-                text: "Data admin akan dihapus! Tindakan ini tidak dapat dikembalikan.",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d33', // Merah untuk Hapus
-                cancelButtonColor: '#3085d6', // Biru untuk Batal
-                confirmButtonText: 'Ya, hapus!',
-                cancelButtonText: 'Batal'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Jika pengguna mengklik 'Ya, hapus!', kirim formulir
-                    form.submit();
-                }
-            });
-        });
-
-
-        // Filter Role (jika masih diperlukan, pastikan elemen #filterRole ada)
-        // if ($('#filterRole').length) {
-        //     $('#filterRole').on('keyup', function() {
-        //         table.column(3).search(this.value).draw();
-        //     });
-        // }
-    </script>
-
-    {{-- STYLES (biarkan di sini atau pindahkan ke file CSS eksternal) --}}
-    <style>
-        #tableAdmin thead th {
-            text-align: center;
-            vertical-align: middle;
-        }
-
-        .dataTables_wrapper .dataTables_paginate .paginate_button {
-            border-radius: 8px !important;
-            margin: 2px;
-            padding: 6px 12px;
-        }
-
-        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
-            background-color: #ffc107 !important;
-            color: #000 !important;
-            border: none !important;
-        }
-
-        .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
-            background-color: #ffe082 !important;
-            color: #000 !important;
-        }
-
-        @media (max-width: 768px) {
-            h2 {
-                font-size: 1.3rem;
-            }
-
-            .breadcrumb {
-                font-size: 0.9rem;
-            }
-
-            .btn-group .btn {
-                padding: 0.3rem 0.5rem;
-            }
-
-            th,
-            td {
-                white-space: nowrap;
-                font-size: 0.85rem;
-            }
-        }
-    </style>
+    });
+</script>
 @endsection

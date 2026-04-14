@@ -6,282 +6,145 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Login Sistem Kandidat</title>
     <link rel="icon" href="{{ asset('assets/compiled/png/LOGO/logo4.png') }}" type="image/png">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
-        rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#1a365d',
+                        secondary: '#2c5282',
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        body {
-            background: linear-gradient(135deg, #f0f4ff, #ffffff);
-            font-family: 'Poppins', sans-serif !important;
-            overflow-x: hidden;
+        body { font-family: 'Inter', sans-serif; }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
         }
-
-        /* Desktop: pakai min-vh-100 dan center */
-        @media (min-width: 768px) {
-            body {
-                min-height: 100vh;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-            }
-
-            .login-card {
- 
-                padding: 40px 30px;
-                width: 100%;
-                max-width: 420px;
-            }
-        }
-
-        /* Mobile: fit to screen tanpa scroll */
-        @media (max-width: 767px) {
-            body {
-                height: 100vh;
-                overflow: hidden;
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                padding: 10px;
-            }
-
-            .login-card {
-                width: 100%;
-                max-width: 100%;
-                height: 100vh;
-                overflow-y: auto;
-                overflow-x: hidden;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                padding: 15px 10px;
-                background-color: transparent;
-                box-shadow: none;
-            }
-
-            /* Perbesar input di mobile */
-            .form-control {
-                font-size: 16px !important;
-                padding: 12px 14px !important;
-                height: auto !important;
-            }
-
-            .input-group-text {
-                font-size: 18px !important;
-                padding: 12px 14px !important;
-            }
-
-            /* Perbesar label */
-            .form-label {
-                font-size: 14px !important;
-                margin-bottom: 8px !important;
-            }
-
-            /* Perbesar button */
-            .btn {
-                font-size: 16px !important;
-                padding: 14px !important;
-            }
-
-            /* Perkecil logo di mobile */
-            .login-card img {
-                width: 80px !important;
-            }
-
-            /* Perkecil heading */
-            h3 {
-                font-size: 22px !important;
-            }
-
-            /* Kurangi spacing */
-            .mb-3 {
-                margin-bottom: 0.8rem !important;
-            }
-
-            .mb-4 {
-                margin-bottom: 1rem !important;
-            }
-
-            .mt-3 {
-                margin-top: 1rem !important;
-            }
-
-            .mt-4 {
-                margin-top: 1rem !important;
-            }
-        }
-
-        /* Smooth scroll untuk mobile */
-        .login-card {
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .login-card img {
-            width: 100px;
-        }
-
-        .form-control {
-            border-radius: 12px;
-        }
-
-        .form-control:focus {
-            box-shadow: 0 0 0 0.2rem rgba(39, 48, 68, 0.15);
-            border-color: #273044;
-        }
-
-        .btn-login {
-            border-radius: 12px;
-            background-color: #273044;
-            color: #fff;
-            font-weight: 600;
-            transition: 0.3s;
-        }
-
-        .btn-login:hover {
-            background-color: #1a1f2e;
-            color: #fff;
-        }
-
-        /* Shadow untuk input */
-        .input-group {
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-            border-radius: 12px;
-            overflow: hidden;
-        }
-
-        .input-group-text {
-            border: none;
-            background-color: #f8f9fa;
-        }
-
-        .form-control {
-            border: none;
-            border-left: 1px solid #e0e0e0;
-        }
-
-        /* Divider */
-        .divider {
-            display: flex;
-            align-items: center;
-            text-align: center;
-            margin: 20px 0;
-        }
-
-        .divider::before,
-        .divider::after {
-            content: '';
-            flex: 1;
-            border-bottom: 1px solid #dee2e6;
-        }
-
-        .divider:not(:empty)::before {
-            margin-right: .5em;
-        }
-
-        .divider:not(:empty)::after {
-            margin-left: .5em;
-        }
-
-        /* Google Button */
-        .btn-google {
-            border-radius: 12px;
-            background-color: #ffffff;
-            color: #4a4a4a;
-            font-weight: 500;
-            border: 1px solid #ced4da;
-            transition: 0.3s;
-        }
-
-        .btn-google:hover {
-            background-color: #f8f9fa;
-            border-color: #273044;
-            color: #4a4a4a;
-        }
-
-        .google-icon {
-            width: 20px;
-            height: 20px;
-        }
-
-        /* Bottom Links */
-        .bottom-links a {
-            color: #6c757d;
-            text-decoration: none;
-            transition: 0.2s;
-            font-size: 14px;
-        }
-
-        .bottom-links a:hover {
-            color: #273044;
-        }
+        .shake { animation: shake 0.3s ease-in-out; }
     </style>
 </head>
 
-<body>
+<body class="min-h-screen  flex items-center justify-center p-4 bg-slate-100">
 
-    <div class="login-card">
-
-        <div class="text-center mb-4">
-            <img src="{{ asset('assets/compiled/png/LOGO/logo4.png') }}" alt="Logo" class="img-fluid rounded">
+    <div class="flex flex-col md:flex-row bg-white rounded-2xl shadow-2xl overflow-hidden max-w-4xl w-full ">
+        
+        <!-- Left Side - Branding -->
+        <div class="bg-gradient-to-br from-primary to-secondary p-8 md:p-12 flex flex-col items-center justify-center text-white w-full md:w-1/2">
+            <img src="{{ asset('assets/compiled/png/LOGO/logo4.png') }}" alt="Logo" class="w-24 h-24 object-contain mb-6">
+            <h2 class="text-2xl md:text-3xl font-bold text-center mb-2">Sistem Penempatan</h2>
+            <p class="text-sm text-white/80 text-center">Selamat datang! Silakan masuk untuk melanjutkan.</p>
+            
+            <!-- Decorative elements -->
+            <div class="mt-8 flex gap-3">
+                <div class="w-3 h-3 bg-white/30 rounded-full"></div>
+                <div class="w-3 h-3 bg-white/50 rounded-full"></div>
+                <div class="w-3 h-3 bg-white/30 rounded-full"></div>
+            </div>
         </div>
 
-        @if ($errors->any())
-            <script>
-                document.addEventListener("DOMContentLoaded", () => {
-                    Swal.fire({
-                        icon: "error",
-                        title: "Validasi Gagal!",
-                        html: `<ul style="text-align:left;">
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                        </ul>`
+        <!-- Right Side - Login Form -->
+        <div class="p-8 md:p-12 w-full md:w-1/2 flex flex-col justify-center">
+            @if ($errors->any())
+                <script>
+                    document.addEventListener("DOMContentLoaded", () => {
+                        Swal.fire({
+                            icon: "error",
+                            title: "Validasi Gagal!",
+                            html: `<ul style="text-align:left;">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                            </ul>`
+                        });
                     });
-                });
-            </script>
-        @endif
+                </script>
+            @endif
 
-        <h3 class="text-center fw-bold mb-2">Selamat Datang 👋</h3>
-        <p class="text-center text-muted mb-4">Masuk dengan akun Anda untuk melanjutkan</p>
+            <h3 class="text-2xl font-bold text-primary mb-1">Selamat Datang</h3>
+            <p class="text-gray-500 text-sm mb-6">Masuk dengan akun Anda</p>
 
-        <form id="loginForm" method="POST">
-            @csrf
+            <form id="loginForm" method="POST" class="space-y-4">
+                @csrf
 
-            <div class="mb-3">
-                <label class="form-label fw-semibold">Email</label>
-                <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-envelope"></i></span>
-                    <input type="email" name="email" class="form-control" placeholder="Masukkan email" required>
+                <!-- Email -->
+                <div>
+                    <label class="block text-sm font-semibold text-primary mb-2">Email</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400">
+                            <i class="bi bi-envelope-fill text-lg"></i>
+                        </span>
+                        <input type="email" name="email" placeholder="nama@email.com" required
+                            class="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all">
+                    </div>
                 </div>
+
+                <!-- Password -->
+                <div>
+                    <label class="block text-sm font-semibold text-primary mb-2">Password</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400">
+                            <i class="bi bi-lock-fill text-lg"></i>
+                        </span>
+                        <input type="password" name="password" id="passwordInput" placeholder="Masukkan password" required
+                            class="w-full pl-12 pr-12 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all">
+                        <button type="button" id="togglePassword" class="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-primary transition-colors">
+                            <i class="bi bi-eye-slash-fill text-lg"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Captcha -->
+                <div>
+                    <label class="block text-sm font-semibold text-primary mb-2">Verifikasi Keamanan</label>
+                    <div class="flex items-center gap-3">
+                        <div class="bg-gradient-to-r from-primary to-secondary px-5 py-3 rounded-xl text-center flex-1">
+                            <span id="captcha-text" class="text-xl font-bold text-white tracking-widest">X K D M R</span>
+                        </div>
+                        <button type="button" id="refresh-captcha" class="w-11 h-11 bg-gray-50 border border-gray-200 rounded-xl flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-all hover:rotate-180">
+                            <i class="bi bi-arrow-clockwise text-lg"></i>
+                        </button>
+                        <input type="text" id="captcha-answer" maxlength="5" placeholder="Ketik" required
+                            class="w-28 px-3 py-3 text-center font-semibold uppercase tracking-wider bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all">
+                    </div>
+                </div>
+
+                <!-- Login Button -->
+                <button type="submit" id="loginBtn" class="w-full bg-primary text-white py-3 rounded-xl font-semibold hover:bg-secondary transition-all hover:-translate-y-0.5 hover:shadow-lg disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none mt-6">
+                    <i class="bi bi-box-arrow-in-right mr-2"></i> Masuk
+                </button>
+            </form>
+
+            <!-- Divider -->
+            <div class="flex items-center my-5">
+                <div class="flex-1 border-t border-gray-200"></div>
+                <span class="px-4 text-sm text-gray-400">atau</span>
+                <div class="flex-1 border-t border-gray-200"></div>
             </div>
 
-            <div class="mb-3">
-                <label class="form-label fw-semibold">Password</label>
-                <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-lock"></i></span>
-                    <input type="password" name="password" class="form-control" placeholder="Masukkan password"
-                        required>
-                </div>
-            </div>
-
-            <button type="submit" id="loginBtn" class="btn btn-login w-100 mt-3">
-                <i class="bi bi-box-arrow-in-right me-1"></i> Masuk
+            <!-- Google Button -->
+            <button id="btnGoogle" class="w-full bg-white border-2 border-gray-200 py-3 rounded-xl font-medium text-gray-600 hover:border-primary hover:text-primary transition-all flex items-center justify-center gap-3">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" class="w-5 h-5">
+                Masuk dengan Google
             </button>
-        </form>
 
-        <div class="divider text-muted small">ATAU</div>
-
-        <button id="btnGoogle" type="button" class="btn btn-google w-100 shadow-sm d-flex justify-content-center align-items-center gap-2">
-            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google Login" class="google-icon">
-            <span>Login dengan Google</span>
-        </button>
-
-        <div class="text-center mt-4 bottom-links">
-            <p class="mb-1">Belum punya akun? <a href="/registrasi" class="fw-semibold">Daftar</a></p>
-            <a href="/lupa/password" class="fw-semibold">Lupa Password?</a>
+            <!-- Links -->
+            <div class="text-center mt-6 space-y-1">
+                <p class="text-sm text-gray-500">Belum punya akun? <a href="/registrasi" class="text-primary font-semibold hover:underline">Daftar</a></p>
+                <p class="text-sm"><a href="/lupa/password" class="text-primary font-semibold hover:underline">Lupa password?</a></p>
+            </div>
         </div>
     </div>
 
@@ -289,71 +152,88 @@
 
     <script>
         $(document).ready(() => {
+            const characters = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
 
-            // Prevent zoom on input focus (iOS Safari)
+            function generateCaptcha() {
+                let captcha = '';
+                const letters = [];
+                for (let i = 0; i < 5; i++) {
+                    const char = characters.charAt(Math.floor(Math.random() * characters.length));
+                    letters.push(char);
+                    captcha += char + ' ';
+                }
+                return { display: captcha.trim(), actual: letters.join('') };
+            }
+
+            let currentCaptcha = generateCaptcha();
+            $("#captcha-text").text(currentCaptcha.display);
+
+            $("#refresh-captcha").on("click", function() {
+                currentCaptcha = generateCaptcha();
+                $("#captcha-text").text(currentCaptcha.display);
+                $("#captcha-answer").val("").focus();
+            });
+
+            $("#togglePassword").on("click", function() {
+                const passwordInput = $("#passwordInput");
+                const icon = $(this).find("i");
+                if (passwordInput.attr("type") === "password") {
+                    passwordInput.attr("type", "text");
+                    icon.removeClass("bi-eye-slash-fill").addClass("bi-eye-fill");
+                } else {
+                    passwordInput.attr("type", "password");
+                    icon.removeClass("bi-eye-fill").addClass("bi-eye-slash-fill");
+                }
+            });
+
             document.querySelectorAll('input').forEach(input => {
-                input.addEventListener('focus', () => {
-                    document.body.style.zoom = 1;
-                });
+                input.addEventListener('focus', () => { document.body.style.zoom = 1; });
             });
 
-            $("#btnGoogle").on("click", function() {
-                window.location.href = "/auth/google/redirect";
-            });
+            $("#btnGoogle").on("click", function() { window.location.href = "/auth/google/redirect"; });
 
             $("#loginForm").on("submit", function(e) {
                 e.preventDefault();
 
+                const userAnswer = $("#captcha-answer").val().toUpperCase().replace(/\s/g, '');
+                
+                if (userAnswer !== currentCaptcha.actual) {
+                    Swal.fire({ icon: "error", title: "Verifikasi Gagal!", text: "Huruf yang Anda masukkan tidak sesuai.", confirmButtonColor: "#1a365d" });
+                    currentCaptcha = generateCaptcha();
+                    $("#captcha-text").text(currentCaptcha.display);
+                    $("#captcha-answer").val("").addClass("shake");
+                    setTimeout(() => $("#captcha-answer").removeClass("shake"), 300);
+                    return;
+                }
+
                 const $btn = $("#loginBtn");
-                $btn.prop("disabled", true);
-                const originalHtml = $btn.html();
-                $btn.html(
-                    '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Memproses...'
-                );
+                $btn.prop("disabled", true).html('<span class="spinner-border spinner-border-sm mr-2"></span> Memproses...');
 
                 $.ajax({
                     url: "{{ route('login.post') }}",
                     type: "POST",
                     data: $(this).serialize(),
-
                     success: function(response) {
-                        $btn.prop("disabled", false);
-                        $btn.html(originalHtml);
+                        $btn.prop("disabled", false).html('<i class="bi bi-box-arrow-in-right mr-2"></i> Masuk');
 
                         if (response.success) {
-                            Swal.fire({
-                                icon: "success",
-                                title: "Login Berhasil!",
-                                timer: 1500,
-                                showConfirmButton: false
-                            });
-
+                            Swal.fire({ icon: "success", title: "Login Berhasil!", timer: 1500, showConfirmButton: false });
                             setTimeout(() => window.location.href = response.redirect, 1500);
-
-                        } else if (response.code === 'ACCOUNT_NOT_FOUND') {
-                            Swal.fire({
-                                icon: "warning",
-                                title: "Akun Tidak Ditemukan",
-                                text: "Email yang kamu masukkan belum terdaftar."
-                            });
                         } else {
-                            Swal.fire({
-                                icon: "error",
-                                title: "Login Gagal!",
-                                text: response.message ?? "Email atau password salah."
-                            });
+                            currentCaptcha = generateCaptcha();
+                            $("#captcha-text").text(currentCaptcha.display);
+                            if (response.code === 'ACCOUNT_NOT_FOUND') {
+                                Swal.fire({ icon: "warning", title: "Akun Tidak Ditemukan", text: "Email yang Anda masukkan belum terdaftar." });
+                            } else {
+                                Swal.fire({ icon: "error", title: "Login Gagal!", text: response.message ?? "Email atau password salah." });
+                            }
                         }
                     },
-
                     error: function() {
-                        $btn.prop("disabled", false);
-                        $btn.html(originalHtml);
-
-                        Swal.fire({
-                            icon: "error",
-                            title: "Login Gagal",
-                            text: "Email atau password salah."
-                        });
+                        $btn.prop("disabled", false).html('<i class="bi bi-box-arrow-in-right mr-2"></i> Masuk');
+                        currentCaptcha = generateCaptcha();
+                        $("#captcha-text").text(currentCaptcha.display);
+                        Swal.fire({ icon: "error", title: "Login Gagal", text: "Terjadi kesalahan sistem, silakan coba lagi." });
                     }
                 });
             });
@@ -361,5 +241,4 @@
     </script>
 
 </body>
-
 </html>

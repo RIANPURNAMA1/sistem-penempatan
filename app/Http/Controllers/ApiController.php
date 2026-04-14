@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers;
 
+<<<<<<< HEAD
 use App\Http\Resources\PendaftaranKandidatResource;
 use App\Models\Kandidat;
 use App\Models\KandidatHistory;
+=======
+use App\Http\Resources\PendaftaranResource;
+use App\Models\Kandidat;
+>>>>>>> 9e148e526cf717e766b7394ff7df9dd73195158d
 use App\Models\Pendaftaran;
 use Illuminate\Http\Request;
 
@@ -12,7 +17,11 @@ class ApiController extends Controller
 {
     public function getPendaftaranDanKandidat(Request $request)
     {
+<<<<<<< HEAD
         $query = Pendaftaran::with(['user', 'cabang', 'kandidat', 'kandidat.institusi', 'kandidat.bidang_ssws']);
+=======
+        $query = Pendaftaran::with(['user', 'cabang', 'kandidat']);
+>>>>>>> 9e148e526cf717e766b7394ff7df9dd73195158d
 
         if ($request->has('search') && $request->search) {
             $search = $request->search;
@@ -29,17 +38,35 @@ class ApiController extends Controller
             $query->where('status', $request->status);
         }
 
+<<<<<<< HEAD
         $pendaftaran = $query->orderBy('created_at', 'desc')->get();
 
         return response()->json([
             'success' => true,
             'data' => PendaftaranKandidatResource::collection($pendaftaran),
+=======
+        $pendaftaran = $query->orderBy('created_at', 'desc')->paginate(10);
+
+        return response()->json([
+            'success' => true,
+            'data' => PendaftaranResource::collection($pendaftaran),
+            'meta' => [
+                'current_page' => $pendaftaran->currentPage(),
+                'last_page' => $pendaftaran->lastPage(),
+                'per_page' => $pendaftaran->perPage(),
+                'total' => $pendaftaran->total(),
+            ],
+>>>>>>> 9e148e526cf717e766b7394ff7df9dd73195158d
         ]);
     }
 
     public function getPendaftaranById($id)
     {
+<<<<<<< HEAD
         $pendaftaran = Pendaftaran::with(['user', 'cabang', 'kandidat', 'kandidat.institusi', 'kandidat.bidang_ssws'])->find($id);
+=======
+        $pendaftaran = Pendaftaran::with(['user', 'cabang', 'kandidat'])->find($id);
+>>>>>>> 9e148e526cf717e766b7394ff7df9dd73195158d
 
         if (! $pendaftaran) {
             return response()->json([
@@ -50,13 +77,21 @@ class ApiController extends Controller
 
         return response()->json([
             'success' => true,
+<<<<<<< HEAD
             'data' => new PendaftaranKandidatResource($pendaftaran),
+=======
+            'data' => new PendaftaranResource($pendaftaran),
+>>>>>>> 9e148e526cf717e766b7394ff7df9dd73195158d
         ]);
     }
 
     public function getKandidat(Request $request)
     {
+<<<<<<< HEAD
         $query = Kandidat::with(['pendaftaran', 'cabang', 'institusi', 'bidang_ssws', 'histories']);
+=======
+        $query = Kandidat::with(['pendaftaran', 'cabang', 'institusi']);
+>>>>>>> 9e148e526cf717e766b7394ff7df9dd73195158d
 
         if ($request->has('search') && $request->search) {
             $search = $request->search;
@@ -64,13 +99,18 @@ class ApiController extends Controller
                 $q->where('nama', 'like', "%{$search}%")
                     ->orWhere('no_kandidat', 'like', "%{$search}%")
                     ->orWhereHas('pendaftaran', function ($q) use ($search) {
+<<<<<<< HEAD
                         $q->where('nama', 'like', "%{$search}%")
                             ->orWhere('nik', 'like', "%{$search}%");
+=======
+                        $q->where('no_pendaftaran', 'like', "%{$search}%");
+>>>>>>> 9e148e526cf717e766b7394ff7df9dd73195158d
                     });
             });
         }
 
         if ($request->has('status') && $request->status) {
+<<<<<<< HEAD
             $query->where('status_kandidat', $request->status);
         }
 
@@ -135,12 +175,32 @@ class ApiController extends Controller
                     'created_at' => $h->created_at,
                 ]),
             ]),
+=======
+            $query->where('status', $request->status);
+        }
+
+        $kandidat = $query->orderBy('created_at', 'desc')->paginate(10);
+
+        return response()->json([
+            'success' => true,
+            'data' => $kandidat->items(),
+            'meta' => [
+                'current_page' => $kandidat->currentPage(),
+                'last_page' => $kandidat->lastPage(),
+                'per_page' => $kandidat->perPage(),
+                'total' => $kandidat->total(),
+            ],
+>>>>>>> 9e148e526cf717e766b7394ff7df9dd73195158d
         ]);
     }
 
     public function getKandidatById($id)
     {
+<<<<<<< HEAD
         $kandidat = Kandidat::with(['pendaftaran', 'cabang', 'institusi', 'bidang_ssws', 'histories'])->find($id);
+=======
+        $kandidat = Kandidat::with(['pendaftaran', 'cabang', 'institusi', 'histories'])->find($id);
+>>>>>>> 9e148e526cf717e766b7394ff7df9dd73195158d
 
         if (! $kandidat) {
             return response()->json([
@@ -151,6 +211,7 @@ class ApiController extends Controller
 
         return response()->json([
             'success' => true,
+<<<<<<< HEAD
             'data' => [
                 'id' => $kandidat->id,
                 'no_kandidat' => $kandidat->no_kandidat,
@@ -285,6 +346,9 @@ class ApiController extends Controller
                     'nama' => $history->institusi->nama,
                 ] : null,
             ],
+=======
+            'data' => $kandidat,
+>>>>>>> 9e148e526cf717e766b7394ff7df9dd73195158d
         ]);
     }
 }
