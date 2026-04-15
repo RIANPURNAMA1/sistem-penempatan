@@ -78,7 +78,7 @@
     </style>
     <style>
         .cv-table {
-            width: 642px;
+            width: 641px;
             border-collapse: collapse;
             /* Membuat garis antar sel menyatu (tidak double) */
             font-family: Arial, sans-serif;
@@ -89,7 +89,7 @@
 
         .cv-table td {
             border: 1px solid black;
-
+            border-bottom: none;
             padding: 4px;
             vertical-align: middle;
         }
@@ -120,18 +120,18 @@
             border-top: none !important;
         }
 
-         /* Header title area */
+        /* Header title area */
         .header-title-area {
             text-align: center;
             margin-bottom: 2px;
         }
- 
+
         .riwayat-hidup {
             font-size: 12px;
             font-weight: bold;
             letter-spacing: 2px;
         }
- 
+
         .jisshusei-karekisho {
             font-size: 10px;
             letter-spacing: 1px;
@@ -169,97 +169,118 @@
                 <img src="{{ asset($cv->pas_foto_cv) }}" alt="Pas Foto"
                     style="
                     width: 180px; /* Agar gambar mengisi penuh lebar sel */
-                    height: 287px; /* Agar gambar mengisi penuh tinggi sel */
+                    height: 270px; /* Agar gambar mengisi penuh tinggi sel */
                     display: block; /* Penting: Menghapus spasi ekstra di bawah gambar */
                     object-fit: cover; /* Opsional: Memastikan gambar menutupi area tanpa terdistorsi */
                 ">
             </div>
 
             <div>
+                {{-- <style>
+                    .cv-table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        table-layout: fixed;
+                        /* Memaksa kolom mengikuti lebar yang ditentukan */
+                        font-family: Arial, sans-serif;
+                    }
+
+                    .cv-table td {
+                        border: 1px solid black;
+                        padding: 5px;
+                        vertical-align: middle;
+                    }
+
+                    .text-center {
+                        text-align: center;
+                    }
+                </style> --}}
+
                 <table class="cv-table">
                     <tr>
-                        <td class="bg text-center" rowspan="2" style="width: 150px;">実習生 NOMOR</td>
+                        <td class="bg text-center" rowspan="2" style="width: 120px;">実習生 NOMOR</td>
                         <td rowspan="2" style="width: 150px;"></td>
                         <td class="bg" style="width: 160px;">身長 TINGGI BADAN</td>
-                        <td class="text-center" style="width: 80px;">{{ $cv->tinggi_badan }}</td>
-                        <td class="text-center" style="width: 50px;">CM</td>
+                        <td class="text-center" colspan="2">{{ $cv->tinggi_badan }}</td>
+                        <td class="text-center" colspan="2">CM</td>
                     </tr>
                     <tr>
                         <td class="bg">体重 BERAT BADAN</td>
-                        <td class="text-center">{{ $cv->berat_badan }}</td>
-                        <td class="text-center">KG</td>
+                        <td class="text-center" colspan="2">{{ $cv->berat_badan }}</td>
+                        <td class="text-center" colspan="2">KG</td>
                     </tr>
 
                     <tr>
                         <td colspan="2" class="bg text-center">名前 NAMA</td>
                         <td class="bg">靴サイズ UKURAN SEPATU</td>
-                        <td class="text-center">{{ $cv->ukuran_sepatu }}</td>
-                        <td class="text-center">CM</td>
+                        <td class="text-center" colspan="2">{{ $cv->ukuran_sepatu }}</td>
+                        <td class="text-center" colspan="2">CM</td>
                     </tr>
                     <tr>
                         <td colspan="2" class="text-center">{{ $cv->nama_lengkap_katakana }}</td>
                         <td class="bg">ウェスト LINGKAR PINGGANG</td>
-                        <td class="text-center">{{ $cv->ukuran_pinggang }}</td>
-                        <td class="text-center">CM</td>
+                        <td class="text-center" colspan="2">{{ $cv->ukuran_pinggang }}</td>
+                        <td class="text-center" colspan="2">CM</td>
                     </tr>
                     <tr>
                         <td colspan="2" class="text-center">{{ $cv->nama_lengkap_romaji }}</td>
                         <td class="bg">血液型 GOLONGAN DARAH</td>
-                        <td class="text-center">{{ $cv->golongan_darah }}</td>
-                        <td class="text-center">型</td>
+                        <td class="text-center" colspan="2">{{ $cv->golongan_darah }}</td>
+                        <td class="text-center" colspan="2">型</td>
                     </tr>
 
                     <tr>
                         <td class="bg text-center" colspan="2">生年月日 TANGGAL LAHIR</td>
                         <td class="bg">視力 PENGLIHATAN</td>
-                        <td colspan="2">
-                            右 {{ $cv->kemampuan_penglihatan_mata }} <br>
-                            左 {{ $cv->kemampuan_penglihatan_mata }}
-                        </td>
+                        <td class="text-center" style="width: 30px;">右</td>
+                        <td class="text-center" style="width: 55px;">{{ $cv->kemampuan_penglihatan_mata }}</td>
+                        <td class="text-center" style="width: 30px;">左</td>
+                        <td class="text-center" style="width: 55px;">{{ $cv->mata_kiri }}</td>
                     </tr>
                     <tr>
                         <td colspan="2" class="text-center">{{ $cv->tanggal_lahir }}</td>
                         <td class="bg">配偶者 STATUS PERNIKAHAN</td>
-                        <td colspan="2" class="text-center">{{ $cv->status_perkawinan }}</td>
+                        <td colspan="4" class="text-center">{{ $cv->status_perkawinan }}</td>
                     </tr>
 
                     <tr>
                         <td class="bg text-center" colspan="2">出身地 TEMPAT LAHIR</td>
                         <td class="bg">宗教 AGAMA</td>
-                        <td colspan="2" class="text-center">{{ $cv->agama }}</td>
+                        <td colspan="4" class="text-center">{{ $cv->agama }}</td>
                     </tr>
                     <tr>
                         <td colspan="2" class="text-center">{{ $cv->tempat_lahir }}</td>
                         <td class="bg">訪日経験 PERNAH KE JEPANG</td>
-                        <td colspan="2" class="text-center">Tidak</td>
+                        <td colspan="4" class="text-center">Tidak</td>
                     </tr>
 
                     <tr>
                         <td class="bg text-center">年齢 USIA</td>
                         <td class="text-center">{{ $cv->usia }} 歳</td>
                         <td class="bg">旅券の有無 PASPOR</td>
-                        <td colspan="2" class="text-center">TIDAK (無）</td>
+                        <td colspan="4" class="text-center">TIDAK (無)</td>
                     </tr>
 
                     <tr>
                         <td class="bg text-center">性別 JENIS KELAMIN</td>
                         <td class="text-center">{{ $cv->jenis_kelamin }}</td>
                         <td class="bg">利き手 TANGAN DOMINAN</td>
-                        <td colspan="2" class="text-center">{{ $cv->tangan_dominan }}</td>
+                        <td colspan="4" class="text-center">{{ $cv->tangan_dominan }}</td>
                     </tr>
+
                     <tr>
                         <td class="bg text-center" rowspan="3">携帯電話番号 NO HP</td>
                         <td rowspan="3" class="text-center">(+62) {{ $cv->no_telepon }}</td>
                         <td class="bg">病歴 RIWAYAT PENYAKIT</td>
-                        <td colspan="2" class="text-center">{{ $cv->penyakit_cedera_masa_lalu }}</td>
+                        <td colspan="4" class="text-center">{{ $cv->penyakit_cedera_masa_lalu }}</td>
                     </tr>
                     <tr>
                         <td class="bg">タバコ MEROKOK</td>
-                        <td colspan="2" class="text-center">{{ $cv->merokok }}</td>
+                        <td colspan="4" class="text-center">{{ $cv->merokok }}</td>
                     </tr>
                     <tr>
                         <td class="bg">飲酒 MINUM ALKOHOL</td>
-                        <td colspan="2" class="text-center">{{ $cv->minum_alkohol }}</td>
+                        <td colspan="4" class="text-center">{{ $cv->minum_alkohol }}</td>
                     </tr>
                 </table>
             </div>
@@ -447,8 +468,8 @@
                     <td class="value-text" style="width: 105px">ADA (有）</td>
                     <td class="value-text">JFT A2</td>
                     <td class="bg label-text">
-                        <minimax:tool_call> 運転免許　SURAT IZIN  <br>
-                        MENGEMUDI (SIM A) {{ $cv->jenis_sim }}
+                        <minimax:tool_call> 運転免許　SURAT IZIN <br>
+                            MENGEMUDI (SIM A) {{ $cv->jenis_sim }}
                     </td>
                     <td class="value-text">{{ $cv->surat_izin_mengemudi }}</td>
                     <td class="bg label-text"> 他　LAIN - LAIN</td>
