@@ -235,7 +235,7 @@
                         <td class="text-center" style="width: 30px;">右</td>
                         <td class="text-center" style="width: 55px;">{{ $cv->kemampuan_penglihatan_mata }}</td>
                         <td class="text-center" style="width: 30px;">左</td>
-                        <td class="text-center" style="width: 55px;">{{ $cv->mata_kiri }}</td>
+                        <td class="text-center" style="width: 55px;">{{ $cv->kemampuan_penglihatan_mata }}</td>
                     </tr>
                     <tr>
                         <td colspan="2" class="text-center">{{ $cv->tanggal_lahir }}</td>
