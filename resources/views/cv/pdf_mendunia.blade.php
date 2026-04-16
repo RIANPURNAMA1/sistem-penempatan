@@ -305,10 +305,10 @@
                     </tr>
                     <tr>
                         <td class="bg">タバコ MEROKOK</td>
-                        <td colspan="4" class="text-center">
-                            {{ $cv->merokok }}
-                            （{{ $cv->merokok == 'Iya' ? '有' : '無' }}）
-                        </td>
+<td colspan="4" class="text-center">
+    {{ $cv->merokok }}
+    （{{ $cv->merokok == 'Iya' ? '有' : '無' }}）
+</td>
                     </tr>
                     <tr>
                         <td class="bg">飲酒 MINUM ALKOHOL</td>
@@ -345,8 +345,8 @@
                     <td colspan="3" class="bg section-title">学歴 PENDIDIKAN</td>
                 </tr>
                 <tr class="text-center bg">
-                    <td class="small-text">期間 TAHUN</td>
-                    <td class="small-text">学校名 NAMA SEKOLAH</td>
+                    <td class="small-text" style="width:212px">期間 TAHUN</td>
+                    <td class="small-text" style="width: 383px">学校名 NAMA SEKOLAH</td>
                     <td class="small-text">専攻 JURUSAN</td>
                 </tr>
             </table>
