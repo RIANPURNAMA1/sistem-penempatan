@@ -238,7 +238,9 @@
                         <td class="text-center" style="width: 55px;">{{ $cv->kemampuan_penglihatan_mata }}</td>
                     </tr>
                     <tr>
-                        <td colspan="2" class="text-center">{{ $cv->tanggal_lahir }}</td>
+                        <td colspan="2" class="text-center">
+                            {{ \Carbon\Carbon::parse($cv->tanggal_lahir)->isoFormat('YYYY年 MM月 DD日') }}
+                        </td>
                         <td class="bg">配偶者 STATUS PERNIKAHAN</td>
                         <td colspan="4" class="text-center">
                             {{ $cv->status_perkawinan }}
@@ -305,10 +307,10 @@
                     </tr>
                     <tr>
                         <td class="bg">タバコ MEROKOK</td>
-<td colspan="4" class="text-center">
-    {{ $cv->merokok }}
-    （{{ $cv->merokok == 'Iya' ? '有' : '無' }}）
-</td>
+                        <td colspan="4" class="text-center">
+                            {{ $cv->merokok }}
+                            （{{ $cv->merokok == 'Iya' ? '有' : '無' }}）
+                        </td>
                     </tr>
                     <tr>
                         <td class="bg">飲酒 MINUM ALKOHOL</td>
@@ -452,6 +454,15 @@
                     <td class="value-text">{{ $cv->adik_pekerjaan }}</td>
                     <td class="value-text">{{ $cv->adik_gaji }} ¥</td>
                 </tr>
+                <tr>
+                    <td class="label-text">SUAMI / ISTRI（配偶者）</td>
+                    <td class="value-text">{{ $cv->istri_nama }}</td>
+                    <td class="value-text">{{ $cv->istri_usia }}</td>
+                    <td class="value-text">{{ $cv->istri_pekerjaan }}</td>
+                    <td class="value-text">{{ $cv->istri_gaji }} ¥</td>
+                </tr>
+
+
             </table>
             <table class="table-alamat" style="width: 837px">
                 <tr>
