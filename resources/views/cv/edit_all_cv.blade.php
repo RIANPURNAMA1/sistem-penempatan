@@ -607,12 +607,12 @@
                                                         $jenisKelamin = $cv->jenis_kelamin ?? old('jenis_kelamin');
                                                     @endphp
                                                     <option value="男 (Laki-laki)"
-                                                        {{ $jenisKelamin == '男 (Laki-laki)' ? 'selected' : '' }}>
-                                                        男 (Laki-laki)
+                                                        {{ $jenisKelamin == ' (Laki-laki)' ? 'selected' : '' }}>
+                                                        (Laki-laki)
                                                     </option>
                                                     <option value="女 (Perempuan)"
-                                                        {{ $jenisKelamin == '女 (Perempuan)' ? 'selected' : '' }}>
-                                                        女 (Perempuan)
+                                                        {{ $jenisKelamin == '(Perempuan)' ? 'selected' : '' }}>
+                                                        (Perempuan)
                                                     </option>
                                                 </select>
                                                 @error('jenis_kelamin')
@@ -1500,20 +1500,20 @@
                                                         required>
                                                 </div>
 
-                                                <!-- Tahun Masuk -->
                                                 <div class="col-md-2">
                                                     <label class="form-label fw-bold">Tahun Masuk *</label>
-                                                    <input type="number" name="pendidikan_tahun_masuk[]"
-                                                        class="form-control" value="{{ $p->tahun_masuk }}"
-                                                        placeholder="2020" required>
+                                                    <input type="month" name="pendidikan_tahun_masuk[]"
+                                                        class="form-control"
+                                                        value="{{ isset($p->tahun_masuk) ? date('Y-m', strtotime($p->tahun_masuk)) : '' }}"
+                                                        required>
                                                 </div>
 
-                                                <!-- Tahun Lulus -->
                                                 <div class="col-md-2">
                                                     <label class="form-label fw-bold">Tahun Lulus *</label>
-                                                    <input type="number" name="pendidikan_tahun_lulus[]"
-                                                        class="form-control" value="{{ $p->tahun_lulus }}"
-                                                        placeholder="2024" required>
+                                                    <input type="month" name="pendidikan_tahun_lulus[]"
+                                                        class="form-control"
+                                                        value="{{ isset($p->tahun_lulus) ? date('Y-m', strtotime($p->tahun_lulus)) : '' }}"
+                                                        required>
                                                 </div>
 
                                                 <!-- Jurusan -->
@@ -1547,18 +1547,20 @@
                                                         required>
                                                 </div>
 
-                                                <!-- Tahun Masuk -->
                                                 <div class="col-md-2">
                                                     <label class="form-label fw-bold">Tahun Masuk *</label>
-                                                    <input type="number" name="pendidikan_tahun_masuk[]"
-                                                        class="form-control" placeholder="2020" required>
+                                                    <input type="month" name="pendidikan_tahun_masuk[]"
+                                                        class="form-control"
+                                                        value="{{ isset($p->tahun_masuk) ? date('Y-m', strtotime($p->tahun_masuk)) : '' }}"
+                                                        required>
                                                 </div>
 
-                                                <!-- Tahun Lulus -->
                                                 <div class="col-md-2">
                                                     <label class="form-label fw-bold">Tahun Lulus *</label>
-                                                    <input type="number" name="pendidikan_tahun_lulus[]"
-                                                        class="form-control" placeholder="2024" required>
+                                                    <input type="month" name="pendidikan_tahun_lulus[]"
+                                                        class="form-control"
+                                                        value="{{ isset($p->tahun_lulus) ? date('Y-m', strtotime($p->tahun_lulus)) : '' }}"
+                                                        required>
                                                 </div>
 
                                                 <!-- Jurusan -->
@@ -1628,7 +1630,8 @@
                                                         <div class="col-md-2">
                                                             <label class="form-label fw-bold">Tanggal Masuk *</label>
                                                             <input type="month" name="pengalaman_tanggal_masuk[]"
-                                                                class="form-control" value="{{ $p->tanggal_masuk }}"
+                                                                class="form-control"
+                                                                value="{{ $p->tanggal_masuk ? date('Y-m', strtotime($p->tanggal_masuk)) : '' }}"
                                                                 required>
                                                         </div>
 
@@ -1636,7 +1639,8 @@
                                                         <div class="col-md-2">
                                                             <label class="form-label fw-bold">Tanggal Keluar *</label>
                                                             <input type="month" name="pengalaman_tanggal_keluar[]"
-                                                                class="form-control" value="{{ $p->tanggal_keluar }}"
+                                                                class="form-control"
+                                                                value="{{ $p->tanggal_keluar ? date('Y-m', strtotime($p->tanggal_keluar)) : '' }}"
                                                                 required>
                                                         </div>
 
@@ -2099,8 +2103,7 @@
                                                 value="{{ old('ibu_pekerjaan', $cv->ibu_pekerjaan) }}">
 
                                             <input type="text" name="ibu_gaji" class="form-control mb-3"
-                                                placeholder="Gaji (円)"
-                                                value="{{ old('ibu_gaji', $cv->ibu_gaji) }}">
+                                                placeholder="Gaji (円)" value="{{ old('ibu_gaji', $cv->ibu_gaji) }}">
 
                                         </div>
 
@@ -2124,8 +2127,7 @@
                                                 value="{{ old('ayah_pekerjaan', $cv->ayah_pekerjaan) }}">
 
                                             <input type="text" name="ayah_gaji" class="form-control mb-3"
-                                                placeholder="Gaji (円)"
-                                                value="{{ old('ayah_gaji', $cv->ayah_gaji) }}">
+                                                placeholder="Gaji (円)" value="{{ old('ayah_gaji', $cv->ayah_gaji) }}">
 
 
                                             {{-- KAKAK --}}
@@ -2176,8 +2178,7 @@
                                                 value="{{ old('adik_status', $cv->adik_status) }}">
 
                                             <input type="text" name="adik_gaji" class="form-control mb-3"
-                                                placeholder="Gaji (円)"
-                                                value="{{ old('adik_gaji', $cv->adik_gaji) }}">
+                                                placeholder="Gaji (円)" value="{{ old('adik_gaji', $cv->adik_gaji) }}">
 
 
                                             {{-- PENGHASILAN KELUARGA --}}
@@ -2257,7 +2258,8 @@
                             processData: false,
                             contentType: false,
                             beforeSend: function(xhr) {
-                                xhr.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr('content'));
+                                xhr.setRequestHeader('X-CSRF-TOKEN', $(
+                                    'meta[name="csrf-token"]').attr('content'));
                             },
                             success: function(response) {
                                 Swal.fire({
@@ -2808,11 +2810,17 @@
         <input type="text" name="pendidikan_nama[]" class="form-control" placeholder="Nama Sekolah/Universitas" required>
     </div>
     <div class="col-md-2">
-        <input type="number" name="pendidikan_tahun_masuk[]" class="form-control" placeholder="Tahun Masuk (2020)" required>
-    </div>
-    <div class="col-md-2">
-        <input type="number" name="pendidikan_tahun_lulus[]" class="form-control" placeholder="Tahun Lulus (2024)" required>
-    </div>
+    <label class="form-label fw-bold">Bulan & Tahun Masuk *</label>
+    <input type="month" name="pendidikan_tahun_masuk[]" 
+        class="form-control" 
+        required>
+</div>
+<div class="col-md-2">
+    <label class="form-label fw-bold">Bulan & Tahun Lulus *</label>
+    <input type="month" name="pendidikan_tahun_lulus[]" 
+        class="form-control" 
+        required>
+</div>
     <div class="col-md-3">
         <input type="text" name="pendidikan_jurusan[]" class="form-control" placeholder="Jurusan" required>
     </div>
@@ -3166,16 +3174,21 @@
         </div>
         <div class="col-md-2">
             <label class="form-label fw-bold">alamat kota *</label>
-            <input type="month" name="pengalaman_kota[]" class="form-control" required>
+            <input type="text" name="pengalaman_kota[]" class="form-control" required>
         </div>
-        <div class="col-md-2">
-            <label class="form-label fw-bold">Tanggal Masuk *</label>
-            <input type="month" name="pengalaman_tanggal_masuk[]" class="form-control" required>
-        </div>
-        <div class="col-md-2">
-            <label class="form-label fw-bold">Tanggal Keluar *</label>
-            <input type="month" name="pengalaman_tanggal_keluar[]" class="form-control" required>
-        </div>
+       <div class="col-md-2">
+    <label class="form-label fw-bold">Bulan & Tahun Masuk *</label>
+    <input type="month" name="pengalaman_tanggal_masuk[]" 
+        class="form-control" 
+        required>
+</div>
+
+<div class="col-md-2">
+    <label class="form-label fw-bold">Bulan & Tahun Keluar *</label>
+    <input type="month" name="pengalaman_tanggal_keluar[]" 
+        class="form-control" 
+        required>
+</div>
         <div class="col-md-2">
             <label class="form-label fw-bold">Gaji</label>
             <input type="text" name="pengalaman_gaji[]" class="form-control" placeholder="Contoh: 5.000.000">

@@ -9,21 +9,19 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-   public function up(): void
-{
-    Schema::create('pendidikans', function (Blueprint $table) {
-        $table->id();
-        $table->unsignedBigInteger('cv_id');
-        $table->string('nama');             // Nama sekolah/universitas
-        $table->string('jurusan')->nullable(); // Jurusan (opsional)
-        $table->year('tahun_masuk')->nullable(); // Tahun masuk
-        $table->year('tahun_lulus')->nullable(); // Tahun lulus
-        $table->timestamps();
+    public function up(): void
+    {
+        Schema::create('pendidikans', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('cv_id');
+            $table->string('nama');             // Nama sekolah/universitas
+            $table->string('jurusan')->nullable(); // Jurusan (opsional)
+            $table->string('tahun_masuk', 7)->nullable(); // Tahun masuk (format: YYYY-MM)
+            $table->string('tahun_lulus', 7)->nullable(); // Tahun lulus (format: YYYY-MM)
+            $table->timestamps();
 
-        $table->foreign('cv_id')->references('id')->on('cvs')->onDelete('cascade');
-    });
-
-
+            $table->foreign('cv_id')->references('id')->on('cvs')->onDelete('cascade');
+        });
 
     }
 

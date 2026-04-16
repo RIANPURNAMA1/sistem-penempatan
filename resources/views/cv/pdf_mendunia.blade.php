@@ -355,9 +355,13 @@
             <table class="table-alamat" style="width: 837px">
                 @foreach ($cv->pendidikans as $p)
                     <tr class="text-center">
-                        <td class="small-text" style="width:96px">{{ $p->tahun_masuk }} 年X月</td>
+                        <td class="small-text" style="width:96px">
+                            {{ \Carbon\Carbon::parse($p->tahun_masuk)->format('Y年 m月') }}
+                        </td>
                         <td class="small-text" style="width:20px">-</td>
-                        <td class="small-text" style="width:96px">{{ $p->tahun_lulus }} 年X月</td>
+                        <td class="small-text" style="width:96px">
+                            {{ \Carbon\Carbon::parse($p->tahun_lulus)->format('Y年 m月') }}
+                        </td>
                         <td class="value-text" style="width: 383px">{{ $p->nama }}</td>
                         <td class="value-text">{{ $p->jurusan }}</td>
                     </tr>
@@ -393,10 +397,16 @@
                     <tr class="text-center">
                         <td class="small-text" style="width:95px">
                             {{ date('Y', strtotime($p->tanggal_masuk)) }} 年
+                            {{ date('m', strtotime($p->tanggal_masuk)) }} 月
                         </td>
                         <td class="small-text" style="width:20px">-</td>
                         <td class="small-text" style="width:94px">
-                            {{ $p->tanggal_keluar ? date('Y', strtotime($p->tanggal_keluar)) . ' 年' : '現在' }}
+                            @if ($p->tanggal_keluar)
+                                {{ date('Y', strtotime($p->tanggal_keluar)) }} 年
+                                {{ date('m', strtotime($p->tanggal_keluar)) }} 月
+                            @else
+                                現在
+                            @endif
                         </td>
                         <td class="value-text" style="width: 383px">{{ $p->perusahaan }}</td>
                         <td class="value-text" style="width: 122px">{{ $p->jabatan }}</td>
@@ -414,56 +424,80 @@
             </table>
 
             {{-- keluarga --}}
-            <table class="table-alamat" style="width: 837px">
-                <tr class="text-center">
-                    <td colspan="5" class="bg section-title">家族構成 SUSUNAN KELUARGA KANDUNG</td>
-                </tr>
-                <tr class="text-center bg">
-                    <td class="small-text" style="width: 209px">続柄 URUTAN KELUARGA</td>
-                    <td class="small-text" style="width: 383px">名前 NAMA ANGGOTA KELUARGA</td>
-                    <td class="small-text">年齢 USIA</td>
-                    <td class="small-text">職業 PEKERJAAN</td>
-                    <td class="small-text">月収/円 GAJI</td>
-                </tr>
-                <tr>
-                    <td class="label-text">AYAH （父）</td>
-                    <td class="value-text">{{ $cv->ayah_nama }}</td>
-                    <td class="value-text">{{ $cv->ayah_usia }}</td>
-                    <td class="value-text">{{ $cv->ayah_pekerjaan }} </td>
-                    <td class="value-text">{{ $cv->ayah_gaji }} ¥</td>
-                </tr>
-                <tr>
-                    <td class="label-text">IBU （母）</td>
-                    <td class="value-text">{{ $cv->ibu_nama }}</td>
-                    <td class="value-text">{{ $cv->ibu_usia }}</td>
-                    <td class="value-text">{{ $cv->ibu_pekerjaan }}</td>
-                    <td class="value-text">{{ $cv->ibu_gaji }} ¥</td>
-                </tr>
-                <tr>
-                    <td class="label-text">KAKAK（兄）</td>
-                    <td class="value-text">{{ $cv->kakak_nama }}</td>
-                    <td class="value-text">{{ $cv->kakak_usia }}</td>
-                    <td class="value-text">{{ $cv->kakak_pekerjaan }}</td>
-                    <td class="value-text">{{ $cv->kakak_gaji }} ¥</td>
-                </tr>
+     {{-- keluarga --}}
+<table class="table-alamat" style="width: 837px">
+    <tr class="text-center">
+        <td colspan="5" class="bg section-title">家族構成 SUSUNAN KELUARGA KANDUNG</td>
+    </tr>
+    <tr class="text-center bg">
+        <td class="small-text" style="width: 209px">続柄 URUTAN KELUARGA</td>
+        <td class="small-text" style="width: 383px">名前 NAMA ANGGOTA KELUARGA</td>
+        <td class="small-text">年齢 USIA</td>
+        <td class="small-text">職業 PEKERJAAN</td>
+        <td class="small-text">月収/円 GAJI</td>
+    </tr>
+    
+    {{-- Ayah --}}
+    <tr>
+        <td class="label-text">AYAH （父）</td>
+        <td class="value-text">{{ (blank($cv->ayah_nama) || $cv->ayah_nama == 'なし') ? 'なし' : $cv->ayah_nama }}</td>
+        <td class="value-text">{{ (blank($cv->ayah_usia) || $cv->ayah_usia == 'なし') ? 'なし' : $cv->ayah_usia }}</td>
+        <td class="value-text">{{ (blank($cv->ayah_pekerjaan) || $cv->ayah_pekerjaan == 'なし') ? 'なし' : $cv->ayah_pekerjaan }}</td>
+        <td class="value-text">
+            {{ (blank($cv->ayah_gaji) || $cv->ayah_gaji == 'なし' || $cv->ayah_gaji == 0) ? 'なし' : $cv->ayah_gaji . ' ¥' }}
+        </td>
+    </tr>
 
-                <tr>
-                    <td class="label-text">ADIK LAKI-LAKI （弟）</td>
-                    <td class="value-text">{{ $cv->adik_nama }}</td>
-                    <td class="value-text">{{ $cv->adik_usia }}</td>
-                    <td class="value-text">{{ $cv->adik_pekerjaan }}</td>
-                    <td class="value-text">{{ $cv->adik_gaji }} ¥</td>
-                </tr>
-                <tr>
-                    <td class="label-text">SUAMI / ISTRI（配偶者）</td>
-                    <td class="value-text">{{ $cv->istri_nama }}</td>
-                    <td class="value-text">{{ $cv->istri_usia }}</td>
-                    <td class="value-text">{{ $cv->istri_pekerjaan }}</td>
-                    <td class="value-text">{{ $cv->istri_gaji }} ¥</td>
-                </tr>
+    {{-- Ibu --}}
+    <tr>
+        <td class="label-text">IBU （母）</td>
+        <td class="value-text">{{ (blank($cv->ibu_nama) || $cv->ibu_nama == 'なし') ? 'なし' : $cv->ibu_nama }}</td>
+        <td class="value-text">{{ (blank($cv->ibu_usia) || $cv->ibu_usia == 'なし') ? 'なし' : $cv->ibu_usia }}</td>
+        <td class="value-text">{{ (blank($cv->ibu_pekerjaan) || $cv->ibu_pekerjaan == 'なし') ? 'なし' : $cv->ibu_pekerjaan }}</td>
+        <td class="value-text">
+            {{ (blank($cv->ibu_gaji) || $cv->ibu_gaji == 'なし' || $cv->ibu_gaji == 0) ? 'なし' : $cv->ibu_gaji . ' ¥' }}
+        </td>
+    </tr>
 
+    {{-- Kakak: Sembunyikan jika kosong/"なし" --}}
+    @if(!blank($cv->kakak_nama) && $cv->kakak_nama != 'なし')
+    <tr>
+        <td class="label-text">KAKAK（兄）</td>
+        <td class="value-text">{{ $cv->kakak_nama }}</td>
+        <td class="value-text">{{ $cv->kakak_usia ?? 'なし' }}</td>
+        <td class="value-text">{{ $cv->kakak_pekerjaan ?? 'なし' }}</td>
+        <td class="value-text">
+            {{ (blank($cv->kakak_gaji) || $cv->kakak_gaji == 'なし' || $cv->kakak_gaji == 0) ? 'なし' : $cv->kakak_gaji . ' ¥' }}
+        </td>
+    </tr>
+    @endif
 
-            </table>
+    {{-- Adik: Sembunyikan jika kosong/"なし" --}}
+    @if(!blank($cv->adik_nama) && $cv->adik_nama != 'なし')
+    <tr>
+        <td class="label-text">ADIK LAKI-LAKI （弟）</td>
+        <td class="value-text">{{ $cv->adik_nama }}</td>
+        <td class="value-text">{{ $cv->adik_usia ?? 'なし' }}</td>
+        <td class="value-text">{{ $cv->adik_pekerjaan ?? 'なし' }}</td>
+        <td class="value-text">
+            {{ (blank($cv->adik_gaji) || $cv->adik_gaji == 'なし' || $cv->adik_gaji == 0) ? 'なし' : $cv->adik_gaji . ' ¥' }}
+        </td>
+    </tr>
+    @endif
+
+    {{-- Pasangan: Sembunyikan jika kosong/"なし" --}}
+    @if(!blank($cv->istri_nama) && $cv->istri_nama != 'なし')
+    <tr>
+        <td class="label-text">SUAMI / ISTRI（配偶者）</td>
+        <td class="value-text">{{ $cv->istri_nama }}</td>
+        <td class="value-text">{{ $cv->istri_usia ?? 'なし' }}</td>
+        <td class="value-text">{{ $cv->istri_pekerjaan ?? 'なし' }}</td>
+        <td class="value-text">
+            {{ (blank($cv->istri_gaji) || $cv->istri_gaji == 'なし' || $cv->istri_gaji == 0) ? 'なし' : $cv->istri_gaji . ' ¥' }}
+        </td>
+    </tr>
+    @endif
+</table>
             <table class="table-alamat" style="width: 837px">
                 <tr>
                     <td colspan="2" class="bg section-title">個人情報　INFORMASI PERSONAL</td>

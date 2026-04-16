@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\PendaftaranKandidatResource;
+use App\Models\Cv;
 use App\Models\Kandidat;
 use App\Models\KandidatHistory;
 use App\Models\Pendaftaran;
@@ -285,6 +286,19 @@ class ApiController extends Controller
                     'nama' => $history->institusi->nama,
                 ] : null,
             ],
+        ]);
+    }
+
+
+ 
+
+
+    public function getCv(){
+        $cv = CV::all();
+
+        return response()->json([
+              "data"=>$cv,
+              "messages"=>"successs"
         ]);
     }
 }

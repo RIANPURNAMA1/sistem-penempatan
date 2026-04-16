@@ -16,6 +16,11 @@ Route::get('/kandidat/{id}', [ApiController::class, 'getKandidatById']);
 
 Route::get('/history', [ApiController::class, 'getHistory']);
 Route::get('/history/{id}', [ApiController::class, 'getHistoryById']);
+
+// CV API
+Route::get('/cv/all', [ApiController::class, 'getCv']);
+Route::get('/cv/{id}', [ApiController::class, 'getCvById']);
+
 // Pendaftaran API
 Route::get('/pendaftaran', [ApiController::class, 'getPendaftaranDanKandidat']);
 Route::get('/pendaftaran/{id}', [ApiController::class, 'getPendaftaranById']);
@@ -23,3 +28,4 @@ Route::get('/pendaftaran/{id}', [ApiController::class, 'getPendaftaranById']);
 // Kandidat API
 Route::get('/kandidat', [ApiController::class, 'getKandidat']);
 Route::get('/kandidat/{id}', [ApiController::class, 'getKandidatById']);
+Route::get('/test', [ApiController::class, 'test']);
