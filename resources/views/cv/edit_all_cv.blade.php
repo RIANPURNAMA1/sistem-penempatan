@@ -313,7 +313,7 @@
                             </div>
                         </div>
 
-                        <form id="formUpdateCv"action="{{ route('cv.updatekandidat', $cv->id) }}" method="POST"
+                        <form action="{{ route('cv.updatekandidat', $cv->id) }}" method="POST"
                             enctype="multipart/form-data">
                             @method('PUT')
                             @csrf
@@ -1966,6 +1966,19 @@
                                                 @endforeach
                                             </select>
 
+                                            {{-- Tujuan Setelah Pulang dari Jepang --}}
+                                            <label class="form-label mt-2">
+                                                Tujuan Setelah Pulang dari Jepang <span class="text-danger">*</span>
+                                            </label>
+                                            <input type="text" name="tujuan_setelah_pulang"
+                                                class="form-control @error('tujuan_setelah_pulang') is-invalid @enderror"
+                                                placeholder="Contoh: Bekerja di Indonesia / Kuliah / Usaha"
+                                                value="{{ old('tujuan_setelah_pulang', $cv->tujuanSetelahPulang?->tujuan_setelah_pulang) }}"
+                                                required>
+                                            @error('tujuan_setelah_pulang')
+                                                <div class="invalid-feedback">{{ $message }}</div>
+                                            @enderror
+
                                         </div>
 
                                         {{-- ====================== KOLOM KANAN ====================== --}}
@@ -2043,9 +2056,13 @@
                                             <input type="text" name="istri_usia" class="form-control mb-2"
                                                 placeholder="Usia" value="{{ old('istri_usia', $cv->istri_usia) }}">
 
-                                            <input type="text" name="istri_pekerjaan" class="form-control mb-3"
+                                            <input type="text" name="istri_pekerjaan" class="form-control mb-2"
                                                 placeholder="Pekerjaan"
                                                 value="{{ old('istri_pekerjaan', $cv->istri_pekerjaan) }}">
+
+                                            <input type="text" name="istri_gaji" class="form-control mb-3"
+                                                placeholder="Gaji (円)"
+                                                value="{{ old('istri_gaji', $cv->istri_gaji) }}">
 
 
                                             {{-- ANAK --}}
@@ -2077,9 +2094,13 @@
                                                 placeholder="Usia" required
                                                 value="{{ old('ibu_usia', $cv->ibu_usia) }}">
 
-                                            <input type="text" name="ibu_pekerjaan" class="form-control mb-3"
+                                            <input type="text" name="ibu_pekerjaan" class="form-control mb-2"
                                                 placeholder="Pekerjaan"
                                                 value="{{ old('ibu_pekerjaan', $cv->ibu_pekerjaan) }}">
+
+                                            <input type="text" name="ibu_gaji" class="form-control mb-3"
+                                                placeholder="Gaji (円)"
+                                                value="{{ old('ibu_gaji', $cv->ibu_gaji) }}">
 
                                         </div>
 
@@ -2098,9 +2119,13 @@
                                                 placeholder="Usia" required
                                                 value="{{ old('ayah_usia', $cv->ayah_usia) }}">
 
-                                            <input type="text" name="ayah_pekerjaan" class="form-control mb-3"
+                                            <input type="text" name="ayah_pekerjaan" class="form-control mb-2"
                                                 placeholder="Pekerjaan"
                                                 value="{{ old('ayah_pekerjaan', $cv->ayah_pekerjaan) }}">
+
+                                            <input type="text" name="ayah_gaji" class="form-control mb-3"
+                                                placeholder="Gaji (円)"
+                                                value="{{ old('ayah_gaji', $cv->ayah_gaji) }}">
 
 
                                             {{-- KAKAK --}}
@@ -2120,9 +2145,13 @@
                                                 placeholder="Pekerjaan"
                                                 value="{{ old('kakak_pekerjaan', $cv->kakak_pekerjaan) }}">
 
-                                            <input type="text" name="kakak_status" class="form-control mb-3"
+                                            <input type="text" name="kakak_status" class="form-control mb-2"
                                                 placeholder="Status (例：実兄 / 義兄 / なし)"
                                                 value="{{ old('kakak_status', $cv->kakak_status) }}">
+
+                                            <input type="text" name="kakak_gaji" class="form-control mb-3"
+                                                placeholder="Gaji (円)"
+                                                value="{{ old('kakak_gaji', $cv->kakak_gaji) }}">
 
 
                                             {{-- ADIK --}}
@@ -2142,9 +2171,13 @@
                                                 placeholder="Pekerjaan"
                                                 value="{{ old('adik_pekerjaan', $cv->adik_pekerjaan) }}">
 
-                                            <input type="text" name="adik_status" class="form-control mb-3"
+                                            <input type="text" name="adik_status" class="form-control mb-2"
                                                 placeholder="Status (例：実弟 / 義弟 / なし)"
                                                 value="{{ old('adik_status', $cv->adik_status) }}">
+
+                                            <input type="text" name="adik_gaji" class="form-control mb-3"
+                                                placeholder="Gaji (円)"
+                                                value="{{ old('adik_gaji', $cv->adik_gaji) }}">
 
 
                                             {{-- PENGHASILAN KELUARGA --}}
@@ -2223,37 +2256,25 @@
                             data: formData,
                             processData: false,
                             contentType: false,
-                            beforeSend: function() {
-                                Swal.fire({
-                                    title: "Memproses...",
-                                    text: "Tunggu sebentar",
-                                    allowOutsideClick: false,
-                                    didOpen: () => {
-                                        Swal.showLoading();
-                                    }
-                                });
+                            beforeSend: function(xhr) {
+                                xhr.setRequestHeader('X-CSRF-TOKEN', $('meta[name="csrf-token"]').attr('content'));
                             },
-
                             success: function(response) {
-
                                 Swal.fire({
                                     icon: "success",
                                     title: "Berhasil!",
                                     text: "Data berhasil diperbarui."
                                 }).then(() => {
-                                    location
-                                .reload(); // atau redirect ke halaman lain
+                                    location.reload();
                                 });
-
                             },
-
-                            error: function(xhr) {
+                            error: function(xhr, status, error) {
                                 let pesan = "Terjadi kesalahan.";
-
                                 if (xhr.responseJSON && xhr.responseJSON.message) {
                                     pesan = xhr.responseJSON.message;
+                                } else if (xhr.responseText) {
+                                    pesan = xhr.responseText.substring(0, 300);
                                 }
-
                                 Swal.fire({
                                     icon: "error",
                                     title: "Gagal!",

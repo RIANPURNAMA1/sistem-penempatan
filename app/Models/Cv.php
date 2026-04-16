@@ -11,7 +11,6 @@ class Cv extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        // HALAMAN 1 - Data Awal
         'user_id',
         'email',
         'cabang_id',
@@ -22,8 +21,6 @@ class Cv extends Model
         'bidang_sertifikasi_lainnya',
         'program_pertanian_kawakami',
         'sertifikat_files',
-
-        // HALAMAN 2 - Pengisian Data Diri
         'pas_foto',
         'pas_foto_cv',
         'nama_lengkap_romaji',
@@ -37,13 +34,10 @@ class Cv extends Model
         'tempat_lahir',
         'usia',
         'alamat_lengkap',
-
-        // Wilayah Domisili
         'provinsi',
         'kabupaten',
         'kecamatan',
         'kelurahan',
-
         'email_aktif',
         'status_perkawinan',
         'status_perkawinan_lainnya',
@@ -72,8 +66,6 @@ class Cv extends Model
         'rencana_sumber_biaya_keberangkatan',
         'perkiraan_biaya',
         'Biaya_keberangkatan_sebelumnya_jisshu',
-
-        // HALAMAN 3 - Pembelajaran di Mendunia
         'lama_belajar_di_mendunia',
         'kemampuan_bahasa_jepang',
         'kemampuan_pemahaman_ssw',
@@ -83,14 +75,10 @@ class Cv extends Model
         'kemampuan_berbahasa_inggris_lainnya',
         'kebugaran_jasmani_seminggu',
         'kebugaran_jasmani_seminggu_lainnya',
-
-        // Pertanyaan Kerja
         'bersedia_kerja_shift',
         'bersedia_lembur',
         'bersedia_hari_libur',
         'menggunakan_kacamata',
-
-        // HALAMAN 5 - Daya Tarik Perusahaan
         'ada_keluarga_di_jepang',
         'hubungan_keluarga_di_jepang',
         'status_kerabat_di_jepang',
@@ -106,89 +94,110 @@ class Cv extends Model
         'orang_yang_dihormati',
         'point_plus_diri',
         'keahlian_khusus',
-
-        // HALAMAN 6 - Data Anggota Keluarga
-        // ISTRI
         'istri_nama',
         'istri_usia',
         'istri_pekerjaan',
+        'istri_gaji',
         'kontak_pasangan',
-
-        // ANAK
         'anak_nama',
         'anak_jenis_kelamin',
         'anak_usia',
         'anak_pendidikan',
-
-        // IBU
         'ibu_nama',
         'ibu_usia',
         'ibu_pekerjaan',
-
-        // AYAH
+        'ibu_gaji',
         'ayah_nama',
         'ayah_usia',
         'ayah_pekerjaan',
-
+        'ayah_gaji',
         'kontak_orangtua',
-
-        // KAKAK
         'kakak_nama',
         'kakak_usia',
         'kakak_jenis_kelamin',
         'kakak_pekerjaan',
         'kakak_status',
-
-        // ADIK
+        'kakak_gaji',
         'adik_nama',
         'adik_usia',
         'adik_jenis_kelamin',
         'adik_pekerjaan',
         'adik_status',
-
-        // PENGHASILAN KELUARGA
         'rata_rata_penghasilan_keluarga',
     ];
 
-    // Tambahkan juga casting untuk JSON
     protected $casts = [
         'sertifikat_files' => 'array',
         'pas_foto' => 'array',
     ];
 
-    // Relasi ke user
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    // Relasi ke cabang
     public function cabang()
     {
         return $this->belongsTo(Cabang::class, 'cabang_id');
     }
+
     public function Pendaftaran()
     {
         return $this->belongsTo(Pendaftaran::class, 'pendaftaran_id');
     }
 
-    // Relasi ke pendidikan (satu CV bisa punya banyak pendidikan)
     public function pendidikans()
     {
         return $this->hasMany(Pendidikan::class);
     }
 
-    // Relasi ke pengalaman kerja (satu CV bisa punya banyak pengalaman)
     public function pengalamans()
     {
         return $this->hasMany(Pengalaman::class);
     }
+
     public function magangjisshu()
     {
         return $this->hasMany(MagangJisshu::class);
     }
- public function riwayatPekerjaanTerakhir()
-{
-    return $this->hasMany(RiwayatPekerjaanTerakhir::class);
-}
+
+    public function riwayatPekerjaanTerakhir()
+    {
+        return $this->hasMany(RiwayatPekerjaanTerakhir::class);
+    }
+
+    public function gajiKeluarga()
+    {
+        return $this->hasOne(GajiKeluarga::class);
+    }
+
+    public function getIstriGajiAttribute()
+    {
+        return $this->gajiKeluarga?->istri_gaji;
+    }
+
+    public function getIbuGajiAttribute()
+    {
+        return $this->gajiKeluarga?->ibu_gaji;
+    }
+
+    public function getAyahGajiAttribute()
+    {
+        return $this->gajiKeluarga?->ayah_gaji;
+    }
+
+    public function getKakakGajiAttribute()
+    {
+        return $this->gajiKeluarga?->kakak_gaji;
+    }
+
+    public function getAdikGajiAttribute()
+    {
+        return $this->gajiKeluarga?->adik_gaji;
+    }
+
+    public function tujuanSetelahPulang()
+    {
+        return $this->hasOne(TujuanSetelahPulang::class);
+    }
 }

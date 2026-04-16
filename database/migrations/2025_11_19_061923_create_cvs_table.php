@@ -25,7 +25,7 @@ return new class extends Migration
                 'Building Cleaning',
                 'Restoran',
                 'Driver',
-                'Hanya JFT'
+                'Hanya JFT',
             ]);
             $table->string('bidang_sertifikasi_lainnya')->nullable();
             $table->enum('program_pertanian_kawakami', ['Ya', 'Tidak']);
@@ -75,7 +75,7 @@ return new class extends Migration
                 'Sedang',
                 'Kurang',
                 'Tuli Ringan',
-                'Tuli Berat'
+                'Tuli Berat',
             ])->default('Normal');
             $table->string('kemampuan_penglihatan_mata_lainnya')->nullable();
             $table->enum('sudah_vaksin_berapa_kali', ['1x Vaksin', '2x Vaksin', '3x Vaksin']);
@@ -87,12 +87,12 @@ return new class extends Migration
                 'Dana talang LPK',
                 'Dana Pribadi',
                 'Dana Ortu',
-                'Dana pinjaman pihak lain'
+                'Dana pinjaman pihak lain',
             ]);
             $table->enum('perkiraan_biaya', [
                 '10.000.000 - 20.000.000',
                 '20.000.000 - 30.000.000',
-                '30.000.000 - 40.000.000'
+                '30.000.000 - 40.000.000',
             ]);
             $table->string('Biaya_keberangkatan_sebelumnya_jisshu')->nullable();
 
@@ -112,10 +112,9 @@ return new class extends Migration
                 '3 kali/1 minggu',
                 '4 Kali/1 minggu',
                 '5 Kali/1 minggu',
-                '10 Kali/1 minggu'
+                '10 Kali/1 minggu',
             ]);
             $table->string('kebugaran_jasmani_seminggu_lainnya')->nullable();
-
 
             // lembur
             // HALAMAN 2 - Tambahan Pertanyaan Kerja
@@ -140,7 +139,6 @@ return new class extends Migration
             $table->text('orang_yang_dihormati');
             $table->text('point_plus_diri');
             $table->text('keahlian_khusus');
-
 
             // ===============================
             // HALAMAN 6 - Data Anggota Keluarga
@@ -185,7 +183,6 @@ return new class extends Migration
 
             // PENGHASILAN KELUARGA
             $table->string('rata_rata_penghasilan_keluarga');
-
 
             $table->timestamps();
             $table->softDeletes();

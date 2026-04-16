@@ -240,18 +240,40 @@
                     <tr>
                         <td colspan="2" class="text-center">{{ $cv->tanggal_lahir }}</td>
                         <td class="bg">配偶者 STATUS PERNIKAHAN</td>
-                        <td colspan="4" class="text-center">{{ $cv->status_perkawinan }}</td>
+                        <td colspan="4" class="text-center">
+                            {{ $cv->status_perkawinan }}
+                            @if ($cv->status_perkawinan == 'Sudah Menikah')
+                                （結婚）
+                            @elseif($cv->status_perkawinan == 'Belum Menikah')
+                                （未婚）
+                            @elseif($cv->status_perkawinan == 'Bercerai')
+                                （離婚）
+                            @endif
+                        </td>
                     </tr>
 
                     <tr>
                         <td class="bg text-center" colspan="2">出身地 TEMPAT LAHIR</td>
                         <td class="bg">宗教 AGAMA</td>
-                        <td colspan="4" class="text-center">{{ $cv->agama }}</td>
+                        <td colspan="4" class="text-center">
+                            @php
+                                $mappingAgama = [
+                                    'Islam' => 'イスラム',
+                                    'Kristen' => 'キリスト',
+                                    'Katolik' => 'カトリック',
+                                    'Hindu' => 'ヒンドゥー',
+                                    'Buddha' => '仏教',
+                                    'Konghucu' => '儒教',
+                                ];
+                            @endphp
+
+                            {{ $cv->agama }} （{{ $mappingAgama[$cv->agama] ?? '-' }}）
+                        </td>
                     </tr>
                     <tr>
                         <td colspan="2" class="text-center">{{ $cv->tempat_lahir }}</td>
                         <td class="bg">訪日経験 PERNAH KE JEPANG</td>
-                        <td colspan="4" class="text-center">Tidak</td>
+                        <td colspan="4" class="text-center">Tidak （無）</td>
                     </tr>
 
                     <tr>
@@ -263,9 +285,13 @@
 
                     <tr>
                         <td class="bg text-center">性別 JENIS KELAMIN</td>
-                        <td class="text-center">{{ $cv->jenis_kelamin }}</td>
+                        <td class="text-center">
+                            {{ $cv->jenis_kelamin }} （{{ $cv->jenis_kelamin == 'Laki-laki' ? '男' : '女' }}）
+                        </td>
                         <td class="bg">利き手 TANGAN DOMINAN</td>
-                        <td colspan="4" class="text-center">{{ $cv->tangan_dominan }}</td>
+                        <td colspan="4" class="text-center">
+                            {{ $cv->tangan_dominan }} （{{ $cv->tangan_dominan == 'Kanan' ? '右' : '左' }}）
+                        </td>
                     </tr>
 
                     <tr>
@@ -393,21 +419,21 @@
                     <td class="value-text">{{ $cv->ayah_nama }}</td>
                     <td class="value-text">{{ $cv->ayah_usia }}</td>
                     <td class="value-text">{{ $cv->ayah_pekerjaan }} </td>
-                    <td class="value-text"> ¥</td>
+                    <td class="value-text">{{ $cv->ayah_gaji }} ¥</td>
                 </tr>
                 <tr>
                     <td class="label-text">IBU （母）</td>
                     <td class="value-text">{{ $cv->ibu_nama }}</td>
                     <td class="value-text">{{ $cv->ibu_usia }}</td>
                     <td class="value-text">{{ $cv->ibu_pekerjaan }}</td>
-                    <td class="value-text"> ¥</td>
+                    <td class="value-text">{{ $cv->ibu_gaji }} ¥</td>
                 </tr>
                 <tr>
                     <td class="label-text">KAKAK（兄）</td>
                     <td class="value-text">{{ $cv->kakak_nama }}</td>
                     <td class="value-text">{{ $cv->kakak_usia }}</td>
                     <td class="value-text">{{ $cv->kakak_pekerjaan }}</td>
-                    <td class="value-text"> ¥</td>
+                    <td class="value-text">{{ $cv->kakak_gaji }} ¥</td>
                 </tr>
 
                 <tr>
@@ -415,7 +441,7 @@
                     <td class="value-text">{{ $cv->adik_nama }}</td>
                     <td class="value-text">{{ $cv->adik_usia }}</td>
                     <td class="value-text">{{ $cv->adik_pekerjaan }}</td>
-                    <td class="value-text"> ¥</td>
+                    <td class="value-text">{{ $cv->adik_gaji }} ¥</td>
                 </tr>
             </table>
             <table class="table-alamat" style="width: 837px">
@@ -432,7 +458,7 @@
                 </tr>
                 <tr>
                     <td class="bg label-text"> 回国後の目標　TUJUAN SETELAH PULANG DARI JEPANG</td>
-                    <td class="value-text"></td>
+                    <td class="value-text">{{ $cv->tujuanSetelahPulang?->tujuan_setelah_pulang ?: '-' }}</td>
                 </tr>
                 <tr>
                     <td class="bg label-text">
@@ -471,9 +497,26 @@
                         <minimax:tool_call> 運転免許　SURAT IZIN <br>
                             MENGEMUDI (SIM A) {{ $cv->jenis_sim }}
                     </td>
-                    <td class="value-text">{{ $cv->surat_izin_mengemudi }}</td>
+                    <td class="value-text">
+                        {{ $cv->surat_izin_mengemudi }}
+                        （{{ $cv->surat_izin_mengemudi == 'Ada' ? '有' : '無' }}）
+                    </td>
                     <td class="bg label-text"> 他　LAIN - LAIN</td>
-                    <td class="value-text">{{ $cv->bidang_sertifikasi }}</td>
+                    <td class="value-text">
+                        @php
+                            $mappingSertifikat = [
+                                'Pertanian' => '農業',
+                                'Kaigo (perawat)' => '介護',
+                                'Pengolahan Makanan' => '飲食料品',
+                                'Restoran' => '外食業', // Umumnya disebut 外食業 (Gaishokugyo) untuk SSW Restoran
+                                'Building Cleaning' => 'ビルクリーニング',
+                                'Driver' => '自動車運送業',
+                                'Hanya JFT' => '国際交流基金日本語基礎テスト',
+                            ];
+                        @endphp
+
+                        {{ $cv->bidang_sertifikasi }} （{{ $mappingSertifikat[$cv->bidang_sertifikasi] ?? '-' }}）
+                    </td>
                 </tr>
             </table>
             <table class="table-alamat" style="width: 837px">
