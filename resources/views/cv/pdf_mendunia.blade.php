@@ -298,15 +298,24 @@
                         <td class="bg text-center" rowspan="3">携帯電話番号 NO HP</td>
                         <td rowspan="3" class="text-center">(+62) {{ $cv->no_telepon }}</td>
                         <td class="bg">病歴 RIWAYAT PENYAKIT</td>
-                        <td colspan="4" class="text-center">{{ $cv->penyakit_cedera_masa_lalu }}</td>
+                        <td colspan="4" class="text-center">
+                            {{ $cv->penyakit_cedera_masa_lalu ?? 'Tidak Ada' }}
+                            （{{ $cv->penyakit_cedera_masa_lalu && $cv->penyakit_cedera_masa_lalu != 'Tidak Ada' ? '有' : '無' }}）
+                        </td>
                     </tr>
                     <tr>
                         <td class="bg">タバコ MEROKOK</td>
-                        <td colspan="4" class="text-center">{{ $cv->merokok }}</td>
+                        <td colspan="4" class="text-center">
+                            {{ $cv->merokok }}
+                            （{{ $cv->merokok == 'Iya' ? '有' : '無' }}）
+                        </td>
                     </tr>
                     <tr>
                         <td class="bg">飲酒 MINUM ALKOHOL</td>
-                        <td colspan="4" class="text-center">{{ $cv->minum_alkohol }}</td>
+                        <td colspan="4" class="text-center">
+                            {{ $cv->minum_alkohol }}
+                            （{{ $cv->minum_alkohol == 'Iya' ? '有' : '無' }}）
+                        </td>
                     </tr>
                 </table>
             </div>
