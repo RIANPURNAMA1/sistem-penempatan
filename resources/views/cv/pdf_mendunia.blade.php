@@ -410,7 +410,7 @@
                         </td>
                         <td class="value-text" style="width: 383px">{{ $p->perusahaan }}</td>
                         <td class="value-text" style="width: 122px">{{ $p->jabatan }}</td>
-                        <td class="value-text">{{ $p->gaji }}</td>
+                        <td class="value-text"> ¥  {{ $p->gaji }}</td>
                     </tr>
                 @endforeach
                 <tr>
