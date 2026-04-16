@@ -606,13 +606,13 @@
                                                     @php
                                                         $jenisKelamin = $cv->jenis_kelamin ?? old('jenis_kelamin');
                                                     @endphp
-                                                    <option value="男 (Laki-laki)"
-                                                        {{ $jenisKelamin == ' (Laki-laki)' ? 'selected' : '' }}>
-                                                        (Laki-laki)
+                                                    <option value="Laki-laki"
+                                                        {{ $jenisKelamin == 'Laki-laki' ? 'selected' : '' }}>
+                                                        Laki-laki
                                                     </option>
-                                                    <option value="女 (Perempuan)"
-                                                        {{ $jenisKelamin == '(Perempuan)' ? 'selected' : '' }}>
-                                                        (Perempuan)
+                                                    <option value="Perempuan"
+                                                        {{ $jenisKelamin == 'Perempuan' ? 'selected' : '' }}>
+                                                        Perempuan
                                                     </option>
                                                 </select>
                                                 @error('jenis_kelamin')
