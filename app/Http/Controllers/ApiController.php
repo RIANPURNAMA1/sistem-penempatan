@@ -293,12 +293,14 @@ class ApiController extends Controller
  
 
 
-    public function getCv(){
-        $cv = CV::all();
+public function getCv() {
+    // Mengambil semua data CV beserta relasi pendidikan dan pengalamannya
+    $cv = Cv::with(['pendidikans', 'pengalamans'])->get();
 
-        return response()->json([
-              "data"=>$cv,
-              "messages"=>"successs"
-        ]);
-    }
+    return response()->json([
+        "status" => "success",
+        "data" => $cv,
+        "messages" => "Data berhasil diambil"
+    ]);
+}
 }
