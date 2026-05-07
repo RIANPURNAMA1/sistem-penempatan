@@ -21,5 +21,5 @@ Route::put('/kandidat/update/data/{id}', [KandidatController::class, 'updateStat
 Route::get('/history', [HistoryController::class, 'index']);
 Route::get('/history/{id}', [HistoryController::class, 'show']);
 
-Route::get('/cv', [CvController::class, 'index']);
+Route::get('/cv/all', [CvController::class, 'index']);
 Route::get('/cv/{id}', [CvController::class, 'show']);
