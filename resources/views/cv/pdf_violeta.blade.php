@@ -1082,8 +1082,6 @@
 
     function downloadPDF() {
         const container = document.querySelector('.container2');
-
-
         html2canvas(container, {
             scale: 2
         }).then(canvas => {

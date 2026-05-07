@@ -60,8 +60,8 @@ Route::middleware('guest')->group(function () {
     Route::get('/register/activate/{id}', [AuthController::class, 'activate'])->name('registrasi.activate');
 
     // Login
-    Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-    Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+    Route::get('/admin/login', [AuthController::class, 'showLogin'])->name('admin.login');
+    Route::post('/admin/login', [AuthController::class, 'login'])->name('admin.login.post');
 
     // Lupa Password (Show Form)
     Route::get('/lupa/password', [AuthController::class, 'showLupaPassword'])->name('lupa.password');
@@ -91,9 +91,12 @@ Route::middleware('auth')->group(function () {
 |--------------------------------------------------------------------------
 */
 
+// Landing page - redirect ke job.mendunia.id
+Route::get('/', [PageController::class, 'landing'])->name('landing');
+
 // Dashboard Utama (Akses oleh Semua Role yang didefinisikan)
 Route::middleware(['auth', "role:kandidat,$admin_roles"])->group(function () {
-    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 });
 
 // Profile Pengguna

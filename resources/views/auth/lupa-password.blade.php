@@ -144,7 +144,7 @@
 
             <!-- Back Link -->
             <div class="text-center mt-6">
-                <a href="/login" class="text-sm text-gray-500 hover:text-primary font-medium transition-colors">
+                <a href="{{ route('admin.login') }}" class="text-sm text-gray-500 hover:text-primary font-medium transition-colors">
                     <i class="bi bi-arrow-left mr-1"></i> Kembali ke Login
                 </a>
             </div>
@@ -242,7 +242,7 @@
                             timer: 2000,
                             showConfirmButton: false
                         }).then(() => {
-                            window.location.href = '/login';
+                            window.location.href = '{{ route("admin.login") }}';
                         });
                     },
                     

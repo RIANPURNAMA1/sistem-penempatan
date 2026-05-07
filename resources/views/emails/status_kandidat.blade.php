@@ -119,7 +119,7 @@
             melihat seluruh informasi terbaru terkait proses Anda.
         </p>
 
-        <a href="{{ url('/login') }}" class="button">Masuk ke Portal</a>
+        <a href="{{ url('/admin/login') }}" class="button">Masuk ke Portal</a>
 
         <p style="margin-top: 25px;">
             Terima kasih atas waktu dan perhatian Anda. Kami sangat menghargai kerja sama serta komitmen Anda dalam mengikuti setiap tahap proses.

@@ -27,7 +27,7 @@ class AuthController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            
+
             'password' => 'required|string|min:6|confirmed',
         ], [
             'name.required' => 'Ups! Nama harus diisi.',
@@ -139,9 +139,9 @@ class AuthController extends Controller
             // ⬅️ Kirim tanda sukses ke halaman login
             session()->flash('google_success', 'Login Google berhasil!');
 
-            return redirect()->route('login');
+            return redirect()->route('admin.login');
         } catch (\Exception $e) {
-            return redirect('/login')->withErrors([
+            return redirect('/admin/login')->withErrors([
                 'google_error' => 'Gagal login dengan Google. Coba lagi.'
             ]);
         }
@@ -167,7 +167,7 @@ class AuthController extends Controller
         return response()->json([
             'success' => false,
             'message' => 'Email atau password salah.'
-        ], 401);
+        ]);
     }
 
 
@@ -179,7 +179,7 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login')->with('success', 'Anda berhasil logout.');
+        return redirect()->route('admin.login')->with('success', 'Anda berhasil logout.');
     }
 
 

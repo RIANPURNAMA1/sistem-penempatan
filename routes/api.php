@@ -1,6 +1,9 @@
 <?php
 
-use App\Http\Controllers\ApiController;
+use App\Http\Controllers\Api\CvController;
+use App\Http\Controllers\Api\HistoryController;
+use App\Http\Controllers\Api\KandidatController;
+use App\Http\Controllers\Api\PendaftaranController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -8,24 +11,15 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::get('/pendaftaran', [ApiController::class, 'getPendaftaranDanKandidat']);
-Route::get('/pendaftaran/{id}', [ApiController::class, 'getPendaftaranById']);
+Route::get('/pendaftaran', [PendaftaranController::class, 'index']);
+Route::get('/pendaftaran/{id}', [PendaftaranController::class, 'show']);
 
-Route::get('/kandidat', [ApiController::class, 'getKandidat']);
-Route::get('/kandidat/{id}', [ApiController::class, 'getKandidatById']);
+Route::get('/kandidat', [KandidatController::class, 'index']);
+Route::get('/kandidat/{id}', [KandidatController::class, 'show']);
+Route::put('/kandidat/update/data/{id}', [KandidatController::class, 'updateStatus']);
 
-Route::get('/history', [ApiController::class, 'getHistory']);
-Route::get('/history/{id}', [ApiController::class, 'getHistoryById']);
+Route::get('/history', [HistoryController::class, 'index']);
+Route::get('/history/{id}', [HistoryController::class, 'show']);
 
-// CV API
-Route::get('/cv/all', [ApiController::class, 'getCv']);
-Route::get('/cv/{id}', [ApiController::class, 'getCvById']);
-
-// Pendaftaran API
-Route::get('/pendaftaran', [ApiController::class, 'getPendaftaranDanKandidat']);
-Route::get('/pendaftaran/{id}', [ApiController::class, 'getPendaftaranById']);
-
-// Kandidat API
-Route::get('/kandidat', [ApiController::class, 'getKandidat']);
-Route::get('/kandidat/{id}', [ApiController::class, 'getKandidatById']);
-Route::get('/test', [ApiController::class, 'test']);
+Route::get('/cv', [CvController::class, 'index']);
+Route::get('/cv/{id}', [CvController::class, 'show']);

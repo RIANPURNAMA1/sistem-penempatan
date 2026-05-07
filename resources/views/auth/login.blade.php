@@ -210,7 +210,7 @@
                 $btn.prop("disabled", true).html('<span class="spinner-border spinner-border-sm mr-2"></span> Memproses...');
 
                 $.ajax({
-                    url: "{{ route('login.post') }}",
+                    url: "{{ route('admin.login.post') }}",
                     type: "POST",
                     data: $(this).serialize(),
                     success: function(response) {

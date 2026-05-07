@@ -19,7 +19,7 @@
             Akun Anda telah berhasil diaktifkan. Silakan login untuk melanjutkan.
         </p>
 
-        <a href="{{ route('login') }}" class="btn btn-primary w-100 mt-3">
+        <a href="{{ route('admin.login') }}" class="btn btn-primary w-100 mt-3">
             Pergi ke Halaman Login
         </a>
     </div>

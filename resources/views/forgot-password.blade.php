@@ -53,7 +53,7 @@
 
     <div class="text-center mt-4 text-muted">
         <p class="mb-0">Ingat password? 
-            <a href="{{ route('login') }}" class="fw-bold text-decoration-none">Masuk</a>
+            <a href="{{ route('admin.login') }}" class="fw-bold text-decoration-none">Masuk</a>
         </p>
     </div>
 </div>

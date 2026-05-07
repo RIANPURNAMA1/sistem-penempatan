@@ -156,7 +156,7 @@
 
             <!-- Login Link -->
             <div class="text-center mt-6">
-                <p class="text-sm text-gray-500">Sudah punya akun? <a href="/login" class="text-primary font-semibold hover:underline">Masuk</a></p>
+                <p class="text-sm text-gray-500">Sudah punya akun? <a href="{{ route('admin.login') }}" class="text-primary font-semibold hover:underline">Masuk</a></p>
             </div>
         </div>
     </div>

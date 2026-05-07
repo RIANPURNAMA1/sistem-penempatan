@@ -24,6 +24,11 @@ return Application::configure(basePath: dirname(__DIR__))
             \App\Http\Middleware\UpdateLastActivity::class,
         ]);
 
+        // --------- REDIRECT UNAUTHENTICATED USERS ----------
+        $middleware->redirectGuestsTo(function ($request) {
+            return route('admin.login');
+        });
+
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

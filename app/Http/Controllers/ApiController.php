@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\PendaftaranKandidatResource;
+use App\Models\BidangSsw;
 use App\Models\Cv;
 use App\Models\Kandidat;
 use App\Models\KandidatHistory;
@@ -289,18 +290,144 @@ class ApiController extends Controller
         ]);
     }
 
+    public function getCv()
+    {
+        // Mengambil semua data CV beserta relasi pendidikan dan pengalamannya
+        $cv = Cv::with(['pendidikans', 'pengalamans'])->get();
 
- 
+        return response()->json([
+            'status' => 'success',
+            'data' => $cv,
+            'messages' => 'Data berhasil diambil',
+        ]);
+    }
 
+    public function updateStatusKandidat(Request $request, $id)
+{
+    try {
+        /* ------------------------------------------------------------
+        | Validasi
+        ------------------------------------------------------------ */
+        $validator = \Illuminate\Support\Facades\Validator::make($request->all(), [
+            'status_kandidat' => 'required|in:Job Matching,Pending,Interview,Jadwalkan Interview Ulang,Lulus interview,Gagal Interview,Pemberkasan,Berangkat,Ditolak,lamar ke perusahaan',
+            'institusi_id' => 'nullable|exists:institusis,id',
+            'catatan_interview' => 'nullable|string',
+            'jadwal_interview' => 'nullable|date',
+            'nama_perusahaan' => 'nullable|string',
+            'bidang_ssw' => 'required',
+        ]);
 
-public function getCv() {
-    // Mengambil semua data CV beserta relasi pendidikan dan pengalamannya
-    $cv = Cv::with(['pendidikans', 'pengalamans'])->get();
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi gagal',
+                'errors'  => $validator->errors()
+            ], 422);
+        }
 
-    return response()->json([
-        "status" => "success",
-        "data" => $cv,
-        "messages" => "Data berhasil diambil"
-    ]);
+        /* ------------------------------------------------------------
+        | Ambil kandidat
+        ------------------------------------------------------------ */
+        $kandidat = Kandidat::with('pendaftaran')->find($id);
+
+        if (!$kandidat) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Kandidat tidak ditemukan'
+            ], 404);
+        }
+
+        $status_lama = $kandidat->status_kandidat;
+
+        /* ------------------------------------------------------------
+        | Validasi Interview wajib tanggal
+        ------------------------------------------------------------ */
+        if (in_array($request->status_kandidat, ['Interview', 'Jadwalkan Interview Ulang']) 
+            && empty($request->jadwal_interview)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tanggal interview wajib diisi'
+            ], 422);
+        }
+
+        /* ------------------------------------------------------------
+        | Larangan update
+        ------------------------------------------------------------ */
+        if ($status_lama === 'Lulus interview' && in_array($request->status_kandidat, [
+            'Interview', 'Jadwalkan Interview Ulang', 'Gagal Interview'
+        ])) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Tidak boleh mengubah status setelah lulus'
+            ], 422);
+        }
+
+        if (in_array($status_lama, ['Pemberkasan', 'Berangkat'])) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Status tidak bisa diubah setelah tahap akhir'
+            ], 422);
+        }
+
+        /* ------------------------------------------------------------
+        | Hitung jumlah interview
+        ------------------------------------------------------------ */
+        if ($request->status_kandidat === 'Interview' && $status_lama !== 'Interview') {
+            $kandidat->jumlah_interview += 1;
+        }
+
+        /* ------------------------------------------------------------
+        | Update kandidat
+        ------------------------------------------------------------ */
+        $kandidat->update([
+            'status_kandidat' => $request->status_kandidat,
+            'institusi_id' => $request->institusi_id,
+            'catatan_interview' => $request->catatan_interview,
+            'jadwal_interview' => $request->jadwal_interview,
+            'nama_perusahaan' => $request->nama_perusahaan,
+            'jumlah_interview' => $kandidat->jumlah_interview,
+        ]);
+
+        /* ------------------------------------------------------------
+        | Update bidang SSW
+        ------------------------------------------------------------ */
+        $kandidat->bidang_ssws()->delete();
+
+        $bidang = $kandidat->pendaftaran->bidang_ssws()
+            ->find($request->bidang_ssw);
+
+        if ($bidang) {
+            BidangSsw::create([
+                'kandidat_id' => $kandidat->id,
+                'pendaftaran_id' => $kandidat->pendaftaran_id,
+                'nama_bidang' => $bidang->nama_bidang,
+            ]);
+        }
+
+        /* ------------------------------------------------------------
+        | Simpan history
+        ------------------------------------------------------------ */
+        KandidatHistory::create([
+            'kandidat_id' => $kandidat->id,
+            'status_kandidat' => $kandidat->status_kandidat,
+            'nama_perusahaan' => $kandidat->nama_perusahaan,
+        ]);
+
+        /* ------------------------------------------------------------
+        | Response API
+        ------------------------------------------------------------ */
+        return response()->json([
+            'success' => true,
+            'message' => 'Data kandidat berhasil diperbarui',
+            'data' => $kandidat->fresh(['pendaftaran', 'institusi', 'bidang_ssws'])
+        ]);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Terjadi kesalahan server',
+            'error'   => $e->getMessage()
+        ], 500);
+    }
 }
 }

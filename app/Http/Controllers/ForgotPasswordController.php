@@ -28,7 +28,7 @@ class ForgotPasswordController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Password berhasil diubah, silakan login kembali.',
-            'redirect' => route('login')
+            'redirect' => route('admin.login')
         ]);
     }
 }

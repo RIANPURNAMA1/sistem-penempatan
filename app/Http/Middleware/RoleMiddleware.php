@@ -12,7 +12,7 @@ class RoleMiddleware
     {
         // Jika belum login
         if (!Auth::check()) {
-            return redirect()->route('login')->with('error', 'Silakan login terlebih dahulu.');
+            return redirect()->route('admin.login')->with('error', 'Silakan login terlebih dahulu.');
         }
 
         $user = Auth::user();

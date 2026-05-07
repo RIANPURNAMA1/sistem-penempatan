@@ -45,4 +45,9 @@ class PageController extends Controller
     public function cabang(){
         return view('cabang.index');
     }
+
+    public function landing()
+    {
+        return view('landing');
+    }
 }
